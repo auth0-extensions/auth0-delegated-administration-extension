@@ -7,9 +7,9 @@ class Header extends Component {
     return <header className="dashboard-header" style={{ backgroundColor: '#fbfbfb' }}>
       <nav role="navigation" className="navbar navbar-default">
         <div className="container">
-          <div className="navbar-header">
+          <div className="navbar-header" style={{ width: '800px' }}>
             <img src="http://cdn.auth0.com/extensions/auth0-authz/assets/app_logo.svg" style={{float: 'left', minWidth: '55px', minHeight: '55px', display: 'block', marginRight: '15px'}}></img>
-            <a className="navbar-brand" href="#" style={{width: '50%'}}>Delegated Administration Dashboard</a>
+            <a className="navbar-brand" href="#" style={{ float: 'left', display: 'inline', width: '80%' }}>Delegated Administration Dashboard</a>
           </div>
           <div id="navbar-collapse" className="collapse navbar-collapse">
             <ul className="nav navbar-nav navbar-right">

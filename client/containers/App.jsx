@@ -5,7 +5,7 @@ import { logout } from '../actions/auth';
 import { configurationActions } from '../actions';
 
 import Header from '../components/Header';
-import { Sidebar, SidebarItem } from '../components/Dashboard';
+import { NavigationLink } from '../components/Dashboard';
 
 class App extends Component {
   static propTypes = {
@@ -20,13 +20,19 @@ class App extends Component {
         <Header user={this.props.user} issuer={this.props.issuer} onLogout={this.props.logout} />
         <div className="container">
           <div className="row">
-            <Sidebar>
-              <SidebarItem title="Users" route="/users" icon="icon icon-budicon-292" />
-              <SidebarItem title="Logs" route="/logs" icon="icon icon-budicon-292" />
-            </Sidebar>
-            <div id="content" className="col-xs-10">
-              { this.props.children }
-            </div>
+            <section className="content-page current">
+              <div className="col-xs-12">
+                <div className="widget-title title-with-nav-bars">
+                  <ul className="nav nav-tabs">
+                    <NavigationLink title="Users" route="/users" />
+                    <NavigationLink title="Logs" route="/logs" />
+                  </ul>
+                </div>
+                <div id="content-area" className="tab-content">
+                  { this.props.children }
+                </div>
+              </div>
+            </section>
           </div>
         </div>
       </div>

@@ -4,8 +4,7 @@ import Json from './Json';
 import InputText from './InputText';
 import InputCombo from './InputCombo';
 import LoadingPanel from './LoadingPanel';
-import Sidebar from './Sidebar';
-import SidebarItem from './SidebarItem';
+import NavigationLink from './NavigationLink';
 import Table from './Table';
 import TableBody from './TableBody';
 import TableCell from './TableCell';
@@ -26,8 +25,7 @@ export {
   InputText,
   InputCombo,
   LoadingPanel,
-  Sidebar,
-  SidebarItem,
+  NavigationLink,
   Table,
   TableBody,
   TableIconCell,
