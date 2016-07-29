@@ -2,8 +2,16 @@
   margin-bottom: 20px;
 }
 
+.user .dropdown-menu {
+  padding: 0px;
+}
+
+.user .dropdown-menu .divider {
+  margin: 0px;
+}
+
 .user .content-header .h2 {
-  margin-top: 10px;
+  margin-top: 0px;
 }
 
 .user-tabs a[role="tab"] {

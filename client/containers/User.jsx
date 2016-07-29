@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Tabs, Tab } from 'react-bootstrap';
+import { Tabs, Tab, MenuItem, DropdownButton, ButtonToolbar } from 'react-bootstrap';
 
 import { logActions, userActions } from '../actions';
 
@@ -23,7 +23,15 @@ export default class UserContainer extends Component {
       <div className="user">
         <div className="row content-header">
           <div className="col-xs-12">
-            <h2>User Details</h2>
+            <h2 className="pull-left">User Details</h2>
+            <div className="pull-right">
+              <DropdownButton className="pull-right" bsStyle="success" title="Actions" id="user-actions">
+                <MenuItem eventKey="1">Action</MenuItem>
+                <MenuItem eventKey="2">Another action</MenuItem>
+                <MenuItem divider />
+                <MenuItem eventKey="4">Separated link</MenuItem>
+              </DropdownButton>
+            </div>
           </div>
         </div>
         <div className="row">
