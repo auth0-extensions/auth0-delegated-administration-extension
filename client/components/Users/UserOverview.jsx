@@ -6,26 +6,10 @@ import UsersTable from './UsersTable';
 import { Error, LoadingPanel, TableTotals } from '../Dashboard';
 
 class UserOverview extends React.Component {
-  constructor() {
-    super();
-
-    this.onReset = this.onReset.bind(this);
-    this.onKeyPress = this.onKeyPress.bind(this);
-    this.renderActions = this.renderActions.bind(this);
-  }
-
-  onKeyPress(e) {
+  onKeyPress = (e) => {
     if (e.key === 'Enter') {
       this.props.onSearch(findDOMNode(this.refs.search).value);
     }
-  }
-
-  onReset() {
-    this.props.onReset();
-  }
-
-  renderActions(user, index) {
-    return this.props.renderActions(user, index);
   }
 
   render() {
@@ -52,7 +36,7 @@ class UserOverview extends React.Component {
             </div>
             <div className="col-xs-2">
               <ButtonToolbar className="pull-right">
-                <Button bsSize="small" onClick={ this.onReset } disabled={ loading }>
+                <Button bsSize="small" onClick={this.props.onReset} disabled={loading}>
                   <i className="icon icon-budicon-257"></i> Reset
                 </Button>
               </ButtonToolbar>
@@ -66,12 +50,12 @@ class UserOverview extends React.Component {
           </div>
           <div className="row">
             <div className="col-xs-12">
-                <UsersTable loading={ loading } users={ users } renderActions={ renderActions } />
+                <UsersTable loading={loading} users={users} renderActions={renderActions} />
             </div>
           </div>
           <div className="row">
             <div className="col-xs-12">
-              <TableTotals currentCount={ users.length } totalCount={ total } />
+              <TableTotals currentCount={users.length} totalCount={total} />
             </div>
           </div>
         </LoadingPanel>

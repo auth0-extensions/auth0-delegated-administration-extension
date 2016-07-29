@@ -1,7 +1,13 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Error, LoadingPanel, Table, TableBody, TableIconCell, TableTextCell, TableHeader, TableColumn, TableRow } from '../Dashboard';
 
-class UserDevices extends Component {
+export default class UserDevices extends Component {
+  static propTypes = {
+    error: PropTypes.string,
+    devices: PropTypes.object.isRequired,
+    loading: PropTypes.bool.isRequired
+  }
+
   shouldComponentUpdate(nextProps) {
     return nextProps.devices !== this.props.devices || nextProps.user !== this.props.user || nextProps.loading !== this.props.loading;
   }
@@ -17,34 +23,28 @@ class UserDevices extends Component {
     }
 
     const devices = this.props.devices.toJS();
-    return <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
-        <Error message={error} />
-        <Table>
-          <TableHeader>
-            <TableColumn width="3%"/>
-            <TableColumn width="70%">Device</TableColumn>
-            <TableColumn width="27%"># of Tokens/Public Keys</TableColumn>
-          </TableHeader>
-          <TableBody>
-          {Object.keys(devices).sort().map((device) => {
-            return(
-              <TableRow key={device}>
-                <TableIconCell color="green" icon="243"/>
-                <TableTextCell>{device}</TableTextCell>
-                <TableTextCell>{devices[device]}</TableTextCell>
-              </TableRow>
-            );
-          })}
-          </TableBody>
-        </Table>
-    </LoadingPanel>;
+    return (
+      <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
+          <Error message={error} />
+          <Table>
+            <TableHeader>
+              <TableColumn width="3%" />
+              <TableColumn width="70%">Device</TableColumn>
+              <TableColumn width="27%"># of Tokens/Public Keys</TableColumn>
+            </TableHeader>
+            <TableBody>
+            {Object.keys(devices).sort().map((device) => {
+              return(
+                <TableRow key={device}>
+                  <TableIconCell color="green" icon="243"/>
+                  <TableTextCell>{device}</TableTextCell>
+                  <TableTextCell>{devices[device]}</TableTextCell>
+                </TableRow>
+              );
+            })}
+            </TableBody>
+          </Table>
+      </LoadingPanel>
+    );
   }
 }
-
-UserDevices.propTypes = {
-  error: React.PropTypes.string,
-  devices: React.PropTypes.object.isRequired,
-  loading: React.PropTypes.bool.isRequired
-};
-
-export default UserDevices;

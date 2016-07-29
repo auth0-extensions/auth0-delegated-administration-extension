@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { Tabs, Tab } from 'react-bootstrap';
 
@@ -13,20 +12,18 @@ import UserProfile from '../components/Users/UserProfile';
 import UserDevices from '../components/Users/UserDevices';
 
 export default class UserContainer extends Component {
-
   componentWillMount() {
     this.props.fetchUser(this.props.params.id);
   }
-
 
   render() {
     const { user, log, logs, devices } = this.props;
 
     return (
-      <div>
-        <div className="row">
+      <div className="user">
+        <div className="row content-header">
           <div className="col-xs-12">
-            <Link className="btn btn-sm btn-primary pull-right" to="/users">Back to Users</Link>
+            <h2>User Details</h2>
           </div>
         </div>
         <div className="row">
@@ -34,7 +31,7 @@ export default class UserContainer extends Component {
             <UserHeader loading={user.loading} user={user.record} error={user.error} />
           </div>
         </div>
-        <div className="row">
+        <div className="row user-tabs">
           <div className="col-xs-12">
             <Tabs defaultActiveKey={1} animation={false}>
               <Tab eventKey={1} title="Profile">
@@ -44,8 +41,8 @@ export default class UserContainer extends Component {
                 <UserDevices loading={devices.loading} devices={devices.records} error={devices.error} />
               </Tab>
               <Tab eventKey={4} title="Logs">
-                <LogDialog onClose={() => this.props.clearLog()} error={log.error} loading={log.loading} log={log.record} logId={log.id} />
-                <UserLogs onOpen={(logId) => this.props.fetchLog(logId)} loading={logs.loading} logs={logs.records} user={user.record} error={logs.error} />
+                <LogDialog onClose={this.props.clearLog} error={log.error} loading={log.loading} log={log.record} logId={log.id} />
+                <UserLogs onOpen={this.props.fetchLog} loading={logs.loading} logs={logs.records} user={user.record} error={logs.error} />
               </Tab>
             </Tabs>
           </div>

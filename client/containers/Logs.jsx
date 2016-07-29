@@ -29,7 +29,7 @@ class LogsContainer extends Component {
       <Button bsSize="small" onClick={this.refresh.bind(this)} disabled={this.props.logs.loading}>
         <i className="icon icon-budicon-257"></i> Refresh
       </Button>
-      <Button bsStyle="primary" bsSize="small" disabled={this.props.loading} onClick={this.loadMore.bind(this)}>
+      <Button bsStyle="primary" bsSize="small" disabled={this.props.logs.loading} onClick={this.loadMore.bind(this)}>
         <i className="icon icon-budicon-686"></i> Load More
       </Button>
     </ButtonToolbar>;

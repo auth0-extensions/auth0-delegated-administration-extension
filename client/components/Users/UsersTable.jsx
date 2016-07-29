@@ -1,24 +1,20 @@
 import React, { Component } from 'react';
-import { ButtonToolbar } from 'react-bootstrap';
 
 import { TableActionCell, Table, TableCell, TableRouteCell, TableBody, TableTextCell, TableHeader, TableColumn, TableRow } from '../Dashboard';
 
-class UsersTable extends Component {
-  constructor() {
-    super();
-    this.renderActions = this.renderActions.bind(this);
+export default class UsersTable extends Component {
+  static propTypes = {
+    users: React.PropTypes.array.isRequired,
+    loading: React.PropTypes.bool.isRequired,
+    renderActions: React.PropTypes.func.isRequired
   }
 
   shouldComponentUpdate(nextProps) {
     return nextProps.users !== this.props.users;
   }
 
-  renderActions(user, index) {
-    return this.props.renderActions(user, index);
-  }
-
   render() {
-    const { users } = this.props;
+    const { users, renderActions } = this.props;
     return (
       <Table>
         <TableHeader>
@@ -43,7 +39,7 @@ class UsersTable extends Component {
                 <TableTextCell>{ user.logins_count }</TableTextCell>
                 <TableTextCell>{ user.identities[0].connection }</TableTextCell>
                 <TableActionCell>
-                  {this.renderActions(user, index)}
+                  {renderActions(user, index)}
                 </TableActionCell>
               </TableRow>
             );
@@ -53,11 +49,3 @@ class UsersTable extends Component {
     );
   }
 }
-
-UsersTable.propTypes = {
-  users: React.PropTypes.array.isRequired,
-  loading: React.PropTypes.bool.isRequired,
-  renderActions: React.PropTypes.func.isRequired
-};
-
-export default UsersTable;

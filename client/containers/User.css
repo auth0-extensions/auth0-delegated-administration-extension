@@ -1,8 +1,19 @@
+.user .content-header {
+  margin-bottom: 20px;
+}
+
+.user .content-header .h2 {
+  margin-top: 10px;
+}
+
+.user-tabs a[role="tab"] {
+  outline-style: none;
+}
+
 .user-header {
   position: relative;
   display: block;
   box-sizing: border-box;
-  margin-top: 20px;
   margin-bottom: 20px;
 }
 

@@ -1,12 +1,25 @@
-import React, { Component } from 'react';
+import React, { PropTypes, Component } from 'react';
 import TableCell from './TableCell';
 
-class TableTextCell extends Component {
+export default class TableTextCell extends Component {
+  static propTypes = {
+    onClick: PropTypes.func,
+    clickArgs: PropTypes.array
+  };
+
+  clickCell = () => {
+    this.props.onClick(...this.props.clickArgs);
+  };
+
   render() {
     if (this.props.onClick) {
-      return <TableCell>
-        <a href="#" onClick={() => this.props.onClick()} title={ this.props.children || '' }>{ this.props.children || '' }</a>
-      </TableCell>;
+      return (
+        <TableCell>
+          <a href="#" onClick={this.clickCell} title={ this.props.children || '' }>
+            { this.props.children || '' }
+          </a>
+        </TableCell>
+      );
     }
 
     return <TableCell>
@@ -14,9 +27,3 @@ class TableTextCell extends Component {
     </TableCell>;
   }
 }
-
-TableTextCell.propTypes = {
-  onClick: React.PropTypes.func
-};
-
-export default TableTextCell;

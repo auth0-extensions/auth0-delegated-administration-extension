@@ -1,7 +1,15 @@
 import React, { Component } from 'react';
 import { Error, LoadingPanel, Table, TableBody, TableIconCell, TableTextCell, TableHeader, TableColumn, TableRow } from '../Dashboard';
 
-class UserLogs extends Component {
+export default class UserLogs extends Component {
+  static propTypes = {
+    onOpen: React.PropTypes.func.isRequired,
+    error: React.PropTypes.string,
+    loading: React.PropTypes.bool.isRequired,
+    user: React.PropTypes.object.isRequired,
+    logs: React.PropTypes.object.isRequired
+  }
+
   shouldComponentUpdate(nextProps) {
     return nextProps.logs !== this.props.logs || nextProps.user !== this.props.user || nextProps.loading !== this.props.loading;
   }
@@ -50,13 +58,3 @@ class UserLogs extends Component {
     </LoadingPanel>;
   }
 }
-
-UserLogs.propTypes = {
-  onOpen: React.PropTypes.func.isRequired,
-  error: React.PropTypes.string,
-  loading: React.PropTypes.bool.isRequired,
-  user: React.PropTypes.object.isRequired,
-  logs: React.PropTypes.object.isRequired
-};
-
-export default UserLogs;
