@@ -33,11 +33,9 @@ export default class LogDialog extends Component {
           </LoadingPanel>
         </Modal.Body>
         <Modal.Footer>
-          <ButtonToolbar>
-            <Button bsSize="small" disabled={loading} onClick={onClose}>
-              <i className="icon icon-budicon-501"></i> Cancel
-            </Button>
-          </ButtonToolbar>
+          <Button disabled={loading} onClick={onClose}>
+            <i className="icon icon-budicon-501"></i> Close
+          </Button>
         </Modal.Footer>
       </Modal>
     );

@@ -1,8 +1,7 @@
 import React from 'react';
 import { findDOMNode } from 'react-dom';
-import { Button, ButtonToolbar } from 'react-bootstrap';
 
-import UsersTable from './UsersTable';
+import { SearchBar, UsersTable } from './';
 import { Error, LoadingPanel, TableTotals } from '../Dashboard';
 
 export default class UserOverview extends React.Component {
@@ -33,31 +32,7 @@ export default class UserOverview extends React.Component {
               <Error message={ error } />
             </div>
           </div>
-          <div className="row">
-            <div className="col-xs-10">
-              <div className="advanced-search-control">
-                <span className="search-area">
-                  <i className="icon-budicon-489"></i>
-                  <input className="user-input" type="text" ref="search" placeholder="Search for users"
-                    spellCheck="false" style={{ marginLeft: '10px' }} onKeyPress={this.onKeyPress}
-                  />
-                </span>
-              </div>
-            </div>
-            <div className="col-xs-2">
-              <ButtonToolbar className="pull-right">
-                <Button bsSize="small" onClick={this.props.onReset} disabled={loading}>
-                  <i className="icon icon-budicon-257"></i> Reset
-                </Button>
-              </ButtonToolbar>
-            </div>
-            <div className="col-xs-12">
-              <div className="help-block">
-                To perform your search, press <span className="keyboard-button">enter</span>.
-                You can also search for specific fields, eg: <strong>email:"john@doe.com"</strong>.
-              </div>
-            </div>
-          </div>
+          <SearchBar onReset={this.props.onReset} onSearch={this.props.onSearch} enabled={!loading} />
           <div className="row">
             <div className="col-xs-12">
                 <UsersTable loading={loading} users={users} renderActions={renderActions} />

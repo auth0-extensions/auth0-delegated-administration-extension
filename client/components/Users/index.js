@@ -5,6 +5,7 @@ export UserLogs from './UserLogs';
 export UserOverview from './UserOverview';
 export UserProfile from './UserProfile';
 export UsersTable from './UsersTable';
+export SearchBar from './SearchBar';
 
 export BlockDialog from './Dialogs/BlockDialog';
 export UnblockDialog from './Dialogs/UnblockDialog';
