@@ -8,14 +8,17 @@ const initialState = {
   loading: false,
   requesting: false,
   userId: null,
-  userName: null
+  userName: null,
+  provider: null
 };
 
 export const mfa = createReducer(fromJS(initialState), {
   [constants.REQUEST_REMOVE_MULTIFACTOR]: (state, action) =>
     state.merge({
+      ...initialState,
       userId: action.user.user_id,
       userName: action.user.user_name || action.user.email,
+      provider: action.provider,
       requesting: true
     }),
   [constants.CANCEL_REMOVE_MULTIFACTOR]: (state) =>

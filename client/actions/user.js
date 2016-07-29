@@ -62,10 +62,11 @@ export function fetchUser(userId) {
 /*
  * Get confirmation to remove MFA from a user.
  */
-export function requestRemoveMultiFactor(user) {
+export function requestRemoveMultiFactor(user, provider) {
   return {
     type: constants.REQUEST_REMOVE_MULTIFACTOR,
-    user
+    user,
+    provider
   };
 }
 
@@ -81,9 +82,9 @@ export function cancelRemoveMultiFactor() {
 /*
  * Remove multi factor from a user.
  */
-export function removeMultiFactor(userId, provider) {
+export function removeMultiFactor() {
   return (dispatch, getState) => {
-    const userId = getState().mfa.get('userId');
+    const { userId, provider } = getState().mfa.toJS();
     dispatch({
       type: constants.REMOVE_MULTIFACTOR,
       payload: {
@@ -92,7 +93,10 @@ export function removeMultiFactor(userId, provider) {
         })
       },
       meta: {
-        userId
+        userId,
+        onSuccess: () => {
+          dispatch(fetchUserDetail(userId));
+        }
       }
     });
   };
@@ -131,7 +135,10 @@ export function blockUser() {
         })
       },
       meta: {
-        userId
+        userId,
+        onSuccess: () => {
+          dispatch(fetchUserDetail(userId));
+        }
       }
     });
   };
@@ -170,7 +177,10 @@ export function unblockUser() {
         })
       },
       meta: {
-        userId
+        userId,
+        onSuccess: () => {
+          dispatch(fetchUserDetail(userId));
+        }
       }
     });
   };

@@ -5,7 +5,17 @@ import { Button, ButtonToolbar } from 'react-bootstrap';
 import UsersTable from './UsersTable';
 import { Error, LoadingPanel, TableTotals } from '../Dashboard';
 
-class UserOverview extends React.Component {
+export default class UserOverview extends React.Component {
+  static propTypes = {
+    onReset: React.PropTypes.func.isRequired,
+    onSearch: React.PropTypes.func.isRequired,
+    error: React.PropTypes.object,
+    users: React.PropTypes.array.isRequired,
+    total: React.PropTypes.number.isRequired,
+    loading: React.PropTypes.bool.isRequired,
+    renderActions: React.PropTypes.func.isRequired
+  }
+
   onKeyPress = (e) => {
     if (e.key === 'Enter') {
       this.props.onSearch(findDOMNode(this.refs.search).value);
@@ -63,15 +73,3 @@ class UserOverview extends React.Component {
     );
   }
 }
-
-UserOverview.propTypes = {
-  onReset: React.PropTypes.func.isRequired,
-  onSearch: React.PropTypes.func.isRequired,
-  error: React.PropTypes.object,
-  users: React.PropTypes.array.isRequired,
-  total: React.PropTypes.number.isRequired,
-  loading: React.PropTypes.bool.isRequired,
-  renderActions: React.PropTypes.func.isRequired
-};
-
-export default UserOverview;

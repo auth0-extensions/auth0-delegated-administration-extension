@@ -1,23 +1,45 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Tabs, Tab, MenuItem, DropdownButton, ButtonToolbar } from 'react-bootstrap';
+import React, { Component, PropTypes } from 'react'
+import connectContainer from 'redux-static';
+import { Tabs, Tab } from 'react-bootstrap';
 
 import { logActions, userActions } from '../actions';
 
 import './User.css';
 import LogDialog from '../components/Logs/LogDialog';
-import UserLogs from '../components/Users/UserLogs';
-import UserHeader from '../components/Users/UserHeader';
-import UserProfile from '../components/Users/UserProfile';
-import UserDevices from '../components/Users/UserDevices';
+import { UserActions, UserDevices, UserHeader, UserProfile, UserLogs } from '../components/Users';
+import { BlockDialog, UnblockDialog, RemoveMultiFactorDialog } from '../components/Users';
 
-export default class UserContainer extends Component {
+
+export default connectContainer(class extends Component {
+  static stateToProps = (state) => ({
+    user: state.user,
+    log: state.log,
+    logs: state.user.get('logs'),
+    devices: state.user.get('devices'),
+    dialogs: {
+      mfa: state.mfa,
+      block: state.block,
+      unblock: state.unblock
+    }
+  });
+
+  static actionsToProps = {
+    ...logActions,
+    ...userActions
+  }
+
+  static propTypes = {
+    config: PropTypes.object.isRequired,
+    fetchConfiguration: PropTypes.func.isRequired
+  }
+
   componentWillMount() {
     this.props.fetchUser(this.props.params.id);
   }
 
   render() {
     const { user, log, logs, devices } = this.props;
+    const { mfa, block, unblock } = this.props.dialogs;
 
     return (
       <div className="user">
@@ -25,65 +47,42 @@ export default class UserContainer extends Component {
           <div className="col-xs-12">
             <h2 className="pull-left">User Details</h2>
             <div className="pull-right">
-              <DropdownButton className="pull-right" bsStyle="success" title="Actions" id="user-actions">
-                <MenuItem eventKey="1">Action</MenuItem>
-                <MenuItem eventKey="2">Another action</MenuItem>
-                <MenuItem divider />
-                <MenuItem eventKey="4">Separated link</MenuItem>
-              </DropdownButton>
+              <UserActions user={user}
+                removeMfa={this.props.requestRemoveMultiFactor}
+                blockUser={this.props.requestBlockUser}
+                unblockUser={this.props.requestUnblockUser}
+              />
             </div>
           </div>
         </div>
         <div className="row">
           <div className="col-xs-12">
-            <UserHeader loading={user.loading} user={user.record} error={user.error} />
+            <UserHeader loading={user.get('loading')} user={user.get('record')} error={user.get('error')} />
           </div>
         </div>
         <div className="row user-tabs">
           <div className="col-xs-12">
             <Tabs defaultActiveKey={1} animation={false}>
               <Tab eventKey={1} title="Profile">
-                <UserProfile loading={user.loading} user={user.record} error={user.error} />
+                <UserProfile loading={user.get('loading')} user={user.get('record')} error={user.get('error')} />
               </Tab>
               <Tab eventKey={3} title="Devices">
-                <UserDevices loading={devices.loading} devices={devices.records} error={devices.error} />
+                <UserDevices loading={devices.get('loading')} devices={devices.get('records')} error={devices.get('error')} />
               </Tab>
               <Tab eventKey={4} title="Logs">
-                <LogDialog onClose={this.props.clearLog} error={log.error} loading={log.loading} log={log.record} logId={log.id} />
-                <UserLogs onOpen={this.props.fetchLog} loading={logs.loading} logs={logs.records} user={user.record} error={logs.error} />
+                <LogDialog onClose={this.props.clearLog} error={log.get('error')} loading={log.get('loading')} log={log.get('record')} logId={log.get('logId')} />
+                <UserLogs onOpen={this.props.fetchLog} loading={logs.get('loading')} logs={logs.get('records')} user={user.get('record')} error={logs.get('error')} />
               </Tab>
             </Tabs>
           </div>
         </div>
+        <BlockDialog error={block.get('error')} loading={block.get('loading')} userName={block.get('userName')} requesting={block.get('requesting')}
+          onCancel={this.props.cancelBlockUser} onConfirm={this.props.blockUser} />
+        <UnblockDialog error={unblock.get('error')} loading={unblock.get('loading')} userName={unblock.get('userName')} requesting={unblock.get('requesting')}
+          onCancel={this.props.cancelUnblockUser} onConfirm={this.props.unblockUser} />
+        <RemoveMultiFactorDialog error={mfa.get('error')} loading={mfa.get('loading')} userName={mfa.get('userName')} requesting={mfa.get('requesting')}
+          onCancel={this.props.cancelRemoveMultiFactor} onConfirm={this.props.removeMultiFactor} />
       </div>
     );
   }
-}
-
-function mapStateToProps(state) {
-  return {
-    user: {
-      record: state.user.get('record'),
-      error: state.user.get('error'),
-      loading: state.user.get('loading')
-    },
-    log: {
-      id: state.log.get('logId'),
-      record: state.log.get('record'),
-      error: state.log.get('error'),
-      loading: state.log.get('loading')
-    },
-    logs: {
-      records: state.user.get('logs').get('records'),
-      error: state.user.get('logs').get('error'),
-      loading: state.user.get('logs').get('loading')
-    },
-    devices: {
-      records: state.user.get('devices').get('records'),
-      error: state.user.get('devices').get('error'),
-      loading: state.user.get('devices').get('loading')
-    }
-  };
-}
-
-export default connect(mapStateToProps, { ...logActions, ...userActions, })(UserContainer);
+});

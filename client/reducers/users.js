@@ -29,10 +29,10 @@ export const users = createReducer(fromJS(initialState), {
       loading: false,
       total: data.total,
       nextPage: action.meta.page + 1,
-      records: state.get('records').concat(fromJS(data.users.map(user => {
-        user.last_login_relative = moment(user.last_login).fromNow();
-        return user;
-      })))
+      records: state.get('records').concat(fromJS(data.users.map(user => ({
+        ...user,
+        last_login_relative: user.last_login ? moment(user.last_login).fromNow() : 'Never'
+      }))))
     });
   },
   [constants.BLOCK_USER_FULFILLED]: (state, action) =>
@@ -45,8 +45,6 @@ export const users = createReducer(fromJS(initialState), {
     ),
   [constants.REMOVE_MULTIFACTOR_FULFILLED]: (state, action) =>
     state.updateIn(
-      [ 'records', state.get('records').findIndex(p => p.get('user_id') === action.meta.userId), 'multifactor' ], (multifactor) => {
-        return multifactor.splice(0, 1);
-      }
+      [ 'records', state.get('records').findIndex(p => p.get('user_id') === action.meta.userId), 'multifactor' ], (multifactor) => multifactor.splice(0, 1)
     )
 });
