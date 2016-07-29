@@ -1,5 +1,6 @@
 import * as constants from '../constants';
 import axios from 'axios';
+import { push } from 'react-router-redux';
 
 import { fetchUserLogs } from './userLog';
 import { fetchUserDevices } from './userDevice';
@@ -173,6 +174,91 @@ export function unblockUser() {
       type: constants.UNBLOCK_USER,
       payload: {
         promise: axios.post(`/api/users/${userId}/unblock`, {
+          responseType: 'json'
+        })
+      },
+      meta: {
+        userId,
+        onSuccess: () => {
+          dispatch(fetchUserDetail(userId));
+        }
+      }
+    });
+  };
+}
+
+/*
+ * Get confirmation to delete a user.
+ */
+export function requestDeleteUser(user) {
+  return {
+    type: constants.REQUEST_DELETE_USER,
+    user
+  };
+}
+
+/*
+ * Cancel the delete process.
+ */
+export function cancelDeleteUser() {
+  return {
+    type: constants.CANCEL_DELETE_USER
+  };
+}
+
+/*
+ * Delete user.
+ */
+export function deleteUser() {
+  return (dispatch, getState) => {
+    const { userId } = getState().deleteUser.toJS();
+    dispatch({
+      type: constants.DELETE_USER,
+      payload: {
+        promise: axios.delete(`/api/users/${userId}`, {
+          responseType: 'json'
+        })
+      },
+      meta: {
+        userId,
+        onSuccess: () => {
+          dispatch(push('/users'));
+        }
+      }
+    });
+  };
+}
+
+
+/*
+ * Get confirmation to reset a password.
+ */
+export function requestPasswordReset(user) {
+  return {
+    type: constants.REQUEST_PASSWORD_RESET,
+    user
+  };
+}
+
+/*
+ * Cancel the password reset process.
+ */
+export function cancelPasswordReset() {
+  return {
+    type: constants.CANCEL_PASSWORD_RESET
+  };
+}
+
+/*
+ * Reset password.
+ */
+export function resetPassword() {
+  return (dispatch, getState) => {
+    const { userId } = getState().passwordReset.toJS();
+    dispatch({
+      type: constants.PASSWORD_RESET,
+      payload: {
+        promise: axios.post(`/api/users/${userId}/password-reset`, {
           responseType: 'json'
         })
       },

@@ -7,7 +7,7 @@ import { logActions, userActions } from '../actions';
 import './User.css';
 import LogDialog from '../components/Logs/LogDialog';
 import { UserActions, UserDevices, UserHeader, UserProfile, UserLogs } from '../components/Users';
-import { BlockDialog, UnblockDialog, RemoveMultiFactorDialog } from '../components/Users';
+import { BlockDialog, UnblockDialog, RemoveMultiFactorDialog, DeleteDialog, PasswordResetDialog } from '../components/Users';
 
 
 export default connectContainer(class extends Component {
@@ -19,7 +19,9 @@ export default connectContainer(class extends Component {
     dialogs: {
       mfa: state.mfa,
       block: state.block,
-      unblock: state.unblock
+      unblock: state.unblock,
+      deleteUser: state.deleteUser,
+      passwordReset: state.passwordReset
     }
   });
 
@@ -39,7 +41,7 @@ export default connectContainer(class extends Component {
 
   render() {
     const { user, log, logs, devices } = this.props;
-    const { mfa, block, unblock } = this.props.dialogs;
+    const { mfa, block, unblock, deleteUser, passwordReset } = this.props.dialogs;
 
     return (
       <div className="user">
@@ -48,6 +50,8 @@ export default connectContainer(class extends Component {
             <h2 className="pull-left">User Details</h2>
             <div className="pull-right">
               <UserActions user={user}
+                deleteUser={this.props.requestDeleteUser}
+                resetPassword={this.props.requestPasswordReset}
                 removeMfa={this.props.requestRemoveMultiFactor}
                 blockUser={this.props.requestBlockUser}
                 unblockUser={this.props.requestUnblockUser}
@@ -76,6 +80,10 @@ export default connectContainer(class extends Component {
             </Tabs>
           </div>
         </div>
+        <DeleteDialog error={deleteUser.get('error')} loading={deleteUser.get('loading')} userName={deleteUser.get('userName')} requesting={deleteUser.get('requesting')}
+          onCancel={this.props.cancelDeleteUser} onConfirm={this.props.deleteUser} />
+        <PasswordResetDialog error={passwordReset.get('error')} loading={passwordReset.get('loading')} userName={passwordReset.get('userName')} requesting={passwordReset.get('requesting')}
+          onCancel={this.props.cancelPasswordReset} onConfirm={this.props.resetPassword} />
         <BlockDialog error={block.get('error')} loading={block.get('loading')} userName={block.get('userName')} requesting={block.get('requesting')}
           onCancel={this.props.cancelBlockUser} onConfirm={this.props.blockUser} />
         <UnblockDialog error={unblock.get('error')} loading={unblock.get('loading')} userName={unblock.get('userName')} requesting={unblock.get('requesting')}

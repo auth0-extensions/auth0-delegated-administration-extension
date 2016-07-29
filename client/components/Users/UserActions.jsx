@@ -6,7 +6,9 @@ export default class UserActions extends Component {
     user: PropTypes.object.isRequired,
     blockUser: PropTypes.func.isRequired,
     unblockUser: PropTypes.func.isRequired,
-    removeMfa: PropTypes.func.isRequired
+    removeMfa: PropTypes.func.isRequired,
+    deleteUser: PropTypes.func.isRequired,
+    resetPassword: PropTypes.func.isRequired
   }
 
   state = {
@@ -27,6 +29,18 @@ export default class UserActions extends Component {
   shouldComponentUpdate(nextProps) {
     return nextProps.user !== this.props.user;
   }
+
+  getDeleteAction = (user, loading) => (
+    <MenuItem disabled={loading || false} onClick={this.deleteUser}>
+      Delete User
+    </MenuItem>
+  );
+
+  getResetPasswordAction = (user, loading) => (
+    <MenuItem disabled={loading || false} onClick={this.resetPassword}>
+      Reset Password
+    </MenuItem>
+  );
 
   getMultifactorAction = (user, loading) => {
     if (!user.multifactor || !user.multifactor.length) {
@@ -56,6 +70,14 @@ export default class UserActions extends Component {
     );
   }
 
+  deleteUser = () => {
+    this.props.deleteUser(this.state.user);
+  }
+
+  resetPassword = () => {
+    this.props.resetPassword(this.state.user);
+  }
+
   blockUser = () => {
     this.props.blockUser(this.state.user);
   }
@@ -77,6 +99,8 @@ export default class UserActions extends Component {
       <DropdownButton bsStyle="success" title="Actions" id="user-actions">
         {this.getMultifactorAction(this.state.user, this.state.loading)}
         {this.getBlockedAction(this.state.user, this.state.loading)}
+        {this.getResetPasswordAction(this.state.user, this.state.loading)}
+        {this.getDeleteAction(this.state.user, this.state.loading)}
       </DropdownButton>
     );
   }

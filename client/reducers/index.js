@@ -13,6 +13,8 @@ import { logs } from './logs';
 import { user } from './user';
 import { userPicker } from './userPicker';
 import { users } from './users';
+import { deleteUser } from './deleteUser';
+import { passwordReset } from './passwordReset';
 
 export default combineReducers({
   routing: routerReducer,
@@ -24,6 +26,8 @@ export default combineReducers({
   unblock,
   log,
   logs,
+  passwordReset,
+  deleteUser,
   user,
   users,
   userPicker,
