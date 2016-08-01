@@ -22,7 +22,7 @@ export default () => {
     }),
 
     // Validate the audience and the issuer.
-    audience: config('EXTENSION_SECRET'),
+    audience: config('EXTENSION_CLIENT_ID'),
     issuer: `https://${config('AUTH0_DOMAIN')}/`,
     algorithms: [ 'RS256' ]
   }));
