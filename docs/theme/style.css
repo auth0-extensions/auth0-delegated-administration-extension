@@ -1,0 +1,9 @@
+header.dashboard-header {
+  background-color: #cee7ff;
+  border-bottom-color: #00519e;
+}
+
+header.dashboard-header nav .navbar-header {
+  background-size: 100px 100px;
+  background-image: url("https://rawgithub.com/auth0-extensions/auth0-delegated-administration-extension/master/docs/theme/logo.svg");
+}
