@@ -29,3 +29,16 @@ Then you can run the extension:
 npm install
 npm run serve:dev
 ```
+
+## Custom Style
+
+Customers can choose to implement their custom style, to do so the following settings can be added:
+
+```json
+{
+  "TITLE": "Fabrikam User Management",
+  "CUSTOM_CSS": "https://rawgithub.com/auth0-extensions/auth0-delegated-administration-extension/master/docs/theme/style.css"
+}
+```
+
+The CSS file has to be hosted by the customer and can be used to change the style of every component. An example can be found under [docs/theme](docs/theme).
