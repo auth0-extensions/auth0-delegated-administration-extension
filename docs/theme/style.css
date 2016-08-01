@@ -4,6 +4,6 @@ header.dashboard-header {
 }
 
 header.dashboard-header nav .navbar-header {
-  background-size: 100px 100px;
+  background-size: 50px 40px !important;
   background-image: url("https://rawgithub.com/auth0-extensions/auth0-delegated-administration-extension/master/docs/theme/logo.svg");
 }

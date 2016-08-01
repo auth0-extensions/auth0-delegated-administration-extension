@@ -2,8 +2,8 @@ import fs from 'fs';
 import url from 'url';
 import ejs from 'ejs';
 import path from 'path';
-import nconf from 'nconf';
 
+import config from '../lib/config';
 import { readStorage } from '../lib/storage';
 
 export default (storage) => {
@@ -11,7 +11,7 @@ export default (storage) => {
   <!DOCTYPE html>
   <html lang="en">
   <head>
-    <title>User Management</title>
+    <title><%= config.title %></title>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -22,6 +22,7 @@ export default (storage) => {
     <link rel="stylesheet" type="text/css" href="https://cdn.auth0.com/styleguide/4.6.13/index.min.css" />
     <% if (assets.style) { %><link rel="stylesheet" type="text/css" href="/app/<%= assets.style %>"><% } %>
     <% if (assets.version) { %><link rel="stylesheet" type="text/css" href="//cdn.auth0.com/extensions/auth0-delegated-admin/assets/auth0-delegated-admin.ui.<%= assets.version %>.css"><% } %>
+    <% if (assets.customCss) { %><link rel="stylesheet" type="text/css" href="<%= assets.customCss %>"><% } %>
   </head>
   <body>
     <div id="app"></div>
@@ -45,43 +46,51 @@ export default (storage) => {
 
     readStorage(storage)
       .then(data => {
-        const config = {
-          AUTH0_DOMAIN: nconf.get('AUTH0_DOMAIN'),
+        const settings = {
+          AUTH0_DOMAIN: config('AUTH0_DOMAIN'),
           AUTH0_CLIENT_ID: data.settings.AUTH0_CLIENT_ID,
           BASE_URL: url.format({
-            protocol: nconf.get('NODE_ENV') !== 'production' ? 'http' : 'https',
+            protocol: config('NODE_ENV') !== 'production' ? 'http' : 'https',
             host: req.get('host'),
             pathname: url.parse(req.originalUrl || '').pathname.replace(req.path, '')
           }),
-          BASE_PATH: url.parse(req.originalUrl || '').pathname.replace(req.path, '') + (req.path === '/admins' ? '/admins' : '')
+          BASE_PATH: url.parse(req.originalUrl || '').pathname.replace(req.path, '') + (req.path === '/admins' ? '/admins' : ''),
+          TITLE: config('TITLE')
         };
 
         // Render from CDN.
-        const clientVersion = nconf.get('CLIENT_VERSION');
+        const clientVersion = config('CLIENT_VERSION');
         if (clientVersion) {
           return res.send(ejs.render(template, {
-            config,
-            assets: { version: clientVersion }
+            config: settings,
+            assets: {
+              customCss: config('CUSTOM_CSS'),
+              version: clientVersion
+            }
           }));
         }
 
         // Render locally.
-        fs.readFile(path.join(__dirname, '../../dist/manifest.json'), 'utf8', (err, manifest) => {
+        return fs.readFile(path.join(__dirname, '../../dist/manifest.json'), 'utf8', (err, manifest) => {
           const locals = {
-            config,
+            config: settings,
             assets: {
+              customCss: config('CUSTOM_CSS'),
               app: 'bundle.js'
             }
           };
 
           if (!err && manifest) {
-            locals.assets = JSON.parse(manifest);
+            locals.assets = {
+              customCss: config('CUSTOM_CSS'),
+              ...JSON.parse(manifest)
+            };
           }
 
           // Render the HTML page.
           res.send(ejs.render(template, locals));
         });
       })
-    .catch(next);
+      .catch(next);
   };
 };

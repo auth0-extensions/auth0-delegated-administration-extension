@@ -18,7 +18,8 @@ const getServer = (req, res) => {
         NODE_ENV: 'production',
         HOSTING_ENV: 'webtask',
         CLIENT_VERSION: process.env.CLIENT_VERSION,
-        WT_URL: req.webtaskContext.secrets.WT_URL
+        WT_URL: req.webtaskContext.secrets.WT_URL,
+        TITLE: 'User Management'
       });
 
     // Start the server.

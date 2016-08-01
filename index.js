@@ -23,7 +23,8 @@ nconf
     DATA_CACHE_MAX_AGE: 1000 * 10,
     NODE_ENV: 'development',
     HOSTING_ENV: 'default',
-    PORT: 3000
+    PORT: 3000,
+    TITLE: 'User Management'
   });
 
 // Start the server.

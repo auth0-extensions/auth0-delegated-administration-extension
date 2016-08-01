@@ -27,7 +27,7 @@ export default class Header extends Component {
         <nav role="navigation" className="navbar navbar-default">
           <div className="container">
             <div className="navbar-header" style={{ width: '800px' }}>
-              <a className="navbar-brand" href="#">User Management</a>
+              <a className="navbar-brand" href="#">{window.config.TITLE}</a>
             </div>
             <div id="navbar-collapse" className="collapse navbar-collapse">
               <ul className="nav navbar-nav navbar-right">
