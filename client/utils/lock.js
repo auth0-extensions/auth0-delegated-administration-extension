@@ -32,11 +32,10 @@ export function show(returnUrl) {
     throw new Error('Unable to create the Lock.');
   }
 
-  const origin = window.location.origin || window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
   lock.show({
     closable: false,
     responseType: 'token',
-    callbackURL: `${origin}/login`,
+    callbackURL: `${window.config.BASE_URL}/login`,
     callbackOnLocationHash: true,
     authParams: {
       state: returnUrl
