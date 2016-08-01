@@ -10,6 +10,7 @@ import { UserActions, UserDevices, UserHeader, UserProfile, UserLogs } from '../
 import { BlockDialog, UnblockDialog, RemoveMultiFactorDialog, DeleteDialog } from '../../components/Users';
 
 import PasswordResetDialog from './PasswordResetDialog';
+import PasswordChangeDialog from './PasswordChangeDialog';
 import getUserDatabaseConnections from '../../selectors/getUserDatabaseConnections';
 
 export default connectContainer(class extends Component {
@@ -24,7 +25,8 @@ export default connectContainer(class extends Component {
       block: state.block,
       unblock: state.unblock,
       deleteUser: state.deleteUser,
-      passwordReset: state.passwordReset
+      passwordReset: state.passwordReset,
+      passwordChange: state.passwordChange
     }
   });
 
@@ -44,7 +46,7 @@ export default connectContainer(class extends Component {
 
   render() {
     const { user, databaseConnections, log, logs, devices } = this.props;
-    const { mfa, block, unblock, deleteUser, passwordReset } = this.props.dialogs;
+    const { mfa, block, unblock, deleteUser, passwordReset, passwordChange } = this.props.dialogs;
 
     return (
       <div className="user">
@@ -56,6 +58,7 @@ export default connectContainer(class extends Component {
                 databaseConnections={databaseConnections}
                 deleteUser={this.props.requestDeleteUser}
                 resetPassword={this.props.requestPasswordReset}
+                changePassword={this.props.requestPasswordChange}
                 removeMfa={this.props.requestRemoveMultiFactor}
                 blockUser={this.props.requestBlockUser}
                 unblockUser={this.props.requestUnblockUser}
@@ -86,6 +89,7 @@ export default connectContainer(class extends Component {
         </div>
         <DeleteDialog error={deleteUser.get('error')} loading={deleteUser.get('loading')} userName={deleteUser.get('userName')} requesting={deleteUser.get('requesting')}
           onCancel={this.props.cancelDeleteUser} onConfirm={this.props.deleteUser} />
+        <PasswordChangeDialog onCancel={this.props.cancelPasswordChange} onConfirm={this.props.changePassword} />
         <PasswordResetDialog onCancel={this.props.cancelPasswordReset} onConfirm={this.props.resetPassword} />
         <BlockDialog error={block.get('error')} loading={block.get('loading')} userName={block.get('userName')} requesting={block.get('requesting')}
           onCancel={this.props.cancelBlockUser} onConfirm={this.props.blockUser} />

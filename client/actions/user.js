@@ -218,7 +218,6 @@ export function deleteUser() {
   };
 }
 
-
 /*
  * Get confirmation to reset a password.
  */
@@ -251,6 +250,48 @@ export function resetPassword(application) {
         promise: axios.post(`/api/users/${userEmail}/password-reset`, {
           connection,
           clientId: application
+        })
+      },
+      meta: {
+        userId
+      }
+    });
+  };
+}
+
+/*
+ * Get confirmation to change a password.
+ */
+export function requestPasswordChange(user, connection) {
+  return {
+    type: constants.REQUEST_PASSWORD_CHANGE,
+    user,
+    connection
+  };
+}
+
+/*
+ * Cancel the password change process.
+ */
+export function cancelPasswordChange() {
+  return {
+    type: constants.CANCEL_PASSWORD_CHANGE
+  };
+}
+
+/*
+ * Change password.
+ */
+export function changePassword(password, confirmPassword) {
+  return (dispatch, getState) => {
+    const { userId, connection } = getState().passwordChange.toJS();
+    dispatch({
+      type: constants.PASSWORD_CHANGE,
+      payload: {
+        promise: axios.post(`/api/users/${userId}/password-change`, {
+          connection,
+          password,
+          confirmPassword
         })
       },
       meta: {

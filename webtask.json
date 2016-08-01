@@ -3,18 +3,17 @@
   "name": "auth0-delegated-admin",
   "version": "1.0.0",
   "author": "auth0",
-  "description": "This extension allows non-dashboard admnistrators to manage your users.",
+  "description": "This extension allows non-dashboard administrators to manage your users.",
   "type": "application",
   "logoUrl": "https://cdn.auth0.com/extensions/auth0-delegated-admin/assets/logo.svg",
-  "initialUrlPath": "/admins/login",
-  "repository": "https://github.com/auth0/auth0-delegated-admin",
+  "initialUrlPath": "/",
+  "repository": "https://github.com/auth0-delegated-administration-extension/auth0-delegated-admin",
   "keywords": [
     "auth0",
     "extension"
   ],
   "auth0": {
     "onUninstallPath": "/.extensions/on-uninstall",
-    "uninstallConfirmMessage": "You are about to uninstall the \"Authorization Extension\". If you proceed all your data in this extension will be lost. Do you want to continue?",
-    "scopes": "read:clients read:connections read:rules create:rules update:rules read:users update:users read:device_credentials read:logs"
+    "scopes": "read:clients read:connections read:users update:users delete:users create:users read:device_credentials read:logs"
   }
 }

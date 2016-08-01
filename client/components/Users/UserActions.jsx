@@ -9,7 +9,8 @@ export default class UserActions extends Component {
     unblockUser: PropTypes.func.isRequired,
     removeMfa: PropTypes.func.isRequired,
     deleteUser: PropTypes.func.isRequired,
-    resetPassword: PropTypes.func.isRequired
+    resetPassword: PropTypes.func.isRequired,
+    changePassword: PropTypes.func.isRequired
   }
 
   state = {
@@ -34,7 +35,7 @@ export default class UserActions extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.user !== this.props.user;
+    return nextProps.user !== this.props.user || nextProps.databaseConnections !== this.props.databaseConnections;
   }
 
   getDeleteAction = (user, loading) => (
@@ -51,6 +52,18 @@ export default class UserActions extends Component {
     return (
       <MenuItem disabled={loading || false} onClick={this.resetPassword}>
         Reset Password
+      </MenuItem>
+    );
+  };
+
+  getChangePasswordAction = (user, loading) => {
+    if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
+      return null;
+    }
+
+    return (
+      <MenuItem disabled={loading || false} onClick={this.changePassword}>
+        Change Password
       </MenuItem>
     );
   };
@@ -91,6 +104,10 @@ export default class UserActions extends Component {
     this.props.resetPassword(this.state.user, this.state.databaseConnections[0]);
   }
 
+  changePassword = () => {
+    this.props.changePassword(this.state.user, this.state.databaseConnections[0]);
+  }
+
   blockUser = () => {
     this.props.blockUser(this.state.user);
   }
@@ -113,6 +130,7 @@ export default class UserActions extends Component {
         {this.getMultifactorAction(this.state.user, this.state.loading)}
         {this.getBlockedAction(this.state.user, this.state.loading)}
         {this.getResetPasswordAction(this.state.user, this.state.loading)}
+        {this.getChangePasswordAction(this.state.user, this.state.loading)}
         {this.getDeleteAction(this.state.user, this.state.loading)}
       </DropdownButton>
     );

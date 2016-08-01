@@ -43,6 +43,16 @@ export default () => {
       .catch(next);
   });
 
+  api.post('/:id/password-change', (req, res, next) => {
+    if (req.body.password !== req.body.confirmPassword) {
+      return next(new Error('Passwords don\'t match'));
+    }
+
+    return req.auth0.users.update({ id: req.params.id }, { password: req.body.password, connection: req.body.connection, verify_password: false })
+      .then(() => res.sendStatus(204))
+      .catch(next);
+  });
+
   api.get('/:id/devices', (req, res, next) => {
     req.auth0.deviceCredentials.getAll({ user_id: req.params.id })
       .then(devices => res.json({ devices }))
