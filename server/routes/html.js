@@ -4,9 +4,8 @@ import ejs from 'ejs';
 import path from 'path';
 
 import config from '../lib/config';
-import { readStorage } from '../lib/storage';
 
-export default (storage) => {
+export default () => {
   const template = `
   <!DOCTYPE html>
   <html lang="en">
@@ -44,53 +43,49 @@ export default (storage) => {
       return next();
     }
 
-    readStorage(storage)
-      .then(data => {
-        const settings = {
-          AUTH0_DOMAIN: config('AUTH0_DOMAIN'),
-          AUTH0_CLIENT_ID: config('EXTENSION_CLIENT_ID'),
-          BASE_URL: url.format({
-            protocol: config('NODE_ENV') !== 'production' ? 'http' : 'https',
-            host: req.get('host'),
-            pathname: url.parse(req.originalUrl || '').pathname.replace(req.path, '')
-          }),
-          BASE_PATH: url.parse(req.originalUrl || '').pathname.replace(req.path, ''),
-          TITLE: config('TITLE')
-        };
+    const settings = {
+      AUTH0_DOMAIN: config('AUTH0_DOMAIN'),
+      AUTH0_CLIENT_ID: config('EXTENSION_CLIENT_ID'),
+      BASE_URL: url.format({
+        protocol: config('NODE_ENV') !== 'production' ? 'http' : 'https',
+        host: req.get('host'),
+        pathname: url.parse(req.originalUrl || '').pathname.replace(req.path, '')
+      }),
+      BASE_PATH: url.parse(req.originalUrl || '').pathname.replace(req.path, ''),
+      TITLE: config('TITLE')
+    };
 
-        // Render from CDN.
-        const clientVersion = config('CLIENT_VERSION');
-        if (clientVersion) {
-          return res.send(ejs.render(template, {
-            config: settings,
-            assets: {
-              customCss: config('CUSTOM_CSS'),
-              version: clientVersion
-            }
-          }));
+    // Render from CDN.
+    const clientVersion = config('CLIENT_VERSION');
+    if (clientVersion) {
+      return res.send(ejs.render(template, {
+        config: settings,
+        assets: {
+          customCss: config('CUSTOM_CSS'),
+          version: clientVersion
         }
+      }));
+    }
 
-        // Render locally.
-        return fs.readFile(path.join(__dirname, '../../dist/manifest.json'), 'utf8', (err, manifest) => {
-          const locals = {
-            config: settings,
-            assets: {
-              customCss: config('CUSTOM_CSS'),
-              app: 'bundle.js'
-            }
-          };
+    // Render locally.
+    return fs.readFile(path.join(__dirname, '../../dist/manifest.json'), 'utf8', (err, manifest) => {
+      const locals = {
+        config: settings,
+        assets: {
+          customCss: config('CUSTOM_CSS'),
+          app: 'bundle.js'
+        }
+      };
 
-          if (!err && manifest) {
-            locals.assets = {
-              customCss: config('CUSTOM_CSS'),
-              ...JSON.parse(manifest)
-            };
-          }
+      if (!err && manifest) {
+        locals.assets = {
+          customCss: config('CUSTOM_CSS'),
+          ...JSON.parse(manifest)
+        };
+      }
 
-          // Render the HTML page.
-          res.send(ejs.render(template, locals));
-        });
-      })
-      .catch(next);
+      // Render the HTML page.
+      res.send(ejs.render(template, locals));
+    });
   };
 };

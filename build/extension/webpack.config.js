@@ -7,7 +7,7 @@ const externalModules = require('./externals');
 module.exports = externalModules.then((externals) => {
   // Even though we don't have an semver match, it's ok to use these versions.
   externals.compatible['async'] = true; // Local: ^0.9.0, ^1.5.0, ^1.4.0, ^1.5.2, ~0.2.9, ~0.2.6, ^1.3.0, ~1.0.0, ~1.5.2 - Webtask: 1.0.0
-  externals.compatible['bluebird'] = true; // Local: ^2.10.2, ^2.3, ^3.1.1, ^3.3.4 - Webtask: 2.9.26
+  externals.compatible['bluebird'] = 'bluebird@2.9.26'; // Local: ^2.10.2, ^2.3, ^3.1.1, ^3.3.4 - Webtask: 2.9.26
   externals.compatible['compression'] = true; // Local: ^1.5.2 - Webtask: 1.4.4
   externals.compatible['delegates'] = true; // Local: ^1.0.0 - Webtask: 0.1.0
   externals.compatible['depd'] = true; // Local: ~1.1.0 - Webtask: 1.0.1
@@ -16,7 +16,7 @@ module.exports = externalModules.then((externals) => {
   externals.compatible['express'] = true; // Local: ^4.13.3, ~4.11.0, ~4.13.1, ~3*, <3, 2.5.8, ^4.12.3, ^4.12.0, ^4.13.4 - Webtask: 4.12.4
   externals.compatible['express-jwt'] = true; // Local: ^3.1.0, ^3.3.0 - Webtask: 3.1.0
   externals.compatible['iconv-lite'] = true; // Local: 0.4.13 - Webtask: 0.4.10
-  externals.compatible['lodash'] = true; // Local: ^3.10.0, ^3.10.1, ^4.6.1, ^4.0.0, ~3.10.1, ^4.3.0, ~4.5.1, ^4.1.0, ^4.2.0, ^4.2.1, ^4.5.0, ~3.5.0 - Webtask: 3.10.1
+  externals.compatible['lodash'] = 'lodash@4.8.2'; // Local: ^3.10.0, ^3.10.1, ^4.6.1, ^4.0.0, ~3.10.1, ^4.3.0, ~4.5.1, ^4.1.0, ^4.2.0, ^4.2.1, ^4.5.0, ~3.5.0 - Webtask: 3.10.1
   externals.compatible['lru-cache'] = true; // Local: ^4.0.0, ~4.0.0, 2 - Webtask: 2.6.4
   externals.compatible['mime-db'] = true; // Local: >= 1.21.0 < 2, ~1.22.0 - Webtask: 1.10.0
   externals.compatible['moment'] = true; // Local: ^2.12.0 - Webtask: 2.10.3
@@ -25,7 +25,8 @@ module.exports = externalModules.then((externals) => {
   externals.compatible['qs'] = true; // Local: 6.1.0, 4.0.0, ~6.0.2, 2.3.3 - Webtask: 3.1.0
   externals.compatible['raw-body'] = true; // Local: ~2.1.5 - Webtask: 2.1.0
   externals.compatible['read-all-stream'] = true; // Local: ^3.0.0 - Webtask: 2.1.2
-  externals.compatible['request'] = true; // Local: 2.x, ^2.34, ^2.69.0 - Webtask: 2.56.0
+  externals.compatible['request'] = 'request@2.74.0'; // Local: 2.x, ^2.34, ^2.69.0 - Webtask: 2.56.0
+  // externals.compatible['request-promise'] = true; // Local: 2.x, ^2.34, ^2.69.0 - Webtask: 2.56.0
   externals.compatible['superagent'] = true; // Local: ^1.1.0, ^1.4.0, ^1.7.2 - Webtask: 1.2.0
   externals.compatible['type-check'] = true; // Local: ~0.3.2 - Webtask: 0.3.1
   externals.compatible['winston'] = true; // Local: ^2.2.0 - Webtask: 1.0.0
