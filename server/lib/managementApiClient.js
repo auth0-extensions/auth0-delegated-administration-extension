@@ -1,15 +1,10 @@
 import ms from 'ms';
+import { ManagementClient } from 'auth0';
 import Promise from 'bluebird';
 import memoizer from 'lru-memoizer';
 import request from 'request-promise';
 
-import config from './config';
 import logger from './logger';
-
-let auth0 = require('auth0');
-if (config('HOSTING_ENV') === 'webtask') {
-  auth0 = require('auth0@2.0.0');
-}
 
 const getAccessToken = Promise.promisify(
   memoizer({
@@ -45,7 +40,7 @@ module.exports.getAccessToken = getAccessToken;
 
 module.exports.getForClient = (domain, clientId, clientSecret) =>
   getAccessToken(domain, clientId, clientSecret)
-    .then(accessToken => new auth0.ManagementClient({ domain, token: accessToken }));
+    .then(accessToken => new ManagementClient({ domain, token: accessToken }));
 
 module.exports.getForAccessToken = (domain, accessToken) =>
-  Promise.resolve(new auth0.ManagementClient({ domain, token: accessToken }));
+  Promise.resolve(new ManagementClient({ domain, token: accessToken }));
