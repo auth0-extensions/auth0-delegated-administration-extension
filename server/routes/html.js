@@ -48,13 +48,13 @@ export default (storage) => {
       .then(data => {
         const settings = {
           AUTH0_DOMAIN: config('AUTH0_DOMAIN'),
-          AUTH0_CLIENT_ID: data.settings.AUTH0_CLIENT_ID,
+          AUTH0_CLIENT_ID: config('EXTENSION_CLIENT_ID'),
           BASE_URL: url.format({
             protocol: config('NODE_ENV') !== 'production' ? 'http' : 'https',
             host: req.get('host'),
             pathname: url.parse(req.originalUrl || '').pathname.replace(req.path, '')
           }),
-          BASE_PATH: url.parse(req.originalUrl || '').pathname.replace(req.path, '') + (req.path === '/admins' ? '/admins' : ''),
+          BASE_PATH: url.parse(req.originalUrl || '').pathname.replace(req.path, ''),
           TITLE: config('TITLE')
         };
 

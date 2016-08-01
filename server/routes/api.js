@@ -10,8 +10,10 @@ import connections from './connections';
 import logs from './logs';
 import users from './users';
 
-export default (app, storage) => {
-  const jwtSettings = {
+export default () => {
+  const api = Router();
+  api.use(middlewares.managementClient);
+  api.use(jwt({
     secret: expressJwtSecret({
       cache: true,
       rateLimit: true,
@@ -20,25 +22,10 @@ export default (app, storage) => {
     }),
 
     // Validate the audience and the issuer.
-    audience: null,
+    audience: config('EXTENSION_SECRET'),
     issuer: `https://${config('AUTH0_DOMAIN')}/`,
     algorithms: [ 'RS256' ]
-  };
-
-  const api = Router();
-  api.use(middlewares.managementClient);
-  api.use(middlewares.audience(app, storage));
-  api.use((req, res, next) => {
-    if (!jwtSettings.audience) {
-      jwtSettings.audience = req.settings.AUTH0_CLIENT_ID;
-    }
-
-    if (!jwtSettings.audience) {
-      return next(new Error('The audience is not configured.'));
-    }
-    next();
-  });
-  api.use(jwt(jwtSettings));
+  }));
   api.use('/applications', applications());
   api.use('/connections', connections());
   api.use('/users', users());
