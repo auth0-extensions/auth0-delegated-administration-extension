@@ -68,6 +68,7 @@ module.exports = externalModules.then((externals) => {
       ]
     },
     plugins: [
+      new Webpack.IgnorePlugin(/cls-bluebird/, /request-promise/),
       new Webpack.optimize.DedupePlugin(),
       new Webpack.optimize.UglifyJsPlugin({
         minimize: true,

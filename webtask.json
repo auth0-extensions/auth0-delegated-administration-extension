@@ -1,7 +1,7 @@
 {
   "title": "Auth0 Delegated Administration Extension",
   "name": "auth0-delegated-admin",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "author": "auth0",
   "description": "This extension allows non-dashboard administrators to manage your users.",
   "type": "application",
