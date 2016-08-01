@@ -4,6 +4,7 @@ import { MenuItem, DropdownButton } from 'react-bootstrap';
 export default class UserActions extends Component {
   static propTypes = {
     user: PropTypes.object.isRequired,
+    databaseConnections: PropTypes.object.isRequired,
     blockUser: PropTypes.func.isRequired,
     unblockUser: PropTypes.func.isRequired,
     removeMfa: PropTypes.func.isRequired,
@@ -24,6 +25,12 @@ export default class UserActions extends Component {
         loading
       });
     }
+
+    if (nextProps.databaseConnections) {
+      this.setState({
+        databaseConnections: nextProps.databaseConnections.toJS()
+      });
+    }
   }
 
   shouldComponentUpdate(nextProps) {
@@ -37,13 +44,13 @@ export default class UserActions extends Component {
   );
 
   getResetPasswordAction = (user, loading) => {
-    if (!user.identities || user.identities[0].provider !== 'auth0') {
+    if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
       return null;
     }
 
     return (
       <MenuItem disabled={loading || false} onClick={this.resetPassword}>
-        Reset Password ({user.identities[0].connection})
+        Reset Password
       </MenuItem>
     );
   };
@@ -81,7 +88,7 @@ export default class UserActions extends Component {
   }
 
   resetPassword = () => {
-    this.props.resetPassword(this.state.user, this.state.user.identities[0].connection);
+    this.props.resetPassword(this.state.user, this.state.databaseConnections[0]);
   }
 
   blockUser = () => {

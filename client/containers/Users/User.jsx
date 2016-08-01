@@ -10,10 +10,12 @@ import { UserActions, UserDevices, UserHeader, UserProfile, UserLogs } from '../
 import { BlockDialog, UnblockDialog, RemoveMultiFactorDialog, DeleteDialog } from '../../components/Users';
 
 import PasswordResetDialog from './PasswordResetDialog';
+import getUserDatabaseConnections from '../../selectors/getUserDatabaseConnections';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     user: state.user,
+    databaseConnections: getUserDatabaseConnections(state),
     log: state.log,
     logs: state.user.get('logs'),
     devices: state.user.get('devices'),
@@ -41,7 +43,7 @@ export default connectContainer(class extends Component {
   }
 
   render() {
-    const { user, log, logs, devices } = this.props;
+    const { user, databaseConnections, log, logs, devices } = this.props;
     const { mfa, block, unblock, deleteUser, passwordReset } = this.props.dialogs;
 
     return (
@@ -51,6 +53,7 @@ export default connectContainer(class extends Component {
             <h2 className="pull-left">User Details</h2>
             <div className="pull-right">
               <UserActions user={user}
+                databaseConnections={databaseConnections}
                 deleteUser={this.props.requestDeleteUser}
                 resetPassword={this.props.requestPasswordReset}
                 removeMfa={this.props.requestRemoveMultiFactor}
