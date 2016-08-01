@@ -54,7 +54,7 @@ class LoadingPanel extends Component {
   componentWillReceiveProps(nextProps) {
     if (!nextProps.show) {
       clearTimeout(this.showTimer);
-      setTimeout(this.stopLoading);
+      return this.stopLoading();
     }
 
     if (!this.showTimer) {

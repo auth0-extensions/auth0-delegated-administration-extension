@@ -81,6 +81,7 @@ const userLogs = createReducer(fromJS(initialState.logs), {
   [constants.FETCH_USER_LOGS_REJECTED]: (state, action) =>
     state.merge({
       ...initialState.logs,
+      loading: false,
       error: `An error occured while loading the user logs: ${action.errorMessage}`
     }),
   [constants.FETCH_USER_LOGS_FULFILLED]: (state, action) => {

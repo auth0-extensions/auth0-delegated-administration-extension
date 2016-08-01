@@ -16,9 +16,6 @@ export default class UserLogs extends Component {
 
   render() {
     const { error, loading } = this.props;
-    if (loading) {
-      return <div></div>;
-    }
 
     if (!error && this.props.logs.size === 0) {
       return <div>There are no logs available for this user.</div>;
@@ -29,7 +26,7 @@ export default class UserLogs extends Component {
       <Error message={error} />
       <Table>
         <TableHeader>
-          <TableColumn width="3%"/>
+          <TableColumn width="3%" />
           <TableColumn width="20%">Event</TableColumn>
           <TableColumn width="25%">Description</TableColumn>
           <TableColumn width="12%">Date</TableColumn>
