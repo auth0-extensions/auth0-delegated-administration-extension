@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 
 import { useRouterHistory } from 'react-router'
 import { createHistory } from 'history'
-import { routerMiddleware, syncHistoryWithStore } from 'react-router-redux';
+import { push, routerMiddleware, syncHistoryWithStore } from 'react-router-redux';
 
 import { loadCredentials } from './actions/auth';
 import routes from './routes';
@@ -31,6 +31,8 @@ ReactDOM.render(
   </Provider>,
   document.getElementById('app')
 );
+
+store.dispatch(push('/users'));
 
 // Show the developer tools.
 if (process.env.NODE_ENV !== 'production') {

@@ -29,16 +29,10 @@ export function parseHash(hash) {
 export function show(returnUrl) {
   const lock = getLock();
   if (!lock) {
-    if (window.config.IS_ADMIN) {
-      window.location.href = window.config.BASE_URL + '/admins/login';
-    } else {
-      window.location.href = window.config.BASE_URL + '/login';
-    }
-    return;
+    throw new Error('Unable to create the Lock.');
   }
 
   const origin = window.location.origin || window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
-
   lock.show({
     closable: false,
     responseType: 'token',

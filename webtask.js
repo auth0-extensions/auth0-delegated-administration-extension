@@ -14,6 +14,7 @@ const getServer = (req, res) => {
         AUTH0_DOMAIN: req.webtaskContext.secrets.AUTH0_DOMAIN,
         AUTH0_CLIENT_ID: req.webtaskContext.secrets.AUTH0_CLIENT_ID,
         AUTH0_CLIENT_SECRET: req.webtaskContext.secrets.AUTH0_CLIENT_SECRET,
+        EXTENSION_CLIENT_ID: req.webtaskContext.secrets.EXTENSION_CLIENT_ID,
         EXTENSION_SECRET: req.webtaskContext.secrets.EXTENSION_SECRET,
         NODE_ENV: 'production',
         HOSTING_ENV: 'webtask',

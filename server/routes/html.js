@@ -51,7 +51,7 @@ export default () => {
         host: req.get('host'),
         pathname: url.parse(req.originalUrl || '').pathname.replace(req.path, '')
       }),
-      BASE_PATH: url.parse(req.originalUrl || '').pathname.replace(req.path, ''),
+      BASE_PATH: '/' + url.parse(req.originalUrl || '').pathname.replace(req.path, '').replace(/^\/|\/$/g, '') + '/',
       TITLE: config('TITLE')
     };
 

@@ -4,6 +4,10 @@ import DevTools from './containers/DevTools';
 
 module.exports = (store) => {
   const popup = window.open(null, 'Redux DevTools', 'menubar=no,location=no,resizable=yes,scrollbars=no,status=no');
+  if (!popup) {
+    return;
+  }
+
   popup.location.reload();
 
   setTimeout(() => {

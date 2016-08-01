@@ -1,7 +1,7 @@
 {
   "name": "auth0-delegated-admin",
-  "version": "0.1.0",
-  "description": "Auth0 Delegated Administration Extension",
+  "version": "0.2.0",
+  "description": "Delegated Administration Dashboard",
   "engines": {
     "node": "6.2.0"
   },

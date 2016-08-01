@@ -14,7 +14,7 @@ export default function RequireAuthentication(InnerComponent) {
 
     requireAuthentication() {
       if (!this.props.auth.isAuthenticated && !this.props.auth.isAuthenticating) {
-        if(window.config.IS_ADMIN) {
+        if (!this.props.location) {
           this.props.push('/login');
         } else {
           this.props.push(`/login?returnUrl=${this.props.location.pathname}`);
