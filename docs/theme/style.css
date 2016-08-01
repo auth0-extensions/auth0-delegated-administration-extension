@@ -3,7 +3,11 @@ header.dashboard-header {
   border-bottom-color: #00519e !important;
 }
 
-header.dashboard-header nav .navbar-header {
+.navbar-default .navbar-brand:focus, .navbar-default .navbar-brand:hover {
+  background-color: #cee7ff !important;
+}
+
+header.dashboard-header nav #header {
   background-size: 50px 40px !important;
   background-image: url("https://rawgit.com.com/auth0-extensions/auth0-delegated-administration-extension/master/docs/theme/logo.svg");
 }
