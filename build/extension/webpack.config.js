@@ -42,7 +42,6 @@ module.exports = externalModules.then((externals) => {
   externals.compatible['mime-types'] = true;
   externals.compatible['auth0@2.0.0'] = true;
   externals.compatible['webtask-tools'] = true;
-  externals.compatible['request-promise'] = true;
   // externals.compatible['validate.js'] = false;
 
   // Transform to commonjs.
