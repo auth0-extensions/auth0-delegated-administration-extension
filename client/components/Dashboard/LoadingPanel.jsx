@@ -8,7 +8,6 @@ class LoadingPanel extends Component {
   constructor(props) {
     super(props);
 
-    this.setLoading = this.setLoading.bind(this);
     this.state = {
       show: false
     };
@@ -55,12 +54,12 @@ class LoadingPanel extends Component {
   componentWillReceiveProps(nextProps) {
     if (!nextProps.show) {
       clearTimeout(this.showTimer);
-      return this.setState({
-        show: false
-      });
+      setTimeout(this.stopLoading);
     }
 
-    this.showTimer = setTimeout(this.setLoading, this.props.delay || 100);
+    if (!this.showTimer) {
+      this.showTimer = setTimeout(this.startLoading, this.props.delay || 200);
+    }
   }
 
   componentWillUnmount() {
@@ -69,8 +68,16 @@ class LoadingPanel extends Component {
     }
   }
 
-  setLoading() {
-    this.setState({ show: true });
+  stopLoading = () => {
+    this.setState({
+      show: false
+    });
+  }
+
+  startLoading = () => {
+    this.setState({
+      show: true
+    });
   }
 }
 
