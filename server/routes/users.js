@@ -1,6 +1,8 @@
 import { Router } from 'express';
+import request from 'request-promise';
 
 import config from '../lib/config';
+import managementApiClient from '../lib/managementApiClient';
 import authenticationApiClient from '../lib/authenticationApiClient';
 
 export default () => {
@@ -48,7 +50,21 @@ export default () => {
   });
 
   api.get('/:id/logs', (req, res, next) => {
-    auth0.getUserLogs(req.params.id, {}, req.sub)
+    managementApiClient.getAccessToken(config('AUTH0_DOMAIN'), config('AUTH0_CLIENT_ID'), config('AUTH0_CLIENT_SECRET'))
+      .then(accessToken => {
+        const options = {
+          uri: `https://${config('AUTH0_DOMAIN')}/api/v2/users/${encodeURIComponent(req.params.id)}/logs`,
+          qs: {
+            include_totals: true
+          },
+          headers: {
+            authorization: `Bearer ${accessToken}`
+          },
+          json: true
+        };
+
+        return request.get(options);
+      })
       .then(logs => res.json(logs))
       .catch(next);
   });

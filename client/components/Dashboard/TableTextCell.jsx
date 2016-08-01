@@ -7,6 +7,10 @@ export default class TableTextCell extends Component {
     clickArgs: PropTypes.array
   };
 
+  static defaultProps = {
+    clickArgs: []
+  }
+
   clickCell = () => {
     this.props.onClick(...this.props.clickArgs);
   };
