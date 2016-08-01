@@ -8,7 +8,9 @@ const initialState = {
   loading: false,
   requesting: false,
   userId: null,
-  userName: null
+  userName: null,
+  userEmail: null,
+  connection: null
 };
 
 export const passwordReset = createReducer(fromJS(initialState), {
@@ -16,7 +18,9 @@ export const passwordReset = createReducer(fromJS(initialState), {
     state.merge({
       ...initialState,
       userId: action.user.user_id,
-      userName: action.user.user_name || action.user.email,
+      userName: action.user.name || action.user.user_name || action.user.email,
+      userEmail: action.user.email,
+      connection: action.connection,
       requesting: true
     }),
   [constants.CANCEL_PASSWORD_RESET]: (state) =>

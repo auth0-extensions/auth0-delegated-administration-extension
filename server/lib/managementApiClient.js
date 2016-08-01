@@ -28,8 +28,12 @@ const getAccessToken = Promise.promisify(
       };
 
       request.post(options)
-        .then((data) => callback(null, data.access_token))
-        .catch((err) => callback(err));
+        .then((data) => {
+          callback(null, data.access_token);
+        })
+        .catch((err) => {
+          callback(err);
+        });
     },
     hash: (domain, clientId, clientSecret) => `${domain}/${clientId}/${clientSecret}`,
     max: 100,

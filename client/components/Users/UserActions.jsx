@@ -36,11 +36,17 @@ export default class UserActions extends Component {
     </MenuItem>
   );
 
-  getResetPasswordAction = (user, loading) => (
-    <MenuItem disabled={loading || false} onClick={this.resetPassword}>
-      Reset Password
-    </MenuItem>
-  );
+  getResetPasswordAction = (user, loading) => {
+    if (!user.identities || user.identities[0].provider !== 'auth0') {
+      return null;
+    }
+
+    return (
+      <MenuItem disabled={loading || false} onClick={this.resetPassword}>
+        Reset Password ({user.identities[0].connection})
+      </MenuItem>
+    );
+  };
 
   getMultifactorAction = (user, loading) => {
     if (!user.multifactor || !user.multifactor.length) {
@@ -75,7 +81,7 @@ export default class UserActions extends Component {
   }
 
   resetPassword = () => {
-    this.props.resetPassword(this.state.user);
+    this.props.resetPassword(this.state.user, this.state.user.identities[0].connection);
   }
 
   blockUser = () => {

@@ -1,7 +1,7 @@
-import * as constants from '../constants';
 import axios from 'axios';
 import { push } from 'react-router-redux';
 
+import * as constants from '../constants';
 import { fetchUserLogs } from './userLog';
 import { fetchUserDevices } from './userDevice';
 
@@ -9,25 +9,22 @@ import { fetchUserDevices } from './userDevice';
  * Search for users.
  */
 export function fetchUsers(search = '', reset = false, page = 0) {
-  return (dispatch, getState) => {
-    const users = getState().users.get('records');
-    if (reset || search !== '' || !users.size) {
-      dispatch({
-        type: constants.FETCH_USERS,
-        payload: {
-          promise: axios.get('/api/users', {
-            params: {
-              search,
-              page
-            },
-            responseType: 'json'
-          })
-        },
-        meta: {
-          page
-        }
-      });
-    }
+  return (dispatch) => {
+    dispatch({
+      type: constants.FETCH_USERS,
+      payload: {
+        promise: axios.get('/api/users', {
+          params: {
+            search,
+            page
+          },
+          responseType: 'json'
+        })
+      },
+      meta: {
+        page
+      }
+    });
   };
 }
 
@@ -89,9 +86,7 @@ export function removeMultiFactor() {
     dispatch({
       type: constants.REMOVE_MULTIFACTOR,
       payload: {
-        promise: axios.delete(`/api/users/${userId}/multifactor/${provider}`, {
-          responseType: 'json'
-        })
+        promise: axios.delete(`/api/users/${userId}/multifactor/${provider}`)
       },
       meta: {
         userId,
@@ -131,9 +126,7 @@ export function blockUser() {
     dispatch({
       type: constants.BLOCK_USER,
       payload: {
-        promise: axios.post(`/api/users/${userId}/block`, {
-          responseType: 'json'
-        })
+        promise: axios.post(`/api/users/${userId}/block`)
       },
       meta: {
         userId,
@@ -173,9 +166,7 @@ export function unblockUser() {
     dispatch({
       type: constants.UNBLOCK_USER,
       payload: {
-        promise: axios.post(`/api/users/${userId}/unblock`, {
-          responseType: 'json'
-        })
+        promise: axios.post(`/api/users/${userId}/unblock`)
       },
       meta: {
         userId,
@@ -215,9 +206,7 @@ export function deleteUser() {
     dispatch({
       type: constants.DELETE_USER,
       payload: {
-        promise: axios.delete(`/api/users/${userId}`, {
-          responseType: 'json'
-        })
+        promise: axios.delete(`/api/users/${userId}`)
       },
       meta: {
         userId,
@@ -233,10 +222,11 @@ export function deleteUser() {
 /*
  * Get confirmation to reset a password.
  */
-export function requestPasswordReset(user) {
+export function requestPasswordReset(user, connection) {
   return {
     type: constants.REQUEST_PASSWORD_RESET,
-    user
+    user,
+    connection
   };
 }
 
@@ -252,21 +242,19 @@ export function cancelPasswordReset() {
 /*
  * Reset password.
  */
-export function resetPassword() {
+export function resetPassword(application) {
   return (dispatch, getState) => {
-    const { userId } = getState().passwordReset.toJS();
+    const { userId, userEmail, connection } = getState().passwordReset.toJS();
     dispatch({
       type: constants.PASSWORD_RESET,
       payload: {
-        promise: axios.post(`/api/users/${userId}/password-reset`, {
-          responseType: 'json'
+        promise: axios.post(`/api/users/${userEmail}/password-reset`, {
+          connection,
+          clientId: application
         })
       },
       meta: {
-        userId,
-        onSuccess: () => {
-          dispatch(fetchUserDetail(userId));
-        }
+        userId
       }
     });
   };

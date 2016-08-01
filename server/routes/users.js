@@ -1,5 +1,8 @@
 import { Router } from 'express';
 
+import config from '../lib/config';
+import authenticationApiClient from '../lib/authenticationApiClient';
+
 export default () => {
   const api = Router();
 
@@ -25,6 +28,19 @@ export default () => {
       .catch(next);
   });
 
+  api.delete('/:id', (req, res, next) => {
+    req.auth0.users.delete({ id: req.params.id })
+      .then(() => res.sendStatus(204))
+      .catch(next);
+  });
+
+  api.post('/:email/password-reset', (req, res, next) => {
+    authenticationApiClient.getForClient(config('AUTH0_DOMAIN'), config('AUTH0_CLIENT_ID'))
+      .then(auth0 => auth0.database.requestChangePasswordEmail({ email: req.params.email, connection: req.body.connection, client_id: req.body.clientId }))
+      .then(() => res.sendStatus(204))
+      .catch(next);
+  });
+
   api.get('/:id/devices', (req, res, next) => {
     req.auth0.deviceCredentials.getAll({ user_id: req.params.id })
       .then(devices => res.json({ devices }))
@@ -39,19 +55,19 @@ export default () => {
 
   api.delete('/:id/multifactor/:provider', (req, res, next) => {
     req.auth0.users.deleteMultifactorProvider({ id: req.params.id, provider: req.params.provider })
-      .then(() => res.sendStatus(200))
+      .then(() => res.sendStatus(204))
       .catch(next);
   });
 
   api.post('/:id/block', (req, res, next) => {
     req.auth0.users.update({ id: req.params.id }, { blocked: true })
-      .then(() => res.sendStatus(200))
+      .then(() => res.sendStatus(204))
       .catch(next);
   });
 
   api.post('/:id/unblock', (req, res, next) => {
     req.auth0.users.update({ id: req.params.id }, { blocked: false })
-      .then(() => res.sendStatus(200))
+      .then(() => res.sendStatus(204))
       .catch(next);
   });
 

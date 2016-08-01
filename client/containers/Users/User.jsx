@@ -2,13 +2,14 @@ import React, { Component, PropTypes } from 'react'
 import connectContainer from 'redux-static';
 import { Tabs, Tab } from 'react-bootstrap';
 
-import { logActions, userActions } from '../actions';
+import { logActions, userActions } from '../../actions';
 
 import './User.css';
-import LogDialog from '../components/Logs/LogDialog';
-import { UserActions, UserDevices, UserHeader, UserProfile, UserLogs } from '../components/Users';
-import { BlockDialog, UnblockDialog, RemoveMultiFactorDialog, DeleteDialog, PasswordResetDialog } from '../components/Users';
+import LogDialog from '../../components/Logs/LogDialog';
+import { UserActions, UserDevices, UserHeader, UserProfile, UserLogs } from '../../components/Users';
+import { BlockDialog, UnblockDialog, RemoveMultiFactorDialog, DeleteDialog } from '../../components/Users';
 
+import PasswordResetDialog from './PasswordResetDialog';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
@@ -82,8 +83,7 @@ export default connectContainer(class extends Component {
         </div>
         <DeleteDialog error={deleteUser.get('error')} loading={deleteUser.get('loading')} userName={deleteUser.get('userName')} requesting={deleteUser.get('requesting')}
           onCancel={this.props.cancelDeleteUser} onConfirm={this.props.deleteUser} />
-        <PasswordResetDialog error={passwordReset.get('error')} loading={passwordReset.get('loading')} userName={passwordReset.get('userName')} requesting={passwordReset.get('requesting')}
-          onCancel={this.props.cancelPasswordReset} onConfirm={this.props.resetPassword} />
+        <PasswordResetDialog onCancel={this.props.cancelPasswordReset} onConfirm={this.props.resetPassword} />
         <BlockDialog error={block.get('error')} loading={block.get('loading')} userName={block.get('userName')} requesting={block.get('requesting')}
           onCancel={this.props.cancelBlockUser} onConfirm={this.props.blockUser} />
         <UnblockDialog error={unblock.get('error')} loading={unblock.get('loading')} userName={unblock.get('userName')} requesting={unblock.get('requesting')}

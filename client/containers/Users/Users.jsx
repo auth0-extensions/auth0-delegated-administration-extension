@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import * as actions from '../actions/user';
+import * as actions from '../../actions/user';
 
-import { UserOverview } from '../components/Users';
+import { UserOverview } from '../../components/Users';
 
 import './Users.css';
 
@@ -23,7 +23,7 @@ class Users extends Component {
 
   render() {
     const { loading, error, users, total } = this.props;
-
+console.log('render:', loading);
     return (
       <div className="users">
         <div className="row content-header">

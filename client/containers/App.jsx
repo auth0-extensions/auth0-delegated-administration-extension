@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 import { logout } from '../actions/auth';
-import { configurationActions } from '../actions';
+import { applicationActions, connectionActions } from '../actions';
 
 import Header from '../components/Header';
 import { NavigationLink } from '../components/Dashboard';
@@ -13,6 +13,11 @@ class App extends Component {
     issuer: PropTypes.string,
     logout: PropTypes.func
   };
+
+  componentWillMount() {
+    this.props.fetchApplications();
+    this.props.fetchConnections();
+  }
 
   render() {
     return (
@@ -48,4 +53,4 @@ function select(state) {
   };
 }
 
-export default connect(select, { logout, ...configurationActions })(App);
+export default connect(select, { logout, ...applicationActions, ...connectionActions })(App);
