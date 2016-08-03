@@ -38,6 +38,13 @@ export default () => {
   </html>
   `;
 
+  const getBasePath = function(originalUrl, path) {
+    let basePath = url.parse(originalUrl || '').pathname.replace(path, '').replace(/^\/|\/$/g, '');
+    if (!basePath.startsWith('/')) basePath = `/${basePath}`;
+    if (!basePath.endsWith('/')) basePath = `${basePath}/`;
+    return basePath;
+  }
+
   return (req, res, next) => {
     if (req.url.indexOf('/api') === 0) {
       return next();
@@ -51,7 +58,7 @@ export default () => {
         host: req.get('host'),
         pathname: url.parse(req.originalUrl || '').pathname.replace(req.path, '')
       }),
-      BASE_PATH: '/' + url.parse(req.originalUrl || '').pathname.replace(req.path, '').replace(/^\/|\/$/g, '') + '/',
+      BASE_PATH: getBasePath(req.originalUrl, req.path),
       TITLE: config('TITLE')
     };
 
