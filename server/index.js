@@ -2,6 +2,7 @@ import path from 'path';
 import morgan from 'morgan';
 import Express from 'express';
 import bodyParser from 'body-parser';
+import { toConfigProvider } from 'auth0-extension-tools';
 
 import api from './routes/api';
 import hooks from './routes/hooks';
@@ -16,6 +17,13 @@ module.exports = (configProvider, storage) => {
   config.setProvider(configProvider);
 
   const app = new Express();
+  app.use((req, res, next) => {
+    if (req.webtaskContext) {
+      config.setProvider(toConfigProvider(req.webtaskContext));
+    }
+
+    next();
+  });
   app.use(morgan(':method :url :status :response-time ms - :res[content-length]', {
     stream: logger.stream
   }));
