@@ -1,14 +1,13 @@
-import nconf from 'nconf';
-
 let provider = null;
-export const setProvider = (providerFunction) => {
-  provider = providerFunction;
-};
 
-export default (key) => {
-  if (provider) {
-    return provider(key);
+module.exports = (key) => {
+  if (!provider) {
+    throw new Error('A configuration provider has not been set');
   }
 
-  return nconf.get(key);
+  return provider(key);
+};
+
+module.exports.setProvider = (providerFunction) => {
+  provider = providerFunction;
 };

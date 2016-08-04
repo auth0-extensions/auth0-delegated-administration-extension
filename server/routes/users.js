@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import request from 'request-promise';
+import request from 'request';
 
 import config from '../lib/config';
 import managementApiClient from '../lib/managementApiClient';
@@ -73,9 +73,20 @@ export default () => {
           json: true
         };
 
+        request.get(options, (err, response, body) => {
+          if (err) {
+            return next(err);
+          }
+
+          if (response.statusCode < 200 || response.statusCode >= 300) {
+            return next(new Error(body && (body.error || body.message || body.code) || `Request Error: ${response.statusCode}`));
+          }
+
+          return res.json(body);
+        });
+
         return request.get(options);
       })
-      .then(logs => res.json(logs))
       .catch(next);
   });
 

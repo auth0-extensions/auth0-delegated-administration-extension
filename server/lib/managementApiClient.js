@@ -2,7 +2,7 @@ import ms from 'ms';
 import { ManagementClient } from 'auth0';
 import Promise from 'bluebird';
 import memoizer from 'lru-memoizer';
-import request from 'request-promise';
+import request from 'request';
 
 import logger from './logger';
 
@@ -22,13 +22,17 @@ const getAccessToken = Promise.promisify(
         json: true
       };
 
-      request.post(options)
-        .then((data) => {
-          callback(null, data.access_token);
-        })
-        .catch((err) => {
-          callback(err);
-        });
+      request.post(options, (err, res, body) => {
+        if (err) {
+          return callback(err);
+        }
+
+        if (res.statusCode < 200 || res.statusCode >= 300) {
+          return callback(new Error(body && (body.error || body.message || body.code) || `Auth0 Management API Error: ${res.statusMessage}`));
+        }
+
+        return callback(null, body.access_token);
+      });
     },
     hash: (domain, clientId, clientSecret) => `${domain}/${clientId}/${clientSecret}`,
     max: 100,

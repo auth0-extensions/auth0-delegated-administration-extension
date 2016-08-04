@@ -7,10 +7,14 @@ import api from './routes/api';
 import hooks from './routes/hooks';
 import meta from './routes/meta';
 import htmlRoute from './routes/html';
+
+import config from './lib/config';
 import logger from './lib/logger';
 import * as middlewares from './lib/middlewares';
 
-module.exports = (storage) => {
+module.exports = (configProvider, storage) => {
+  config.setProvider(configProvider);
+
   const app = new Express();
   app.use(morgan(':method :url :status :response-time ms - :res[content-length]', {
     stream: logger.stream
