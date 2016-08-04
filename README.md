@@ -10,6 +10,15 @@ npm run server:prod
 
 ## Running in Development
 
+To run the extension:
+
+```bash
+npm install
+npm run serve:dev
+```
+
+### Configuration
+
 Update the configuration file under `./server/config.json`:
 
 ```json
@@ -19,16 +28,33 @@ Update the configuration file under `./server/config.json`:
   "WT_URL": "http://localhost:3000/",
   "AUTH0_DOMAIN": "me.auth0.com",
   "AUTH0_CLIENT_ID": "myclientid",
-  "AUTH0_CLIENT_SECRET": "myclientsecret"
+  "AUTH0_CLIENT_SECRET": "myclientsecret",
+  "EXTENSION_CLIENT_ID": "myotherclientid"
 }
 ```
 
-Then you can run the extension:
+As you can see, there are 2 clients involved here.
 
-```bash
-npm install
-npm run serve:dev
+**Management API Client**
+
+First you'll need to create a "Non Interactive Client" and add the details in `AUTH0_DOMAIN` / `AUTH0_CLIENT_ID` and `AUTH0_CLIENT_SECRET`. Then go to [APIs](https://manage.auth0.com/#/apis) and add the "Non Interactive Client" there with the following scopes:
+
 ```
+read:clients read:connections read:users update:users delete:users create:users read:logs read:device_credentials update:device_credentials delete:device_credentials
+```
+
+This client will be used to interact with the Management API (eg: load users, ....).
+
+> Note: When installing this as a real extension it will be done automatically.
+
+**Client for End Users**
+
+This extension allows end users to login, not dashboard administrators. This means that we need to secure this extension in the same way that we secure other applications in Auth0.
+
+ 1. Create a "Single Page Application" in Clients
+ 2. Add the Client ID to the `EXTENSION_CLIENT_ID` setting.
+ 3. Then in the Client, under Advanced Settings, OAuth2 change the value from `HS256` to `RS256`.
+ 4. Choose a connection (eg: DB connection) and only enable that one in your Client (Connections tab).
 
 ## Custom Style
 
