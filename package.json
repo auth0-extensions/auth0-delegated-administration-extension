@@ -1,6 +1,6 @@
 {
   "name": "auth0-delegated-admin",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Delegated Administration Dashboard",
   "engines": {
     "node": "6.2.0"
@@ -106,6 +106,7 @@
     "redux-simple-router": "^2.0.4",
     "redux-static": "^1.0.0",
     "redux-thunk": "^2.1.0",
+    "request-promise": "^4.1.1",
     "reselect": "^2.5.3",
     "rimraf": "^2.5.2",
     "style-loader": "^0.13.1",
