@@ -51,7 +51,6 @@ module.exports = externalModules.then((externals) => {
     } else {
       externals.compatible[k] = 'commonjs ' + externals.compatible[k];
     }
-    console.log('External:', externals.compatible[k]);
   });
 
   return {
