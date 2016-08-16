@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import { Router } from 'express';
-import { managementClient } from '../lib/middlewares';
 
 export default () => {
   const api = Router();
@@ -8,7 +7,7 @@ export default () => {
   /*
    * Get a list of applications.
    */
-  api.get('/', managementClient, (req, res, next) => {
+  api.get('/', (req, res, next) => {
     req.auth0.clients.getAll({ fields: 'client_id,name,callbacks,global' })
       .then(clients => _.chain(clients)
         .filter({ global: false })

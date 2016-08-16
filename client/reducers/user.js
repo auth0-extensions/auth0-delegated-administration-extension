@@ -25,6 +25,7 @@ const initialState = {
 export const user = createReducer(fromJS(initialState), {
   [constants.FETCH_USER_PENDING]: (state, action) =>
     state.merge({
+      error: null,
       loading: true,
       userId: action.meta.userId
     }),

@@ -1,9 +1,8 @@
 import { Router } from 'express';
 import request from 'request';
-
+import { managementApi } from 'auth0-extension-tools';
+import auth0 from 'auth0';
 import config from '../lib/config';
-import managementApiClient from '../lib/managementApiClient';
-import authenticationApiClient from '../lib/authenticationApiClient';
 
 export default () => {
   const api = Router();
@@ -37,10 +36,17 @@ export default () => {
   });
 
   api.post('/:email/password-reset', (req, res, next) => {
-    authenticationApiClient.getForClient(config('AUTH0_DOMAIN'), config('AUTH0_CLIENT_ID'))
-      .then(auth0 => auth0.database.requestChangePasswordEmail({ email: req.params.email, connection: req.body.connection, client_id: req.body.clientId }))
-      .then(() => res.sendStatus(204))
-      .catch(next);
+    const client = new auth0.AuthenticationClient({
+      domain: config('AUTH0_DOMAIN'),
+      clientId: config('AUTH0_CLIENT_ID')
+    });
+    client.requestChangePasswordEmail({
+      email: req.params.email,
+      connection: req.body.connection,
+      client_id: req.body.clientId
+    })
+    .then(() => res.sendStatus(204))
+    .catch(next);
   });
 
   api.post('/:id/password-change', (req, res, next) => {
@@ -60,7 +66,7 @@ export default () => {
   });
 
   api.get('/:id/logs', (req, res, next) => {
-    managementApiClient.getAccessToken(config('AUTH0_DOMAIN'), config('AUTH0_CLIENT_ID'), config('AUTH0_CLIENT_SECRET'))
+    managementApi.getAccessTokenCached(config('AUTH0_DOMAIN'), config('AUTH0_CLIENT_ID'), config('AUTH0_CLIENT_SECRET'))
       .then(accessToken => {
         const options = {
           uri: `https://${config('AUTH0_DOMAIN')}/api/v2/users/${encodeURIComponent(req.params.id)}/logs`,
