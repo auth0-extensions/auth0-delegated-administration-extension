@@ -7,7 +7,8 @@
   "type": "application",
   "logoUrl": "https://cdn.auth0.com/extensions/auth0-delegated-admin/assets/logo.svg",
   "initialUrlPath": "/",
-  "repository": "https://github.com/auth0-delegated-administration-extension/auth0-delegated-admin",
+  "docsUrl": "https://auth0.com/docs/extensions/delegated-admin",
+  "repository": "https://github.com/auth0-extensions/auth0-delegated-administration-extension",
   "keywords": [
     "auth0",
     "extension"
