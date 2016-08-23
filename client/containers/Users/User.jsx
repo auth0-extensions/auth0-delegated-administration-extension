@@ -7,7 +7,7 @@ import { logActions, userActions } from '../../actions';
 import './User.css';
 import LogDialog from '../../components/Logs/LogDialog';
 import { UserActions, UserDevices, UserHeader, UserProfile, UserLogs } from '../../components/Users';
-import { BlockDialog, UnblockDialog, RemoveMultiFactorDialog, DeleteDialog } from '../../components/Users';
+import { BlockDialog, UnblockDialog, RemoveMultiFactorDialog, DeleteDialog, UserForm } from '../../components/Users';
 
 import PasswordResetDialog from './PasswordResetDialog';
 import PasswordChangeDialog from './PasswordChangeDialog';
@@ -74,13 +74,16 @@ export default connectContainer(class extends Component {
         <div className="row user-tabs">
           <div className="col-xs-12">
             <Tabs defaultActiveKey={1} animation={false}>
-              <Tab eventKey={1} title="Profile">
+              <Tab eventKey={1} title="Settings">
+                <UserForm loading={user.get('loading')} user={user.get('record')} error={user.get('error')} updateUser={this.props.updateUser} />
+              </Tab>
+              <Tab eventKey={2} title="Profile">
                 <UserProfile loading={user.get('loading')} user={user.get('record')} error={user.get('error')} />
               </Tab>
-              <Tab eventKey={2} title="Devices">
+              <Tab eventKey={3} title="Devices">
                 <UserDevices loading={devices.get('loading')} devices={devices.get('records')} error={devices.get('error')} />
               </Tab>
-              <Tab eventKey={3} title="Logs">
+              <Tab eventKey={4} title="Logs">
                 <LogDialog onClose={this.props.clearLog} error={log.get('error')} loading={log.get('loading')} log={log.get('record')} logId={log.get('logId')} />
                 <UserLogs onOpen={this.props.fetchLog} loading={logs.get('loading')} logs={logs.get('records')} user={user.get('record')} error={logs.get('error')} />
               </Tab>

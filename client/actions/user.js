@@ -118,6 +118,28 @@ export function cancelBlockUser() {
 }
 
 /*
+ * Update the app details.
+ */
+export function updateUser(userId, data, onSuccess) {
+  return (dispatch) =>
+  {
+    dispatch({
+      type: constants.UPDATE_USER,
+      meta: {
+        userId,
+        onSuccess: () => {
+        onSuccess();
+  }
+  },
+    payload: {
+      promise: axios.put(`/api/users/${userId}`, data , {
+        responseType: 'json'
+      })
+    }
+  });
+  };
+}
+/*
  * Block a user.
  */
 export function blockUser() {

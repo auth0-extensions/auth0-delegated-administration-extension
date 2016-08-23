@@ -114,5 +114,14 @@ export default () => {
       .catch(next);
   });
 
+  /*
+   * Update application.
+   */
+  api.put('/:id', (req, res, next) => {
+    req.auth0.users.update({ id: req.params.id }, req.body)
+    .then(() => res.status(200).send())
+    .catch(next);
+    });
+
   return api;
 };
