@@ -11,6 +11,8 @@ import { BlockDialog, UnblockDialog, RemoveMultiFactorDialog, DeleteDialog, User
 
 import PasswordResetDialog from './PasswordResetDialog';
 import PasswordChangeDialog from './PasswordChangeDialog';
+import UsernameChangeDialog from './UsernameChangeDialog';
+import EmailChangeDialog from './EmailChangeDialog';
 import getUserDatabaseConnections from '../../selectors/getUserDatabaseConnections';
 
 export default connectContainer(class extends Component {
@@ -62,6 +64,8 @@ export default connectContainer(class extends Component {
                 removeMfa={this.props.requestRemoveMultiFactor}
                 blockUser={this.props.requestBlockUser}
                 unblockUser={this.props.requestUnblockUser}
+                changeUsername={this.props.requestUsernameChange}
+                changeEmail={this.props.requestEmailChange}
               />
             </div>
           </div>
@@ -74,16 +78,13 @@ export default connectContainer(class extends Component {
         <div className="row user-tabs">
           <div className="col-xs-12">
             <Tabs defaultActiveKey={1} animation={false}>
-              <Tab eventKey={1} title="Settings">
-                <UserForm loading={user.get('loading')} user={user.get('record')} error={user.get('error')} updateUser={this.props.updateUser} />
-              </Tab>
-              <Tab eventKey={2} title="Profile">
+              <Tab eventKey={1} title="Profile">
                 <UserProfile loading={user.get('loading')} user={user.get('record')} error={user.get('error')} />
               </Tab>
-              <Tab eventKey={3} title="Devices">
+              <Tab eventKey={2} title="Devices">
                 <UserDevices loading={devices.get('loading')} devices={devices.get('records')} error={devices.get('error')} />
               </Tab>
-              <Tab eventKey={4} title="Logs">
+              <Tab eventKey={3} title="Logs">
                 <LogDialog onClose={this.props.clearLog} error={log.get('error')} loading={log.get('loading')} log={log.get('record')} logId={log.get('logId')} />
                 <UserLogs onOpen={this.props.fetchLog} loading={logs.get('loading')} logs={logs.get('records')} user={user.get('record')} error={logs.get('error')} />
               </Tab>
@@ -93,6 +94,8 @@ export default connectContainer(class extends Component {
         <DeleteDialog error={deleteUser.get('error')} loading={deleteUser.get('loading')} userName={deleteUser.get('userName')} requesting={deleteUser.get('requesting')}
           onCancel={this.props.cancelDeleteUser} onConfirm={this.props.deleteUser} />
         <PasswordChangeDialog onCancel={this.props.cancelPasswordChange} onConfirm={this.props.changePassword} />
+        <UsernameChangeDialog onCancel={this.props.cancelUsernameChange} onConfirm={this.props.changeUsername} />
+        <EmailChangeDialog onCancel={this.props.cancelEmailChange} onConfirm={this.props.changeEmail} />
         <PasswordResetDialog onCancel={this.props.cancelPasswordReset} onConfirm={this.props.resetPassword} />
         <BlockDialog error={block.get('error')} loading={block.get('loading')} userName={block.get('userName')} requesting={block.get('requesting')}
           onCancel={this.props.cancelBlockUser} onConfirm={this.props.blockUser} />

@@ -10,7 +10,9 @@ export default class UserActions extends Component {
     removeMfa: PropTypes.func.isRequired,
     deleteUser: PropTypes.func.isRequired,
     resetPassword: PropTypes.func.isRequired,
-    changePassword: PropTypes.func.isRequired
+    changePassword: PropTypes.func.isRequired,
+    changeUsername: PropTypes.func.isRequired,
+    changeEmail: PropTypes.func.isRequired
   }
 
   state = {
@@ -68,6 +70,30 @@ export default class UserActions extends Component {
     );
   };
 
+  getChangeUsernameAction = (user, loading) => {
+    if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
+      return null;
+    }
+
+    return (
+        <MenuItem disabled={loading || false} onClick={this.changeUsername}>
+          Change Username
+        </MenuItem>
+    );
+  };
+
+  getChangeEmailAction = (user, loading) => {
+    if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
+      return null;
+    }
+
+    return (
+        <MenuItem disabled={loading || false} onClick={this.changeEmail}>
+          Change Email
+        </MenuItem>
+    );
+  };
+
   getMultifactorAction = (user, loading) => {
     if (!user.multifactor || !user.multifactor.length) {
       return null;
@@ -108,6 +134,14 @@ export default class UserActions extends Component {
     this.props.changePassword(this.state.user, this.state.databaseConnections[0]);
   }
 
+  changeUsername = () => {
+    this.props.changeUsername(this.state.user, this.state.databaseConnections[0]);
+  }
+
+  changeEmail = () => {
+    this.props.changeEmail(this.state.user, this.state.databaseConnections[0]);
+  }
+
   blockUser = () => {
     this.props.blockUser(this.state.user);
   }
@@ -132,6 +166,8 @@ export default class UserActions extends Component {
         {this.getResetPasswordAction(this.state.user, this.state.loading)}
         {this.getChangePasswordAction(this.state.user, this.state.loading)}
         {this.getDeleteAction(this.state.user, this.state.loading)}
+        {this.getChangeUsernameAction(this.state.user, this.state.loading)}
+        {this.getChangeEmailAction(this.state.user, this.state.loading)}
       </DropdownButton>
     );
   }

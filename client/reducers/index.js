@@ -16,6 +16,8 @@ import { users } from './users';
 import { deleteUser } from './deleteUser';
 import { passwordReset } from './passwordReset';
 import { passwordChange } from './passwordChange';
+import { usernameChange } from './usernameChange';
+import { emailChange } from './emailChange';
 
 export default combineReducers({
   routing: routerReducer,
@@ -33,5 +35,7 @@ export default combineReducers({
   user,
   users,
   userPicker,
+  usernameChange,
+  emailChange,
   form: formReducer
 });

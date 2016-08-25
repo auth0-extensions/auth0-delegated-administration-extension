@@ -128,7 +128,7 @@ export function updateUser(userId, data, onSuccess) {
       meta: {
         userId,
         onSuccess: () => {
-        onSuccess();
+        dispatch(fetchUserDetail(userId));
   }
   },
     payload: {
@@ -321,4 +321,64 @@ export function changePassword(password, confirmPassword) {
       }
     });
   };
+}
+
+
+/*
+ * Get confirmation to change a username.
+ */
+export function requestUsernameChange(user, connection) {
+  return {
+    type: constants.REQUEST_USERNAME_CHANGE,
+    user,
+    connection
+  };
+}
+
+/*
+ * Cancel the password change process.
+ */
+export function cancelUsernameChange() {
+  return {
+    type: constants.CANCEL_USERNAME_CHANGE
+  };
+}
+
+/*
+ * Change username.
+ */
+export function changeUsername(userId, data) {
+  return (dispatch) => {
+    dispatch(updateUser(userId, {nickname:data}));
+  }
+}
+
+/*
+ * Get confirmation to change a username.
+ */
+export function requestEmailChange(user, connection) {
+  return {
+    type: constants.REQUEST_EMAIL_CHANGE,
+    user,
+    connection
+  };
+}
+
+/*
+ * Cancel the password change process.
+ */
+export function cancelEmailChange() {
+  return {
+    type: constants.CANCEL_EMAIL_CHANGE
+  };
+}
+
+/*
+ * Change email.
+ */
+export function changeEmail(userId, data) {
+  return (dispatch) => {
+    dispatch(updateUser(userId, {email:data}));
+  }
+
 }
