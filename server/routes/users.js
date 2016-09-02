@@ -123,5 +123,16 @@ export default () => {
     .catch(next);
     });
 
+  /*
+   * Create application.
+   */
+  api.post('/', (req, res, next) => {
+    req.auth0.users.create(req.body)
+        .then(() => res.status(200).send())
+        .catch(next);
+  });
+
   return api;
 };
+
+

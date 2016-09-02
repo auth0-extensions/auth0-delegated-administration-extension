@@ -118,6 +118,32 @@ export function cancelBlockUser() {
 }
 
 /*
+ * Create the app details.
+ */
+export function createUser(data, onSuccess) {
+  return (dispatch) =>
+  {
+    dispatch({
+      type: constants.CREATE_USER,
+      meta: {
+        onSuccess: () => {
+          if(onSuccess) {
+            onSuccess();
+          } else {
+            dispatch(fetchUsers());
+          }
+        }
+      },
+      payload: {
+        promise: axios.post(`/api/users/`, data , {
+          responseType: 'json'
+        })
+      }
+    });
+  };
+}
+
+/*
  * Update the app details.
  */
 export function updateUser(userId, data, onSuccess) {

@@ -8,7 +8,7 @@ export default () => {
    * List all connections.
    */
   api.get('/', (req, res, next) => {
-    req.auth0.connections.getAll({ fields: 'id,name,strategy,enabled_clients' })
+    req.auth0.connections.getAll({ fields: 'id,name,strategy,enabled_clients,options' })
       .then(connections => _.chain(connections)
         .sortBy((conn) => conn.name.toLowerCase())
         .value())
