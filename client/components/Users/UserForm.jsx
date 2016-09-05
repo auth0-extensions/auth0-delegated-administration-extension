@@ -62,7 +62,7 @@ export default class UserForm extends Component {
                               obj[el.name] = el.value;
                           }
                       });
-                      obj["email_verified"] = true;
+                      obj["email_verified"] = false;
                       this.props.createUser(obj, function () {
                           this.props.userWasSaved();
                           setTimeout(function () {

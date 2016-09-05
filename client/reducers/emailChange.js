@@ -20,7 +20,6 @@ export const emailChange = createReducer(fromJS(initialState), {
       userId: action.user.user_id,
       userName: action.user.name || action.user.user_name || action.user.email,
       userEmail: action.user.email,
-      userEmail: action.user.email,
       connection: action.connection,
       requesting: true
     }),
@@ -35,7 +34,7 @@ export const emailChange = createReducer(fromJS(initialState), {
   [constants.EMAIL_CHANGE_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occured while changing the password: ${action.errorMessage}`
+      error: `An error occured while changing the email: ${action.errorMessage}`
     }),
   [constants.EMAIL_CHANGE_FULFILLED]: (state) =>
     state.merge({

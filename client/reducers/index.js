@@ -19,6 +19,7 @@ import { passwordChange } from './passwordChange';
 import { usernameChange } from './usernameChange';
 import { userCreate } from './userCreate';
 import { emailChange } from './emailChange';
+import { resendVerificationEmail } from './resendVerificationEmail';
 
 export default combineReducers({
   routing: routerReducer,
@@ -39,5 +40,6 @@ export default combineReducers({
   usernameChange,
   emailChange,
   userCreate,
+  resendVerificationEmail,
   form: formReducer
 });

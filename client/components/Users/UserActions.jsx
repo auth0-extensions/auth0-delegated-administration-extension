@@ -94,6 +94,18 @@ export default class UserActions extends Component {
     );
   };
 
+  getResendEmailVerificationAction = (user, loading) => {
+    if (!this.state.databaseConnections || !this.state.databaseConnections.length || user.email_verified) {
+      return null;
+    }
+
+    return (
+        <MenuItem disabled={loading || false} onClick={this.resendVerificationEmail}>
+          Resend Verification Email
+        </MenuItem>
+    );
+  };
+
   getMultifactorAction = (user, loading) => {
     if (!user.multifactor || !user.multifactor.length) {
       return null;
@@ -142,6 +154,10 @@ export default class UserActions extends Component {
     this.props.changeEmail(this.state.user, this.state.databaseConnections[0]);
   }
 
+  resendVerificationEmail= () => {
+    this.props.resendVerificationEmail(this.state.user, this.state.databaseConnections[0]);
+  }
+
   blockUser = () => {
     this.props.blockUser(this.state.user);
   }
@@ -168,6 +184,7 @@ export default class UserActions extends Component {
         {this.getDeleteAction(this.state.user, this.state.loading)}
         {this.getChangeUsernameAction(this.state.user, this.state.loading)}
         {this.getChangeEmailAction(this.state.user, this.state.loading)}
+        {this.getResendEmailVerificationAction(this.state.user, this.state.loading)}
       </DropdownButton>
     );
   }

@@ -12,6 +12,7 @@ import { BlockDialog, UnblockDialog, RemoveMultiFactorDialog, DeleteDialog, User
 import PasswordResetDialog from './PasswordResetDialog';
 import PasswordChangeDialog from './PasswordChangeDialog';
 import UsernameChangeDialog from './UsernameChangeDialog';
+import ResendVerificationEmail from './ResendVerificationEmail';
 import EmailChangeDialog from './EmailChangeDialog';
 import getUserDatabaseConnections from '../../selectors/getUserDatabaseConnections';
 
@@ -66,6 +67,7 @@ export default connectContainer(class extends Component {
                 unblockUser={this.props.requestUnblockUser}
                 changeUsername={this.props.requestUsernameChange}
                 changeEmail={this.props.requestEmailChange}
+                resendVerificationEmail={this.props.requestResendVerificationEmail}
               />
             </div>
           </div>
@@ -96,6 +98,7 @@ export default connectContainer(class extends Component {
         <PasswordChangeDialog onCancel={this.props.cancelPasswordChange} onConfirm={this.props.changePassword} />
         <UsernameChangeDialog onCancel={this.props.cancelUsernameChange} onConfirm={this.props.changeUsername} />
         <EmailChangeDialog onCancel={this.props.cancelEmailChange} onConfirm={this.props.changeEmail} />
+        <ResendVerificationEmail onCancel={this.props.cancelResendVerificationEmail} onConfirm={this.props.resendVerificationEmail} />
         <PasswordResetDialog onCancel={this.props.cancelPasswordReset} onConfirm={this.props.resetPassword} />
         <BlockDialog error={block.get('error')} loading={block.get('loading')} userName={block.get('userName')} requesting={block.get('requesting')}
           onCancel={this.props.cancelBlockUser} onConfirm={this.props.blockUser} />

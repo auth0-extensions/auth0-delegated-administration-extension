@@ -115,7 +115,7 @@ export default () => {
   });
 
   /*
-   * Update application.
+   * Update user.
    */
   api.put('/:id', (req, res, next) => {
     req.auth0.users.update({ id: req.params.id }, req.body)
@@ -124,10 +124,19 @@ export default () => {
     });
 
   /*
-   * Create application.
+   * Create user.
    */
   api.post('/', (req, res, next) => {
     req.auth0.users.create(req.body)
+        .then(() => res.status(200).send())
+        .catch(next);
+  });
+
+  /*
+   * send verification email user.
+   */
+  api.post('/send-verification-email', (req, res, next) => {
+    req.auth0.jobs.verifyEmail(req.body)
         .then(() => res.status(200).send())
         .catch(next);
   });
