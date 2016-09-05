@@ -55,7 +55,8 @@
     "request": "^2.34.0",
     "semver": "^5.1.0",
     "webtask-tools": "^2.2.0",
-    "winston": "^2.2.0"
+    "winston": "^2.2.0",
+    "lint:js": "eslint --ignore-path .gitignore ."
   },
   "devDependencies": {
     "autoprefixer": "^6.3.6",
