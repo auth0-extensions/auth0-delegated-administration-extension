@@ -1,30 +1,24 @@
 .user .content-header {
   margin-bottom: 20px;
 }
-
 .user .dropdown-menu {
   padding: 0px;
 }
-
 .user .dropdown-menu .divider {
   margin: 0px;
 }
-
 .user .content-header .h2 {
   margin-top: 0px;
 }
-
 .user-tabs a[role="tab"] {
   outline-style: none;
 }
-
 .user-header {
   position: relative;
   display: block;
   box-sizing: border-box;
   margin-bottom: 20px;
 }
-
 .user-header .img-polaroid {
   position: absolute;
   bottom: -20px;
@@ -37,13 +31,11 @@
   vertical-align: middle;
   border: 0;
 }
-
 .user-header .user-bg-box {
   position: relative;
   height: 120px;
   overflow: hidden;
 }
-
 .user-header .user-bg-box .user-bg {
   overflow: hidden;
   position: absolute;
@@ -53,7 +45,6 @@
   -webkit-filter: blur(50px);
   opacity: .5;
 }
-
 .user-header .user-bg-box .box-content {
   position: absolute;
   background: rgba(255,255,255,0.3);
@@ -62,43 +53,36 @@
   z-index: 100%;
   overflow: hidden;
 }
-
 .user-header .user-bg-box .box-content .back-button {
   position: absolute;
   top: 10px;
   left: 10px;
 }
-
 .user-header .user-bg-box .box-content .login-count {
   position: absolute;
   top: 20px;
   right: 20px;
   font-size: 11px;
 }
-
 .user-header .user-bg-box .box-content .lined-text {
   font-size: 11px;
   text-transform: uppercase;
   border-bottom: 1px solid rgba(0,0,0,0.1);
   padding-bottom: 2px;
 }
-
 .user-header .user-bg-box .box-content .username-area {
   position: absolute;
   left: 120px;
   bottom: 5px;
 }
-
 .user-header .user-bg-box .box-content .username-area h4 {
   font-weight: 200;
   font-size: 34px;
   margin: 0;
 }
-
 .user-header .user-bg-box .box-content .username-area .name {
   margin-right: 10px;
 }
-
 .user-header .user-bg-box .box-content .username-area .user-label {
   color: #000;
   font-size: 10px;
