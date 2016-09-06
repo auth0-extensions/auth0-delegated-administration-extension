@@ -9,7 +9,6 @@ import {Confirm, Error} from '../../components/Dashboard';
 import './Users.css';
 
 class Users extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -32,11 +31,11 @@ class Users extends Component {
 
     openCreateForm = (e) => {
         e.preventDefault();
-        this.setState({showCreateForm: true});
+        this.setState({ showCreateForm: true });
     }
 
     onCancelUserCreate = () => {
-        this.setState({showCreateForm: false});
+        this.setState({ showCreateForm: false });
         this.props.fetchUsers('', true);
     }
 
@@ -45,7 +44,7 @@ class Users extends Component {
     }
 
     userWasSaved = () => {
-        this.setState({showCreateForm: false});
+        this.setState({ showCreateForm: false });
     }
 
     render() {
@@ -72,6 +71,7 @@ class Users extends Component {
                         createUser={this.props.createUser}
                         fetchUsers={this.props.fetchUsers}
                         userWasSaved={this.userWasSaved}
+                        validationErrors={this.props.validationErrors}
                     />
                 </Confirm>
                 <UserOverview onReset={this.onReset} onSearch={this.onSearch}
@@ -87,6 +87,7 @@ function mapStateToProps(state) {
         error: state.users.get('error'),
         userCreateError: state.userCreate.get('error'),
         userCreateLoading: state.userCreate.get('loading'),
+        validationErrors: state.userCreate.get('validationErrors'),
         loading: state.users.get('loading'),
         users: state.users.get('records').toJS(),
         connections: state.connections.get('records').toJS(),

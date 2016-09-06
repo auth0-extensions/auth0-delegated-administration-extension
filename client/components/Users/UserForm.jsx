@@ -1,8 +1,9 @@
-import React, {PropTypes, Component} from 'react';
-import {Error, Json, LoadingPanel, InputCombo, InputText, Confirm} from '../Dashboard';
+import React, { PropTypes, Component } from 'react';
+import { InputText } from '../Dashboard';
+import createForm from '../../utils/createForm';
 import _ from 'lodash';
 
-export default class UserForm extends Component {
+export default createForm('user', class extends Component {
     static propTypes = {
         error: PropTypes.string,
         loading: PropTypes.bool.isRequired,
@@ -44,6 +45,14 @@ export default class UserForm extends Component {
         }
     }
 
+    static formFields = [
+        'email',
+        'username',
+        'password',
+        'repeat_password',
+        'connection'
+    ];
+
     render() {
         if (this.props.loading || this.props.error) {
             return <div></div>;
@@ -52,8 +61,9 @@ export default class UserForm extends Component {
             return connection.strategy == 'auth0';
         });
         const usernameRequired = this.state.usernameRequired;
+        const { fields: { email, username, password, repeat_password, connection }, validationErrors } = this.props;
         return <div className="row">
-            <form className="createUserScreenForm form-horizontal col-xs-12" style={{marginTop: '40px'}}
+            <form className="createUserScreenForm form-horizontal col-xs-12" style={{marginTop: '30px'}}
                   onSubmit={function (e) {
                       e.preventDefault();
                       let arr = $('.createUserScreenForm').serializeArray(), obj = {};
@@ -70,40 +80,33 @@ export default class UserForm extends Component {
                           }.bind(this), 500);
                       }.bind(this));
                   }.bind(this)}>
-                <div className="form-group">
-                    <label className="col-xs-2 control-label">Email</label>
-                    <div className="col-xs-9">
-                        <input type="email" name="email" className="form-control" required/>
-                    </div>
+                <div className="custom_field">
+                <InputText field={ email } fieldName="email" label="Email"
+                           validationErrors={validationErrors}
+                />
                 </div>
                 {usernameRequired ?
-                    <div className="form-group">
-                        <label className="col-xs-2 control-label">Username</label>
-                        <div className="col-xs-9">
-                            <input type="text" name="username" className="form-control" required/>
-                        </div>
+                    <div className="custom_field">
+                    <InputText field={ username } fieldName="username" label="username"
+                               validationErrors={validationErrors}
+                    />
                     </div>
                     : ''}
-                <div className="form-group">
-                    <label className="col-xs-2 control-label">Password</label>
-                    <div className="col-xs-9">
-                        <input type="password" name="password" className="form-control userCreatePassword" required
-                               onChange={ this.validatePassword }/>
-                    </div>
+                <div className="custom_field">
+                <InputText field={ password } fieldName="password" label="Password"
+                           validationErrors={validationErrors}
+                />
                 </div>
-                <div className="form-group">
-                    <label className="col-xs-2 control-label">Repeat Password</label>
-                    <div className="col-xs-9">
-                        <input type="password" name="repeat_password" className="form-control userCreatePasswordRepeat"
-                               required onChange={ this.validatePassword }/>
-                    </div>
+                <div className="custom_field repeat_password">
+                <InputText field={ repeat_password } fieldName="email" label="Repeat Password"
+                           validationErrors={validationErrors}
+                />
                 </div>
-                <div className="form-group row">
-                    <label className="col-xs-2 control-label">Connection</label>
-                    <div className="col-xs-9">
+                <div className="custom_field">
+                    <div className="form-group">
+                    <label>Connection</label>
                         <select className="form-control" name="connection"
                                 onChange={this.onConnectionChange.bind(this)}>
-                            <option value="">Select...</option>
                             {connections.map((connection, index) => {
                                 return <option key={index}
                                                value={connection.name}>{connection.name}</option>;
@@ -115,4 +118,4 @@ export default class UserForm extends Component {
             </form>
         </div>
     }
-}
+});

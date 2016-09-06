@@ -5,7 +5,8 @@ import createReducer from '../utils/createReducer';
 
 const initialState = {
   error: null,
-  loading: false
+  loading: false,
+  validationErrors: { }
 };
 
 export const userCreate = createReducer(fromJS(initialState), {
@@ -17,11 +18,15 @@ export const userCreate = createReducer(fromJS(initialState), {
     state.merge({
       loading: true
     }),
-  [constants.CREATE_USER_REJECTED]: (state, action) =>
-    state.merge({
-      loading: false,
-      error: action.errorMessage
-    }),
+  [constants.CREATE_USER_REJECTED]: (state, action) => {
+      const validationErrors = {};
+      const errorMessage = action.error ? action.errorMessage : null;
+      return state.merge({
+          loading: false,
+          validationErrors: {},
+          error: `An error occured while changing the username: ${errorMessage}`
+      })
+  },
   [constants.CREATE_USER_FULFILLED]: (state) =>
     state.merge({
       ...initialState

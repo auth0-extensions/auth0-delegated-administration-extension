@@ -7,7 +7,6 @@ export UserProfile from './UserProfile';
 export UsersTable from './UsersTable';
 export SearchBar from './SearchBar';
 export UserForm from './UserForm';
-
 export DeleteDialog from './Dialogs/DeleteDialog';
 export BlockDialog from './Dialogs/BlockDialog';
 export UnblockDialog from './Dialogs/UnblockDialog';

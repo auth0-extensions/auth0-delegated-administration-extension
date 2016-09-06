@@ -19,7 +19,7 @@ export default connectContainer(class extends Component {
     }
 
     onConfirm = () => {
-        this.props.onConfirm(this.refs.user.value,this.refs.username.value);
+        this.props.onConfirm(this.refs.user.value, this.refs.username.value);
     }
 
     render() {

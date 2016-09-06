@@ -2,190 +2,190 @@ import React, { Component, PropTypes } from 'react';
 import { MenuItem, DropdownButton } from 'react-bootstrap';
 
 export default class UserActions extends Component {
-  static propTypes = {
-    user: PropTypes.object.isRequired,
-    databaseConnections: PropTypes.object.isRequired,
-    blockUser: PropTypes.func.isRequired,
-    unblockUser: PropTypes.func.isRequired,
-    removeMfa: PropTypes.func.isRequired,
-    deleteUser: PropTypes.func.isRequired,
-    resetPassword: PropTypes.func.isRequired,
-    changePassword: PropTypes.func.isRequired,
-    changeUsername: PropTypes.func.isRequired,
-    changeEmail: PropTypes.func.isRequired
-  }
-
-  state = {
-    user: null,
-    loading: false
-  };
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.user) {
-      const { record, loading } = nextProps.user.toJS();
-      this.setState({
-        user: record,
-        loading
-      });
+    static propTypes = {
+        user: PropTypes.object.isRequired,
+        databaseConnections: PropTypes.object.isRequired,
+        blockUser: PropTypes.func.isRequired,
+        unblockUser: PropTypes.func.isRequired,
+        removeMfa: PropTypes.func.isRequired,
+        deleteUser: PropTypes.func.isRequired,
+        resetPassword: PropTypes.func.isRequired,
+        changePassword: PropTypes.func.isRequired,
+        changeUsername: PropTypes.func.isRequired,
+        changeEmail: PropTypes.func.isRequired
     }
 
-    if (nextProps.databaseConnections) {
-      this.setState({
-        databaseConnections: nextProps.databaseConnections.toJS()
-      });
-    }
-  }
+    state = {
+        user: null,
+        loading: false
+    };
 
-  shouldComponentUpdate(nextProps) {
-    return nextProps.user !== this.props.user || nextProps.databaseConnections !== this.props.databaseConnections;
-  }
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.user) {
+            const { record, loading } = nextProps.user.toJS();
+            this.setState({
+                user: record,
+                loading
+            });
+        }
 
-  getDeleteAction = (user, loading) => (
-    <MenuItem disabled={loading || false} onClick={this.deleteUser}>
-      Delete User
-    </MenuItem>
-  );
-
-  getResetPasswordAction = (user, loading) => {
-    if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
-      return null;
-    }
-
-    return (
-      <MenuItem disabled={loading || false} onClick={this.resetPassword}>
-        Reset Password
-      </MenuItem>
-    );
-  };
-
-  getChangePasswordAction = (user, loading) => {
-    if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
-      return null;
+        if (nextProps.databaseConnections) {
+            this.setState({
+                databaseConnections: nextProps.databaseConnections.toJS()
+            });
+        }
     }
 
-    return (
-      <MenuItem disabled={loading || false} onClick={this.changePassword}>
-        Change Password
-      </MenuItem>
-    );
-  };
-
-  getChangeUsernameAction = (user, loading) => {
-    if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
-      return null;
+    shouldComponentUpdate(nextProps) {
+        return nextProps.user !== this.props.user || nextProps.databaseConnections !== this.props.databaseConnections;
     }
 
-    return (
-        <MenuItem disabled={loading || false} onClick={this.changeUsername}>
-          Change Username
+    getDeleteAction = (user, loading) => (
+        <MenuItem disabled={loading || false} onClick={this.deleteUser}>
+            Delete User
         </MenuItem>
     );
-  };
 
-  getChangeEmailAction = (user, loading) => {
-    if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
-      return null;
+    getResetPasswordAction = (user, loading) => {
+        if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
+            return null;
+        }
+
+        return (
+            <MenuItem disabled={loading || false} onClick={this.resetPassword}>
+                Reset Password
+            </MenuItem>
+        );
+    };
+
+    getChangePasswordAction = (user, loading) => {
+        if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
+            return null;
+        }
+
+        return (
+            <MenuItem disabled={loading || false} onClick={this.changePassword}>
+                Change Password
+            </MenuItem>
+        );
+    };
+
+    getChangeUsernameAction = (user, loading) => {
+        if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
+            return null;
+        }
+
+        return (
+            <MenuItem disabled={loading || false} onClick={this.changeUsername}>
+                Change Username
+            </MenuItem>
+        );
+    };
+
+    getChangeEmailAction = (user, loading) => {
+        if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
+            return null;
+        }
+
+        return (
+            <MenuItem disabled={loading || false} onClick={this.changeEmail}>
+                Change Email
+            </MenuItem>
+        );
+    };
+
+    getResendEmailVerificationAction = (user, loading) => {
+        if (!this.state.databaseConnections || !this.state.databaseConnections.length || user.email_verified) {
+            return null;
+        }
+
+        return (
+            <MenuItem disabled={loading || false} onClick={this.resendVerificationEmail}>
+                Resend Verification Email
+            </MenuItem>
+        );
+    };
+
+    getMultifactorAction = (user, loading) => {
+        if (!user.multifactor || !user.multifactor.length) {
+            return null;
+        }
+
+        return (
+            <MenuItem disabled={loading || false} onClick={this.removeMfa}>
+                Remove MFA ({user.multifactor[0]})
+            </MenuItem>
+        );
     }
 
-    return (
-        <MenuItem disabled={loading || false} onClick={this.changeEmail}>
-          Change Email
-        </MenuItem>
-    );
-  };
+    getBlockedAction = (user, loading) => {
+        if (user.blocked) {
+            return (
+                <MenuItem disabled={loading || false} onClick={this.unblockUser}>
+                    Unblock User
+                </MenuItem>
+            );
+        }
 
-  getResendEmailVerificationAction = (user, loading) => {
-    if (!this.state.databaseConnections || !this.state.databaseConnections.length || user.email_verified) {
-      return null;
+        return (
+            <MenuItem disabled={loading || false} onClick={this.blockUser}>
+                Block User
+            </MenuItem>
+        );
     }
 
-    return (
-        <MenuItem disabled={loading || false} onClick={this.resendVerificationEmail}>
-          Resend Verification Email
-        </MenuItem>
-    );
-  };
-
-  getMultifactorAction = (user, loading) => {
-    if (!user.multifactor || !user.multifactor.length) {
-      return null;
+    deleteUser = () => {
+        this.props.deleteUser(this.state.user);
     }
 
-    return (
-      <MenuItem disabled={loading || false} onClick={this.removeMfa}>
-        Remove MFA ({user.multifactor[0]})
-      </MenuItem>
-    );
-  }
-
-  getBlockedAction = (user, loading) => {
-    if (user.blocked) {
-      return (
-        <MenuItem disabled={loading || false} onClick={this.unblockUser}>
-          Unblock User
-        </MenuItem>
-      );
+    resetPassword = () => {
+        this.props.resetPassword(this.state.user, this.state.databaseConnections[0]);
     }
 
-    return (
-      <MenuItem disabled={loading || false} onClick={this.blockUser}>
-        Block User
-      </MenuItem>
-    );
-  }
-
-  deleteUser = () => {
-    this.props.deleteUser(this.state.user);
-  }
-
-  resetPassword = () => {
-    this.props.resetPassword(this.state.user, this.state.databaseConnections[0]);
-  }
-
-  changePassword = () => {
-    this.props.changePassword(this.state.user, this.state.databaseConnections[0]);
-  }
-
-  changeUsername = () => {
-    this.props.changeUsername(this.state.user, this.state.databaseConnections[0]);
-  }
-
-  changeEmail = () => {
-    this.props.changeEmail(this.state.user, this.state.databaseConnections[0]);
-  }
-
-  resendVerificationEmail= () => {
-    this.props.resendVerificationEmail(this.state.user, this.state.databaseConnections[0]);
-  }
-
-  blockUser = () => {
-    this.props.blockUser(this.state.user);
-  }
-
-  unblockUser = () => {
-    this.props.unblockUser(this.state.user);
-  }
-
-  removeMfa = () => {
-    this.props.removeMfa(this.state.user, this.state.user.multifactor[0]);
-  }
-
-  render() {
-    if (!this.state.user) {
-      return null;
+    changePassword = () => {
+        this.props.changePassword(this.state.user, this.state.databaseConnections[0]);
     }
 
-    return (
-      <DropdownButton bsStyle="success" title="Actions" id="user-actions">
-        {this.getMultifactorAction(this.state.user, this.state.loading)}
-        {this.getBlockedAction(this.state.user, this.state.loading)}
-        {this.getResetPasswordAction(this.state.user, this.state.loading)}
-        {this.getChangePasswordAction(this.state.user, this.state.loading)}
-        {this.getDeleteAction(this.state.user, this.state.loading)}
-        {this.getChangeUsernameAction(this.state.user, this.state.loading)}
-        {this.getChangeEmailAction(this.state.user, this.state.loading)}
-        {this.getResendEmailVerificationAction(this.state.user, this.state.loading)}
-      </DropdownButton>
-    );
-  }
+    changeUsername = () => {
+        this.props.changeUsername(this.state.user, this.state.databaseConnections[0]);
+    }
+
+    changeEmail = () => {
+        this.props.changeEmail(this.state.user, this.state.databaseConnections[0]);
+    }
+
+    resendVerificationEmail = () => {
+        this.props.resendVerificationEmail(this.state.user, this.state.databaseConnections[0]);
+    }
+
+    blockUser = () => {
+        this.props.blockUser(this.state.user);
+    }
+
+    unblockUser = () => {
+        this.props.unblockUser(this.state.user);
+    }
+
+    removeMfa = () => {
+        this.props.removeMfa(this.state.user, this.state.user.multifactor[0]);
+    }
+
+    render() {
+        if (!this.state.user) {
+            return null;
+        }
+
+        return (
+            <DropdownButton bsStyle="success" title="Actions" id="user-actions">
+                {this.getMultifactorAction(this.state.user, this.state.loading)}
+                {this.getBlockedAction(this.state.user, this.state.loading)}
+                {this.getResetPasswordAction(this.state.user, this.state.loading)}
+                {this.getChangePasswordAction(this.state.user, this.state.loading)}
+                {this.getDeleteAction(this.state.user, this.state.loading)}
+                {this.getChangeUsernameAction(this.state.user, this.state.loading)}
+                {this.getChangeEmailAction(this.state.user, this.state.loading)}
+                {this.getResendEmailVerificationAction(this.state.user, this.state.loading)}
+            </DropdownButton>
+        );
+    }
 }

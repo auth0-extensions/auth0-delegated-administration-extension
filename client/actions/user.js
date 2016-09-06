@@ -349,8 +349,6 @@ export function changePassword(password, confirmPassword) {
   };
 }
 
-
-
 /*
  * Update the user attribute.
  */
@@ -431,47 +429,45 @@ export function changeEmail(userId, data) {
   }
 }
 
+/*
+ * Get confirmation to change a email.
+ */
+export function requestResendVerificationEmail(user, connection) {
+  return {
+    type: constants.REQUEST_RESEND_VERIFICATION_EMAIL,
+    user,
+    connection
+  };
+}
 
-  /*
-   * Get confirmation to change a email.
-   */
-  export function requestResendVerificationEmail(user, connection) {
-    return {
-      type: constants.REQUEST_RESEND_VERIFICATION_EMAIL,
-      user,
-      connection
-    };
-  }
+/*
+ * Cancel the email change process.
+ */
+export function cancelResendVerificationEmail() {
+  return {
+    type: constants.CANCEL_RESEND_VERIFICATION_EMAIL,
+  };
+}
 
-  /*
-   * Cancel the email change process.
-   */
-  export function cancelResendVerificationEmail() {
-    return {
-      type: constants.CANCEL_RESEND_VERIFICATION_EMAIL,
-    };
-  }
-
-  /*
-   * Resend verification email.
-   */
-  export function resendVerificationEmail(userId) {
-    return (dispatch) =>
-    {
-      let data = {user_id:userId};
-      dispatch({
-        type: constants.RESEND_VERIFICATION_EMAIL,
-        meta: {
-          userId,
-          onSuccess: () => {
-            dispatch(fetchUserDetail(userId));
-          }
-        },
-        payload: {
-          promise: axios.post('/api/users/send-verification-email', data, {
-            responseType: 'json'
-          })
+/*
+ * Resend verification email.
+ */
+export function resendVerificationEmail(userId) {
+  return (dispatch) => {
+    let data = { user_id: userId };
+    dispatch({
+      type: constants.RESEND_VERIFICATION_EMAIL,
+      meta: {
+        userId,
+        onSuccess: () => {
+          dispatch(fetchUserDetail(userId));
         }
-      });
-    };
-  }
+      },
+      payload: {
+        promise: axios.post('/api/users/send-verification-email', data, {
+          responseType: 'json'
+        })
+      }
+    });
+  };
+}

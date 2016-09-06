@@ -1,7 +1,5 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
-import { push } from 'react-router-redux';
-
 import * as constants from '../constants';
 import { show, parseHash } from '../utils/lock';
 
