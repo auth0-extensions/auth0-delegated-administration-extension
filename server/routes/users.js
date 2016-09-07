@@ -47,8 +47,8 @@ export default () => {
       connection: req.body.connection,
       client_id: req.body.clientId
     })
-    .then(() => res.sendStatus(204))
-    .catch(next);
+      .then(() => res.sendStatus(204))
+      .catch(next);
   });
 
   api.post('/:id/password-change', (req, res, next) => {
@@ -56,7 +56,11 @@ export default () => {
       return next(new Error('Passwords don\'t match'));
     }
 
-    return req.auth0.users.update({ id: req.params.id }, { password: req.body.password, connection: req.body.connection, verify_password: false })
+    return req.auth0.users.update({ id: req.params.id }, {
+      password: req.body.password,
+      connection: req.body.connection,
+      verify_password: false
+    })
       .then(() => res.sendStatus(204))
       .catch(next);
   });
@@ -121,8 +125,8 @@ export default () => {
    */
   api.put('/:id', (req, res, next) => {
     req.auth0.users.update({ id: req.params.id }, req.body)
-    .then(() => res.status(200).send())
-    .catch(next);
+      .then(() => res.status(200).send())
+      .catch(next);
   });
 
   /*
@@ -130,8 +134,8 @@ export default () => {
    */
   api.post('/', (req, res, next) => {
     req.auth0.users.create(req.body)
-        .then(() => res.status(200).send())
-        .catch(next);
+      .then(() => res.status(200).send())
+      .catch(next);
   });
 
   /*
@@ -139,8 +143,8 @@ export default () => {
    */
   api.post('/send-verification-email', (req, res, next) => {
     req.auth0.jobs.verifyEmail(req.body)
-        .then(() => res.status(200).send())
-        .catch(next);
+      .then(() => res.status(200).send())
+      .catch(next);
   });
 
   return api;

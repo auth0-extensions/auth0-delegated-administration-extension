@@ -3,18 +3,13 @@ import logger from '../logger';
 module.exports = (err, req, res) => {
   logger.error(err);
 
-  if (err && err.name === 'ForbiddenError') {
-    res.status(403);
+  if (err && err.name === 'ValidationError') {
+    res.status(400);
     return res.json({ error: err.message });
   }
 
   if (err && err.name === 'NotFoundError') {
     res.status(404);
-    return res.json({ error: err.message });
-  }
-
-  if (err && err.name === 'ValidationError') {
-    res.status(400);
     return res.json({ error: err.message });
   }
 
