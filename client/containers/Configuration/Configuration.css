@@ -1,0 +1,11 @@
+.CodeMirror-gutters{
+    width: 45px !important;
+    height: 100% !important;
+}
+.CodeMirror-gutter-elt{
+    left: -31px !important;
+    font-weight: bold !important;
+}
+.CodeMirror-sizer{
+    margin-left: 45px !important;
+}
