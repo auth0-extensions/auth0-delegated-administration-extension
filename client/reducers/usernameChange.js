@@ -36,7 +36,7 @@ export const usernameChange = createReducer(fromJS(initialState), {
   [constants.USERNAME_CHANGE_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occured while changing the username: ${action.errorMessage}`
+      error: `An error occurred while changing the username: ${action.errorMessage}`
     }),
   [constants.USERNAME_CHANGE_FULFILLED]: (state) =>
     state.merge({
