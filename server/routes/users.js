@@ -7,6 +7,8 @@ import config from '../lib/config';
 export default () => {
   const api = Router();
 
+  api.get('/access_level', (req, res) => res.json({ access_level: req.user.access_level || 0 }));
+
   api.get('/', (req, res, next) => {
     const options = {
       sort: 'last_login:-1',
@@ -121,7 +123,7 @@ export default () => {
     req.auth0.users.update({ id: req.params.id }, req.body)
     .then(() => res.status(200).send())
     .catch(next);
-    });
+  });
 
   /*
    * Create user.
@@ -143,5 +145,3 @@ export default () => {
 
   return api;
 };
-
-

@@ -1,7 +1,12 @@
 import logger from '../logger';
 
-module.exports = (err, req, res, next) => {
+module.exports = (err, req, res) => {
   logger.error(err);
+
+  if (err && err.name === 'ForbiddenError') {
+    res.status(403);
+    return res.json({ error: err.message });
+  }
 
   if (err && err.name === 'NotFoundError') {
     res.status(404);
@@ -13,19 +18,16 @@ module.exports = (err, req, res, next) => {
     return res.json({ error: err.message });
   }
 
-  res.status(err.status || 500);
-  if (process.env.NODE_ENV === 'production') {
-    res.json({
-      message: err.message
-    });
-  } else {
-    res.json({
+  const message = { message: err.message };
+
+  if (process.env.NODE_ENV !== 'production') {
+    message.error = {
       message: err.message,
-      error: {
-        message: err.message,
-        status: err.status,
-        stack: err.stack
-      }
-    });
+      status: err.status,
+      stack: err.stack
+    };
   }
+
+  res.status(err.status || 500);
+  return res.json(message);
 };
