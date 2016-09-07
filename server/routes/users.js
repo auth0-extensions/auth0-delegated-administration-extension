@@ -119,9 +119,9 @@ export default () => {
    */
   api.put('/:id', (req, res, next) => {
     req.auth0.users.update({ id: req.params.id }, req.body)
-    .then(() => res.status(200).send())
-    .catch(next);
-    });
+      .then(() => res.status(200).send())
+      .catch(next);
+  });
 
   /*
    * Create user.
@@ -143,5 +143,3 @@ export default () => {
 
   return api;
 };
-
-

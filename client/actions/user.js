@@ -134,7 +134,7 @@ export function createUser(data, onSuccess) {
         }
       },
       payload: {
-        promise: axios.post(`/api/users/`, data, {
+        promise: axios.post('/api/users/', data, {
           responseType: 'json'
         })
       }
@@ -152,8 +152,9 @@ export function updateUser(userId, data, onSuccess) {
       meta: {
         userId,
         onSuccess: () => {
-          if (onSuccess)
+          if (onSuccess) {
             onSuccess();
+          }
           dispatch(fetchUserDetail(userId));
         }
       },
@@ -444,7 +445,7 @@ export function requestResendVerificationEmail(user, connection) {
  */
 export function cancelResendVerificationEmail() {
   return {
-    type: constants.CANCEL_RESEND_VERIFICATION_EMAIL,
+    type: constants.CANCEL_RESEND_VERIFICATION_EMAIL
   };
 }
 
