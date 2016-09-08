@@ -1,18 +1,36 @@
 import Promise from 'bluebird';
+import safeEval from 'safe-eval';
 
-module.exports.getAllScripts = (storage) => {
+import logger from './logger';
+
+module.exports.getAllScripts = (storage) =>
   storage.read()
-    .then(data => Promise.resolve(data.scripts || { access: '', filter: '', write: '', memberships: '' }))
+    .then(data => Promise.resolve(data.scripts || { access: '', filter: '', write: '', memberships: '', styles: '' }))
     .catch(err => Promise.reject(err));
-};
 
-module.exports.getScript = (storage, name) => {
+
+module.exports.getScript = (storage, name) =>
   storage.read()
-    .then(data => Promise.resolve((data.scripts && data.scripts[name]) ? data.scripts[name] : ''))
-    .catch(err => Promise.reject(err));
-};
+    .then(data => {
+      const textFunction = (data.scripts && data.scripts[name]) ? data.scripts[name] : null;
+      let convertedFunction;
 
-module.exports.setScripts = (storage, scripts) => {
+      if (textFunction) {
+        try {
+          convertedFunction = safeEval(textFunction);
+        } catch (err) {
+          logger.error(`Custom script "${name}" error:`);
+          logger.error(err);
+          convertedFunction = null;
+        }
+      }
+
+      return Promise.resolve(convertedFunction);
+    })
+    .catch(err => Promise.reject(err));
+
+
+module.exports.setScripts = (storage, scripts) =>
   storage.read()
     .then(data => {
       const newData = data;
@@ -21,11 +39,12 @@ module.exports.setScripts = (storage, scripts) => {
         access: scripts.access,
         filter: scripts.filter,
         write: scripts.write,
-        memberships: scripts.memberships
+        memberships: scripts.memberships,
+        styles: scripts.styles
       };
       return newData;
     })
     .then(data => storage.write(data))
-    .then((data) => Promise.resolve(data.scripts || { access: '', filter: '', write: '', memberships: '' }))
+    .then((data) => Promise.resolve(data.scripts || { access: '', filter: '', write: '', memberships: '', styles: '' }))
     .catch(err => Promise.reject(err));
-};
+

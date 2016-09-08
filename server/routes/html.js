@@ -22,6 +22,7 @@ export default () => {
     <% if (assets.style) { %><link rel="stylesheet" type="text/css" href="/app/<%= assets.style %>" /><% } %>
     <% if (assets.version) { %><link rel="stylesheet" type="text/css" href="//cdn.auth0.com/extensions/auth0-delegated-admin/assets/auth0-delegated-admin.ui.<%= assets.version %>.css" /><% } %>
     <% if (assets.customCss) { %><link rel="stylesheet" type="text/css" href="<%= assets.customCss %>" /><% } %>
+    <% if (assets.customStyles) { %><link rel="stylesheet" type="text/css" href="<%= assets.customStyles %>" /><% } %>
   </head>
   <body>
     <div id="app"></div>
@@ -48,7 +49,7 @@ export default () => {
       AUTH0_CLIENT_ID: config('EXTENSION_CLIENT_ID'),
       BASE_URL: urlHelpers.getBaseUrl(req),
       BASE_PATH: urlHelpers.getBasePath(req),
-      TITLE: config('TITLE')
+      TITLE: (req.custom_style && req.custom_style.title) ? req.custom_style.title : config('TITLE')
     };
 
     // Render from CDN.
@@ -57,6 +58,7 @@ export default () => {
       return res.send(ejs.render(template, {
         config: settings,
         assets: {
+          customStyles: (req.custom_style && req.custom_style.css) ? req.custom_style.css : null,
           customCss: config('CUSTOM_CSS'),
           version: clientVersion
         }
@@ -68,6 +70,7 @@ export default () => {
       const locals = {
         config: settings,
         assets: {
+          customStyles: (req.custom_style && req.custom_style.css) ? req.custom_style.css : null,
           customCss: config('CUSTOM_CSS'),
           app: 'bundle.js'
         }
@@ -75,6 +78,7 @@ export default () => {
 
       if (!err && manifest) {
         locals.assets = {
+          customStyles: (req.custom_style && req.custom_style.css) ? req.custom_style.css : null,
           customCss: config('CUSTOM_CSS'),
           ...JSON.parse(manifest)
         };
