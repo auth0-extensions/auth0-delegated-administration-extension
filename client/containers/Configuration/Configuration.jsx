@@ -106,6 +106,11 @@ class Configuration extends Component {
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
         <Error message={error}/>
         <div className="users">
+          <div className="row content-header">
+            <div className="col-xs-12 userTableContent">
+              <h2>Configurations</h2>
+            </div>
+          </div>
           <div className="row user-tabs">
             <div className="col-xs-12">
               { scripts ?

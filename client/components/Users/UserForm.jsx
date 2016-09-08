@@ -68,9 +68,9 @@ export default createForm('user', class extends Component {
 
   render() {
     const options = [
-      { value: 'one', label: 'One' },
-      { value: 'two', label: 'Two' },
-      { value: 'three', label: 'three' }
+      { value: 'first', label: 'First' },
+      { value: 'second', label: 'Second' },
+      { value: 'third', label: 'Third' }
     ];
     if (this.props.loading || this.props.error) {
       return <div></div>;
@@ -87,13 +87,14 @@ export default createForm('user', class extends Component {
               let arr = $('.createUserScreenForm').serializeArray(), obj = {};
               $.each(arr, function (indx, el) {
                 if (el.name != 'repeat_password') {
-                  if(el.name=='department') {
-                    obj['app_meta'][el.name] = el.value;
-                  } else {
+                  if (el.name == 'email' || el.name == 'username' || el.name == 'password' || el.name == 'connection') {
                     obj[el.name] = el.value;
                   }
                 }
               });
+              if (this.state.departments.length > 0) {
+                obj['app_metadata'] = { 'groups': this.state.departments };
+              }
               obj["email_verified"] = false;
               this.props.createUser(obj, function () {
                 this.props.userWasSaved();
@@ -124,18 +125,6 @@ export default createForm('user', class extends Component {
                      validationErrors={validationErrors}
           />
         </div>
-        <div className="custom_field">
-          <div className="form-group">
-            <label>Connection</label>
-            <select className="form-control" name="connection"
-                    onChange={this.onConnectionChange.bind(this)}>
-                    {connections.map((connection, index) => {
-                      return <option key={index}
-                                     value={connection.name}>{connection.name}</option>;
-                    })}
-            </select>
-          </div>
-        </div>
         {options ?
           <div className="custom_field">
             <div className="form-group">
@@ -150,6 +139,18 @@ export default createForm('user', class extends Component {
             </div>
           </div>
         :''}
+        <div className="custom_field">
+          <div className="form-group">
+            <label>Connection</label>
+            <select className="form-control" name="connection"
+                    onChange={this.onConnectionChange.bind(this)}>
+              {connections.map((connection, index) => {
+                return <option key={index}
+                               value={connection.name}>{connection.name}</option>;
+              })}
+            </select>
+          </div>
+        </div>
         <input type="submit" className="createUserButton"></input>
       </form>
     </div>
