@@ -8,10 +8,9 @@ import api from './routes/api';
 import hooks from './routes/hooks';
 import meta from './routes/meta';
 import htmlRoute from './routes/html';
-
 import config from './lib/config';
 import logger from './lib/logger';
-import * as middlewares from './lib/middlewares';
+import { errorHandler, getStorage, getStyles } from './lib/middlewares';
 
 module.exports = (cfg) => {
   config.setProvider(cfg);
@@ -30,6 +29,8 @@ module.exports = (cfg) => {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
 
+  app.use(getStorage);
+
   // Configure routes.
   app.use('/api', api());
   app.use('/app', Express.static(path.join(__dirname, '../dist')));
@@ -37,9 +38,9 @@ module.exports = (cfg) => {
   app.use('/.extensions', hooks());
 
   // Fallback to rendering HTML.
-  app.get('*', htmlRoute());
+  app.get('*', getStyles, htmlRoute());
 
   // Generic error handler.
-  app.use(middlewares.errorHandler);
+  app.use(errorHandler);
   return app;
 };
