@@ -49,6 +49,19 @@ module.exports.setScripts = (storage, scripts) =>
     .then(() => Promise.resolve())
     .catch(err => Promise.reject(err));
 
+module.exports.setScript = (storage, script, name) =>
+  storage.read()
+    .then(data => {
+      const newData = data;
+      newData.scripts = newData.scripts || {};
+      newData.scripts[name] = script;
+
+      return newData;
+    })
+    .then(data => storage.write(data))
+    .then(() => Promise.resolve())
+    .catch(err => Promise.reject(err));
+
 module.exports.checkAccess = (req, chosenUser) =>
   getScript(req.storage, 'access')
     .then(script => {
@@ -57,5 +70,28 @@ module.exports.checkAccess = (req, chosenUser) =>
       }
 
       return chosenUser;
+    });
+
+module.exports.prepareUser = (req, res, next) =>
+  getScript(req.storage, 'write')
+    .then(script => {
+      if (script) {
+        script(req.user, req.body);
+      }
+
+      next();
+    });
+
+module.exports.updateFilter = (req) =>
+  getScript(req.storage, 'filter')
+    .then(script => {
+      let query = req.query.search || '';
+
+      if (script && script(req.user)) {
+        const filter = script(req.user);
+        query = (query) ? `(${query}) AND ${filter}` : filter;
+      }
+
+      return query;
     });
 
