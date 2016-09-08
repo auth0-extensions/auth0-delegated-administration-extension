@@ -3,13 +3,7 @@ import safeEval from 'safe-eval';
 
 import logger from './logger';
 
-module.exports.getAllScripts = (storage) =>
-  storage.read()
-    .then(data => Promise.resolve(data.scripts || { access: '', filter: '', write: '', memberships: '', styles: '' }))
-    .catch(err => Promise.reject(err));
-
-
-module.exports.getScript = (storage, name) =>
+const getScript = (storage, name) =>
   storage.read()
     .then(data => {
       const textFunction = (data.scripts && data.scripts[name]) ? data.scripts[name] : null;
@@ -29,6 +23,12 @@ module.exports.getScript = (storage, name) =>
     })
     .catch(err => Promise.reject(err));
 
+module.exports.getScript = getScript;
+
+module.exports.getAllScripts = (storage) =>
+  storage.read()
+    .then(data => Promise.resolve(data.scripts || { access: '', filter: '', write: '', memberships: '', styles: '' }))
+    .catch(err => Promise.reject(err));
 
 module.exports.setScripts = (storage, scripts) =>
   storage.read()
@@ -42,9 +42,20 @@ module.exports.setScripts = (storage, scripts) =>
         memberships: scripts.memberships,
         styles: scripts.styles
       };
+
       return newData;
     })
     .then(data => storage.write(data))
-    .then((data) => Promise.resolve(data.scripts || { access: '', filter: '', write: '', memberships: '', styles: '' }))
+    .then(() => Promise.resolve())
     .catch(err => Promise.reject(err));
+
+module.exports.checkAccess = (req, chosenUser) =>
+  getScript(req.storage, 'access')
+    .then(script => {
+      if (script && !script(req.user, chosenUser)) {
+        return false;
+      }
+
+      return chosenUser;
+    });
 

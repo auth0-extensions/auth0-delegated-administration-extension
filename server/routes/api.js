@@ -41,10 +41,8 @@ export default () => {
     clientId: config('AUTH0_CLIENT_ID'),
     clientSecret: config('AUTH0_CLIENT_SECRET')
   }));
-
   api.use(getUserAccessLevel);
   api.use(hasAccessLevel(1));
-
   api.use('/applications', applications());
   api.use('/connections', connections());
   api.use('/scripts', scripts());

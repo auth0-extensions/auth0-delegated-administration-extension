@@ -10,7 +10,7 @@ import meta from './routes/meta';
 import htmlRoute from './routes/html';
 import config from './lib/config';
 import logger from './lib/logger';
-import { errorHandler, getStorage, getStyles } from './lib/middlewares';
+import { errorHandler, getStorage } from './lib/middlewares';
 
 module.exports = (cfg) => {
   config.setProvider(cfg);
@@ -28,7 +28,6 @@ module.exports = (cfg) => {
   }));
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
-
   app.use(getStorage);
 
   // Configure routes.
@@ -38,7 +37,7 @@ module.exports = (cfg) => {
   app.use('/.extensions', hooks());
 
   // Fallback to rendering HTML.
-  app.get('*', getStyles, htmlRoute());
+  app.get('*', htmlRoute());
 
   // Generic error handler.
   app.use(errorHandler);
