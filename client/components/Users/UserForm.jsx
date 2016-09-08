@@ -2,6 +2,8 @@ import React, { PropTypes, Component } from 'react';
 import { InputText } from '../Dashboard';
 import createForm from '../../utils/createForm';
 import _ from 'lodash';
+import Select from 'react-select';
+import 'react-select/dist/react-select.css';
 
 export default createForm('user', class extends Component {
   static propTypes = {
@@ -16,8 +18,9 @@ export default createForm('user', class extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      usernameRequired: false
-    }
+      usernameRequired: false,
+      departments: []
+    };
   }
 
   validatePassword = ()=> {
@@ -53,7 +56,22 @@ export default createForm('user', class extends Component {
     'connection'
   ];
 
+  logChange = (values) => {
+    let department = [];
+    values.map((val) => {
+      department.push(val.value);
+    });
+    this.setState({
+      departments: department
+    });
+  };
+
   render() {
+    const options = [
+      { value: 'one', label: 'One' },
+      { value: 'two', label: 'Two' },
+      { value: 'three', label: 'three' }
+    ];
     if (this.props.loading || this.props.error) {
       return <div></div>;
     }
@@ -69,7 +87,11 @@ export default createForm('user', class extends Component {
               let arr = $('.createUserScreenForm').serializeArray(), obj = {};
               $.each(arr, function (indx, el) {
                 if (el.name != 'repeat_password') {
-                  obj[el.name] = el.value;
+                  if(el.name=='department') {
+                    obj['app_meta'][el.name] = el.value;
+                  } else {
+                    obj[el.name] = el.value;
+                  }
                 }
               });
               obj["email_verified"] = false;
@@ -107,13 +129,27 @@ export default createForm('user', class extends Component {
             <label>Connection</label>
             <select className="form-control" name="connection"
                     onChange={this.onConnectionChange.bind(this)}>
-              {connections.map((connection, index) => {
-                return <option key={index}
-                               value={connection.name}>{connection.name}</option>;
-              })}
+                    {connections.map((connection, index) => {
+                      return <option key={index}
+                                     value={connection.name}>{connection.name}</option>;
+                    })}
             </select>
           </div>
         </div>
+        {options ?
+          <div className="custom_field">
+            <div className="form-group">
+              <label>Departments</label>
+              <Select
+                name="form-field-name"
+                value={this.state.departments}
+                options={options}
+                onChange={this.logChange.bind(this)}
+                multi={true}
+              />
+            </div>
+          </div>
+        :''}
         <input type="submit" className="createUserButton"></input>
       </form>
     </div>

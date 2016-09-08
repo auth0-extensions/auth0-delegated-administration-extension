@@ -119,7 +119,7 @@
     margin-top: -50px;
 }
 
-.custom_field input, .custom_field select {
+.custom_field input, .custom_field select, .Select--multi {
     width: 71%;
     float: right;
     margin-right: 10%;

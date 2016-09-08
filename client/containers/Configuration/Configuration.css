@@ -1,6 +1,6 @@
 .CodeMirror-gutters{
     width: 45px !important;
-    height: 100% !important;
+    height: 300px !important;
 }
 .CodeMirror-gutter-elt{
     left: -31px !important;
@@ -11,5 +11,16 @@
 }
 .saveConfigurationButton{
     padding-top: 20px;
-    text-align: center;
+    text-align: right;
+}
+/* BASICS */
+
+.CodeMirror {
+    /* Set height, width, borders, and global font properties here */
+    font-family: monospace;
+    height: 300px;
+    color: black;
+}
+.hidden{
+    display: none;
 }
