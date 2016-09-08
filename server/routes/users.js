@@ -2,6 +2,7 @@ import { Router } from 'express';
 import request from 'request';
 import { managementApi } from 'auth0-extension-tools';
 import auth0 from 'auth0';
+import { checkAccess } from '../lib/scripts';
 import config from '../lib/config';
 
 export default () => {
@@ -27,7 +28,15 @@ export default () => {
 
   api.get('/:id', (req, res, next) => {
     req.auth0.users.get({ id: req.params.id })
-      .then(user => res.json({ user }))
+      .then(user => checkAccess(req, user))
+      .then(user => {
+        if (user) {
+          return res.json({ user });
+        }
+
+        res.status(403);
+        return res.json({ error: 'Forbidden! Sorry, you have no permissions to do this.' });
+      })
       .catch(next);
   });
 
