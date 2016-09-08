@@ -2,7 +2,7 @@ import { Router } from 'express';
 import request from 'request';
 import { managementApi } from 'auth0-extension-tools';
 import auth0 from 'auth0';
-import { checkAccess } from '../lib/scripts';
+import { checkAccess, prepareUser, updateFilter } from '../lib/scripts';
 import config from '../lib/config';
 
 export default () => {
@@ -10,21 +10,22 @@ export default () => {
 
   api.get('/access_level', (req, res) => res.json({ access_level: req.user.access_level || 0 }));
 
-  api.get('/', (req, res, next) => {
-    const options = {
-      sort: 'last_login:-1',
-      q: req.query.search,
-      per_page: req.query.per_page || 100,
-      page: req.query.page || 0,
-      include_totals: true,
-      fields: 'user_id,name,email,identities,picture,last_login,logins_count,multifactor,blocked',
-      search_engine: 'v2'
-    };
+  api.get('/', (req, res, next) =>
+    updateFilter(req).then(query => {
+      const options = {
+        sort: 'last_login:-1',
+        q: query,
+        per_page: req.query.per_page || 100,
+        page: req.query.page || 0,
+        include_totals: true,
+        fields: 'user_id,name,email,identities,picture,last_login,logins_count,multifactor,blocked',
+        search_engine: 'v2'
+      };
 
-    req.auth0.users.getAll(options)
-      .then(logs => res.json(logs))
-      .catch(next);
-  });
+      req.auth0.users.getAll(options)
+        .then(logs => res.json(logs))
+        .catch(next);
+    }));
 
   api.get('/:id', (req, res, next) => {
     req.auth0.users.get({ id: req.params.id })
@@ -132,7 +133,7 @@ export default () => {
   /*
    * Update user.
    */
-  api.put('/:id', (req, res, next) => {
+  api.put('/:id', prepareUser, (req, res, next) => {
     req.auth0.users.update({ id: req.params.id }, req.body)
       .then(() => res.status(200).send())
       .catch(next);
@@ -141,7 +142,7 @@ export default () => {
   /*
    * Create user.
    */
-  api.post('/', (req, res, next) => {
+  api.post('/', prepareUser, (req, res, next) => {
     req.auth0.users.create(req.body)
       .then(() => res.status(200).send())
       .catch(next);
