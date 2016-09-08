@@ -9,3 +9,7 @@
 .CodeMirror-sizer{
     margin-left: 45px !important;
 }
+.saveConfigurationButton{
+    padding-top: 20px;
+    text-align: center;
+}

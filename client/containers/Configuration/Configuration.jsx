@@ -8,7 +8,7 @@ import 'codemirror/theme/mbo.css';
 
 import { connect } from 'react-redux';
 import { Tabs, Tab } from 'react-bootstrap';
-import { connectionActions, userActions } from '../../actions';
+import { scriptActions } from '../../actions';
 
 import './Configuration.css';
 
@@ -16,23 +16,42 @@ class Configuration extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      code: '// Code example 1' +
-      '' +
-      '' +
-      '' +
-      ''
+      currentCode: 1
     };
   }
 
   componentWillMount = () => {
-    this.props.fetchUsers();
-    this.props.fetchConnections();
+    this.props.fetchScripts();
   };
 
   updateCode = (newCode) => {
-    this.setState({
-      code: newCode
-    });
+    switch (this.state.currentCode) {
+      case 1:
+        this.setState({ access: newCode });
+        break;
+      case 2:
+        this.setState({ filter: newCode });
+        break;
+      case 3:
+        this.setState({ memberships: newCode });
+        break;
+      case 4:
+        this.setState({ write: newCode });
+        break;
+    }
+  };
+
+  onChange = (index) => {
+    this.setState({ currentCode: index });
+  };
+
+  saveConfiguration = () => {
+    let data = {};
+    data['access'] = this.state.write;
+    data['filter'] = this.state.filter;
+    data['memberships'] = this.state.memberships;
+    data['write'] = this.state.write;
+    this.props.updateScripts(data);
   };
 
   render() {
@@ -67,20 +86,24 @@ class Configuration extends Component {
       <div className="users">
         <div className="row user-tabs">
           <div className="col-xs-12">
-            <Tabs defaultActiveKey={1} animation={false}>
+            <Tabs defaultActiveKey={1} animation={false} onSelect={this.onChange.bind(this)}>
               <Tab eventKey={1} title="Access Query">
-                <Codemirror value={this.state.code} onChange={this.updateCode} options={options}/>
+                <Codemirror value={this.state.access} onChange={this.updateCode} options={options}/>
               </Tab>
               <Tab eventKey={2} title="Filter Query">
-                <Codemirror value={this.state.code} onChange={this.updateCode} options={options}/>
+                <Codemirror value={this.state.filter} onChange={this.updateCode} options={options}/>
               </Tab>
               <Tab eventKey={3} title="Memberships Query">
-                <Codemirror value={this.state.code} onChange={this.updateCode} options={options}/>
+                <Codemirror value={this.state.memberships} onChange={this.updateCode} options={options}/>
               </Tab>
               <Tab eventKey={4} title="Write Query">
-                <Codemirror value={this.state.code} onChange={this.updateCode} options={options}/>
+                <Codemirror value={this.state.write} onChange={this.updateCode} options={options}/>
               </Tab>
             </Tabs>
+            <div className="saveConfigurationButton">
+              <button onClick={this.saveConfiguration.bind(this)} className="btn btn-success">Save Configuration
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -90,16 +113,14 @@ class Configuration extends Component {
 
 function mapStateToProps(state) {
   return {
-    error: state.users.get('error'),
-    userCreateError: state.userCreate.get('error'),
-    userCreateLoading: state.userCreate.get('loading'),
-    validationErrors: state.userCreate.get('validationErrors'),
-    loading: state.users.get('loading'),
-    users: state.users.get('records').toJS(),
-    connections: state.connections.get('records').toJS(),
-    total: state.users.get('total'),
-    nextPage: state.users.get('nextPage')
+    error: state.scripts.get('error'),
+    scripts: state.scripts.get('records'),
+    access: state.scripts.get('records') ? state.scripts.get('records').access : '',
+    filter: state.scripts.get('records') ? state.scripts.get('records').filter : '',
+    memberships: state.scripts.get('records') ? state.scripts.get('records').memberships : '',
+    write: state.scripts.get('records') ? state.scripts.get('records').write : '',
+    loading: state.scripts.get('loading')
   };
 }
 
-export default connect(mapStateToProps, { ...connectionActions, ...userActions })(Configuration);
+export default connect(mapStateToProps, { ...scriptActions })(Configuration);
