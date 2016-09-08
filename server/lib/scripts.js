@@ -30,6 +30,25 @@ module.exports.getAllScripts = (storage) =>
     .then(data => Promise.resolve(data.scripts || { access: '', filter: '', write: '', memberships: '', styles: '' }))
     .catch(err => Promise.reject(err));
 
+module.exports.setScripts = (storage, scripts) =>
+  storage.read()
+    .then(data => {
+      const newData = data;
+
+      newData.scripts = {
+        access: scripts.access,
+        filter: scripts.filter,
+        write: scripts.write,
+        memberships: scripts.memberships,
+        styles: scripts.styles
+      };
+
+      return newData;
+    })
+    .then(data => storage.write(data))
+    .then(() => Promise.resolve())
+    .catch(err => Promise.reject(err));
+
 module.exports.setScript = (storage, script, name) =>
   storage.read()
     .then(data => {
