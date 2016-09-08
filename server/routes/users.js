@@ -8,8 +8,6 @@ import config from '../lib/config';
 export default () => {
   const api = Router();
 
-  api.get('/access_level', (req, res) => res.json({ access_level: req.user.access_level || 0 }));
-
   api.get('/', (req, res, next) =>
     updateFilter(req).then(query => {
       const options = {
