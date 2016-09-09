@@ -19,33 +19,34 @@ class Users extends Component {
   componentWillMount = () => {
     this.props.fetchUsers();
     this.props.fetchConnections();
-  }
+    this.props.fetchMemberships();
+  };
 
   onSearch = (query) => {
     this.props.fetchUsers(query);
-  }
+  };
 
   onReset = () => {
     this.props.fetchUsers('', true);
-  }
+  };
 
   openCreateForm = (e) => {
     e.preventDefault();
     this.setState({ showCreateForm: true });
-  }
+  };
 
   onCancelUserCreate = () => {
     this.setState({ showCreateForm: false });
     this.props.fetchUsers('', true);
-  }
+  };
 
   onConfirmUserCreate = () => {
     $('.createUserButton').click();
-  }
+  };
 
   userWasSaved = () => {
     this.setState({ showCreateForm: false });
-  }
+  };
 
   render() {
     const { loading, error, users, total, connections, userCreateError, userCreateLoading } = this.props;
@@ -72,6 +73,7 @@ class Users extends Component {
             fetchUsers={this.props.fetchUsers}
             userWasSaved={this.userWasSaved}
             validationErrors={this.props.validationErrors}
+            memberships={this.props.memberships}
           />
         </Confirm>
         <UserOverview onReset={this.onReset} onSearch={this.onSearch}
@@ -91,6 +93,7 @@ function mapStateToProps(state) {
     loading: state.users.get('loading'),
     users: state.users.get('records').toJS(),
     connections: state.connections.get('records').toJS(),
+    memberships: state.memberships.get('records').toJS(),
     total: state.users.get('total'),
     nextPage: state.users.get('nextPage')
   };
