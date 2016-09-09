@@ -76,5 +76,6 @@ module.exports.updateFilter = (req, res, next) => {
       }
 
       return null;
-    });
+    })
+    .catch(next);
 };
