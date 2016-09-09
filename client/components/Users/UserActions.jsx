@@ -71,7 +71,7 @@ export default class UserActions extends Component {
   };
 
   getChangeUsernameAction = (user, loading) => {
-    if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
+    if (!this.state.databaseConnections || !this.state.databaseConnections.length || !user.username) {
       return null;
     }
 

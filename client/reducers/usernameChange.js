@@ -19,8 +19,8 @@ export const usernameChange = createReducer(fromJS(initialState), {
     state.merge({
       ...initialState,
       userId: action.user.user_id,
-      userName: action.user.name || action.user.user_name || action.user.email,
-      userNameToChange: action.user.nickname,
+      userName: action.user.name || action.user.username || action.user.email,
+      userNameToChange: action.user.username,
       userEmail: action.user.email,
       connection: action.connection,
       requesting: true

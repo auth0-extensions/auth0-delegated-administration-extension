@@ -396,7 +396,7 @@ export function cancelUsernameChange() {
  */
 export function changeUsername(userId, data) {
   return (dispatch) => {
-    dispatch(updateUserAttribute(userId, { nickname: data }, 'USERNAME_CHANGE'));
+    dispatch(updateUserAttribute(userId, { username: data }, 'USERNAME_CHANGE'));
   };
 }
 
@@ -471,3 +471,21 @@ export function resendVerificationEmail(userId) {
     });
   };
 }
+
+/**
+
+ */
+export function fetchMemberships(onSuccess) {
+  return {
+    type: constants.FETCH_MEMBERSHIPS,
+    meta: {
+      onSuccess
+    },
+    payload: {
+      promise: axios.get('/api/me/memberships', {
+        responseType: 'json'
+      })
+    }
+  };
+}
+

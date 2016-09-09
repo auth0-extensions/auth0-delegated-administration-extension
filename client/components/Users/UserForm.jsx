@@ -10,6 +10,7 @@ export default createForm('user', class extends Component {
     error: PropTypes.string,
     loading: PropTypes.bool.isRequired,
     connections: React.PropTypes.array.isRequired,
+    memberships: React.PropTypes.array.isRequired,
     createUser: React.PropTypes.func.isRequired,
     userWasSaved: React.PropTypes.func.isRequired,
     fetchUsers: React.PropTypes.func.isRequired
@@ -19,7 +20,7 @@ export default createForm('user', class extends Component {
     super(props);
     this.state = {
       usernameRequired: false,
-      departments: []
+      departments: false
     };
   }
 
@@ -66,12 +67,21 @@ export default createForm('user', class extends Component {
     });
   };
 
+  getOptions = (memberships) => {
+    let options = [];
+    _.each(memberships, (a, idx) => {
+      options[idx] = { value: a, label: a };
+    });
+    if (options.length == 1 && !this.state.departments) {
+      this.setState({
+        departments: options[0].value
+    });
+    }
+    return options;
+  };
+
   render() {
-    const options = [
-      { value: 'first', label: 'First' },
-      { value: 'second', label: 'Second' },
-      { value: 'third', label: 'Third' }
-    ];
+
     if (this.props.loading || this.props.error) {
       return <div></div>;
     }
@@ -79,21 +89,28 @@ export default createForm('user', class extends Component {
       return connection.strategy == 'auth0';
     });
     const usernameRequired = this.state.usernameRequired;
-    const { fields: { email, username, password, repeat_password, connection }, validationErrors } = this.props;
-    return <div className="row">
+    const { fields: { email, username, password, repeat_password, connection }, validationErrors, memberships } = this.props;
+    const options = this.getOptions(memberships);
+    return (
+    <div className="row">
       <form className="createUserScreenForm form-horizontal col-xs-12" style={{ marginTop: '30px' }}
             onSubmit={function (e) {
               e.preventDefault();
               let arr = $('.createUserScreenForm').serializeArray(), obj = {};
               $.each(arr, function (indx, el) {
                 if (el.name != 'repeat_password') {
-                  if (el.name == 'email' || el.name == 'username' || el.name == 'password' || el.name == 'connection') {
+                  if (
+                    el.name == 'email' ||
+                    el.name == 'username' ||
+                    el.name == 'password' ||
+                    el.name == 'connection'
+                  ) {
                     obj[el.name] = el.value;
                   }
                 }
               });
-              if (this.state.departments.length > 0) {
-                obj['app_metadata'] = { 'groups': this.state.departments };
+              if (this.state.departments) {
+                obj['app_metadata'] = { "delegated-admin": { "department": this.state.departments } };
               }
               obj["email_verified"] = false;
               this.props.createUser(obj, function () {
@@ -125,7 +142,7 @@ export default createForm('user', class extends Component {
                      validationErrors={validationErrors}
           />
         </div>
-        {options ?
+        {(options.length > 1) ?
           <div className="custom_field">
             <div className="form-group">
               <label>Departments</label>
@@ -154,5 +171,6 @@ export default createForm('user', class extends Component {
         <input type="submit" className="createUserButton"></input>
       </form>
     </div>
+    )
   }
 });

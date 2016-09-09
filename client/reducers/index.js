@@ -20,6 +20,7 @@ import { passwordChange } from './passwordChange';
 import { usernameChange } from './usernameChange';
 import { userCreate } from './userCreate';
 import { emailChange } from './emailChange';
+import { memberships } from './memberships';
 import { resendVerificationEmail } from './resendVerificationEmail';
 
 export default combineReducers({
@@ -42,6 +43,7 @@ export default combineReducers({
   emailChange,
   userCreate,
   scripts,
+  memberships,
   resendVerificationEmail,
   form: formReducer
 });
