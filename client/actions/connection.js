@@ -8,7 +8,7 @@ export function fetchConnections() {
   return {
     type: constants.FETCH_CONNECTIONS,
     payload: {
-      promise: axios.get('/api/connections', {
+      promise: axios.get('/api/me/memberships', {
         responseType: 'json'
       })
     }

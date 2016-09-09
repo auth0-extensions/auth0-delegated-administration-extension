@@ -15,7 +15,7 @@ const getScript = (storage, name) =>
         } catch (err) {
           logger.error(`Custom script "${name}" error:`);
           logger.error(err);
-          convertedFunction = null;
+          return Promise.reject(err);
         }
       }
 
@@ -62,36 +62,25 @@ module.exports.setScript = (storage, script, name) =>
     .then(() => Promise.resolve())
     .catch(err => Promise.reject(err));
 
-module.exports.checkAccess = (req, chosenUser) =>
-  getScript(req.storage, 'access')
-    .then(script => {
-      if (script && !script(req.user, chosenUser)) {
-        return false;
-      }
+module.exports.getCustomData = (name, defaults) =>
+  (req, res, next) => {
+    getScript(req.storage, name)
+      .then(script => {
+        if (script) {
+          try {
+            script(req.user, (err, data) => {
+              if (err) {
+                next(err);
+              }
 
-      return chosenUser;
-    });
-
-module.exports.prepareUser = (req, res, next) =>
-  getScript(req.storage, 'write')
-    .then(script => {
-      if (script) {
-        script(req.user, req.body);
-      }
-
-      next();
-    });
-
-module.exports.updateFilter = (req) =>
-  getScript(req.storage, 'filter')
-    .then(script => {
-      let query = req.query.search || '';
-
-      if (script && script(req.user)) {
-        const filter = script(req.user);
-        query = (query) ? `(${query}) AND ${filter}` : filter;
-      }
-
-      return query;
-    });
-
+              res.json(data || defaults);
+            });
+          } catch (err) {
+            next(err);
+          }
+        } else {
+          res.json({});
+        }
+      })
+      .catch(next);
+  };

@@ -10,7 +10,7 @@ export default () => {
 
   api.get('/:name', (req, res, next) => getScript(req.storage, req.params.name).then(data => res.json(data || '')).catch(next));
 
-  api.post('/:name', (req, res, next) => setScript(req.storage, req.body, req.params.name).then((data) => res.json(data)).catch(next));
+  api.post('/:name', (req, res, next) => setScript(req.storage, req.body.script, req.params.name).then((data) => res.json(data)).catch(next));
 
   return api;
 };
