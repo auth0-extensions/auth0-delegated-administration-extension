@@ -3,6 +3,27 @@ import safeEval from 'safe-eval';
 
 import logger from './logger';
 
+const logScriptError = (storage, name, error) => {
+  logger.error(`Custom script "${name}" error:`);
+  logger.error(error);
+
+  storage.read().then(data => {
+    const newData = data;
+
+    newData.info = data.info || {};
+    newData.info[name] = newData.info[name] || { log: [] };
+    newData.info[name].status = 1;
+
+    if (newData.info[name].log.length > 4) {
+      newData.info[name].log.pop();
+    }
+
+    newData.info[name].log.unshift({ name: error.name, message: error.message });
+
+    storage.write(newData);
+  });
+};
+
 const getScript = (storage, name) =>
   storage.read()
     .then(data => {
@@ -13,8 +34,7 @@ const getScript = (storage, name) =>
         try {
           convertedFunction = safeEval(textFunction);
         } catch (err) {
-          logger.error(`Custom script "${name}" error:`);
-          logger.error(err);
+          logScriptError(storage, name, err);
           return Promise.reject(err);
         }
       }
@@ -54,7 +74,10 @@ module.exports.setScript = (storage, script, name) =>
     .then(data => {
       const newData = data;
       newData.scripts = newData.scripts || {};
+      newData.info = newData.info || {};
       newData.scripts[name] = script;
+      newData.info[name] = newData.info[name] || { log: [] };
+      newData.info[name].status = 0;
 
       return newData;
     })
