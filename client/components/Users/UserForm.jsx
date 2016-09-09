@@ -20,7 +20,7 @@ export default createForm('user', class extends Component {
     super(props);
     this.state = {
       usernameRequired: false,
-      departments: []
+      departments: false
     };
   }
 
@@ -72,9 +72,9 @@ export default createForm('user', class extends Component {
     _.each(memberships, (a, idx) => {
       options[idx] = { value: a, label: a };
     });
-    if (options.length == 1) {
+    if (options.length == 1 && !this.state.departments) {
       this.setState({
-        departments: options[1].value
+        departments: options[0].value
     });
     }
     return options;
@@ -99,13 +99,18 @@ export default createForm('user', class extends Component {
               let arr = $('.createUserScreenForm').serializeArray(), obj = {};
               $.each(arr, function (indx, el) {
                 if (el.name != 'repeat_password') {
-                  if (el.name == 'email' || el.name == 'username' || el.name == 'password' || el.name == 'connection') {
+                  if (
+                    el.name == 'email' ||
+                    el.name == 'username' ||
+                    el.name == 'password' ||
+                    el.name == 'connection'
+                  ) {
                     obj[el.name] = el.value;
                   }
                 }
               });
-              if (this.state.departments.length > 0) {
-                obj['app_metadata'] = { 'groups': this.state.departments };
+              if (this.state.departments) {
+                obj['app_metadata'] = { "delegated-admin": { "department": this.state.departments } };
               }
               obj["email_verified"] = false;
               this.props.createUser(obj, function () {
