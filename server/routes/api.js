@@ -4,7 +4,7 @@ import { middlewares } from 'auth0-extension-express-tools';
 
 import { expressJwtSecret, SigningKeyNotFoundError } from 'jwks-rsa';
 import { getUserAccessLevel, hasAccessLevel } from '../lib/middlewares';
-import { getScript } from '../lib/scripts';
+import { getCustomData } from '../lib/scripts';
 import config from '../lib/config';
 
 import applications from './applications';
@@ -43,34 +43,16 @@ export default () => {
     clientSecret: config('AUTH0_CLIENT_SECRET')
   }));
   api.use(getUserAccessLevel);
-  api.use(hasAccessLevel(1));
+  api.use(hasAccessLevel(1)); // checking access level: 1 - authorized user, who can manage another users
   api.use('/applications', applications());
   api.use('/connections', connections());
-  api.use('/scripts', scripts());
+  api.use('/scripts', hasAccessLevel(2), scripts()); // checking access level: 2 - super-admin, who can manage configurations
   api.use('/users', users());
   api.use('/logs', logs());
 
-  api.get('/styles', (req, res, next) => {
-    getScript(req.storage, 'styles')
-      .then(script => {
-        if (script) {
-          const data = script(req.user, req.body);
-          res.json(data);
-        }
-      })
-      .catch(err => next(err));
-  });
+  api.get('/styles', getCustomData('styles', {}));
 
-  api.get('/me/memberships', (req, res, next) => {
-    getScript(req.storage, 'memberships')
-      .then(script => {
-        if (script) {
-          const data = script(req.user, req.body);
-          res.json(data);
-        }
-      })
-      .catch(err => next(err));
-  });
+  api.get('/me/memberships', getCustomData('memberships', []));
 
   api.get('/access_level', (req, res) => res.json({ access_level: req.user.access_level || 0 }));
 

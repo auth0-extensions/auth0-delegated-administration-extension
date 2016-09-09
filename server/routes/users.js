@@ -2,40 +2,33 @@ import { Router } from 'express';
 import request from 'request';
 import { managementApi } from 'auth0-extension-tools';
 import auth0 from 'auth0';
-import { checkAccess, prepareUser, updateFilter } from '../lib/scripts';
+import { customMiddles } from '../lib/middlewares';
 import config from '../lib/config';
 
 export default () => {
   const api = Router();
 
-  api.get('/', (req, res, next) =>
-    updateFilter(req).then(query => {
-      const options = {
-        sort: 'last_login:-1',
-        q: query,
-        per_page: req.query.per_page || 100,
-        page: req.query.page || 0,
-        include_totals: true,
-        fields: 'user_id,name,email,identities,picture,last_login,logins_count,multifactor,blocked',
-        search_engine: 'v2'
-      };
+  api.get('/', customMiddles.updateFilter, (req, res, next) => {
+    const options = {
+      sort: 'last_login:-1',
+      q: req.query.search,
+      per_page: req.query.per_page || 100,
+      page: req.query.page || 0,
+      include_totals: true,
+      fields: 'user_id,name,email,identities,picture,last_login,logins_count,multifactor,blocked',
+      search_engine: 'v2'
+    };
 
-      req.auth0.users.getAll(options)
-        .then(logs => res.json(logs))
-        .catch(next);
-    }));
+    req.auth0.users.getAll(options)
+      .then(users => res.json(users))
+      .catch(next);
+  });
+
+  api.use('/:id', customMiddles.checkAccess);
 
   api.get('/:id', (req, res, next) => {
     req.auth0.users.get({ id: req.params.id })
-      .then(user => checkAccess(req, user))
-      .then(user => {
-        if (user) {
-          return res.json({ user });
-        }
-
-        res.status(403);
-        return res.json({ error: 'Forbidden! Sorry, you have no permissions to do this.' });
-      })
+      .then(user => res.json({ user }))
       .catch(next);
   });
 
@@ -131,7 +124,7 @@ export default () => {
   /*
    * Update user.
    */
-  api.put('/:id', prepareUser, (req, res, next) => {
+  api.put('/:id', customMiddles.prepareUser, (req, res, next) => {
     req.auth0.users.update({ id: req.params.id }, req.body)
       .then(() => res.status(200).send())
       .catch(next);
@@ -140,7 +133,7 @@ export default () => {
   /*
    * Create user.
    */
-  api.post('/', prepareUser, (req, res, next) => {
+  api.post('/', customMiddles.prepareUser, (req, res, next) => {
     req.auth0.users.create(req.body)
       .then(() => res.status(200).send())
       .catch(next);
