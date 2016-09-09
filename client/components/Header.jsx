@@ -24,7 +24,7 @@ export default class Header extends Component {
 
   render() {
     const { user, issuer, onLogout, accessLevel } = this.props;
-    const showMenu = accessLevel.access_level === 1;
+    const showMenu = accessLevel.access_level === 2;
     return (
       <header className="dashboard-header">
         <nav role="navigation" className="navbar navbar-default">
