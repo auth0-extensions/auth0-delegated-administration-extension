@@ -62,6 +62,29 @@ class Configuration extends Component {
     data['write'] = this.state.confWrite || this.props.write;
     data['styles'] = this.state.confStyles || this.props.styles;
     this.props.updateScripts(data);
+
+  };
+
+  saveOneScript = (attr) => {
+    let data = {};
+    switch (attr) {
+      case 'access':
+        data['script'] = this.state.confAccess || this.props.access;
+        break;
+      case 'filter':
+        data['script'] = this.state.confFilter || this.props.filter;
+        break;
+      case 'memberships':
+        data['script'] = this.state.confMemberships || this.props.memberships;
+        break;
+      case 'write':
+        data['script'] = this.state.confWrite || this.props.write;
+        break;
+      case 'styles':
+        data['script'] = this.state.confStyles || this.props.styles;
+        break;
+    }
+    this.props.updateScript(attr, data);
   };
 
   getValue = (scripts, index) => {
@@ -144,7 +167,8 @@ class Configuration extends Component {
                                 className="memberships"
                     />
                     <div className="saveConfigurationButton">
-                      <button onClick={this.saveConfiguration.bind(this)} className="btn btn-success">Save Memberships Query
+                      <button onClick={this.saveConfiguration.bind(this)} className="btn btn-success">Save Memberships
+                        Query
                       </button>
                     </div>
                   </Tab>
@@ -165,7 +189,7 @@ class Configuration extends Component {
                                 options={options}
                                 className="styles"
                     />
-                    <Codemirror className="hidden" value="" />
+                    <Codemirror className="hidden" value=""/>
                     <div className="saveConfigurationButton">
                       <button onClick={this.saveConfiguration.bind(this)} className="btn btn-success">Save Styles
                       </button>

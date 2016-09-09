@@ -37,3 +37,28 @@ export function updateScripts(data, onSuccess) {
     });
   };
 }
+
+/*
+ * Update configuration.
+ */
+export function updateScript(script, data, onSuccess) {
+  return (dispatch) => {
+    dispatch({
+      type: constants.UPDATE_SCRIPT,
+      meta: {
+        onSuccess: () => {
+          if (onSuccess) {
+            onSuccess();
+          }
+          dispatch(fetchScripts());
+        }
+      },
+      payload: {
+        promise: axios.post(`/api/scripts/${script}`, data, {
+          responseType: 'json'
+        })
+      }
+    });
+  };
+}
+
