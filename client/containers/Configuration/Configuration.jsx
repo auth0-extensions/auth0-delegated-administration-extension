@@ -121,6 +121,10 @@ class Configuration extends Component {
                                 options={options}
                                 className="access"
                     />
+                    <div className="saveConfigurationButton">
+                      <button onClick={this.saveConfiguration.bind(this)} className="btn btn-success">Save Access Query
+                      </button>
+                    </div>
                   </Tab>
                   <Tab eventKey={2} title="Filter Query">
                     <Codemirror value={this.getValue(scripts, 'filter')}
@@ -128,6 +132,10 @@ class Configuration extends Component {
                                 options={options}
                                 className="filter"
                     />
+                    <div className="saveConfigurationButton">
+                      <button onClick={this.saveConfiguration.bind(this)} className="btn btn-success">Save Filter Query
+                      </button>
+                    </div>
                   </Tab>
                   <Tab eventKey={3} title="Memberships Query">
                     <Codemirror value={this.getValue(scripts, 'memberships')}
@@ -135,6 +143,10 @@ class Configuration extends Component {
                                 options={options}
                                 className="memberships"
                     />
+                    <div className="saveConfigurationButton">
+                      <button onClick={this.saveConfiguration.bind(this)} className="btn btn-success">Save Memberships Query
+                      </button>
+                    </div>
                   </Tab>
                   <Tab eventKey={4} title="Write Query">
                     <Codemirror value={this.getValue(scripts, 'write')}
@@ -142,6 +154,10 @@ class Configuration extends Component {
                                 options={options}
                                 className="write"
                     />
+                    <div className="saveConfigurationButton">
+                      <button onClick={this.saveConfiguration.bind(this)} className="btn btn-success">Save Write Query
+                      </button>
+                    </div>
                   </Tab>
                   <Tab eventKey={5} title="Styles">
                     <Codemirror value={this.getValue(scripts, 'styles')}
@@ -150,13 +166,13 @@ class Configuration extends Component {
                                 className="styles"
                     />
                     <Codemirror className="hidden" value="" />
+                    <div className="saveConfigurationButton">
+                      <button onClick={this.saveConfiguration.bind(this)} className="btn btn-success">Save Styles
+                      </button>
+                    </div>
                   </Tab>
                 </Tabs>
                 : ''}
-              <div className="saveConfigurationButton">
-                <button onClick={this.saveConfiguration.bind(this)} className="btn btn-success">Save Configuration
-                </button>
-              </div>
             </div>
           </div>
         </div>

@@ -15,6 +15,7 @@ import UsernameChangeDialog from './UsernameChangeDialog';
 import ResendVerificationEmail from './ResendVerificationEmail';
 import EmailChangeDialog from './EmailChangeDialog';
 import getUserDatabaseConnections from '../../selectors/getUserDatabaseConnections';
+import TabsHeader from '../../components/TabsHeader';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
@@ -53,6 +54,7 @@ export default connectContainer(class extends Component {
 
     return (
       <div className="user">
+        <TabsHeader />
         <div className="row content-header">
           <div className="col-xs-12">
             <h2 className="pull-left">User Details</h2>

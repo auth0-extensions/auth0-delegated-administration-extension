@@ -5,6 +5,7 @@ import { connectionActions, userActions } from '../../actions';
 
 import { UserOverview, UserForm } from '../../components/Users';
 import { Confirm, Error } from '../../components/Dashboard';
+import TabsHeader from '../../components/TabsHeader';
 
 import './Users.css';
 
@@ -52,6 +53,7 @@ class Users extends Component {
     const { loading, error, users, total, connections, userCreateError, userCreateLoading } = this.props;
     return (
       <div className="users">
+        <TabsHeader />
         <div className="row content-header">
           <div className="col-xs-12 userTableContent">
             <h2>Users</h2>
