@@ -65,23 +65,29 @@ class Configuration extends Component {
 
   };
 
-  saveOneScript = (attr) => {
+  saveOneScript = () => {
     let data = {};
-    switch (attr) {
-      case 'access':
+    let attr = null;
+    switch (this.state.currentCode) {
+      case 1:
         data['script'] = this.state.confAccess || this.props.access;
+        attr = 'access';
         break;
-      case 'filter':
+      case 2:
         data['script'] = this.state.confFilter || this.props.filter;
+        attr = 'filter';
         break;
-      case 'memberships':
+      case 3:
         data['script'] = this.state.confMemberships || this.props.memberships;
+        attr = 'memberships';
         break;
-      case 'write':
+      case 4:
         data['script'] = this.state.confWrite || this.props.write;
+        attr = 'write';
         break;
-      case 'styles':
+      case 5:
         data['script'] = this.state.confStyles || this.props.styles;
+        attr = 'styles';
         break;
     }
     this.props.updateScript(attr, data);
@@ -145,7 +151,7 @@ class Configuration extends Component {
                                 className="access"
                     />
                     <div className="saveConfigurationButton">
-                      <button onClick={this.saveConfiguration.bind(this)} className="btn btn-success">Save Access Query
+                      <button onClick={this.saveOneScript.bind(this)} className="btn btn-success">Save Access Query
                       </button>
                     </div>
                   </Tab>
@@ -156,7 +162,7 @@ class Configuration extends Component {
                                 className="filter"
                     />
                     <div className="saveConfigurationButton">
-                      <button onClick={this.saveConfiguration.bind(this)} className="btn btn-success">Save Filter Query
+                      <button onClick={this.saveOneScript.bind(this)} className="btn btn-success">Save Filter Query
                       </button>
                     </div>
                   </Tab>
@@ -167,7 +173,7 @@ class Configuration extends Component {
                                 className="memberships"
                     />
                     <div className="saveConfigurationButton">
-                      <button onClick={this.saveConfiguration.bind(this)} className="btn btn-success">Save Memberships
+                      <button onClick={this.saveOneScript.bind(this)} className="btn btn-success">Save Memberships
                         Query
                       </button>
                     </div>
@@ -179,7 +185,7 @@ class Configuration extends Component {
                                 className="write"
                     />
                     <div className="saveConfigurationButton">
-                      <button onClick={this.saveConfiguration.bind(this)} className="btn btn-success">Save Write Query
+                      <button onClick={this.saveOneScript.bind(this)} className="btn btn-success">Save Write Query
                       </button>
                     </div>
                   </Tab>
@@ -191,7 +197,7 @@ class Configuration extends Component {
                     />
                     <Codemirror className="hidden" value=""/>
                     <div className="saveConfigurationButton">
-                      <button onClick={this.saveConfiguration.bind(this)} className="btn btn-success">Save Styles
+                      <button onClick={this.saveOneScript.bind(this)} className="btn btn-success">Save Styles
                       </button>
                     </div>
                   </Tab>
