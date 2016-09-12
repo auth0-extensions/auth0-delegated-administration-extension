@@ -6,6 +6,7 @@ import * as actions from '../actions/log';
 import LogDialog from '../components/Logs/LogDialog';
 import LogsTable from '../components/Logs/LogsTable';
 import { Error, LoadingPanel, TableTotals } from '../components/Dashboard';
+import TabsHeader from '../components/TabsHeader';
 
 class LogsContainer extends Component {
   componentWillMount() {
@@ -38,6 +39,7 @@ class LogsContainer extends Component {
   render() {
     const { log, logs } = this.props;
     return <div>
+         <TabsHeader />
         <LogDialog onClose={this.props.clearLog} error={log.error} loading={log.loading} log={log.record} logId={log.id} />
         <div className="row">
           <div className="col-xs-12 wrapper">

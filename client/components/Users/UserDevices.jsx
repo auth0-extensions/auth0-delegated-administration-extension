@@ -17,11 +17,9 @@ export default class UserDevices extends Component {
     if (loading) {
       return <div></div>;
     }
-
     if (!error && this.props.devices.size === 0) {
       return <div>This user does not have any registered devices.</div>;
     }
-
     const devices = this.props.devices.toJS();
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>

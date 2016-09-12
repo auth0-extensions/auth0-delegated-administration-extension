@@ -66,3 +66,17 @@ export function loadCredentials() {
     }
   };
 }
+
+export function getAccessLevel(onSuccess) {
+  return {
+    type: constants.FETCH_ACCESS_LEVEL,
+    meta: {
+      onSuccess
+    },
+    payload: {
+      promise: axios.get('/api/access_level', {
+        responseType: 'json'
+      })
+    }
+  };
+}

@@ -29,7 +29,7 @@ export const userPicker = createReducer(fromJS(initialState), {
   [constants.SEARCH_USER_PICKER_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occured while loading the users: ${action.errorMessage}`
+      error: `An error occurred while picking the user: ${action.errorMessage}`
     }),
   [constants.SEARCH_USER_PICKER_FULFILLED]: (state, action) =>
     state.merge({

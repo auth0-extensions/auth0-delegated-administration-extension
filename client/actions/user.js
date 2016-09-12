@@ -118,6 +118,55 @@ export function cancelBlockUser() {
 }
 
 /*
+ * Create the user details.
+ */
+export function createUser(data, onSuccess) {
+  return (dispatch) => {
+    dispatch({
+      type: constants.CREATE_USER,
+      meta: {
+        onSuccess: () => {
+          if (onSuccess) {
+            onSuccess();
+          } else {
+            dispatch(fetchUsers());
+          }
+        }
+      },
+      payload: {
+        promise: axios.post('/api/users/', data, {
+          responseType: 'json'
+        })
+      }
+    });
+  };
+}
+
+/*
+ * Update the user details.
+ */
+export function updateUser(userId, data, onSuccess) {
+  return (dispatch) => {
+    dispatch({
+      type: constants.UPDATE_USER,
+      meta: {
+        userId,
+        onSuccess: () => {
+          if (onSuccess) {
+            onSuccess();
+          }
+          dispatch(fetchUserDetail(userId));
+        }
+      },
+      payload: {
+        promise: axios.put(`/api/users/${userId}`, data, {
+          responseType: 'json'
+        })
+      }
+    });
+  };
+}
+/*
  * Block a user.
  */
 export function blockUser() {
@@ -300,3 +349,143 @@ export function changePassword(password, confirmPassword) {
     });
   };
 }
+
+/*
+ * Update the user attribute.
+ */
+export function updateUserAttribute(userId, data, constant) {
+  return (dispatch) => {
+    dispatch({
+      type: constants[constant],
+      meta: {
+        userId,
+        onSuccess: () => {
+          dispatch(fetchUserDetail(userId));
+        }
+      },
+      payload: {
+        promise: axios.put(`/api/users/${userId}`, data, {
+          responseType: 'json'
+        })
+      }
+    });
+  };
+}
+/*
+ * Get confirmation to change a username.
+ */
+export function requestUsernameChange(user, connection) {
+  return {
+    type: constants.REQUEST_USERNAME_CHANGE,
+    user,
+    connection
+  };
+}
+
+/*
+ * Cancel the username change process.
+ */
+export function cancelUsernameChange() {
+  return {
+    type: constants.CANCEL_USERNAME_CHANGE
+  };
+}
+
+/*
+ * Change username.
+ */
+export function changeUsername(userId, data) {
+  return (dispatch) => {
+    dispatch(updateUserAttribute(userId, { username: data }, 'USERNAME_CHANGE'));
+  };
+}
+
+/*
+ * Get confirmation to change a email.
+ */
+export function requestEmailChange(user, connection) {
+  return {
+    type: constants.REQUEST_EMAIL_CHANGE,
+    user,
+    connection
+  };
+}
+
+/*
+ * Cancel the email change process.
+ */
+export function cancelEmailChange() {
+  return {
+    type: constants.CANCEL_EMAIL_CHANGE
+  };
+}
+
+/*
+ * Change email.
+ */
+export function changeEmail(userId, data) {
+  return (dispatch) => {
+    dispatch(updateUserAttribute(userId, { email: data }, 'EMAIL_CHANGE'));
+  };
+}
+
+/*
+ * Get confirmation to change a email.
+ */
+export function requestResendVerificationEmail(user, connection) {
+  return {
+    type: constants.REQUEST_RESEND_VERIFICATION_EMAIL,
+    user,
+    connection
+  };
+}
+
+/*
+ * Cancel the email change process.
+ */
+export function cancelResendVerificationEmail() {
+  return {
+    type: constants.CANCEL_RESEND_VERIFICATION_EMAIL
+  };
+}
+
+/*
+ * Resend verification email.
+ */
+export function resendVerificationEmail(userId) {
+  return (dispatch) => {
+    const data = { user_id: userId };
+    dispatch({
+      type: constants.RESEND_VERIFICATION_EMAIL,
+      meta: {
+        userId,
+        onSuccess: () => {
+          dispatch(fetchUserDetail(userId));
+        }
+      },
+      payload: {
+        promise: axios.post('/api/users/send-verification-email', data, {
+          responseType: 'json'
+        })
+      }
+    });
+  };
+}
+
+/**
+
+ */
+export function fetchMemberships(onSuccess) {
+  return {
+    type: constants.FETCH_MEMBERSHIPS,
+    meta: {
+      onSuccess
+    },
+    payload: {
+      promise: axios.get('/api/me/memberships', {
+        responseType: 'json'
+      })
+    }
+  };
+}
+

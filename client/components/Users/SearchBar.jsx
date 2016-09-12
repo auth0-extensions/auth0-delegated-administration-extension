@@ -8,9 +8,7 @@ export default class SearchBar extends Component {
     onSearch: PropTypes.func.isRequired
   }
 
-  defaultProps: {
-    enabled: true
-  }
+  defaultProps:{ enabled: true  }
 
   onKeyPress = (e) => {
     if (e.key === 'Enter') {

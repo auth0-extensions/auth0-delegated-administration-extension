@@ -22,57 +22,6 @@ const initialState = {
   }
 };
 
-export const user = createReducer(fromJS(initialState), {
-  [constants.FETCH_USER_PENDING]: (state, action) =>
-    state.merge({
-      error: null,
-      loading: true,
-      userId: action.meta.userId
-    }),
-  [constants.FETCH_USER_REJECTED]: (state, action) =>
-    state.merge({
-      loading: false,
-      error: `An error occured while loading the user: ${action.errorMessage}`
-    }),
-  [constants.FETCH_USER_FULFILLED]: (state, action) => {
-    const { data } = action.payload;
-    if (data.user.user_id !== state.get('userId')) {
-      return state;
-    }
-
-    return state.merge({
-      loading: false,
-      record: fromJS(data.user)
-    });
-  },
-
-  [constants.FETCH_USER_LOGS_PENDING]: (state, action) =>
-    state.merge({
-      logs: userLogs(state.get('logs'), action)
-    }),
-  [constants.FETCH_USER_LOGS_REJECTED]: (state, action) =>
-    state.merge({
-      logs: userLogs(state.get('logs'), action)
-    }),
-  [constants.FETCH_USER_LOGS_FULFILLED]: (state, action) =>
-    state.merge({
-      logs: userLogs(state.get('logs'), action)
-    }),
-
-  [constants.FETCH_USER_DEVICES_PENDING]: (state, action) =>
-    state.merge({
-      devices: userDevices(state.get('devices'), action)
-    }),
-  [constants.FETCH_USER_DEVICES_REJECTED]: (state, action) =>
-    state.merge({
-      devices: userDevices(state.get('devices'), action)
-    }),
-  [constants.FETCH_USER_DEVICES_FULFILLED]: (state, action) =>
-    state.merge({
-      devices: userDevices(state.get('devices'), action)
-    })
-});
-
 const userLogs = createReducer(fromJS(initialState.logs), {
   [constants.FETCH_USER_LOGS_PENDING]: (state) =>
     state.merge({
@@ -131,4 +80,55 @@ const userDevices = createReducer(fromJS(initialState.devices), {
       records: fromJS(devices)
     });
   }
+});
+
+export const user = createReducer(fromJS(initialState), {
+  [constants.FETCH_USER_PENDING]: (state, action) =>
+    state.merge({
+      error: null,
+      loading: true,
+      userId: action.meta.userId
+    }),
+  [constants.FETCH_USER_REJECTED]: (state, action) =>
+    state.merge({
+      loading: false,
+      error: `An error occured while loading the user: ${action.errorMessage}`
+    }),
+  [constants.FETCH_USER_FULFILLED]: (state, action) => {
+    const { data } = action.payload;
+    if (data.user.user_id !== state.get('userId')) {
+      return state;
+    }
+
+    return state.merge({
+      loading: false,
+      record: fromJS(data.user)
+    });
+  },
+
+  [constants.FETCH_USER_LOGS_PENDING]: (state, action) =>
+    state.merge({
+      logs: userLogs(state.get('logs'), action)
+    }),
+  [constants.FETCH_USER_LOGS_REJECTED]: (state, action) =>
+    state.merge({
+      logs: userLogs(state.get('logs'), action)
+    }),
+  [constants.FETCH_USER_LOGS_FULFILLED]: (state, action) =>
+    state.merge({
+      logs: userLogs(state.get('logs'), action)
+    }),
+
+  [constants.FETCH_USER_DEVICES_PENDING]: (state, action) =>
+    state.merge({
+      devices: userDevices(state.get('devices'), action)
+    }),
+  [constants.FETCH_USER_DEVICES_REJECTED]: (state, action) =>
+    state.merge({
+      devices: userDevices(state.get('devices'), action)
+    }),
+  [constants.FETCH_USER_DEVICES_FULFILLED]: (state, action) =>
+    state.merge({
+      devices: userDevices(state.get('devices'), action)
+    })
 });

@@ -7,11 +7,15 @@ import { logActions, userActions } from '../../actions';
 import './User.css';
 import LogDialog from '../../components/Logs/LogDialog';
 import { UserActions, UserDevices, UserHeader, UserProfile, UserLogs } from '../../components/Users';
-import { BlockDialog, UnblockDialog, RemoveMultiFactorDialog, DeleteDialog } from '../../components/Users';
+import { BlockDialog, UnblockDialog, RemoveMultiFactorDialog, DeleteDialog, UserForm } from '../../components/Users';
 
 import PasswordResetDialog from './PasswordResetDialog';
 import PasswordChangeDialog from './PasswordChangeDialog';
+import UsernameChangeDialog from './UsernameChangeDialog';
+import ResendVerificationEmail from './ResendVerificationEmail';
+import EmailChangeDialog from './EmailChangeDialog';
 import getUserDatabaseConnections from '../../selectors/getUserDatabaseConnections';
+import TabsHeader from '../../components/TabsHeader';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
@@ -50,53 +54,72 @@ export default connectContainer(class extends Component {
 
     return (
       <div className="user">
+        <TabsHeader />
         <div className="row content-header">
           <div className="col-xs-12">
             <h2 className="pull-left">User Details</h2>
             <div className="pull-right">
               <UserActions user={user}
-                databaseConnections={databaseConnections}
-                deleteUser={this.props.requestDeleteUser}
-                resetPassword={this.props.requestPasswordReset}
-                changePassword={this.props.requestPasswordChange}
-                removeMfa={this.props.requestRemoveMultiFactor}
-                blockUser={this.props.requestBlockUser}
-                unblockUser={this.props.requestUnblockUser}
+                           databaseConnections={databaseConnections}
+                           deleteUser={this.props.requestDeleteUser}
+                           resetPassword={this.props.requestPasswordReset}
+                           changePassword={this.props.requestPasswordChange}
+                           removeMfa={this.props.requestRemoveMultiFactor}
+                           blockUser={this.props.requestBlockUser}
+                           unblockUser={this.props.requestUnblockUser}
+                           changeUsername={this.props.requestUsernameChange}
+                           changeEmail={this.props.requestEmailChange}
+                           resendVerificationEmail={this.props.requestResendVerificationEmail}
               />
             </div>
           </div>
         </div>
         <div className="row">
           <div className="col-xs-12">
-            <UserHeader loading={user.get('loading')} user={user.get('record')} error={user.get('error')} />
+            <UserHeader loading={user.get('loading')} user={user.get('record')} error={user.get('error')}/>
           </div>
         </div>
         <div className="row user-tabs">
           <div className="col-xs-12">
             <Tabs defaultActiveKey={1} animation={false}>
               <Tab eventKey={1} title="Profile">
-                <UserProfile loading={user.get('loading')} user={user.get('record')} error={user.get('error')} />
+                <UserProfile loading={user.get('loading')} user={user.get('record')}
+                             error={user.get('error')}/>
               </Tab>
               <Tab eventKey={2} title="Devices">
-                <UserDevices loading={devices.get('loading')} devices={devices.get('records')} error={devices.get('error')} />
+                <UserDevices loading={devices.get('loading')} devices={devices.get('records')}
+                             error={devices.get('error')}/>
               </Tab>
               <Tab eventKey={3} title="Logs">
-                <LogDialog onClose={this.props.clearLog} error={log.get('error')} loading={log.get('loading')} log={log.get('record')} logId={log.get('logId')} />
-                <UserLogs onOpen={this.props.fetchLog} loading={logs.get('loading')} logs={logs.get('records')} user={user.get('record')} error={logs.get('error')} />
+                <LogDialog onClose={this.props.clearLog} error={log.get('error')}
+                           loading={log.get('loading')} log={log.get('record')}
+                           logId={log.get('logId')}/>
+                <UserLogs onOpen={this.props.fetchLog} loading={logs.get('loading')}
+                          logs={logs.get('records')} user={user.get('record')}
+                          error={logs.get('error')}/>
               </Tab>
             </Tabs>
           </div>
         </div>
-        <DeleteDialog error={deleteUser.get('error')} loading={deleteUser.get('loading')} userName={deleteUser.get('userName')} requesting={deleteUser.get('requesting')}
-          onCancel={this.props.cancelDeleteUser} onConfirm={this.props.deleteUser} />
-        <PasswordChangeDialog onCancel={this.props.cancelPasswordChange} onConfirm={this.props.changePassword} />
-        <PasswordResetDialog onCancel={this.props.cancelPasswordReset} onConfirm={this.props.resetPassword} />
-        <BlockDialog error={block.get('error')} loading={block.get('loading')} userName={block.get('userName')} requesting={block.get('requesting')}
-          onCancel={this.props.cancelBlockUser} onConfirm={this.props.blockUser} />
-        <UnblockDialog error={unblock.get('error')} loading={unblock.get('loading')} userName={unblock.get('userName')} requesting={unblock.get('requesting')}
-          onCancel={this.props.cancelUnblockUser} onConfirm={this.props.unblockUser} />
-        <RemoveMultiFactorDialog error={mfa.get('error')} loading={mfa.get('loading')} userName={mfa.get('userName')} requesting={mfa.get('requesting')}
-          onCancel={this.props.cancelRemoveMultiFactor} onConfirm={this.props.removeMultiFactor} />
+        <DeleteDialog error={deleteUser.get('error')} loading={deleteUser.get('loading')}
+                      userName={deleteUser.get('userName')} requesting={deleteUser.get('requesting')}
+                      onCancel={this.props.cancelDeleteUser} onConfirm={this.props.deleteUser}/>
+        <PasswordChangeDialog onCancel={this.props.cancelPasswordChange} onConfirm={this.props.changePassword}/>
+        <UsernameChangeDialog onCancel={this.props.cancelUsernameChange} onConfirm={this.props.changeUsername}/>
+        <EmailChangeDialog onCancel={this.props.cancelEmailChange} onConfirm={this.props.changeEmail}/>
+        <ResendVerificationEmail onCancel={this.props.cancelResendVerificationEmail}
+                                 onConfirm={this.props.resendVerificationEmail}/>
+        <PasswordResetDialog onCancel={this.props.cancelPasswordReset} onConfirm={this.props.resetPassword}/>
+        <BlockDialog error={block.get('error')} loading={block.get('loading')} userName={block.get('userName')}
+                     requesting={block.get('requesting')}
+                     onCancel={this.props.cancelBlockUser} onConfirm={this.props.blockUser}/>
+        <UnblockDialog error={unblock.get('error')} loading={unblock.get('loading')}
+                       userName={unblock.get('userName')} requesting={unblock.get('requesting')}
+                       onCancel={this.props.cancelUnblockUser} onConfirm={this.props.unblockUser}/>
+        <RemoveMultiFactorDialog error={mfa.get('error')} loading={mfa.get('loading')}
+                                 userName={mfa.get('userName')} requesting={mfa.get('requesting')}
+                                 onCancel={this.props.cancelRemoveMultiFactor}
+                                 onConfirm={this.props.removeMultiFactor}/>
       </div>
     );
   }

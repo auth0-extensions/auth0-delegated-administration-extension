@@ -26,7 +26,7 @@ module.exports = externalModules.then((externals) => {
   externals.compatible['raw-body'] = true; // Local: ~2.1.5 - Webtask: 2.1.0
   externals.compatible['read-all-stream'] = true; // Local: ^3.0.0 - Webtask: 2.1.2
   externals.compatible['request'] = true; // Local: 2.x, ^2.34, ^2.69.0 - Webtask: 2.56.0
-  externals.compatible['request-promise'] = true; // Local: 2.x, ^2.34, ^2.69.0 - Webtask: 2.56.0
+  // externals.compatible['request-promise'] = true; // Local: 2.x, ^2.34, ^2.69.0 - Webtask: 2.56.0
   externals.compatible['superagent'] = true; // Local: ^1.1.0, ^1.4.0, ^1.7.2 - Webtask: 1.2.0
   externals.compatible['type-check'] = true; // Local: ~0.3.2 - Webtask: 0.3.1
   externals.compatible['winston'] = true; // Local: ^2.2.0 - Webtask: 1.0.0
@@ -51,6 +51,7 @@ module.exports = externalModules.then((externals) => {
     } else {
       externals.compatible[k] = 'commonjs ' + externals.compatible[k];
     }
+    console.log('External:', externals.compatible[k]);
   });
 
   return {
@@ -74,7 +75,7 @@ module.exports = externalModules.then((externals) => {
       ]
     },
     plugins: [
-      new Webpack.IgnorePlugin(/cls-bluebird/),
+      new Webpack.IgnorePlugin(/cls-bluebird/, /request-promise/),
       new Webpack.optimize.DedupePlugin(),
       new Webpack.optimize.UglifyJsPlugin({
         minimize: true,

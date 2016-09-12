@@ -2,10 +2,9 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 import { logout } from '../actions/auth';
-import { applicationActions, connectionActions } from '../actions';
+import { applicationActions, connectionActions, authActions } from '../actions';
 
 import Header from '../components/Header';
-import { NavigationLink } from '../components/Dashboard';
 
 class App extends Component {
   static propTypes = {
@@ -17,22 +16,17 @@ class App extends Component {
   componentWillMount() {
     this.props.fetchApplications();
     this.props.fetchConnections();
+    this.props.getAccessLevel();
   }
 
   render() {
     return (
       <div>
-        <Header user={this.props.user} issuer={this.props.issuer} onLogout={this.props.logout} />
+        <Header user={this.props.user} issuer={this.props.issuer} onLogout={this.props.logout} accessLevel={this.props.accessLevel.toJSON()} />
         <div className="container">
           <div className="row">
             <section className="content-page current">
               <div className="col-xs-12">
-                <div className="widget-title title-with-nav-bars">
-                  <ul className="nav nav-tabs">
-                    <NavigationLink title="Users" route="/users" />
-                    <NavigationLink title="Logs" route="/logs" />
-                  </ul>
-                </div>
                 <div id="content-area" className="tab-content">
                   { this.props.children }
                 </div>
@@ -49,8 +43,9 @@ function select(state) {
   return {
     issuer: state.auth.get('issuer'),
     user: state.auth.get('user'),
-    ruleStatus: state.ruleStatus
+    ruleStatus: state.ruleStatus,
+    accessLevel: state.accessLevel.get('record')
   };
 }
 
-export default connect(select, { logout, ...applicationActions, ...connectionActions })(App);
+export default connect(select, { logout, ...applicationActions, ...connectionActions, ...authActions })(App);
