@@ -52,6 +52,12 @@ class Configuration extends Component {
 
   onChange = (index) => {
     this.setState({ currentCode: index });
+    setTimeout(function () {
+      $('.CodeMirror').each(function() {
+        let self = $(this);
+        self.context.CodeMirror.refresh();
+      });
+    },100);
   };
 
   saveConfiguration = () => {
@@ -129,8 +135,10 @@ class Configuration extends Component {
       tabSize: 2,
       gutters: ['CodeMirror-lint-markers'],
       theme: 'mbo',
+      height:300,
       lint: jsHintOptions
     };
+
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
         <Error message={error}/>
