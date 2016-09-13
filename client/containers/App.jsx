@@ -28,7 +28,7 @@ class App extends Component {
             <section className="content-page current">
               <div className="col-xs-12">
                 <div id="content-area" className="tab-content">
-                  { this.props.children }
+                  {React.cloneElement(this.props.children, {accessLevel: this.props.accessLevel.toJSON()})}
                 </div>
               </div>
             </section>

@@ -20,7 +20,6 @@ class Users extends Component {
   componentWillMount = () => {
     this.props.fetchUsers();
     this.props.fetchConnections();
-    this.props.fetchMemberships();
   };
 
   onSearch = (query) => {
@@ -75,11 +74,15 @@ class Users extends Component {
             fetchUsers={this.props.fetchUsers}
             userWasSaved={this.userWasSaved}
             validationErrors={this.props.validationErrors}
-            memberships={this.props.memberships}
+            memberships={this.props.accessLevel.memberships}
           />
         </Confirm>
-        <UserOverview onReset={this.onReset} onSearch={this.onSearch}
-                      error={error} users={users} total={total} loading={loading}
+        <UserOverview onReset={this.onReset}
+                      onSearch={this.onSearch}
+                      error={error}
+                      users={users}
+                      total={total}
+                      loading={loading}
         />
       </div>
     );
@@ -95,7 +98,6 @@ function mapStateToProps(state) {
     loading: state.users.get('loading'),
     users: state.users.get('records').toJS(),
     connections: state.connections.get('records').toJS(),
-    memberships: state.memberships.get('records').toJS(),
     total: state.users.get('total'),
     nextPage: state.users.get('nextPage')
   };

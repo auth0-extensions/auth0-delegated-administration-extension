@@ -6,7 +6,7 @@ import createReducer from '../utils/createReducer';
 const initialState = {
   loading: false,
   error: null,
-  record: { access_level: 0 }
+  record: { access_level: 0, memberships:[] }
 };
 
 export const accessLevel = createReducer(fromJS(initialState), {
