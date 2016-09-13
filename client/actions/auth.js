@@ -74,7 +74,7 @@ export function getAccessLevel(onSuccess) {
       onSuccess
     },
     payload: {
-      promise: axios.get('/api/access_level', {
+      promise: axios.get('/api/me', {
         responseType: 'json'
       })
     }

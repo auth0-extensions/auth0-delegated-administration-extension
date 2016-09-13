@@ -472,20 +472,3 @@ export function resendVerificationEmail(userId) {
   };
 }
 
-/**
-
- */
-export function fetchMemberships(onSuccess) {
-  return {
-    type: constants.FETCH_MEMBERSHIPS,
-    meta: {
-      onSuccess
-    },
-    payload: {
-      promise: axios.get('/api/me/memberships', {
-        responseType: 'json'
-      })
-    }
-  };
-}
-

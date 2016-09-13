@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import { LoadingPanel, Error } from '../../components/Dashboard';
 import Codemirror from 'react-codemirror';
+
 import 'codemirror/mode/javascript/javascript';
-import 'codemirror/mode/xml/xml';
-import 'codemirror/mode/markdown/markdown';
+import 'codemirror/addon/lint/lint';
+import 'codemirror/addon/lint/javascript-lint';
+import 'codemirror/addon/lint/json-lint';
+
 import 'codemirror/theme/mbo.css';
+import 'codemirror/addon/lint/lint.css';
 
 import { connect } from 'react-redux';
 import { Tabs, Tab } from 'react-bootstrap';
@@ -52,6 +56,10 @@ class Configuration extends Component {
 
   onChange = (index) => {
     this.setState({ currentCode: index });
+    this.refresh();
+  };
+
+  refresh = () => {
     setTimeout(function () {
       $('.CodeMirror').each(function() {
         let self = $(this);
