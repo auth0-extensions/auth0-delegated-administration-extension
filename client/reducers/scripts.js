@@ -6,24 +6,22 @@ import createReducer from '../utils/createReducer';
 const initialState = {
   loading: false,
   error: null,
-  records: null
+  records: { }
 };
 
 export const scripts = createReducer(fromJS(initialState), {
-  [constants.FETCH_SCRIPTS_PENDING]: (state) =>
+  [constants.FETCH_SCRIPT_PENDING]: (state) =>
     state.merge({
       loading: true,
       error: null
     }),
-  [constants.FETCH_SCRIPTS_REJECTED]: (state, action) =>
+  [constants.FETCH_SCRIPT_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occured while loading the connections: ${action.errorMessage}`
+      error: `An error occured while loading the script: ${action.errorMessage}`
     }),
-  [constants.FETCH_SCRIPTS_FULFILLED]: (state, action) =>
-    state.merge({
-      loading: false,
-      error: null,
-      records: fromJS(action.payload.data)
-    })
+  [constants.FETCH_SCRIPT_FULFILLED]: (state, action) =>
+    state
+      .setIn([ 'loading' ], false)
+      .setIn([ 'records', action.meta.name ], fromJS(action.payload.data.script))
 });

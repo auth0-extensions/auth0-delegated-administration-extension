@@ -24,12 +24,16 @@ const logScriptError = (storage, name, error) => {
   });
 };
 
-const getScript = (storage, name) =>
+const getScript = (storage, name, textOnly = false) =>
   storage.read()
     .then(data => {
+
+      console.log('Get script:', name);
+      console.log('Data:', data);
       const textFunction = (data.scripts && data.scripts[name]) ? data.scripts[name] : null;
       let convertedFunction;
 
+      console.log('Text:', textFunction);
       if (textFunction) {
         try {
           convertedFunction = safeEval(textFunction);
@@ -38,7 +42,10 @@ const getScript = (storage, name) =>
           return Promise.reject(err);
         }
       }
-
+            console.log('Converted:', convertedFunction);
+if (textOnly) {
+  return Promise.resolve(textFunction);
+}
       return Promise.resolve(convertedFunction);
     })
     .catch(err => Promise.reject(err));
@@ -102,6 +109,7 @@ module.exports.getCustomData = (name, defaults) =>
                   break;
 
                 case 'memberships':
+                console.log({ memberships: data || defaults, role: req.user.role || 0 }, req.user);
                   res.json({ memberships: data || defaults, role: req.user.role || 0 });
                   break;
 
@@ -113,7 +121,18 @@ module.exports.getCustomData = (name, defaults) =>
             next(err);
           }
         } else {
-          res.json({});
+          switch (name) {
+            case 'styles':
+              res.json({ });
+              break;
+
+            case 'memberships':
+              res.json({ memberships: [ ], role: req.user.role || 0 });
+              break;
+
+            default:
+              throw new Error('Wrong customData name. Use "styles" or "memberships"');
+          }
         }
       })
       .catch(next);

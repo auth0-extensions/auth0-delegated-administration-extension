@@ -30,7 +30,11 @@ class Configuration extends Component {
   }
 
   componentWillMount = () => {
-    this.props.fetchScripts();
+    this.props.fetchScript('access');
+    this.props.fetchScript('filter');
+    this.props.fetchScript('write');
+    this.props.fetchScript('memberships');
+    this.props.fetchScript('styles');
   };
 
   updateCode = (newCode) => {
@@ -149,7 +153,7 @@ class Configuration extends Component {
 
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
-        <Error message={error}/>
+        <Error message={error} />
         <div className="users">
           <div className="row content-header">
             <div className="col-xs-12 userTableContent">
@@ -158,7 +162,6 @@ class Configuration extends Component {
           </div>
           <div className="row user-tabs">
             <div className="col-xs-12">
-              { scripts ?
                 <Tabs defaultActiveKey={1} animation={false} onSelect={this.onChange.bind(this)}>
                   <Tab eventKey={1} title="Access Query">
                     <Codemirror value={ this.getValue(scripts, 'access') }
@@ -218,7 +221,6 @@ class Configuration extends Component {
                     </div>
                   </Tab>
                 </Tabs>
-                : ''}
             </div>
           </div>
         </div>

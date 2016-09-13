@@ -1,6 +1,6 @@
 import logger from '../logger';
 
-module.exports = (err, req, res) => {
+module.exports = (err, req, res, next) => {
   logger.error(err);
 
   if (err && err.name === 'ValidationError') {

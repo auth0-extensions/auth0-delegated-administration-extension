@@ -110,7 +110,7 @@ export default createForm('user', class extends Component {
                 }
               });
               if (this.state.departments) {
-                obj['app_metadata'] = { "delegated-admin": { "department": this.state.departments } };
+                obj.group = this.state.departments;
               }
               obj["email_verified"] = false;
               this.props.createUser(obj, function () {

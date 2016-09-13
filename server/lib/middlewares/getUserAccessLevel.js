@@ -1,5 +1,18 @@
 import * as constants from '../../constants';
+import _ from 'lodash';
 
+const getUserRoles = (user) => {
+  const roles = [
+    user.roles,
+    user.app_metadata && user.app_metadata.roles,
+    user.app_metadata && user.app_metadata.authorization && user.app_metadata.authorization.roles
+  ];
+  return _(roles)
+    .flatten()
+    .filter(role => role)
+    .uniq()
+    .value();
+};
 
 const checkRole = (data) => {
   let accessLevel = 0;
@@ -14,11 +27,8 @@ const checkRole = (data) => {
 };
 
 module.exports = function getUserAccessLevel(req, res, next) {
-  const userMeta = req.user.authorization || {};
-  const roles = (userMeta.authorization) ? userMeta.authorization.roles || userMeta.roles : userMeta.roles;
-  const groups = (userMeta.authorization) ? userMeta.authorization.groups || userMeta.groups : userMeta.groups;
+  const roles = getUserRoles(req.user);
   const request = req;
-
-  request.user.role = Math.max(checkRole(roles), checkRole(groups));
+  request.user.role = checkRole(roles);
   next();
 };

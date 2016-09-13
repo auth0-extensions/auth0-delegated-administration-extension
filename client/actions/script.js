@@ -4,13 +4,16 @@ import * as constants from '../constants';
 /*
  * Load all connections available in the Auth0 account.
  */
-export function fetchScripts() {
+export function fetchScript(name) {
   return {
-    type: constants.FETCH_SCRIPTS,
+    type: constants.FETCH_SCRIPT,
     payload: {
-      promise: axios.get('/api/scripts', {
+      promise: axios.get(`/api/scripts/${name}`, {
         responseType: 'json'
       })
+    },
+    meta: {
+      name
     }
   };
 }
@@ -18,6 +21,7 @@ export function fetchScripts() {
  * Update configuration.
  */
 export function updateScripts(data, onSuccess) {
+  console.log('Update:', data);
   return (dispatch) => {
     dispatch({
       type: constants.UPDATE_SCRIPTS,
@@ -26,7 +30,7 @@ export function updateScripts(data, onSuccess) {
           if (onSuccess) {
             onSuccess();
           }
-          dispatch(fetchScripts());
+          dispatch(fetchScript(data.name));
         }
       },
       payload: {
@@ -42,6 +46,7 @@ export function updateScripts(data, onSuccess) {
  * Update configuration.
  */
 export function updateScript(script, data, onSuccess) {
+  console.log('Update single', script, data);
   return (dispatch) => {
     dispatch({
       type: constants.UPDATE_SCRIPT,
@@ -50,7 +55,7 @@ export function updateScript(script, data, onSuccess) {
           if (onSuccess) {
             onSuccess();
           }
-          dispatch(fetchScripts());
+          dispatch(fetchScript(data.name));
         }
       },
       payload: {
@@ -61,4 +66,3 @@ export function updateScript(script, data, onSuccess) {
     });
   };
 }
-
