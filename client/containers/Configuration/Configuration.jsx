@@ -144,7 +144,7 @@ class Configuration extends Component {
       gutters: ['CodeMirror-lint-markers'],
       theme: 'mbo',
       height:300,
-      lint: true
+      lint: jsHintOptions
     };
 
     return (
