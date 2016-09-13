@@ -7,8 +7,10 @@ import 'codemirror/addon/lint/lint';
 import 'codemirror/addon/lint/javascript-lint';
 import 'codemirror/addon/lint/json-lint';
 
-import 'codemirror/theme/mbo.css';
+import 'codemirror';
+import 'codemirror/addon/hint/show-hint.css';
 import 'codemirror/addon/lint/lint.css';
+import './theme.css';
 
 import { connect } from 'react-redux';
 import { Tabs, Tab } from 'react-bootstrap';
@@ -122,20 +124,8 @@ class Configuration extends Component {
 
   render() {
     const { scripts, loading, error } = this.props;
-    const jsHintOptions = {
-      options: {
-        'sub': true,
-        'noarg': true,
-        'undef': true,
-        'eqeqeq': true,
-        'laxcomma': true,
-        '-W025': true,
-        'predef': ['module']
-      }
-    };
     const options = {
       mode: 'javascript',
-      lineNumbers: true,
       lineWrapping: true,
       continueComments: 'Enter',
       matchBrackets: true,
@@ -145,10 +135,17 @@ class Configuration extends Component {
       smartIndent: true,
       autofocus: true,
       tabSize: 2,
-      gutters: ['CodeMirror-lint-markers'],
-      theme: 'mbo',
-      height:300,
-      lint: jsHintOptions
+      lint: {
+        options: {
+          sub: true,
+          noarg: true,
+          undef: true,
+          eqeqeq: true,
+          laxcomma: true,
+          '-W025': true,
+          predef: [ 'module' ]
+        }
+      }
     };
 
     return (
@@ -197,7 +194,8 @@ class Configuration extends Component {
                       </button>
                     </div>
                   </Tab>
-                  <Tab eventKey={4} title="Write Query">
+                  <Tab eventKey={4} title="Write Hook">
+                    <p>The <strong>write hook</strong> will run every time a new user is created. This hook will allow you to shape the user object before it's sent to Auth0. The context object contains the request (with the current user) and the payload sent by the end user.</p>
                     <Codemirror value={this.getValue(scripts, 'write')}
                                 onChange={this.updateCode}
                                 options={options}

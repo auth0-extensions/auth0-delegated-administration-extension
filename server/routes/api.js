@@ -8,13 +8,17 @@ import { getCustomData } from '../lib/scripts';
 import config from '../lib/config';
 import * as constants from '../constants';
 
+import ScriptManager from '../lib/scriptmanager';
+
 import applications from './applications';
 import connections from './connections';
 import scripts from './scripts';
 import logs from './logs';
 import users from './users';
 
-export default () => {
+export default (storage) => {
+  const scriptManager = new ScriptManager(storage);
+
   const api = Router();
   api.use(jwt({
     secret: expressJwtSecret({
@@ -47,8 +51,8 @@ export default () => {
   api.use(hasAccessLevel(constants.ADMIN_ACCESS_LEVEL));
   api.use('/applications', applications());
   api.use('/connections', connections());
-  api.use('/scripts', hasAccessLevel(constants.SUPER_ACCESS_LEVEL), scripts());
-  api.use('/users', users());
+  api.use('/scripts', hasAccessLevel(constants.SUPER_ACCESS_LEVEL), scripts(storage));
+  api.use('/users', users(storage, scriptManager));
   api.use('/logs', logs());
 
   api.get('/styles', getCustomData('styles', {}));

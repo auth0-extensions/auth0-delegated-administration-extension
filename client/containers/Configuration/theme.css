@@ -1,6 +1,11 @@
 /* BASICS */
 
 .CodeMirror {
+	line-height: 1.3;
+	height: 500px !important;
+}
+
+.CodeMirror {
     /* Set height, width, borders, and global font properties here */
     font-family: monospace;
     height: 300px;
@@ -156,9 +161,9 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
     outline: none; /* Prevent dragging from highlighting the element */
     position: relative;
 }
-.CodeMirror-sizer {
+.CodeMirror .CodeMirror-sizer {
     position: relative;
-    border-right: 30px solid transparent;
+    margin-left: 5px !important;
 }
 
 /* The fake, visible scrollbars. Used to force redraw during scrolling

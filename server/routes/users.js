@@ -5,7 +5,7 @@ import auth0 from 'auth0';
 import { customMiddles } from '../lib/middlewares';
 import config from '../lib/config';
 
-export default () => {
+export default (storage, scriptManager) => {
   const api = Router();
 
   api.get('/', customMiddles.updateFilter, (req, res, next) => {
@@ -131,8 +131,25 @@ export default () => {
   /*
    * Create user.
    */
-  api.post('/', customMiddles.prepareUser, (req, res, next) => {
-    req.auth0.users.create(req.body)
+  api.post('/', (req, res, next) => {
+    const writeContext = {
+      request: {
+        user: req.user
+      },
+      payload: {
+        email: req.body.email,
+        connection: req.body.connection,
+        group: req.body.group,
+        password: req.body.password
+      }
+    };
+console.log(JSON.stringify(writeContext, null, 2));
+    scriptManager.execute('write', writeContext)
+      .then(result => {
+        console.log('Script result:', result);
+        return result;
+      })
+      .then(result => req.auth0.users.create(result || writeContext.payload))
       .then(() => res.status(200).send())
       .catch(next);
   });
