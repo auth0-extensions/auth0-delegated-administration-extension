@@ -22,6 +22,15 @@ export default class ScriptManager {
       });
   }
 
+  save(name, script) {
+    return this.storage.read()
+      .then(data => {
+        data.scripts[name] = script;
+        return data;
+      })
+      .then(data => this.storage.write(data));
+  }
+
   execute(name, ctx) {
     return this.get(name)
       .then(script => {

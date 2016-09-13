@@ -1,33 +1,20 @@
 import React, { Component } from 'react';
 import { LoadingPanel, Error } from '../../components/Dashboard';
-import Codemirror from 'react-codemirror';
-
-import 'codemirror/mode/javascript/javascript';
-import 'codemirror/addon/lint/lint';
-import 'codemirror/addon/lint/javascript-lint';
-import 'codemirror/addon/lint/json-lint';
-
-import 'codemirror';
-import 'codemirror/addon/hint/show-hint.css';
-import 'codemirror/addon/lint/lint.css';
-import './theme.css';
 
 import { connect } from 'react-redux';
 import { Tabs, Tab } from 'react-bootstrap';
 import { scriptActions } from '../../actions';
 
+import Editor from '../../components/Editor';
 import './Configuration.css';
 
 class Configuration extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      currentCode: 1,
-      confAccess: '',
-      confFilter: '',
-      confMemberships: '',
-      confWrite: '',
-      confStyles: ''
+      activeTab: 1,
+      scripts: props.scripts || { }
     };
   }
 
@@ -39,78 +26,22 @@ class Configuration extends Component {
     this.props.fetchScript('styles');
   };
 
-  updateCode = (newCode) => {
-    switch (this.state.currentCode) {
-      case 1:
-        this.setState({ confAccess: newCode });
-        break;
-      case 2:
-        this.setState({ confFilter: newCode });
-        break;
-      case 3:
-        this.setState({ confMemberships: newCode });
-        break;
-      case 4:
-        this.setState({ confWrite: newCode });
-        break;
-      case 5:
-        this.setState({ confStyles: newCode });
-        break;
-    }
-    return newCode;
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      scripts: nextProps.scripts.toJS()
+    });
+  }
+
+  updateScript = (name) => (code) => {
+    const scripts = this.state.scripts;
+    scripts[name] = code;
+    this.setState({
+      scripts
+    });
   };
 
-  onChange = (index) => {
-    this.setState({ currentCode: index });
-    this.refresh();
-  };
-
-  refresh = () => {
-    setTimeout(function () {
-      $('.CodeMirror').each(function() {
-        let self = $(this);
-        self.context.CodeMirror.refresh();
-      });
-    },100);
-  };
-
-  saveConfiguration = () => {
-    let data = {};
-    data['access'] = this.state.confAccess || this.props.access;
-    data['filter'] = this.state.confFilter || this.props.filter;
-    data['memberships'] = this.state.confMemberships || this.props.memberships;
-    data['write'] = this.state.confWrite || this.props.write;
-    data['styles'] = this.state.confStyles || this.props.styles;
-    this.props.updateScripts(data);
-
-  };
-
-  saveOneScript = () => {
-    let data = {};
-    let attr = null;
-    switch (this.state.currentCode) {
-      case 1:
-        data['script'] = this.state.confAccess || this.props.access;
-        attr = 'access';
-        break;
-      case 2:
-        data['script'] = this.state.confFilter || this.props.filter;
-        attr = 'filter';
-        break;
-      case 3:
-        data['script'] = this.state.confMemberships || this.props.memberships;
-        attr = 'memberships';
-        break;
-      case 4:
-        data['script'] = this.state.confWrite || this.props.write;
-        attr = 'write';
-        break;
-      case 5:
-        data['script'] = this.state.confStyles || this.props.styles;
-        attr = 'styles';
-        break;
-    }
-    this.props.updateScript(attr, data);
+  saveScript = (name) => () => {
+    this.props.updateScript(name, this.state.scripts[name]);
   };
 
   getValue = (scripts, index) => {
@@ -122,31 +53,9 @@ class Configuration extends Component {
     }
   };
 
+
   render() {
     const { scripts, loading, error } = this.props;
-    const options = {
-      mode: 'javascript',
-      lineWrapping: true,
-      continueComments: 'Enter',
-      matchBrackets: true,
-      styleActiveLine: true,
-      closeBrackets: true,
-      indentUnit: 2,
-      smartIndent: true,
-      autofocus: true,
-      tabSize: 2,
-      lint: {
-        options: {
-          sub: true,
-          noarg: true,
-          undef: true,
-          eqeqeq: true,
-          laxcomma: true,
-          '-W025': true,
-          predef: [ 'module' ]
-        }
-      }
-    };
 
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
@@ -154,71 +63,63 @@ class Configuration extends Component {
         <div className="users">
           <div className="row content-header">
             <div className="col-xs-12 userTableContent">
-              <h2>Configurations</h2>
+              <h2>Configuration</h2>
             </div>
           </div>
           <div className="row user-tabs">
             <div className="col-xs-12">
-                <Tabs defaultActiveKey={1} animation={false} onSelect={this.onChange.bind(this)}>
-                  <Tab eventKey={1} title="Access Query">
-                    <Codemirror value={ this.getValue(scripts, 'access') }
-                                onChange={this.updateCode}
-                                options={options}
-                                className="access"
-                    />
-                    <div className="saveConfigurationButton">
-                      <button onClick={this.saveOneScript.bind(this)} className="btn btn-success">Save Access Query
-                      </button>
-                    </div>
-                  </Tab>
-                  <Tab eventKey={2} title="Filter Query">
-                    <Codemirror value={this.getValue(scripts, 'filter')}
-                                onChange={this.updateCode}
-                                options={options}
-                                className="filter"
-                    />
-                    <div className="saveConfigurationButton">
-                      <button onClick={this.saveOneScript.bind(this)} className="btn btn-success">Save Filter Query
-                      </button>
-                    </div>
-                  </Tab>
-                  <Tab eventKey={3} title="Memberships Query">
-                    <Codemirror value={this.getValue(scripts, 'memberships')}
-                                onChange={this.updateCode}
-                                options={options}
-                                className="memberships"
-                    />
-                    <div className="saveConfigurationButton">
-                      <button onClick={this.saveOneScript.bind(this)} className="btn btn-success">Save Memberships
-                        Query
-                      </button>
-                    </div>
-                  </Tab>
-                  <Tab eventKey={4} title="Write Hook">
-                    <p>The <strong>write hook</strong> will run every time a new user is created. This hook will allow you to shape the user object before it's sent to Auth0. The context object contains the request (with the current user) and the payload sent by the end user.</p>
-                    <Codemirror value={this.getValue(scripts, 'write')}
-                                onChange={this.updateCode}
-                                options={options}
-                                className="write"
-                    />
-                    <div className="saveConfigurationButton">
-                      <button onClick={this.saveOneScript.bind(this)} className="btn btn-success">Save Write Query
-                      </button>
-                    </div>
-                  </Tab>
-                  <Tab eventKey={5} title="Styles">
-                    <Codemirror value={this.getValue(scripts, 'styles')}
-                                onChange={this.updateCode}
-                                options={options}
-                                className="styles"
-                    />
-                    <Codemirror className="hidden" value=""/>
-                    <div className="saveConfigurationButton">
-                      <button onClick={this.saveOneScript.bind(this)} className="btn btn-success">Save Styles
-                      </button>
-                    </div>
-                  </Tab>
-                </Tabs>
+              <Tabs defaultActiveKey={this.state.activeTab} animation={false}>
+                <Tab eventKey={1} title="Filter Hook">
+                  <Editor
+                    value={this.state.scripts.filter}
+                    onChange={this.updateScript('filter')}
+                  />
+                  <div className="saveConfigurationButton">
+                    <button onClick={this.saveScript('filter')} className="btn btn-success">Save Filter Hook
+                    </button>
+                  </div>
+                </Tab>
+                <Tab eventKey={2} title="Access Hook">
+                  <Editor
+                    value={this.state.scripts.access}
+                    onChange={this.updateScript('access')}
+                  />
+                  <div className="saveConfigurationButton">
+                    <button onClick={this.saveScript('access')} className="btn btn-success">Save Access Hook</button>
+                  </div>
+                </Tab>
+                <Tab eventKey={4} title="Write Hook">
+                  <p>The <strong>write hook</strong> will run every time a new user is created. This hook will allow you to shape the user object before it's sent to Auth0. The context object contains the request (with the current user) and the payload sent by the end user.</p>
+                  <Editor
+                    value={this.state.scripts.write}
+                    onChange={this.updateScript('write')}
+                  />
+                  <div className="saveConfigurationButton">
+                    <button onClick={this.saveScript('write')} className="btn btn-success">Save Write Query
+                    </button>
+                  </div>
+                </Tab>
+                <Tab eventKey={3} title="Memberships Query">
+                  <Editor
+                    value={this.state.scripts.memberships}
+                    onChange={this.updateScript('memberships')}
+                  />
+                  <div className="saveConfigurationButton">
+                    <button onClick={this.saveScript('memberships')} className="btn btn-success">Save Memberships Query
+                    </button>
+                  </div>
+                </Tab>
+                <Tab eventKey={5} title="Styles">
+                  <Editor
+                    value={this.state.scripts.styles}
+                    onChange={this.updateScript('styles')}
+                  />
+                  <div className="saveConfigurationButton">
+                    <button onClick={this.saveScript('styles')} className="btn btn-success">Save Styles
+                    </button>
+                  </div>
+                </Tab>
+              </Tabs>
             </div>
           </div>
         </div>
@@ -231,11 +132,6 @@ function mapStateToProps(state) {
   return {
     error: state.scripts.get('error'),
     scripts: state.scripts.get('records'),
-    access: state.scripts.get('records') ? state.scripts.get('records').get('access') : '',
-    filter: state.scripts.get('records') ? state.scripts.get('records').get('filter') : '',
-    memberships: state.scripts.get('records') ? state.scripts.get('records').get('memberships') : '',
-    write: state.scripts.get('records') ? state.scripts.get('records').get('write') : '',
-    styles: state.scripts.get('records') ? state.scripts.get('records').get('styles') : '',
     loading: state.scripts.get('loading')
   };
 }

@@ -17,36 +17,11 @@ export function fetchScript(name) {
     }
   };
 }
-/*
- * Update configuration.
- */
-export function updateScripts(data, onSuccess) {
-  console.log('Update:', data);
-  return (dispatch) => {
-    dispatch({
-      type: constants.UPDATE_SCRIPTS,
-      meta: {
-        onSuccess: () => {
-          if (onSuccess) {
-            onSuccess();
-          }
-          dispatch(fetchScript(data.name));
-        }
-      },
-      payload: {
-        promise: axios.post('/api/scripts', data, {
-          responseType: 'json'
-        })
-      }
-    });
-  };
-}
 
 /*
  * Update configuration.
  */
 export function updateScript(script, data, onSuccess) {
-  console.log('Update single', script, data);
   return (dispatch) => {
     dispatch({
       type: constants.UPDATE_SCRIPT,
@@ -55,11 +30,11 @@ export function updateScript(script, data, onSuccess) {
           if (onSuccess) {
             onSuccess();
           }
-          dispatch(fetchScript(data.name));
+          dispatch(fetchScript(script));
         }
       },
       payload: {
-        promise: axios.post(`/api/scripts/${script}`, data, {
+        promise: axios.post(`/api/scripts/${script}`, { script: data }, {
           responseType: 'json'
         })
       }

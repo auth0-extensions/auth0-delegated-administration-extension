@@ -8,18 +8,30 @@ import config from '../lib/config';
 export default (storage, scriptManager) => {
   const api = Router();
 
-  api.get('/', customMiddles.updateFilter, (req, res, next) => {
-    const options = {
-      sort: 'last_login:-1',
-      q: req.query.search,
-      per_page: req.query.per_page || 100,
-      page: req.query.page || 0,
-      include_totals: true,
-      fields: 'user_id,name,email,identities,picture,last_login,logins_count,multifactor,blocked',
-      search_engine: 'v2'
+  api.get('/', (req, res, next) => {
+    const filterContext = {
+      request: {
+        user: req.user
+      },
+      payload: {
+        search: req.query.search
+      }
     };
 
-    req.auth0.users.getAll(options)
+    scriptManager.execute('filter', filterContext)
+      .then(filter => {
+        const options = {
+          sort: 'last_login:-1',
+          q: (req.query.search && filter) ? `(${req.query.search}) AND ${filter}` : req.query.search || filter,
+          per_page: req.query.per_page || 100,
+          page: req.query.page || 0,
+          include_totals: true,
+          fields: 'user_id,name,email,identities,picture,last_login,logins_count,multifactor,blocked',
+          search_engine: 'v2'
+        };
+
+        return req.auth0.users.getAll(options);
+      })
       .then(users => res.json(users))
       .catch(next);
   });
@@ -143,7 +155,7 @@ export default (storage, scriptManager) => {
         password: req.body.password
       }
     };
-console.log(JSON.stringify(writeContext, null, 2));
+
     scriptManager.execute('write', writeContext)
       .then(result => {
         console.log('Script result:', result);

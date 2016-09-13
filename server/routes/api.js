@@ -51,7 +51,7 @@ export default (storage) => {
   api.use(hasAccessLevel(constants.ADMIN_ACCESS_LEVEL));
   api.use('/applications', applications());
   api.use('/connections', connections());
-  api.use('/scripts', hasAccessLevel(constants.SUPER_ACCESS_LEVEL), scripts(storage));
+  api.use('/scripts', hasAccessLevel(constants.SUPER_ACCESS_LEVEL), scripts(storage, scriptManager));
   api.use('/users', users(storage, scriptManager));
   api.use('/logs', logs());
 
