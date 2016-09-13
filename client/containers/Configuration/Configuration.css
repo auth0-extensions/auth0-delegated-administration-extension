@@ -24,3 +24,7 @@
 .hidden{
     display: none;
 }
+.CodeMirror-lint-marker-error, .CodeMirror-lint-marker-warning {
+    left: -12px;
+    top: -1px;
+}
