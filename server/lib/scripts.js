@@ -96,7 +96,18 @@ module.exports.getCustomData = (name, defaults) =>
                 next(err);
               }
 
-              res.json(data || defaults);
+              switch (name) {
+                case 'styles':
+                  res.json(data);
+                  break;
+
+                case 'memberships':
+                  res.json({ memberships: data || defaults, access_level: req.user.access_level || 0 });
+                  break;
+
+                default:
+                  throw new Error('Wrong customData name. Use "styles" or "memberships"');
+              }
             });
           } catch (err) {
             next(err);

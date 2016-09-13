@@ -1,7 +1,5 @@
-const roleNames = {
-  admin: 'delegated-admin',
-  super: 'delegated-super-admin'
-};
+import * as constants from '../../constants';
+
 
 const checkRole = (data) => {
   let accessLevel = 0;
@@ -9,8 +7,8 @@ const checkRole = (data) => {
 
   const parsedData = (Array.isArray(data)) ? data : data.replace(', ', ',', 'g').split(',');
 
-  if (parsedData.indexOf(roleNames.admin) >= 0) accessLevel = 1;
-  if (parsedData.indexOf(roleNames.super) >= 0) accessLevel = 2;
+  if (parsedData.indexOf(constants.ADMIN_ROLE_NAME) >= 0) accessLevel = constants.ADMIN_ACCESS_LEVEL;
+  if (parsedData.indexOf(constants.SUPER_ROLE_NAME) >= 0) accessLevel = constants.SUPER_ACCESS_LEVEL;
 
   return accessLevel;
 };
