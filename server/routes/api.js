@@ -3,10 +3,14 @@ import { Router } from 'express';
 import { middlewares } from 'auth0-extension-express-tools';
 
 import { expressJwtSecret, SigningKeyNotFoundError } from 'jwks-rsa';
+import { getUserAccessLevel, hasAccessLevel } from '../lib/middlewares';
+import { getCustomData } from '../lib/scripts';
 import config from '../lib/config';
+import * as constants from '../constants';
 
 import applications from './applications';
 import connections from './connections';
+import scripts from './scripts';
 import logs from './logs';
 import users from './users';
 
@@ -39,9 +43,17 @@ export default () => {
     clientId: config('AUTH0_CLIENT_ID'),
     clientSecret: config('AUTH0_CLIENT_SECRET')
   }));
+  api.use(getUserAccessLevel);
+  api.use(hasAccessLevel(constants.ADMIN_ACCESS_LEVEL));
   api.use('/applications', applications());
   api.use('/connections', connections());
+  api.use('/scripts', hasAccessLevel(constants.SUPER_ACCESS_LEVEL), scripts());
   api.use('/users', users());
   api.use('/logs', logs());
+
+  api.get('/styles', getCustomData('styles', {}));
+
+  api.get('/me', getCustomData('memberships', []));
+
   return api;
 };

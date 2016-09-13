@@ -2,12 +2,13 @@ import { Router } from 'express';
 import request from 'request';
 import { managementApi } from 'auth0-extension-tools';
 import auth0 from 'auth0';
+import { customMiddles } from '../lib/middlewares';
 import config from '../lib/config';
 
 export default () => {
   const api = Router();
 
-  api.get('/', (req, res, next) => {
+  api.get('/', customMiddles.updateFilter, (req, res, next) => {
     const options = {
       sort: 'last_login:-1',
       q: req.query.search,
@@ -19,17 +20,17 @@ export default () => {
     };
 
     req.auth0.users.getAll(options)
-      .then(logs => res.json(logs))
+      .then(users => res.json(users))
       .catch(next);
   });
 
-  api.get('/:id', (req, res, next) => {
+  api.get('/:id', customMiddles.checkAccess, (req, res, next) => {
     req.auth0.users.get({ id: req.params.id })
       .then(user => res.json({ user }))
       .catch(next);
   });
 
-  api.delete('/:id', (req, res, next) => {
+  api.delete('/:id', customMiddles.checkAccess, (req, res, next) => {
     req.auth0.users.delete({ id: req.params.id })
       .then(() => res.sendStatus(204))
       .catch(next);
@@ -45,8 +46,8 @@ export default () => {
       connection: req.body.connection,
       client_id: req.body.clientId
     })
-    .then(() => res.sendStatus(204))
-    .catch(next);
+      .then(() => res.sendStatus(204))
+      .catch(next);
   });
 
   api.post('/:id/password-change', (req, res, next) => {
@@ -54,7 +55,11 @@ export default () => {
       return next(new Error('Passwords don\'t match'));
     }
 
-    return req.auth0.users.update({ id: req.params.id }, { password: req.body.password, connection: req.body.connection, verify_password: false })
+    return req.auth0.users.update({ id: req.params.id }, {
+      password: req.body.password,
+      connection: req.body.connection,
+      verify_password: false
+    })
       .then(() => res.sendStatus(204))
       .catch(next);
   });
@@ -111,6 +116,37 @@ export default () => {
   api.post('/:id/unblock', (req, res, next) => {
     req.auth0.users.update({ id: req.params.id }, { blocked: false })
       .then(() => res.sendStatus(204))
+      .catch(next);
+  });
+
+  /*
+   * Update user.
+   */
+  api.put('/:id', customMiddles.checkAccess, customMiddles.prepareUser, (req, res, next) => {
+    req.auth0.users.update({ id: req.params.id }, req.body)
+      .then(() => res.status(200).send())
+      .catch(next);
+  });
+
+  /*
+   * Create user.
+   */
+  api.post('/', customMiddles.prepareUser, (req, res, next) => {
+    req.auth0.users.create(req.body)
+      .then(() => res.status(200).send())
+      .catch(next);
+  });
+
+  /*
+   * send verification email user.
+   */
+  api.post('/:id/send-verification-email', customMiddles.checkAccess, (req, res, next) => {
+    const data = {
+      user_id: req.params.id
+    };
+
+    req.auth0.jobs.verifyEmail(data)
+      .then(() => res.status(200).send())
       .catch(next);
   });
 

@@ -21,7 +21,7 @@ export const users = createReducer(fromJS(initialState), {
   [constants.FETCH_USERS_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occured while loading the users: ${action.errorMessage}`
+      error: `An error occurred while retrieving list of users: ${action.errorMessage}`
     }),
   [constants.FETCH_USERS_FULFILLED]: (state, action) => {
     const { data } = action.payload;

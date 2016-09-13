@@ -1,9 +1,11 @@
 import './Header.css';
 import React, { Component } from 'react';
+import { NavigationLink } from '../components/Dashboard';
 
 export default class Header extends Component {
   static propTypes = {
     user: React.PropTypes.object,
+    accessLevel: React.PropTypes.object,
     issuer: React.PropTypes.string,
     onLogout: React.PropTypes.func.isRequired
   }
@@ -21,7 +23,8 @@ export default class Header extends Component {
   }
 
   render() {
-    const { user, issuer, onLogout } = this.props;
+    const { user, issuer, onLogout, accessLevel } = this.props;
+    const showMenu = accessLevel.role === 2;
     return (
       <header className="dashboard-header">
         <nav role="navigation" className="navbar navbar-default">
@@ -39,13 +42,25 @@ export default class Header extends Component {
                     </span>
                     <i className="icon-budicon-460"></i>
                   </span>
-                  <ul role="menu" className="dropdown-menu">
-                    <li role="presentation">
-                      <a href="#" role="menuitem" tabIndex="-1" onClick={onLogout}>
-                        Logout
-                      </a>
-                    </li>
-                  </ul>
+                  {showMenu ?
+                    <ul role="menu" className="dropdown-menu">
+                      <NavigationLink title="Users & Logs" route="/users"/>
+                      <NavigationLink title="Configuration" route="/configuration"/>
+                      <li role="presentation">
+                        <a href="#" role="menuitem" tabIndex="-1" onClick={onLogout}>
+                          Logout
+                        </a>
+                      </li>
+                    </ul>
+                    :
+                    <ul role="menu" className="dropdown-menu">
+                      <li role="presentation">
+                        <a href="#" role="menuitem" tabIndex="-1" onClick={onLogout}>
+                          Logout
+                        </a>
+                      </li>
+                    </ul>
+                  }
                 </li>
               </ul>
             </div>

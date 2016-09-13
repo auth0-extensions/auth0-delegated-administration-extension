@@ -13,9 +13,15 @@ import { logs } from './logs';
 import { user } from './user';
 import { userPicker } from './userPicker';
 import { users } from './users';
+import { scripts } from './scripts';
 import { deleteUser } from './deleteUser';
 import { passwordReset } from './passwordReset';
 import { passwordChange } from './passwordChange';
+import { usernameChange } from './usernameChange';
+import { userCreate } from './userCreate';
+import { emailChange } from './emailChange';
+import { accessLevel } from './accessLevel';
+import { resendVerificationEmail } from './resendVerificationEmail';
 
 export default combineReducers({
   routing: routerReducer,
@@ -33,5 +39,11 @@ export default combineReducers({
   user,
   users,
   userPicker,
+  usernameChange,
+  emailChange,
+  userCreate,
+  scripts,
+  resendVerificationEmail,
+  accessLevel,
   form: formReducer
 });
