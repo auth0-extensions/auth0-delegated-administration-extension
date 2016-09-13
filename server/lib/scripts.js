@@ -102,7 +102,7 @@ module.exports.getCustomData = (name, defaults) =>
                   break;
 
                 case 'memberships':
-                  res.json({ memberships: data || defaults, access_level: req.user.access_level || 0 });
+                  res.json({ memberships: data || defaults, role: req.user.role || 0 });
                   break;
 
                 default:

@@ -5,7 +5,7 @@ import * as constants from '../../constants';
 
 
 module.exports.checkAccess = (req, res, next) => {
-  if (req.user.access_level === constants.SUPER_ACCESS_LEVEL) return next();
+  if (req.user.role === constants.SUPER_ACCESS_LEVEL) return next();
 
   return req.auth0.users.get({ id: req.params.id })
     .then(user => {
@@ -39,7 +39,7 @@ module.exports.checkAccess = (req, res, next) => {
 };
 
 module.exports.prepareUser = (req, res, next) => {
-  if (req.user.access_level === constants.SUPER_ACCESS_LEVEL) return next();
+  if (req.user.role === constants.SUPER_ACCESS_LEVEL) return next();
 
   return getScript(req.storage, 'write')
     .then(script => {
@@ -57,7 +57,7 @@ module.exports.prepareUser = (req, res, next) => {
 };
 
 module.exports.updateFilter = (req, res, next) => {
-  if (req.user.access_level === constants.SUPER_ACCESS_LEVEL) return next();
+  if (req.user.role === constants.SUPER_ACCESS_LEVEL) return next();
 
   return getScript(req.storage, 'filter')
     .then(script => {

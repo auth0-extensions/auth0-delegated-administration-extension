@@ -49,7 +49,7 @@ export default () => {
       AUTH0_CLIENT_ID: config('EXTENSION_CLIENT_ID'),
       BASE_URL: urlHelpers.getBaseUrl(req),
       BASE_PATH: urlHelpers.getBasePath(req),
-      TITLE: (req.custom_style && req.custom_style.title) ? req.custom_style.title : config('TITLE')
+      TITLE: config('TITLE')
     };
 
     // Render from CDN.

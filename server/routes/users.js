@@ -24,15 +24,13 @@ export default () => {
       .catch(next);
   });
 
-  api.use('/:id', customMiddles.checkAccess);
-
-  api.get('/:id', (req, res, next) => {
+  api.get('/:id', customMiddles.checkAccess, (req, res, next) => {
     req.auth0.users.get({ id: req.params.id })
       .then(user => res.json({ user }))
       .catch(next);
   });
 
-  api.delete('/:id', (req, res, next) => {
+  api.delete('/:id', customMiddles.checkAccess, (req, res, next) => {
     req.auth0.users.delete({ id: req.params.id })
       .then(() => res.sendStatus(204))
       .catch(next);
@@ -124,7 +122,7 @@ export default () => {
   /*
    * Update user.
    */
-  api.put('/:id', customMiddles.prepareUser, (req, res, next) => {
+  api.put('/:id', customMiddles.checkAccess, customMiddles.prepareUser, (req, res, next) => {
     req.auth0.users.update({ id: req.params.id }, req.body)
       .then(() => res.status(200).send())
       .catch(next);
@@ -142,8 +140,12 @@ export default () => {
   /*
    * send verification email user.
    */
-  api.post('/send-verification-email', (req, res, next) => {
-    req.auth0.jobs.verifyEmail(req.body)
+  api.post('/:id/send-verification-email', customMiddles.checkAccess, (req, res, next) => {
+    const data = {
+      user_id: req.params.id
+    };
+
+    req.auth0.jobs.verifyEmail(data)
       .then(() => res.status(200).send())
       .catch(next);
   });

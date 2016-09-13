@@ -19,6 +19,6 @@ module.exports = function getUserAccessLevel(req, res, next) {
   const groups = (userMeta.authorization) ? userMeta.authorization.groups || userMeta.groups : userMeta.groups;
   const request = req;
 
-  request.user.access_level = Math.max(checkRole(roles), checkRole(groups));
+  request.user.role = Math.max(checkRole(roles), checkRole(groups));
   next();
 };
