@@ -6,6 +6,7 @@ import { expressJwtSecret, SigningKeyNotFoundError } from 'jwks-rsa';
 import { getUserAccessLevel, hasAccessLevel } from '../lib/middlewares';
 import { getCustomData } from '../lib/scripts';
 import config from '../lib/config';
+import * as constants from '../constants';
 
 import applications from './applications';
 import connections from './connections';
@@ -43,18 +44,16 @@ export default () => {
     clientSecret: config('AUTH0_CLIENT_SECRET')
   }));
   api.use(getUserAccessLevel);
-  api.use(hasAccessLevel(1)); // checking access level: 1 - authorized user, who can manage another users
+  api.use(hasAccessLevel(constants.ADMIN_ACCESS_LEVEL));
   api.use('/applications', applications());
   api.use('/connections', connections());
-  api.use('/scripts', hasAccessLevel(2), scripts()); // checking access level: 2 - super-admin, who can manage configurations
+  api.use('/scripts', hasAccessLevel(constants.SUPER_ACCESS_LEVEL), scripts());
   api.use('/users', users());
   api.use('/logs', logs());
 
   api.get('/styles', getCustomData('styles', {}));
 
-  api.get('/me/memberships', getCustomData('memberships', []));
-
-  api.get('/access_level', (req, res) => res.json({ access_level: req.user.access_level || 0 }));
+  api.get('/me', getCustomData('memberships', []));
 
   return api;
 };

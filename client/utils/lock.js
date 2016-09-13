@@ -39,7 +39,7 @@ export function show(returnUrl) {
     callbackOnLocationHash: true,
     authParams: {
       state: returnUrl,
-      scope: 'openid authorization delegated-admin'
+      scope: 'openid authorization delegated-admin app_metadata'
     }
   });
 }
