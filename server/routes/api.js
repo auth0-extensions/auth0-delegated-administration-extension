@@ -57,7 +57,18 @@ export default (storage) => {
 
   api.get('/styles', getCustomData('styles', {}));
 
-  api.get('/me', getCustomData('memberships', []));
+  api.get('/me', (req, res, next) => {
+    const membershipContext = {
+      request: {
+        user: req.user
+      }
+    };
+
+    scriptManager.execute('memberships', membershipContext)
+      .then(memberships => res.json({ memberships: memberships || [ ], role: req.user.role || 0 }))
+      .then(() => res.status(200).send())
+      .catch(next);
+  });
 
   return api;
 };

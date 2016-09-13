@@ -36,13 +36,13 @@ export default (storage, scriptManager) => {
       .catch(next);
   });
 
-  api.get('/:id', customMiddles.checkAccess, (req, res, next) => {
+  api.get('/:id', customMiddles.checkAccess(scriptManager), (req, res, next) => {
     req.auth0.users.get({ id: req.params.id })
       .then(user => res.json({ user }))
       .catch(next);
   });
 
-  api.delete('/:id', customMiddles.checkAccess, (req, res, next) => {
+  api.delete('/:id', customMiddles.checkAccess(scriptManager), (req, res, next) => {
     req.auth0.users.delete({ id: req.params.id })
       .then(() => res.sendStatus(204))
       .catch(next);
@@ -62,7 +62,7 @@ export default (storage, scriptManager) => {
       .catch(next);
   });
 
-  api.post('/:id/password-change', (req, res, next) => {
+  api.post('/:id/password-change', customMiddles.checkAccess(scriptManager), (req, res, next) => {
     if (req.body.password !== req.body.confirmPassword) {
       return next(new Error('Passwords don\'t match'));
     }
@@ -76,13 +76,13 @@ export default (storage, scriptManager) => {
       .catch(next);
   });
 
-  api.get('/:id/devices', (req, res, next) => {
+  api.get('/:id/devices', customMiddles.checkAccess(scriptManager), (req, res, next) => {
     req.auth0.deviceCredentials.getAll({ user_id: req.params.id })
       .then(devices => res.json({ devices }))
       .catch(next);
   });
 
-  api.get('/:id/logs', (req, res, next) => {
+  api.get('/:id/logs', customMiddles.checkAccess(scriptManager), (req, res, next) => {
     managementApi.getAccessTokenCached(config('AUTH0_DOMAIN'), config('AUTH0_CLIENT_ID'), config('AUTH0_CLIENT_SECRET'))
       .then(accessToken => {
         const options = {
@@ -113,19 +113,19 @@ export default (storage, scriptManager) => {
       .catch(next);
   });
 
-  api.delete('/:id/multifactor/:provider', (req, res, next) => {
+  api.delete('/:id/multifactor/:provider', customMiddles.checkAccess(scriptManager), (req, res, next) => {
     req.auth0.users.deleteMultifactorProvider({ id: req.params.id, provider: req.params.provider })
       .then(() => res.sendStatus(204))
       .catch(next);
   });
 
-  api.post('/:id/block', (req, res, next) => {
+  api.post('/:id/block', customMiddles.checkAccess(scriptManager), (req, res, next) => {
     req.auth0.users.update({ id: req.params.id }, { blocked: true })
       .then(() => res.sendStatus(204))
       .catch(next);
   });
 
-  api.post('/:id/unblock', (req, res, next) => {
+  api.post('/:id/unblock', customMiddles.checkAccess(scriptManager), (req, res, next) => {
     req.auth0.users.update({ id: req.params.id }, { blocked: false })
       .then(() => res.sendStatus(204))
       .catch(next);
@@ -134,7 +134,7 @@ export default (storage, scriptManager) => {
   /*
    * Update user.
    */
-  api.put('/:id', customMiddles.checkAccess, customMiddles.prepareUser, (req, res, next) => {
+  api.put('/:id', customMiddles.checkAccess(scriptManager), customMiddles.prepareUser, (req, res, next) => {
     req.auth0.users.update({ id: req.params.id }, req.body)
       .then(() => res.status(200).send())
       .catch(next);
@@ -157,10 +157,6 @@ export default (storage, scriptManager) => {
     };
 
     scriptManager.execute('write', writeContext)
-      .then(result => {
-        console.log('Script result:', result);
-        return result;
-      })
       .then(result => req.auth0.users.create(result || writeContext.payload))
       .then(() => res.status(200).send())
       .catch(next);
@@ -169,7 +165,7 @@ export default (storage, scriptManager) => {
   /*
    * send verification email user.
    */
-  api.post('/:id/send-verification-email', customMiddles.checkAccess, (req, res, next) => {
+  api.post('/:id/send-verification-email', customMiddles.checkAccess(scriptManager), (req, res, next) => {
     const data = {
       user_id: req.params.id
     };

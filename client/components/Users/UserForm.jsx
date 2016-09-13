@@ -133,12 +133,12 @@ export default createForm('user', class extends Component {
           </div>
           : ''}
         <div className="custom_field">
-          <InputText field={ password } fieldName="password" label="Password"
+          <InputText field={ password } fieldName="password" label="Password" type="password"
                      validationErrors={validationErrors}
           />
         </div>
         <div className="custom_field repeat_password">
-          <InputText field={ repeat_password } fieldName="email" label="Repeat Password"
+          <InputText field={ repeat_password } fieldName="email" label="Repeat Password" type="password"
                      validationErrors={validationErrors}
           />
         </div>

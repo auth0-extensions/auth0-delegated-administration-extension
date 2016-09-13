@@ -4,7 +4,7 @@ import { getScript } from '../scripts';
 import * as constants from '../../constants';
 
 
-module.exports.checkAccess = (req, res, next) => {
+module.exports.checkAccess = (scriptManager) => (req, res, next) => {
   if (req.user.role === constants.SUPER_ACCESS_LEVEL) return next();
 
   return req.auth0.users.get({ id: req.params.id })
@@ -13,28 +13,18 @@ module.exports.checkAccess = (req, res, next) => {
         next(new NotFoundError('User not found'));
       }
 
-      getScript(req.storage, 'access')
-        .then(script => {
-          if (script) {
-            try {
-              script(req.user, user, (err, hasAccess) => {
-                if (err || !hasAccess) {
-                  next(err || { status: 403, message: 'Forbidden' });
-                }
+      const accessContext = {
+        request: {
+          user: req.user
+        },
+        payload: {
+          user
+        }
+      };
 
-                next();
-              });
-            } catch (err) {
-              next(err);
-            }
-          } else {
-            next();
-          }
-        })
-        .catch(next);
-
-      return null;
+      return scriptManager.execute('access', accessContext);
     })
+    .then(next)
     .catch(next);
 };
 
