@@ -39,7 +39,7 @@ export default (storage) => {
     // Validate the audience and the issuer.
     audience: config('EXTENSION_CLIENT_ID'),
     issuer: `https://${config('AUTH0_DOMAIN')}/`,
-    algorithms: [ 'RS256' ]
+    algorithms: ['RS256']
   }));
   api.use(middlewares.managementApiClient({
     domain: config('AUTH0_DOMAIN'),
@@ -54,15 +54,15 @@ export default (storage) => {
   api.use('/users', users(storage, scriptManager));
   api.use('/logs', logs(scriptManager));
 
-  api.get('/styles', (req, res, next) => {
+  api.get('/settings', (req, res, next) => {
     const stylesContext = {
       request: {
         user: req.user
       }
     };
 
-    scriptManager.execute('styles', stylesContext)
-      .then(styles => res.json(styles))
+    scriptManager.execute('settings', stylesContext)
+      .then(settings => res.json({ settings }))
       .catch(next);
   });
 
@@ -74,7 +74,7 @@ export default (storage) => {
     };
 
     scriptManager.execute('memberships', membershipContext)
-      .then(memberships => res.json({ memberships: memberships || [ ], role: req.user.role || 0 }))
+      .then(memberships => res.json({ memberships: memberships || [], role: req.user.role || 0 }))
       .catch(next);
   });
 

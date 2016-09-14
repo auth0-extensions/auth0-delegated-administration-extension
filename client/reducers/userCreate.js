@@ -23,7 +23,7 @@ export const userCreate = createReducer(fromJS(initialState), {
     return state.merge({
       loading: false,
       validationErrors: {},
-      error: `An error occurred while creating the username: ${errorMessage}`
+      error: `An error occurred while creating the user: ${errorMessage}`
     });
   },
   [constants.CREATE_USER_FULFILLED]: (state) =>

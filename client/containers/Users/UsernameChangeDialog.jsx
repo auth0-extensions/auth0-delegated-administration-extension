@@ -31,9 +31,8 @@ export default connectContainer(class extends Component {
     }
 
     return (
-      <Confirm title="Change Username?" show={requesting} loading={loading} onCancel={onCancel}
-               onConfirm={this.onConfirm.bind(this)}>
-        <Error message={error}/>
+      <Confirm title="Change Username?" show={requesting} loading={loading} onCancel={onCancel} onConfirm={this.onConfirm}>
+        <Error message={error} />
         <p>
           Do you really want to change the username for <strong>{userName}</strong>?
         </p>
@@ -42,16 +41,16 @@ export default connectContainer(class extends Component {
             <div className="form-group">
               <label className="col-xs-2 control-label">Connection</label>
               <div className="col-xs-9">
-                <input type="text" readOnly="readonly" className="form-control" value={connection}/>
+                <input type="text" readOnly="readonly" className="form-control" value={connection} />
               </div>
             </div>
             <div className="form-group">
               <label className="col-xs-2 control-label">Username</label>
               <div className="col-xs-9">
-                <input ref="username" type="text" className="form-control" defaultValue={userNameToChange}/>
+                <input ref="username" type="text" className="form-control" defaultValue={userNameToChange} />
               </div>
             </div>
-            <input ref="user" type="hidden" readOnly="readonly" className="form-control" value={userId}/>
+            <input ref="user" type="hidden" readOnly="readonly" className="form-control" value={userId} />
           </form>
         </div>
       </Confirm>

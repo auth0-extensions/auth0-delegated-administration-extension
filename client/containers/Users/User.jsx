@@ -7,7 +7,7 @@ import { logActions, userActions } from '../../actions';
 import './User.css';
 import LogDialog from '../../components/Logs/LogDialog';
 import { UserActions, UserDevices, UserHeader, UserProfile, UserLogs } from '../../components/Users';
-import { BlockDialog, UnblockDialog, RemoveMultiFactorDialog, DeleteDialog, UserForm } from '../../components/Users';
+import { BlockDialog, UnblockDialog, RemoveMultiFactorDialog, DeleteDialog } from '../../components/Users';
 
 import PasswordResetDialog from './PasswordResetDialog';
 import PasswordChangeDialog from './PasswordChangeDialog';
@@ -59,17 +59,18 @@ export default connectContainer(class extends Component {
           <div className="col-xs-12">
             <h2 className="pull-left">User Details</h2>
             <div className="pull-right">
-              <UserActions user={user}
-                           databaseConnections={databaseConnections}
-                           deleteUser={this.props.requestDeleteUser}
-                           resetPassword={this.props.requestPasswordReset}
-                           changePassword={this.props.requestPasswordChange}
-                           removeMfa={this.props.requestRemoveMultiFactor}
-                           blockUser={this.props.requestBlockUser}
-                           unblockUser={this.props.requestUnblockUser}
-                           changeUsername={this.props.requestUsernameChange}
-                           changeEmail={this.props.requestEmailChange}
-                           resendVerificationEmail={this.props.requestResendVerificationEmail}
+              <UserActions
+                user={user}
+                databaseConnections={databaseConnections}
+                deleteUser={this.props.requestDeleteUser}
+                resetPassword={this.props.requestPasswordReset}
+                changePassword={this.props.requestPasswordChange}
+                removeMfa={this.props.requestRemoveMultiFactor}
+                blockUser={this.props.requestBlockUser}
+                unblockUser={this.props.requestUnblockUser}
+                changeUsername={this.props.requestUsernameChange}
+                changeEmail={this.props.requestEmailChange}
+                resendVerificationEmail={this.props.requestResendVerificationEmail}
               />
             </div>
           </div>

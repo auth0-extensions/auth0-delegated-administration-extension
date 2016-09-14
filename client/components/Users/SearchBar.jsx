@@ -8,7 +8,7 @@ export default class SearchBar extends Component {
     onSearch: PropTypes.func.isRequired
   }
 
-  defaultProps:{ enabled: true  }
+  defaultProps:{ enabled: true }
 
   onKeyPress = (e) => {
     if (e.key === 'Enter') {
@@ -23,7 +23,8 @@ export default class SearchBar extends Component {
           <div className="advanced-search-control">
             <span className="search-area">
               <i className="icon-budicon-489"></i>
-              <input className="user-input" type="text" ref="search" placeholder="Search for users using the Lucene syntax"
+              <input
+                className="user-input" type="text" ref="search" placeholder="Search for users using the Lucene syntax"
                 spellCheck="false" style={{ marginLeft: '10px' }} onKeyPress={this.onKeyPress}
               />
             </span>

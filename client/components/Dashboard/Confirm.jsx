@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, ButtonToolbar, Modal } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 
 class Confirm extends Component {
   renderCancel() {
@@ -18,7 +18,7 @@ class Confirm extends Component {
     if (this.props.onConfirm) {
       return (
         <Button bsStyle="success" disabled={this.props.loading} onClick={this.props.onConfirm}>
-          { this.props.confirmMessage || <span><i className="icon icon-budicon-499"></i> Confirm</span> }
+          {this.props.confirmMessage || <span><i className="icon icon-budicon-499"></i> Confirm</span>}
         </Button>
       );
     }

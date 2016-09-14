@@ -63,9 +63,11 @@ class Users extends Component {
             </a>
           </div>
         </div>
-        <Confirm title="Create User" show={this.state.showCreateForm} loading={ userCreateLoading }
-                 onCancel={ this.onCancelUserCreate.bind(this) }
-                 onConfirm={this.onConfirmUserCreate.bind(this)}>
+        <Confirm
+          title="Create User" show={this.state.showCreateForm} loading={userCreateLoading}
+          onCancel={ this.onCancelUserCreate.bind(this)}
+          onConfirm={this.onConfirmUserCreate.bind(this)}
+        >
           <Error message={userCreateError}/>
           <UserForm
             loading={ loading }
@@ -77,12 +79,13 @@ class Users extends Component {
             memberships={this.props.accessLevel.memberships}
           />
         </Confirm>
-        <UserOverview onReset={this.onReset}
-                      onSearch={this.onSearch}
-                      error={error}
-                      users={users}
-                      total={total}
-                      loading={loading}
+        <UserOverview
+          onReset={this.onReset}
+          onSearch={this.onSearch}
+          error={error}
+          users={users}
+          total={total}
+          loading={loading}
         />
       </div>
     );

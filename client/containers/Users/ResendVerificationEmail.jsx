@@ -30,13 +30,12 @@ export default connectContainer(class extends Component {
     }
 
     return (
-      <Confirm title="Change Username?" show={requesting} loading={loading} onCancel={onCancel}
-               onConfirm={this.onConfirm.bind(this)}>
-        <Error message={error}/>
+      <Confirm title="Change Username?" show={requesting} loading={loading} onCancel={onCancel} onConfirm={this.onConfirm}>
+        <Error message={error} />
         <p>
           Do you really want to resend verification email to <strong>{userName}</strong>?
         </p>
-        <input ref="user" type="hidden" readOnly="readonly" className="form-control" value={userId}/>
+        <input ref="user" type="hidden" readOnly="readonly" className="form-control" value={userId} />
       </Confirm>
     );
   }

@@ -48,9 +48,9 @@ class Configuration extends Component {
     const val = scripts.get(index);
     if (val) {
       return val.toString();
-    } else {
-      return '';
     }
+
+    return '';
   };
 
 

@@ -3,6 +3,7 @@ import { Error, LoadingPanel, Table, TableBody, TableIconCell, TableTextCell, Ta
 
 export default class UserDevices extends Component {
   static propTypes = {
+    user: PropTypes.object,
     error: PropTypes.string,
     devices: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired
@@ -23,25 +24,23 @@ export default class UserDevices extends Component {
     const devices = this.props.devices.toJS();
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
-          <Error message={error} />
-          <Table>
-            <TableHeader>
-              <TableColumn width="3%" />
-              <TableColumn width="70%">Device</TableColumn>
-              <TableColumn width="27%"># of Tokens/Public Keys</TableColumn>
-            </TableHeader>
-            <TableBody>
-            {Object.keys(devices).sort().map((device) => {
-              return(
-                <TableRow key={device}>
-                  <TableIconCell color="green" icon="243"/>
-                  <TableTextCell>{device}</TableTextCell>
-                  <TableTextCell>{devices[device]}</TableTextCell>
-                </TableRow>
-              );
-            })}
-            </TableBody>
-          </Table>
+        <Error message={error} />
+        <Table>
+          <TableHeader>
+            <TableColumn width="3%" />
+            <TableColumn width="70%">Device</TableColumn>
+            <TableColumn width="27%"># of Tokens/Public Keys</TableColumn>
+          </TableHeader>
+          <TableBody>
+          {Object.keys(devices).sort().map((device) =>
+            <TableRow key={device}>
+              <TableIconCell color="green" icon="243" />
+              <TableTextCell>{device}</TableTextCell>
+              <TableTextCell>{devices[device]}</TableTextCell>
+            </TableRow>
+          )}
+          </TableBody>
+        </Table>
       </LoadingPanel>
     );
   }

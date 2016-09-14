@@ -18,7 +18,7 @@ export const accessLevel = createReducer(fromJS(initialState), {
   [constants.FETCH_ACCESS_LEVEL_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occured while loading the connections: ${action.errorMessage}`
+      error: `An error occured while loading the settings: ${action.errorMessage}`
     }),
   [constants.FETCH_ACCESS_LEVEL_FULFILLED]: (state, action) =>
     state.merge({
