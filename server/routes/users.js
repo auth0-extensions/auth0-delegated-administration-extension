@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import auth0 from 'auth0';
 import request from 'request';
 import Promise from 'bluebird';
@@ -6,7 +5,6 @@ import { Router } from 'express';
 import { managementApi } from 'auth0-extension-tools';
 
 import config from '../lib/config';
-import * as constants from '../constants';
 import { verifyUserAccess } from '../lib/middlewares';
 
 export default (storage, scriptManager) => {
@@ -49,8 +47,6 @@ export default (storage, scriptManager) => {
 
     scriptManager.execute('filter', filterContext)
       .then(filter => {
-        filter = (req.user.role === constants.SUPER_ACCESS_LEVEL) ? null : filter;
-
         const options = {
           sort: 'last_login:-1',
           q: (req.query.search && filter) ? `(${req.query.search}) AND ${filter}` : req.query.search || filter,
@@ -63,21 +59,14 @@ export default (storage, scriptManager) => {
 
         return req.auth0.users.getAll(options);
       })
-      .then(data => {
-        if (req.user.role === constants.SUPER_ACCESS_LEVEL) {
-          return data;
-        }
-
-        const checkQueue = [];
-
-        _.each(data.users, (user) =>
-          checkQueue.push(scriptManager.execute('access', { request: { user: req.user }, payload: { user } })));
-
-        return Promise.all(checkQueue).then(() => data);
-      })
+      .then(data =>
+        Promise.map(data.users, (user) =>
+          scriptManager.execute('access', { request: { user: req.user }, payload: { user } }))
+          .then(() => data))
       .then(users => res.json(users))
       .catch(next);
   });
+
 
   /*
    * Get a single user.
