@@ -175,7 +175,7 @@ export function blockUser() {
     dispatch({
       type: constants.BLOCK_USER,
       payload: {
-        promise: axios.post(`/api/users/${userId}/block`)
+        promise: axios.put(`/api/users/${userId}/block`)
       },
       meta: {
         userId,
@@ -215,7 +215,7 @@ export function unblockUser() {
     dispatch({
       type: constants.UNBLOCK_USER,
       payload: {
-        promise: axios.post(`/api/users/${userId}/unblock`)
+        promise: axios.put(`/api/users/${userId}/unblock`)
       },
       meta: {
         userId,
@@ -337,7 +337,7 @@ export function changePassword(password, confirmPassword) {
     dispatch({
       type: constants.PASSWORD_CHANGE,
       payload: {
-        promise: axios.post(`/api/users/${userId}/password-change`, {
+        promise: axios.put(`/api/users/${userId}/change-password`, {
           connection,
           password,
           confirmPassword
@@ -396,8 +396,22 @@ export function cancelUsernameChange() {
  */
 export function changeUsername(userId, data) {
   return (dispatch) => {
-    dispatch(updateUserAttribute(userId, { username: data }, 'USERNAME_CHANGE'));
+    dispatch({
+      type: constants.USERNAME_CHANGE,
+      meta: {
+        userId,
+        onSuccess: () => {
+          dispatch(fetchUserDetail(userId));
+        }
+      },
+      payload: {
+        promise: axios.put(`/api/users/${userId}/change-username`, { username: data }, { responseType: 'json' })
+      }
+    });
   };
+  // return (dispatch) => {
+  //   dispatch(updateUserAttribute(userId, { username: data }, 'USERNAME_CHANGE'));
+  // };
 }
 
 /*
@@ -425,8 +439,23 @@ export function cancelEmailChange() {
  */
 export function changeEmail(userId, data) {
   return (dispatch) => {
-    dispatch(updateUserAttribute(userId, { email: data }, 'EMAIL_CHANGE'));
+    dispatch({
+      type: constants.EMAIL_CHANGE,
+      meta: {
+        userId,
+        onSuccess: () => {
+          dispatch(fetchUserDetail(userId));
+        }
+      },
+      payload: {
+        promise: axios.put(`/api/users/${userId}/change-email`, { email: data }, { responseType: 'json' })
+      }
+    });
   };
+
+  // return (dispatch) => {
+  //   dispatch(updateUserAttribute(userId, { email: data }, 'EMAIL_CHANGE'));
+  // };
 }
 
 /*
@@ -464,7 +493,7 @@ export function resendVerificationEmail(userId) {
         }
       },
       payload: {
-        promise: axios.post('/api/users/send-verification-email', data, {
+        promise: axios.post(`/api/users/${userId}/send-verification-email`, data, {
           responseType: 'json'
         })
       }

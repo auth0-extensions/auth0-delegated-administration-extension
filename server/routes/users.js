@@ -1,9 +1,12 @@
+import _ from 'lodash';
 import auth0 from 'auth0';
 import request from 'request';
+import Promise from 'bluebird';
 import { Router } from 'express';
 import { managementApi } from 'auth0-extension-tools';
 
 import config from '../lib/config';
+import * as constants from '../constants';
 import { verifyUserAccess } from '../lib/middlewares';
 
 export default (storage, scriptManager) => {
@@ -27,7 +30,7 @@ export default (storage, scriptManager) => {
 
     scriptManager.execute('write', writeContext)
       .then(result => req.auth0.users.create(result || writeContext.payload))
-      .then(() => res.status(200).send())
+      .then(() => res.status(201).send())
       .catch(next);
   });
 
@@ -46,17 +49,31 @@ export default (storage, scriptManager) => {
 
     scriptManager.execute('filter', filterContext)
       .then(filter => {
+        filter = (req.user.role === constants.SUPER_ACCESS_LEVEL) ? null : filter;
+
         const options = {
           sort: 'last_login:-1',
           q: (req.query.search && filter) ? `(${req.query.search}) AND ${filter}` : req.query.search || filter,
           per_page: req.query.per_page || 100,
           page: req.query.page || 0,
           include_totals: true,
-          fields: 'user_id,name,email,identities,picture,last_login,logins_count,multifactor,blocked',
+          fields: 'user_id,name,email,identities,picture,last_login,logins_count,multifactor,blocked,app_metadata',
           search_engine: 'v2'
         };
 
         return req.auth0.users.getAll(options);
+      })
+      .then(data => {
+        if (req.user.role === constants.SUPER_ACCESS_LEVEL) {
+          return data;
+        }
+
+        const checkQueue = [];
+
+        _.each(data.users, (user) =>
+          checkQueue.push(scriptManager.execute('access', { request: { user: req.user }, payload: { user } })));
+
+        return Promise.all(checkQueue).then(() => data);
       })
       .then(users => res.json(users))
       .catch(next);
@@ -100,7 +117,7 @@ export default (storage, scriptManager) => {
   /*
    * Change the password of a user.
    */
-  api.post('/:id/password-change', verifyUserAccess(scriptManager), (req, res, next) => {
+  api.put('/:id/change-password', verifyUserAccess(scriptManager), (req, res, next) => {
     if (req.body.password !== req.body.confirmPassword) {
       return next(new Error('Passwords don\'t match'));
     }
@@ -113,6 +130,23 @@ export default (storage, scriptManager) => {
       .then(() => res.sendStatus(204))
       .catch(next);
   });
+
+
+  /*
+   * Change the username of a user.
+   */
+  api.put('/:id/change-username', verifyUserAccess(scriptManager), (req, res, next) =>
+    req.auth0.users.update({ id: req.params.id }, { username: req.body.username })
+      .then(() => res.sendStatus(204))
+      .catch(next));
+
+  /*
+   * Change the email of a user.
+   */
+  api.put('/:id/change-email', verifyUserAccess(scriptManager), (req, res, next) =>
+    req.auth0.users.update({ id: req.params.id }, { email: req.body.email })
+      .then(() => res.sendStatus(204))
+      .catch(next));
 
   /*
    * Get all devices for the user.
@@ -169,7 +203,7 @@ export default (storage, scriptManager) => {
   /*
    * Block a user.
    */
-  api.post('/:id/block', verifyUserAccess(scriptManager), (req, res, next) => {
+  api.put('/:id/block', verifyUserAccess(scriptManager), (req, res, next) => {
     req.auth0.users.update({ id: req.params.id }, { blocked: true })
       .then(() => res.sendStatus(204))
       .catch(next);
@@ -178,7 +212,7 @@ export default (storage, scriptManager) => {
   /*
    * Unblock a user.
    */
-  api.post('/:id/unblock', verifyUserAccess(scriptManager), (req, res, next) => {
+  api.put('/:id/unblock', verifyUserAccess(scriptManager), (req, res, next) => {
     req.auth0.users.update({ id: req.params.id }, { blocked: false })
       .then(() => res.sendStatus(204))
       .catch(next);
@@ -193,7 +227,7 @@ export default (storage, scriptManager) => {
     };
 
     req.auth0.jobs.verifyEmail(data)
-      .then(() => res.status(200).send())
+      .then(() => res.status(204).send())
       .catch(next);
   });
 
