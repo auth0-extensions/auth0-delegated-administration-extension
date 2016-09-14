@@ -22,7 +22,6 @@ export default () => {
     <% if (assets.style) { %><link rel="stylesheet" type="text/css" href="/app/<%= assets.style %>" /><% } %>
     <% if (assets.version) { %><link rel="stylesheet" type="text/css" href="//cdn.auth0.com/extensions/auth0-delegated-admin/assets/auth0-delegated-admin.ui.<%= assets.version %>.css" /><% } %>
     <% if (assets.customCss) { %><link rel="stylesheet" type="text/css" href="<%= assets.customCss %>" /><% } %>
-    <% if (assets.customStyles) { %><link rel="stylesheet" type="text/css" href="<%= assets.customStyles %>" /><% } %>
   </head>
   <body>
     <div id="app"></div>
@@ -58,7 +57,6 @@ export default () => {
       return res.send(ejs.render(template, {
         config: settings,
         assets: {
-          customStyles: (req.custom_style && req.custom_style.css) ? req.custom_style.css : null,
           customCss: config('CUSTOM_CSS'),
           version: clientVersion
         }
@@ -70,7 +68,6 @@ export default () => {
       const locals = {
         config: settings,
         assets: {
-          customStyles: (req.custom_style && req.custom_style.css) ? req.custom_style.css : null,
           customCss: config('CUSTOM_CSS'),
           app: 'bundle.js'
         }
@@ -78,7 +75,6 @@ export default () => {
 
       if (!err && manifest) {
         locals.assets = {
-          customStyles: (req.custom_style && req.custom_style.css) ? req.custom_style.css : null,
           customCss: config('CUSTOM_CSS'),
           ...JSON.parse(manifest)
         };
