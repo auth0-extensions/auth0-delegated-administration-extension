@@ -2,10 +2,6 @@ import { Router } from 'express';
 
 export default () => {
   const api = Router();
-
-  /*
-   * List the most recent logs.
-   */
   api.get('/', (req, res, next) => {
     req.auth0.logs
       .getAll({
@@ -20,9 +16,6 @@ export default () => {
       .catch(next);
   });
 
-  /*
-   * List a single log record.
-   */
   api.get('/:id', (req, res, next) => {
     req.auth0.logs.get({ id: req.params.id })
       .then(log => {

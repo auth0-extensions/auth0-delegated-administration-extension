@@ -1,13 +1,13 @@
-import { Router } from 'express';
-import request from 'request';
-import { managementApi } from 'auth0-extension-tools';
 import auth0 from 'auth0';
-import { customMiddles } from '../lib/middlewares';
+import request from 'request';
+import { Router } from 'express';
+import { managementApi } from 'auth0-extension-tools';
+
 import config from '../lib/config';
+import { customMiddles } from '../lib/middlewares';
 
 export default (storage, scriptManager) => {
   const api = Router();
-
   api.get('/', (req, res, next) => {
     const filterContext = {
       request: {

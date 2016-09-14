@@ -3,10 +3,6 @@ import { Router } from 'express';
 
 export default () => {
   const api = Router();
-
-  /*
-   * List all connections.
-   */
   api.get('/', (req, res, next) => {
     req.auth0.connections.getAll({ fields: 'id,name,strategy,enabled_clients,options' })
       .then(connections => _.chain(connections)

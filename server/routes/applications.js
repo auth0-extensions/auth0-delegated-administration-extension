@@ -3,10 +3,6 @@ import { Router } from 'express';
 
 export default () => {
   const api = Router();
-
-  /*
-   * Get a list of applications.
-   */
   api.get('/', (req, res, next) => {
     req.auth0.clients.getAll({ fields: 'client_id,name,callbacks,global' })
       .then(clients => _.chain(clients)
@@ -14,7 +10,6 @@ export default () => {
         .sortBy((client) => client.name.toLowerCase())
         .value()
       )
-      .then(clients => _.sortByOrder(clients, [ 'groups.length' ], [ false ]))
       .then(clients => res.json(clients))
       .catch(next);
   });
