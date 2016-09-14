@@ -32,7 +32,7 @@ export const mfa = createReducer(fromJS(initialState), {
   [constants.REMOVE_MULTIFACTOR_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occured while unblocking the user: ${action.errorMessage}`
+      error: `An error occured while removing multi factor authentication for the user: ${action.errorMessage}`
     }),
   [constants.REMOVE_MULTIFACTOR_FULFILLED]: (state) =>
     state.merge({
