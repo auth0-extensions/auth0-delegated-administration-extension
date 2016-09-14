@@ -7,7 +7,8 @@ export default class Header extends Component {
     user: React.PropTypes.object,
     accessLevel: React.PropTypes.object,
     issuer: React.PropTypes.string,
-    onLogout: React.PropTypes.func.isRequired
+    onLogout: React.PropTypes.func.isRequired,
+    settings: React.PropTypes.object,
   }
 
   getPicture(iss, user) {
@@ -23,10 +24,14 @@ export default class Header extends Component {
   }
 
   render() {
-    const { user, issuer, onLogout, accessLevel } = this.props;
+    const { user, issuer, onLogout, accessLevel, settings } = this.props;
     const showMenu = accessLevel.role === 2;
+    settings.title ? (document.title = settings.title) :'';
     return (
       <header className="dashboard-header">
+        {settings.css ?
+          <link rel="stylesheet" type="text/css" href={settings.css} />
+          : ''}
         <nav role="navigation" className="navbar navbar-default">
           <div className="container">
             <div id="header" className="navbar-header" style={{ width: '800px' }}>
