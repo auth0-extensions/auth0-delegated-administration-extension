@@ -6,7 +6,7 @@ import createReducer from '../utils/createReducer';
 const initialState = {
   loading: false,
   error: null,
-  record: { title: '', css: '' }
+  record: { settings: { title: '', css: '' } }
 };
 
 export const settings = createReducer(fromJS(initialState), {

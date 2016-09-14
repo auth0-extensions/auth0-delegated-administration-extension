@@ -23,7 +23,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Header user={this.props.user} issuer={this.props.issuer} onLogout={this.props.logout} accessLevel={this.props.accessLevel.toJSON()} settings={this.props.settings.toJSON()} />
+        <Header user={this.props.user} issuer={this.props.issuer} onLogout={this.props.logout} accessLevel={this.props.accessLevel.toJSON()} settings={this.props.settings.toJSON().settings} />
         <div className="container">
           <div className="row">
             <section className="content-page current">
