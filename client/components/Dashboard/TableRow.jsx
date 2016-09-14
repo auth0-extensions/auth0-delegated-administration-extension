@@ -1,5 +1,5 @@
 export default (props) => (
   <tr>
-  { props.children }
+  {props.children}
   </tr>
 );

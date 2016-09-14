@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react';
-import { Button, ButtonToolbar, Modal } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 
 import { Error, Json, LoadingPanel } from '../Dashboard';
 
@@ -25,8 +25,10 @@ export default class LogDialog extends Component {
           <Modal.Title>Log - <span>{log.type || 'Log Record'}</span></Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <LoadingPanel show={loading} spinnerStyle={{ height: '16px', width: '16px' }}
-              animationStyle={{ paddingTop: '0px', paddingBottom: '0px', marginTop: '0px', marginBottom: '10px' }}>
+          <LoadingPanel
+            show={loading} spinnerStyle={{ height: '16px', width: '16px' }}
+            animationStyle={{ paddingTop: '0px', paddingBottom: '0px', marginTop: '0px', marginBottom: '10px' }}
+          >
             <Error message={error}>
               <Json jsonObject={log} />
             </Error>

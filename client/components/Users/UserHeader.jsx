@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 
 export default class UserHeader extends Component {
   static propTypes = {
+    error: PropTypes.string,
     loading: PropTypes.bool.isRequired,
     user: PropTypes.object.isRequired
   }
@@ -27,9 +28,9 @@ export default class UserHeader extends Component {
 
     return (
       <div className="user-header">
-        <img className="img-polaroid" src={user.picture} />
+        <img role="presentation" className="img-polaroid" src={user.picture} />
         <div className="user-bg-box" style={{ position: 'relative', height: '120px', overflow: 'hidden' }}>
-          <img className="user-bg" src={user.picture} />
+          <img role="presentation" className="user-bg" src={user.picture} />
           <div className="box-content">
             <div className="login-count">
               <span className="lined-text">Logins Count:</span>

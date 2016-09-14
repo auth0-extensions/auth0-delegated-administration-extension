@@ -45,7 +45,7 @@ export default class UserLogs extends Component {
                   <TableTextCell>{log.user_name || log.description || type.description}</TableTextCell>
                   <TableTextCell>{log.time_ago}</TableTextCell>
                   <TableTextCell>{log.connection || 'N/A'}</TableTextCell>
-                  <TableTextCell>{log.client_name|| 'N/A'}</TableTextCell>
+                  <TableTextCell>{log.client_name || 'N/A'}</TableTextCell>
                 </TableRow>
               );
             })

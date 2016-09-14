@@ -3,16 +3,17 @@ import { MenuItem, DropdownButton } from 'react-bootstrap';
 
 export default class UserActions extends Component {
   static propTypes = {
-    user: PropTypes.object.isRequired,
-    databaseConnections: PropTypes.object.isRequired,
     blockUser: PropTypes.func.isRequired,
-    unblockUser: PropTypes.func.isRequired,
-    removeMfa: PropTypes.func.isRequired,
-    deleteUser: PropTypes.func.isRequired,
-    resetPassword: PropTypes.func.isRequired,
+    changeEmail: PropTypes.func.isRequired,
     changePassword: PropTypes.func.isRequired,
     changeUsername: PropTypes.func.isRequired,
-    changeEmail: PropTypes.func.isRequired
+    databaseConnections: PropTypes.object.isRequired,
+    deleteUser: PropTypes.func.isRequired,
+    removeMfa: PropTypes.func.isRequired,
+    resendVerificationEmail: PropTypes.func.isRequired,
+    resetPassword: PropTypes.func.isRequired,
+    unblockUser: PropTypes.func.isRequired,
+    user: PropTypes.object.isRequired
   }
 
   state = {

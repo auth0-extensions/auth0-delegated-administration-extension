@@ -36,9 +36,9 @@ export default class Header extends Component {
               <ul className="nav navbar-nav navbar-right">
                 <li className="dropdown">
                   <span role="button" data-toggle="dropdown" data-target="#" className="btn-dro btn-username">
-                    <img src={this.getPicture(issuer, user)} className="picture avatar" />
+                    <img role="presentation" src={this.getPicture(issuer, user)} className="picture avatar" />
                     <span className="username-text">
-                      { issuer }
+                      {issuer}
                     </span>
                     <i className="icon-budicon-460"></i>
                   </span>
