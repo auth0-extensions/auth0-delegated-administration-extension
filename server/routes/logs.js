@@ -1,8 +1,13 @@
 import { Router } from 'express';
+import { NotFoundError } from 'auth0-extension-tools';
 
-export default () => {
+import { hasAccessLevel } from '../lib/middlewares';
+import * as constants from '../constants';
+
+
+export default (scriptManager) => {
   const api = Router();
-  api.get('/', (req, res, next) => {
+  api.get('/', hasAccessLevel(constants.SUPER_ACCESS_LEVEL), (req, res, next) => {
     req.auth0.logs
       .getAll({
         q: 'NOT type: sapi AND NOT type:fapi',
@@ -23,7 +28,28 @@ export default () => {
           throw new Error('Invalid log record.');
         }
 
-        return log;
+        if (req.user.role === constants.SUPER_ACCESS_LEVEL) {
+          return log;
+        }
+
+        return req.auth0.users.get({ id: log.user_id })
+          .then(user => {
+            if (!user) {
+              next(new NotFoundError(`User not found: ${req.params.id}`));
+            }
+
+            const accessContext = {
+              request: {
+                user: req.user
+              },
+              payload: {
+                user
+              }
+            };
+
+            return scriptManager.execute('access', accessContext);
+          })
+          .then(() => log);
       })
       .then(log => res.json({ log }))
       .catch(next);

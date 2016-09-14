@@ -52,7 +52,7 @@ export default (storage) => {
   api.use('/connections', connections());
   api.use('/scripts', hasAccessLevel(constants.SUPER_ACCESS_LEVEL), scripts(storage, scriptManager));
   api.use('/users', users(storage, scriptManager));
-  api.use('/logs', logs());
+  api.use('/logs', logs(scriptManager));
 
   api.get('/styles', (req, res, next) => {
     const stylesContext = {
@@ -75,7 +75,6 @@ export default (storage) => {
 
     scriptManager.execute('memberships', membershipContext)
       .then(memberships => res.json({ memberships: memberships || [ ], role: req.user.role || 0 }))
-      .then(() => res.status(200).send())
       .catch(next);
   });
 
