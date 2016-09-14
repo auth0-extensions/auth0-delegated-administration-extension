@@ -4,10 +4,36 @@ import { Router } from 'express';
 import { managementApi } from 'auth0-extension-tools';
 
 import config from '../lib/config';
-import { customMiddles } from '../lib/middlewares';
+import { verifyUserAccess } from '../lib/middlewares';
 
 export default (storage, scriptManager) => {
   const api = Router();
+
+  /*
+   * Create user.
+   */
+  api.post('/', (req, res, next) => {
+    const writeContext = {
+      request: {
+        user: req.user
+      },
+      payload: {
+        email: req.body.email,
+        connection: req.body.connection,
+        group: req.body.group,
+        password: req.body.password
+      }
+    };
+
+    scriptManager.execute('write', writeContext)
+      .then(result => req.auth0.users.create(result || writeContext.payload))
+      .then(() => res.status(200).send())
+      .catch(next);
+  });
+
+  /*
+   * Get all users.
+   */
   api.get('/', (req, res, next) => {
     const filterContext = {
       request: {
@@ -36,18 +62,27 @@ export default (storage, scriptManager) => {
       .catch(next);
   });
 
-  api.get('/:id', customMiddles.checkAccess(scriptManager), (req, res, next) => {
+  /*
+   * Get a single user.
+   */
+  api.get('/:id', verifyUserAccess(scriptManager), (req, res, next) => {
     req.auth0.users.get({ id: req.params.id })
       .then(user => res.json({ user }))
       .catch(next);
   });
 
-  api.delete('/:id', customMiddles.checkAccess(scriptManager), (req, res, next) => {
+  /*
+   * Deleta a user.
+   */
+  api.delete('/:id', verifyUserAccess(scriptManager), (req, res, next) => {
     req.auth0.users.delete({ id: req.params.id })
       .then(() => res.sendStatus(204))
       .catch(next);
   });
 
+  /*
+   * Trigger a password reset for the user.
+   */
   api.post('/:email/password-reset', (req, res, next) => {
     const client = new auth0.AuthenticationClient({
       domain: config('AUTH0_DOMAIN'),
@@ -62,7 +97,10 @@ export default (storage, scriptManager) => {
       .catch(next);
   });
 
-  api.post('/:id/password-change', customMiddles.checkAccess(scriptManager), (req, res, next) => {
+  /*
+   * Change the password of a user.
+   */
+  api.post('/:id/password-change', verifyUserAccess(scriptManager), (req, res, next) => {
     if (req.body.password !== req.body.confirmPassword) {
       return next(new Error('Passwords don\'t match'));
     }
@@ -76,13 +114,19 @@ export default (storage, scriptManager) => {
       .catch(next);
   });
 
-  api.get('/:id/devices', customMiddles.checkAccess(scriptManager), (req, res, next) => {
+  /*
+   * Get all devices for the user.
+   */
+  api.get('/:id/devices', verifyUserAccess(scriptManager), (req, res, next) => {
     req.auth0.deviceCredentials.getAll({ user_id: req.params.id })
       .then(devices => res.json({ devices }))
       .catch(next);
   });
 
-  api.get('/:id/logs', customMiddles.checkAccess(scriptManager), (req, res, next) => {
+  /*
+   * Get all logs for a user.
+   */
+  api.get('/:id/logs', verifyUserAccess(scriptManager), (req, res, next) => {
     managementApi.getAccessTokenCached(config('AUTH0_DOMAIN'), config('AUTH0_CLIENT_ID'), config('AUTH0_CLIENT_SECRET'))
       .then(accessToken => {
         const options = {
@@ -113,59 +157,37 @@ export default (storage, scriptManager) => {
       .catch(next);
   });
 
-  api.delete('/:id/multifactor/:provider', customMiddles.checkAccess(scriptManager), (req, res, next) => {
+  /*
+   * Remove MFA for the user.
+   */
+  api.delete('/:id/multifactor/:provider', verifyUserAccess(scriptManager), (req, res, next) => {
     req.auth0.users.deleteMultifactorProvider({ id: req.params.id, provider: req.params.provider })
       .then(() => res.sendStatus(204))
       .catch(next);
   });
 
-  api.post('/:id/block', customMiddles.checkAccess(scriptManager), (req, res, next) => {
+  /*
+   * Block a user.
+   */
+  api.post('/:id/block', verifyUserAccess(scriptManager), (req, res, next) => {
     req.auth0.users.update({ id: req.params.id }, { blocked: true })
       .then(() => res.sendStatus(204))
       .catch(next);
   });
 
-  api.post('/:id/unblock', customMiddles.checkAccess(scriptManager), (req, res, next) => {
+  /*
+   * Unblock a user.
+   */
+  api.post('/:id/unblock', verifyUserAccess(scriptManager), (req, res, next) => {
     req.auth0.users.update({ id: req.params.id }, { blocked: false })
       .then(() => res.sendStatus(204))
       .catch(next);
   });
 
   /*
-   * Update user.
+   * Send verification email to the user.
    */
-  api.put('/:id', customMiddles.checkAccess(scriptManager), customMiddles.prepareUser, (req, res, next) => {
-    req.auth0.users.update({ id: req.params.id }, req.body)
-      .then(() => res.status(200).send())
-      .catch(next);
-  });
-
-  /*
-   * Create user.
-   */
-  api.post('/', (req, res, next) => {
-    const writeContext = {
-      request: {
-        user: req.user
-      },
-      payload: {
-        email: req.body.email,
-        connection: req.body.connection,
-        group: req.body.group,
-        password: req.body.password
-      }
-    };
-
-    scriptManager.execute('write', writeContext)
-      .then(result => req.auth0.users.create(result || writeContext.payload))
-      .then(() => res.status(200).send())
-      .catch(next);
-  });
-
-  /*
-   * send verification email user.
-   */
-  api.post('/:id/send-verification-email', customMiddles.checkAccess(scriptManager), (req, res, next) => {
+  api.post('/:id/send-verification-email', verifyUserAccess(scriptManager), (req, res, next) => {
     const data = {
       user_id: req.params.id
     };

@@ -10,7 +10,7 @@ import meta from './routes/meta';
 import htmlRoute from './routes/html';
 import config from './lib/config';
 import logger from './lib/logger';
-import { errorHandler, getStorage } from './lib/middlewares';
+import { errorHandler } from './lib/middlewares';
 
 module.exports = (cfg, storageProvider) => {
   config.setProvider(cfg);
@@ -32,7 +32,6 @@ module.exports = (cfg, storageProvider) => {
   }));
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
-  app.use(getStorage);
 
   // Configure routes.
   app.use('/api', api(storage));

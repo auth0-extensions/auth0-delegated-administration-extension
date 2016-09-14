@@ -4,7 +4,6 @@ import { middlewares } from 'auth0-extension-express-tools';
 
 import { expressJwtSecret, SigningKeyNotFoundError } from 'jwks-rsa';
 import { getUserAccessLevel, hasAccessLevel } from '../lib/middlewares';
-import { getCustomData } from '../lib/scripts';
 import config from '../lib/config';
 import * as constants from '../constants';
 
@@ -55,7 +54,17 @@ export default (storage) => {
   api.use('/users', users(storage, scriptManager));
   api.use('/logs', logs());
 
-  api.get('/styles', getCustomData('styles', {}));
+  api.get('/styles', (req, res, next) => {
+    const stylesContext = {
+      request: {
+        user: req.user
+      }
+    };
+
+    scriptManager.execute('styles', stylesContext)
+      .then(styles => res.json(styles))
+      .catch(next);
+  });
 
   api.get('/me', (req, res, next) => {
     const membershipContext = {
