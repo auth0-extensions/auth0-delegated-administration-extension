@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { TableActionCell, Table, TableCell, TableRouteCell, TableBody, TableTextCell, TableHeader, TableColumn, TableRow } from '../Dashboard';
+import { Table, TableCell, TableRouteCell, TableBody, TableTextCell, TableHeader, TableColumn, TableRow } from '../Dashboard';
 
 export default class UsersTable extends Component {
   static propTypes = {
@@ -28,17 +28,17 @@ export default class UsersTable extends Component {
         <TableBody>
         {users.map((user, index) => {
           return (
-              <TableRow key={index}>
-                <TableCell>
-                  <img className="img-circle" src={ user.picture } alt={ user.name || user.email || user.user_id } width="32" />
-                </TableCell>
-                <TableRouteCell route={`/users/${user.user_id}`}>{ user.name || user.email || user.user_id }</TableRouteCell>
-                <TableTextCell>{ user.email || 'N/A' }</TableTextCell>
-                <TableTextCell>{ user.last_login_relative }</TableTextCell>
-                <TableTextCell>{ user.logins_count }</TableTextCell>
-                <TableTextCell>{ user.identities[0].connection }</TableTextCell>
-              </TableRow>
-            );
+            <TableRow key={index}>
+              <TableCell>
+                <img className="img-circle" src={user.picture} alt={user.name || user.email || user.user_id} width="32" />
+              </TableCell>
+              <TableRouteCell route={`/users/${user.user_id}`}>{user.name || user.email || user.user_id}</TableRouteCell>
+              <TableTextCell>{user.email || 'N/A'}</TableTextCell>
+              <TableTextCell>{user.last_login_relative}</TableTextCell>
+              <TableTextCell>{user.logins_count}</TableTextCell>
+              <TableTextCell>{user.identities[0].connection}</TableTextCell>
+            </TableRow>
+          );
         })}
         </TableBody>
       </Table>

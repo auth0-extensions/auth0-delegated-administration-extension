@@ -75,7 +75,7 @@ Filter:
 
 ```js
 function(ctx, callback) {
-  var department = ctx.request.user.groups;
+  var department = ctx.request.user.department;
   if (!department || !department.length) {
     return callback(new Error('The current user is not part of any department.'));
   }
@@ -123,7 +123,7 @@ function(ctx, callback) {
     password: ctx.payload.password,
     connection: ctx.payload.connection,
     app_metadata: {
-      vendor: ctx.payload.group
+      department: ctx.payload.group
     }
   });
 }

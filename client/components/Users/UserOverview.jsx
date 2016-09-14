@@ -26,16 +26,16 @@ export default class UserOverview extends React.Component {
 
     return (
       <div>
-        <LoadingPanel show={ loading }>
+        <LoadingPanel show={loading}>
           <div className="row">
             <div className="col-xs-12 wrapper">
-              <Error message={ error } />
+              <Error message={error} />
             </div>
           </div>
           <SearchBar onReset={this.props.onReset} onSearch={this.props.onSearch} enabled={!loading} />
           <div className="row">
             <div className="col-xs-12">
-                <UsersTable loading={loading} users={users} renderActions={renderActions} />
+              <UsersTable loading={loading} users={users} renderActions={renderActions} />
             </div>
           </div>
           <div className="row">

@@ -15,7 +15,7 @@ export default class UserHeader extends Component {
       return <div></div>;
     }
 
-    return <span className="user-label user-head-email">{ user.email }</span>;
+    return <span className="user-label user-head-email">{user.email}</span>;
   }
 
   render() {
@@ -28,22 +28,22 @@ export default class UserHeader extends Component {
     return (
       <div className="user-header">
         <img className="img-polaroid" src={user.picture} />
-          <div className="user-bg-box" style={{ position: 'relative', height: '120px', overflow: 'hidden' }}>
-            <img className="user-bg" src={user.picture} />
-            <div className="box-content">
-              <div className="login-count">
-                <span className="lined-text">Logins Count:</span>
-                <strong>{user.logins_count || 0}</strong>
-              </div>
-              <div className="username-area">
-                <h4>
-                  <span className="name user-head-nickname">
-                    { user.name || user.nickname || user.email }
-                  </span>
-                  {this.getEmail(user)}
-                </h4>
-              </div>
+        <div className="user-bg-box" style={{ position: 'relative', height: '120px', overflow: 'hidden' }}>
+          <img className="user-bg" src={user.picture} />
+          <div className="box-content">
+            <div className="login-count">
+              <span className="lined-text">Logins Count:</span>
+              <strong>{user.logins_count || 0}</strong>
             </div>
+            <div className="username-area">
+              <h4>
+                <span className="name user-head-nickname">
+                  {user.name || user.nickname || user.email}
+                </span>
+                {this.getEmail(user)}
+              </h4>
+            </div>
+          </div>
         </div>
       </div>
     );

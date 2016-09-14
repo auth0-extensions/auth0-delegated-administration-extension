@@ -34,9 +34,8 @@ export default connectContainer(class extends Component {
     }
 
     return (
-      <Confirm title="Reset Password?" show={requesting} loading={loading} onCancel={onCancel}
-               onConfirm={this.onConfirm}>
-        <Error message={error}/>
+      <Confirm title="Reset Password?" show={requesting} loading={loading} onCancel={onCancel} onConfirm={this.onConfirm}>
+        <Error message={error} />
         <p>
           Do you really want to reset the password for <strong>{userName}</strong>?
           This will send an email to the user allowing them to choose a new password.
@@ -46,21 +45,20 @@ export default connectContainer(class extends Component {
             <div className="form-group">
               <label className="col-xs-2 control-label">Email</label>
               <div className="col-xs-9">
-                <input type="text" readOnly="readonly" className="form-control" value={userEmail}/>
+                <input type="text" readOnly="readonly" className="form-control" value={userEmail} />
               </div>
             </div>
             <div className="form-group">
               <label className="col-xs-2 control-label">Connection</label>
               <div className="col-xs-9">
-                <input type="text" readOnly="readonly" className="form-control" value={connection}/>
+                <input type="text" readOnly="readonly" className="form-control" value={connection} />
               </div>
             </div>
             <div className="form-group">
               <label className="col-xs-2 control-label">Application</label>
               <div className="col-xs-9">
                 <select className="form-control" ref="application">
-                  {this.props.appsForConnection.toJS().map((option, index) => <option key={index}
-                                                                                      value={option.client_id}>{option.name}</option>)}
+                  {this.props.appsForConnection.toJS().map((option, index) => <option key={index} value={option.client_id}>{option.name}</option>)}
                 </select>
               </div>
             </div>
