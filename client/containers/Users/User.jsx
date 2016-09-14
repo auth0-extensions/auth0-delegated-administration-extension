@@ -51,10 +51,9 @@ export default connectContainer(class extends Component {
   render() {
     const { user, databaseConnections, log, logs, devices } = this.props;
     const { mfa, block, unblock, deleteUser, passwordReset, passwordChange } = this.props.dialogs;
-
     return (
       <div className="user">
-        <TabsHeader />
+        <TabsHeader role={this.props.accessLevel.role}/>
         <div className="row content-header">
           <div className="col-xs-12">
             <h2 className="pull-left">User Details</h2>
