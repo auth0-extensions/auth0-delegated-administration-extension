@@ -1,6 +1,7 @@
 import './Header.css';
 import React, { Component } from 'react';
 import { NavigationLink } from '../components/Dashboard';
+import * as constants from '../constants';
 
 export default class Header extends Component {
   static propTypes = {
@@ -25,7 +26,7 @@ export default class Header extends Component {
 
   render() {
     const { user, issuer, onLogout, accessLevel, settings } = this.props;
-    const showMenu = accessLevel.role === 2;
+    const showMenu = accessLevel.role === constants.SUPER_ADMIN;
     settings.title ? (document.title = settings.title) :'';
     return (
       <header className="dashboard-header">
