@@ -1,6 +1,9 @@
 import Promise from 'bluebird';
 import safeEval from 'safe-eval';
-import { ArgumentError, ValidationError } from 'auth0-extension-tools';
+import { ArgumentError } from 'auth0-extension-tools';
+
+import parseScriptError from './errors/parseScriptError';
+
 
 export default class ScriptManager {
   constructor(storage) {
@@ -43,17 +46,13 @@ export default class ScriptManager {
             const func = safeEval(script);
             func(ctx, (err, res) => {
               if (err) {
-                const caughtError = new ValidationError(err.message);
-                caughtError.stack = err.stack;
-                reject(caughtError);
+                reject(parseScriptError(err, name));
               } else {
                 resolve(res);
               }
             });
           } catch (err) {
-            const caughtError = new ValidationError(err.message);
-            caughtError.stack = err.stack;
-            reject(caughtError);
+            reject(parseScriptError(err, name));
           }
         });
       });
