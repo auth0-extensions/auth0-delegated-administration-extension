@@ -80,3 +80,17 @@ export function getAccessLevel(onSuccess) {
     }
   };
 }
+
+export function getAppSettings(onSuccess) {
+  return {
+    type: constants.FETCH_SETTINGS,
+    meta: {
+      onSuccess
+    },
+    payload: {
+      promise: axios.get('/api/settings', {
+        responseType: 'json'
+      })
+    }
+  };
+}

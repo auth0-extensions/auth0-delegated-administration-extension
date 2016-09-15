@@ -67,7 +67,6 @@ export default (storage, scriptManager) => {
       .catch(next);
   });
 
-
   /*
    * Get a single user.
    */

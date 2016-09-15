@@ -37,9 +37,9 @@ class LogsContainer extends Component {
   }
 
   render() {
-    const { log, logs } = this.props;
+    const { log, logs, accessLevel } = this.props;
     return <div>
-         <TabsHeader />
+        <TabsHeader role={ accessLevel.role }/>
         <LogDialog onClose={this.props.clearLog} error={log.error} loading={log.loading} log={log.record} logId={log.id} />
         <div className="row">
           <div className="col-xs-12 wrapper">
