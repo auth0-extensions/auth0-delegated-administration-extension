@@ -2,6 +2,9 @@ import Promise from 'bluebird';
 import safeEval from 'safe-eval';
 import { ArgumentError } from 'auth0-extension-tools';
 
+import parseScriptError from './errors/parseScriptError';
+
+
 export default class ScriptManager {
   constructor(storage) {
     if (storage === null || storage === undefined) {
@@ -43,13 +46,13 @@ export default class ScriptManager {
             const func = safeEval(script);
             func(ctx, (err, res) => {
               if (err) {
-                reject(err);
+                reject(parseScriptError(err, name));
               } else {
                 resolve(res);
               }
             });
           } catch (err) {
-            reject(err);
+            reject(parseScriptError(err, name));
           }
         });
       });
