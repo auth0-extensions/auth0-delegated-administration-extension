@@ -113,14 +113,14 @@ class Configuration extends Component {
                     </button>
                   </div>
                 </Tab>
-                <Tab eventKey={5} title="Settings Hook">
-                  <p>With the <strong>settings hook</strong> you can control the title and the look-and-feel of the dashboard after the user has logged in?</p>
+                <Tab eventKey={5} title="Settings Query">
+                  <p>With the <strong>settings query</strong> you can control the title and the look-and-feel of the dashboard after the user has logged in?</p>
                   <Editor
                     value={this.state.scripts.settings}
                     onChange={this.updateScript('settings')}
                   />
                   <div className="saveConfigurationButton">
-                    <button onClick={this.saveScript('styles')} className="btn btn-success">Save Settings Hook
+                    <button onClick={this.saveScript('settings')} className="btn btn-success">Save Settings Query
                     </button>
                   </div>
                 </Tab>

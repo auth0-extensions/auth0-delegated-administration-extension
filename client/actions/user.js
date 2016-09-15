@@ -351,27 +351,6 @@ export function changePassword(password, confirmPassword) {
 }
 
 /*
- * Update the user attribute.
- */
-export function updateUserAttribute(userId, data, constant) {
-  return (dispatch) => {
-    dispatch({
-      type: constants[constant],
-      meta: {
-        userId,
-        onSuccess: () => {
-          dispatch(fetchUserDetail(userId));
-        }
-      },
-      payload: {
-        promise: axios.put(`/api/users/${userId}`, data, {
-          responseType: 'json'
-        })
-      }
-    });
-  };
-}
-/*
  * Get confirmation to change a username.
  */
 export function requestUsernameChange(user, connection) {
@@ -409,9 +388,6 @@ export function changeUsername(userId, data) {
       }
     });
   };
-  // return (dispatch) => {
-  //   dispatch(updateUserAttribute(userId, { username: data }, 'USERNAME_CHANGE'));
-  // };
 }
 
 /*
@@ -452,10 +428,6 @@ export function changeEmail(userId, data) {
       }
     });
   };
-
-  // return (dispatch) => {
-  //   dispatch(updateUserAttribute(userId, { email: data }, 'EMAIL_CHANGE'));
-  // };
 }
 
 /*
