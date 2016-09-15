@@ -1,9 +1,6 @@
 import axios from 'axios';
 import * as constants from '../constants';
 
-/*
- * Load all connections available in the Auth0 account.
- */
 export function fetchScript(name) {
   return {
     type: constants.FETCH_SCRIPT,
@@ -18,9 +15,6 @@ export function fetchScript(name) {
   };
 }
 
-/*
- * Update configuration.
- */
 export function updateScript(script, data, onSuccess) {
   return (dispatch) => {
     dispatch({

@@ -14,7 +14,7 @@ export default (storage, scriptManager) => {
    * Create user.
    */
   api.post('/', (req, res, next) => {
-    const writeContext = {
+    const createContext = {
       request: {
         user: req.user
       },
@@ -26,8 +26,8 @@ export default (storage, scriptManager) => {
       }
     };
 
-    scriptManager.execute('write', writeContext)
-      .then(result => req.auth0.users.create(result || writeContext.payload))
+    scriptManager.execute('create', createContext)
+      .then(result => req.auth0.users.create(result || createContext.payload))
       .then(() => res.status(201).send())
       .catch(next);
   });
