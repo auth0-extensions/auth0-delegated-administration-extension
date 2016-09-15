@@ -1,6 +1,6 @@
 import Promise from 'bluebird';
 import safeEval from 'safe-eval';
-import { ArgumentError } from 'auth0-extension-tools';
+import { ArgumentError, ValidationError } from 'auth0-extension-tools';
 
 export default class ScriptManager {
   constructor(storage) {
@@ -43,13 +43,17 @@ export default class ScriptManager {
             const func = safeEval(script);
             func(ctx, (err, res) => {
               if (err) {
-                reject(err);
+                const caughtError = new ValidationError(err.message);
+                caughtError.stack = err.stack;
+                reject(caughtError);
               } else {
                 resolve(res);
               }
             });
           } catch (err) {
-            reject(err);
+            const caughtError = new ValidationError(err.message);
+            caughtError.stack = err.stack;
+            reject(caughtError);
           }
         });
       });
