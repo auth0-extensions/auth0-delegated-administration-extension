@@ -251,7 +251,7 @@ export function cancelDeleteUser() {
  */
 export function deleteUser() {
   return (dispatch, getState) => {
-    const { userId } = getState().deleteUser.toJS();
+    const { userId } = getState().userDelete.toJS();
     dispatch({
       type: constants.DELETE_USER,
       payload: {
@@ -472,4 +472,3 @@ export function resendVerificationEmail(userId) {
     });
   };
 }
-

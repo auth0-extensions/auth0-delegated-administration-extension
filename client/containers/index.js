@@ -5,5 +5,3 @@ export RequireAuthentication from './RequireAuthentication';
 export User from './Users/User';
 export Users from './Users/Users';
 export Configuration from './Configuration/Configuration';
-export PasswordResetDialog from './Users/PasswordResetDialog';
-export PasswordChangeDialog from './Users/PasswordChangeDialog';
