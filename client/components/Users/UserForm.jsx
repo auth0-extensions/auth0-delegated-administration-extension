@@ -25,7 +25,7 @@ export default createForm('user', class extends Component {
     super(props);
     this.state = {
       usernameRequired: false,
-      departments: false,
+      memberships: false,
       customErrors: { }
     };
   }
@@ -39,10 +39,10 @@ export default createForm('user', class extends Component {
       obj.username = this.refs.username.props.field.value;
 
     if (this.refs.password && this.refs.password.props.field.value) {
-      if (this.refs.password.props.field.value != this.refs.repeat_password.props.field.value) {
+      if (this.refs.password.props.field.value !== this.refs.repeat_password.props.field.value) {
         this.setState({
           customErrors: {
-            repeat_password: ['Repeat Password must be equal to password']
+            repeat_password: [ 'Repeat Password must be equal to password' ]
           }
         });
       } else {
@@ -55,8 +55,8 @@ export default createForm('user', class extends Component {
     if (this.refs.connection && this.refs.connection.value)
       obj.connection = this.refs.connection.value;
 
-    if (this.state.departments) {
-      obj.group = this.state.departments;
+    if (this.state.memberships) {
+      obj.group = this.state.memberships;
     }
     obj["email_verified"] = false;
     if (!this.state.customErrors.repeat_password)
@@ -93,12 +93,10 @@ export default createForm('user', class extends Component {
   ];
 
   logChange = (values) => {
-    let department = [];
-    values.map((val) => {
-      department.push(val.value);
-    });
+    let membership = [];
+    values.map((val) => membership.push(val.value));
     this.setState({
-      departments: department
+      memberships: membership
     });
   };
 
@@ -107,10 +105,10 @@ export default createForm('user', class extends Component {
     _.each(memberships, (a, idx) => {
       options[idx] = { value: a, label: a };
     });
-    if (options.length == 1 && !this.state.departments) {
+    if (options.length == 1 && !this.state.memberships) {
       /* THis runs on render, not allowed
       this.setState({
-        departments: options[0].value
+        memberships: options[0].value
     });
     */
     }
@@ -130,13 +128,7 @@ export default createForm('user', class extends Component {
             confirmLoading, userCreateError } = this.props;
     const options = this.getOptions(memberships);
     return (
-      <Confirm
-        title={title}
-        show={show}
-        loading={confirmLoading}
-        onCancel={ this.props.hideConfirmWindow }
-        onConfirm={this.onConfirmUserCreate.bind(this)}
-      >
+      <Confirm title={title} show={show} loading={confirmLoading} onCancel={this.props.hideConfirmWindow} onConfirm={this.onConfirmUserCreate}>
         <Error message={userCreateError} />
         <div className="row">
           <form className="createUserScreenForm form-horizontal col-xs-12" style={{ marginTop: '30px' }}>
@@ -145,12 +137,7 @@ export default createForm('user', class extends Component {
             </div>
             {usernameRequired ?
               <div className="custom_field">
-                <InputText field={ username }
-                           fieldName="username"
-                           label="username"
-                           validationErrors={validationErrors}
-                           ref="username"
-                />
+                <InputText field={username} fieldName="username" label="username" validationErrors={validationErrors} ref="username" />
               </div>
               : ''}
             <div className="custom_field">
@@ -162,17 +149,17 @@ export default createForm('user', class extends Component {
             {(options.length > 1) ?
               <div className="custom_field">
                 <div className="form-group">
-                  <label>Departments</label>
+                  <label>Memberships</label>
                   <Select
                     name="form-field-name"
-                    value={this.state.departments}
+                    value={this.state.memberships}
                     options={options}
-                    onChange={this.logChange.bind(this)}
-                    multi={true}
+                    onChange={this.logChange}
+                    multi
                   />
                 </div>
               </div>
-            :''}
+            : ''}
             <div className="custom_field">
               <div className="form-group">
                 <label>Connection</label>
