@@ -19,13 +19,15 @@ export default () => {
     logger.debug('Uninstall running...');
     req.auth0.clients.delete({ client_id: config('AUTH0_CLIENT_ID') })
       .then(() => {
-        logger.debug(`Deleted client ${config('AUTH0_CLIENT_ID')}`);
+        logger.debug(`Deleted client: ${config('AUTH0_CLIENT_ID')}`);
         res.sendStatus(204);
       })
       .catch((err) => {
-        logger.debug(`Error deleting client ${config('AUTH0_CLIENT_ID')}`);
+        logger.debug(`Error deleting client: ${config('AUTH0_CLIENT_ID')}`);
         logger.error(err);
-        res.sendStatus(500);
+
+        // Even if deleting fails, we need to be able to uninstall the extension.
+        res.sendStatus(204);
       });
   });
   return hooks;
