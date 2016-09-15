@@ -12,7 +12,7 @@ const initialState = {
   userName: null
 };
 
-export const resendVerificationEmail = createReducer(fromJS(initialState), {
+export const verificationEmail = createReducer(fromJS(initialState), {
   [constants.REQUEST_RESEND_VERIFICATION_EMAIL]: (state, action) =>
     state.merge({
       ...initialState,

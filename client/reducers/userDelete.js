@@ -11,7 +11,7 @@ const initialState = {
   userName: null
 };
 
-export const deleteUser = createReducer(fromJS(initialState), {
+export const userDelete = createReducer(fromJS(initialState), {
   [constants.REQUEST_DELETE_USER]: (state, action) =>
     state.merge({
       ...initialState,

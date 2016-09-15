@@ -2,48 +2,48 @@ import { combineReducers } from 'redux';
 import { reducer as formReducer } from 'redux-form';
 import { routerReducer } from 'react-router-redux';
 
-import { auth } from './auth';
+import { accessLevel } from './accessLevel';
 import { applications } from './applications';
-import { connections } from './connections';
-import { mfa } from './mfa';
+import { auth } from './auth';
 import { block } from './block';
-import { unblock } from './unblock';
+import { connections } from './connections';
+import { emailChange } from './emailChange';
 import { log } from './log';
 import { logs } from './logs';
-import { user } from './user';
-import { users } from './users';
+import { mfa } from './mfa';
+import { passwordChange } from './passwordChange';
+import { passwordReset } from './passwordReset';
 import { scripts } from './scripts';
 import { settings } from './settings';
-import { deleteUser } from './deleteUser';
-import { passwordReset } from './passwordReset';
-import { passwordChange } from './passwordChange';
-import { usernameChange } from './usernameChange';
+import { unblock } from './unblock';
+import { user } from './user';
 import { userCreate } from './userCreate';
-import { emailChange } from './emailChange';
-import { accessLevel } from './accessLevel';
-import { resendVerificationEmail } from './resendVerificationEmail';
+import { userDelete } from './userDelete';
+import { usernameChange } from './usernameChange';
+import { users } from './users';
+import { verificationEmail } from './verificationEmail';
 
 export default combineReducers({
   routing: routerReducer,
+  accessLevel,
   applications,
-  connections,
   auth,
-  mfa,
   block,
-  unblock,
+  connections,
+  emailChange,
   log,
   logs,
+  mfa,
   passwordChange,
   passwordReset,
-  deleteUser,
-  user,
-  users,
-  usernameChange,
-  emailChange,
-  userCreate,
   scripts,
   settings,
-  resendVerificationEmail,
-  accessLevel,
+  unblock,
+  user,
+  userCreate,
+  userDelete,
+  usernameChange,
+  users,
+  verificationEmail,
   form: formReducer
 });

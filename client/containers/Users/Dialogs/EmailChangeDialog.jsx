@@ -1,12 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import connectContainer from 'redux-static';
 
-import { userActions } from '../../actions';
-import { Error, Confirm } from '../../components/Dashboard';
+import { userActions } from '../../../actions';
+import { Error, Confirm } from '../../../components/Dashboard';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
-    usernameChange: state.usernameChange
+    emailChange: state.emailChange
   });
 
   static actionsToProps = {
@@ -14,32 +14,31 @@ export default connectContainer(class extends Component {
   }
 
   static propTypes = {
-    cancelUsernameChange: PropTypes.func.isRequired,
-    changeUsername: PropTypes.func.isRequired,
-    usernameChange: PropTypes.object.isRequired
+    cancelEmailChange: PropTypes.func.isRequired,
+    changeEmail: PropTypes.func.isRequired,
+    emailChange: PropTypes.object.isRequired
   }
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.usernameChange !== this.props.usernameChange;
+    return nextProps.emailChange !== this.props.emailChange;
   }
 
   onConfirm = () => {
-    this.props.changeUsername(this.refs.user.value, this.refs.username.value);
+    this.props.changeEmail(this.refs.user.value, this.refs.email.value);
   }
 
   render() {
-    const { cancelUsernameChange } = this.props;
-    const { userId, connection, userNameToChange, userName, error, requesting, loading } = this.props.usernameChange.toJS();
-
-    if (!requesting) {
-      return null;
-    }
+    const { cancelEmailChange } = this.props;
+    const { userId, connection, userEmail, userName, error, requesting, loading } = this.props.emailChange.toJS();
 
     return (
-      <Confirm title="Change Username?" show={requesting} loading={loading} onCancel={cancelUsernameChange} onConfirm={this.onConfirm}>
+      <Confirm
+        title="Change Email?" show={requesting} loading={loading} onCancel={cancelEmailChange}
+        onConfirm={this.onConfirm}
+      >
         <Error message={error} />
         <p>
-          Do you really want to change the username for <strong>{userName}</strong>?
+          Do you really want to change the email for <strong>{userName}</strong>?
         </p>
         <div className="row">
           <form className="form-horizontal col-xs-12" style={{ marginTop: '40px' }}>
@@ -50,9 +49,9 @@ export default connectContainer(class extends Component {
               </div>
             </div>
             <div className="form-group">
-              <label className="col-xs-2 control-label">Username</label>
+              <label className="col-xs-2 control-label">Email</label>
               <div className="col-xs-9">
-                <input ref="username" type="text" className="form-control" defaultValue={userNameToChange} />
+                <input ref="email" type="email" className="form-control" defaultValue={userEmail} />
               </div>
             </div>
             <input ref="user" type="hidden" readOnly="readonly" className="form-control" value={userId} />

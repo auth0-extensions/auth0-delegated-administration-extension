@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import connectContainer from 'redux-static';
 
-import { userActions } from '../../actions';
-import { Error, Confirm } from '../../components/Dashboard';
+import { userActions } from '../../../actions';
+import { Error, Confirm } from '../../../components/Dashboard';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
