@@ -38,7 +38,8 @@ class LogsContainer extends Component {
 
   render() {
     const { log, logs, accessLevel } = this.props;
-    return <div>
+    return (
+      <div>
         <TabsHeader role={ accessLevel.role }/>
         <LogDialog onClose={this.props.clearLog} error={log.error} loading={log.loading} log={log.record} logId={log.id} />
         <div className="row">
@@ -60,7 +61,8 @@ class LogsContainer extends Component {
             {this.createToolbar(true)}
           </div>
         </div>
-      </div>;
+      </div>
+    );
   }
 }
 

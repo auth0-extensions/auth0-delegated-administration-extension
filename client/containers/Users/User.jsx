@@ -53,7 +53,7 @@ export default connectContainer(class extends Component {
     const { mfa, block, unblock, deleteUser, passwordReset, passwordChange } = this.props.dialogs;
     return (
       <div className="user">
-        <TabsHeader role={this.props.accessLevel.role}/>
+        <TabsHeader role={this.props.accessLevel.role} />
         <div className="row content-header">
           <div className="col-xs-12">
             <h2 className="pull-left">User Details</h2>
@@ -76,19 +76,17 @@ export default connectContainer(class extends Component {
         </div>
         <div className="row">
           <div className="col-xs-12">
-            <UserHeader loading={user.get('loading')} user={user.get('record')} error={user.get('error')}/>
+            <UserHeader loading={user.get('loading')} user={user.get('record')} error={user.get('error')} />
           </div>
         </div>
         <div className="row user-tabs">
           <div className="col-xs-12">
             <Tabs defaultActiveKey={1} animation={false}>
               <Tab eventKey={1} title="Profile">
-                <UserProfile loading={user.get('loading')} user={user.get('record')}
-                             error={user.get('error')}/>
+                <UserProfile loading={user.get('loading')} user={user.get('record')} error={user.get('error')} />
               </Tab>
               <Tab eventKey={2} title="Devices">
-                <UserDevices loading={devices.get('loading')} devices={devices.get('records')}
-                             error={devices.get('error')}/>
+                <UserDevices loading={devices.get('loading')} devices={devices.get('records')} error={devices.get('error')} />
               </Tab>
               <Tab eventKey={3} title="Logs">
                 <LogDialog onClose={this.props.clearLog} error={log.get('error')}
@@ -104,12 +102,12 @@ export default connectContainer(class extends Component {
         <DeleteDialog error={deleteUser.get('error')} loading={deleteUser.get('loading')}
                       userName={deleteUser.get('userName')} requesting={deleteUser.get('requesting')}
                       onCancel={this.props.cancelDeleteUser} onConfirm={this.props.deleteUser}/>
-        <PasswordChangeDialog onCancel={this.props.cancelPasswordChange} onConfirm={this.props.changePassword}/>
-        <UsernameChangeDialog onCancel={this.props.cancelUsernameChange} onConfirm={this.props.changeUsername}/>
-        <EmailChangeDialog onCancel={this.props.cancelEmailChange} onConfirm={this.props.changeEmail}/>
+        <EmailChangeDialog />
+        <PasswordResetDialog />
+        <PasswordChangeDialog />
+        <UsernameChangeDialog />
         <ResendVerificationEmail onCancel={this.props.cancelResendVerificationEmail}
                                  onConfirm={this.props.resendVerificationEmail}/>
-        <PasswordResetDialog onCancel={this.props.cancelPasswordReset} onConfirm={this.props.resetPassword}/>
         <BlockDialog error={block.get('error')} loading={block.get('loading')} userName={block.get('userName')}
                      requesting={block.get('requesting')}
                      onCancel={this.props.cancelBlockUser} onConfirm={this.props.blockUser}/>

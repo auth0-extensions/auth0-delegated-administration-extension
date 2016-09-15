@@ -11,7 +11,6 @@ import { unblock } from './unblock';
 import { log } from './log';
 import { logs } from './logs';
 import { user } from './user';
-import { userPicker } from './userPicker';
 import { users } from './users';
 import { scripts } from './scripts';
 import { settings } from './settings';
@@ -39,7 +38,6 @@ export default combineReducers({
   deleteUser,
   user,
   users,
-  userPicker,
   usernameChange,
   emailChange,
   userCreate,

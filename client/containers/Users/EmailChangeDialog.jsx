@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import connectContainer from 'redux-static';
 
+import { userActions } from '../../actions';
 import { Error, Confirm } from '../../components/Dashboard';
 
 export default connectContainer(class extends Component {
@@ -8,9 +9,13 @@ export default connectContainer(class extends Component {
     emailChange: state.emailChange
   });
 
+  static actionsToProps = {
+    ...userActions
+  }
+
   static propTypes = {
-    onCancel: PropTypes.func.isRequired,
-    onConfirm: PropTypes.func.isRequired,
+    cancelEmailChange: PropTypes.func.isRequired,
+    changeEmail: PropTypes.func.isRequired,
     emailChange: PropTypes.object.isRequired
   }
 
@@ -19,11 +24,11 @@ export default connectContainer(class extends Component {
   }
 
   onConfirm = () => {
-    this.props.onConfirm(this.refs.user.value, this.refs.email.value);
+    this.props.changeEmail(this.refs.user.value, this.refs.email.value);
   }
 
   render() {
-    const { onCancel } = this.props;
+    const { cancelEmailChange } = this.props;
     const { userId, connection, userEmail, userName, error, requesting, loading } = this.props.emailChange.toJS();
 
     if (!requesting) {
@@ -32,7 +37,7 @@ export default connectContainer(class extends Component {
 
     return (
       <Confirm
-        title="Change Email?" show={requesting} loading={loading} onCancel={onCancel}
+        title="Change Email?" show={requesting} loading={loading} onCancel={cancelEmailChange}
         onConfirm={this.onConfirm}
       >
         <Error message={error} />

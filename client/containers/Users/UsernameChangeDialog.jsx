@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import connectContainer from 'redux-static';
 
+import { userActions } from '../../actions';
 import { Error, Confirm } from '../../components/Dashboard';
 
 export default connectContainer(class extends Component {
@@ -8,9 +9,13 @@ export default connectContainer(class extends Component {
     usernameChange: state.usernameChange
   });
 
+  static actionsToProps = {
+    ...userActions
+  }
+
   static propTypes = {
-    onCancel: PropTypes.func.isRequired,
-    onConfirm: PropTypes.func.isRequired,
+    cancelUsernameChange: PropTypes.func.isRequired,
+    changeUsername: PropTypes.func.isRequired,
     usernameChange: PropTypes.object.isRequired
   }
 
@@ -19,11 +24,11 @@ export default connectContainer(class extends Component {
   }
 
   onConfirm = () => {
-    this.props.onConfirm(this.refs.user.value, this.refs.username.value);
+    this.props.changeUsername(this.refs.user.value, this.refs.username.value);
   }
 
   render() {
-    const { onCancel } = this.props;
+    const { cancelUsernameChange } = this.props;
     const { userId, connection, userNameToChange, userName, error, requesting, loading } = this.props.usernameChange.toJS();
 
     if (!requesting) {
@@ -31,7 +36,7 @@ export default connectContainer(class extends Component {
     }
 
     return (
-      <Confirm title="Change Username?" show={requesting} loading={loading} onCancel={onCancel} onConfirm={this.onConfirm}>
+      <Confirm title="Change Username?" show={requesting} loading={loading} onCancel={cancelUsernameChange} onConfirm={this.onConfirm}>
         <Error message={error} />
         <p>
           Do you really want to change the username for <strong>{userName}</strong>?

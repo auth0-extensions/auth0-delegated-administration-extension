@@ -1,12 +1,17 @@
 import React, { Component, PropTypes } from 'react';
 import connectContainer from 'redux-static';
 
+import { userActions } from '../../actions';
 import { Error, Confirm } from '../../components/Dashboard';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     resendVerificationEmail: state.resendVerificationEmail
   });
+
+  static actionsToProps = {
+    ...userActions
+  }
 
   static propTypes = {
     onCancel: PropTypes.func.isRequired,
