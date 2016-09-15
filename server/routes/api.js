@@ -1,8 +1,6 @@
-import jwt from 'express-jwt';
 import { Router } from 'express';
 import { middlewares } from 'auth0-extension-express-tools';
 
-import { expressJwtSecret, SigningKeyNotFoundError } from 'jwks-rsa';
 import { getUserAccessLevel, hasAccessLevel } from '../lib/middlewares';
 import config from '../lib/config';
 import * as constants from '../constants';
@@ -19,28 +17,8 @@ export default (storage) => {
   const scriptManager = new ScriptManager(storage);
 
   const api = Router();
-  api.use(jwt({
-    secret: expressJwtSecret({
-      cache: true,
-      rateLimit: true,
-      jwksRequestsPerMinute: 5,
-      jwksUri: `https://${config('AUTH0_DOMAIN')}/.well-known/jwks.json`,
-      handleSigningKeyError: (err, cb) => {
-        if (err instanceof SigningKeyNotFoundError) {
-          const unauthorized = new Error('A token was provided with an invalid kid');
-          unauthorized.status = 401;
-          return cb(unauthorized);
-        }
 
-        return cb(err);
-      }
-    }),
-
-    // Validate the audience and the issuer.
-    audience: config('EXTENSION_CLIENT_ID'),
-    issuer: `https://${config('AUTH0_DOMAIN')}/`,
-    algorithms: ['RS256']
-  }));
+  api.use(middlewares.authenticateUser(config('AUTH0_DOMAIN'), config('EXTENSION_CLIENT_ID')));
   api.use(middlewares.managementApiClient({
     domain: config('AUTH0_DOMAIN'),
     clientId: config('AUTH0_CLIENT_ID'),
