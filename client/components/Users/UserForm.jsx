@@ -1,6 +1,5 @@
 import React, { PropTypes, Component } from 'react';
-import { InputText } from '../Dashboard';
-import { Confirm, Error } from '../../components/Dashboard';
+import { InputText, Confirm, Error } from '../../components/Dashboard';
 import createForm from '../../utils/createForm';
 import _ from 'lodash';
 import Select from 'react-select';
@@ -17,9 +16,9 @@ export default createForm('user', class extends Component {
     fetchUsers: React.PropTypes.func.isRequired,
     title: React.PropTypes.string.isRequired,
     closeConfirmation: React.PropTypes.func.isRequired,
-    confirmLoading:PropTypes.bool.isRequired,
-    hideConfirmWindow:React.PropTypes.func.isRequired,
-    userCreateError:React.PropTypes.string
+    confirmLoading: PropTypes.bool.isRequired,
+    hideConfirmWindow: PropTypes.func.isRequired,
+    userCreateError: PropTypes.string
   }
 
   constructor(props) {
@@ -27,7 +26,7 @@ export default createForm('user', class extends Component {
     this.state = {
       usernameRequired: false,
       departments: false,
-      customErrors:{}
+      customErrors: { }
     };
   }
 
@@ -70,9 +69,10 @@ export default createForm('user', class extends Component {
   };
 
   onConnectionChange = (e) => {
-    let connection = _.find(this.props.connections, function (connection) {
-      return connection.name == e.target.value;
+    const connection = _.find(this.props.connections, (connection) => {
+      return connection.name === e.target.value;
     });
+
     if (connection && connection.options && connection.options.requires_username) {
       this.setState({
         usernameRequired: true
@@ -108,21 +108,22 @@ export default createForm('user', class extends Component {
       options[idx] = { value: a, label: a };
     });
     if (options.length == 1 && !this.state.departments) {
+      /* THis runs on render, not allowed
       this.setState({
         departments: options[0].value
     });
+    */
     }
     return options;
   };
 
   render() {
-
     if (this.props.loading || this.props.error) {
       return <div></div>;
     }
-    const connections = _.filter(this.props.connections, function (connection) {
-      return connection.strategy == 'auth0';
-    });
+
+    const connections = _.filter(this.props.connections, (connection) => connection.strategy === 'auth0');
+
     const usernameRequired = this.state.usernameRequired;
     const { fields: { email, username, password, repeat_password, connection },
             validationErrors, memberships, title, show,
@@ -136,70 +137,53 @@ export default createForm('user', class extends Component {
         onCancel={ this.props.hideConfirmWindow }
         onConfirm={this.onConfirmUserCreate.bind(this)}
       >
-      <Error message={userCreateError}/>
-      <div className="row">
-      <form className="createUserScreenForm form-horizontal col-xs-12" style={{ marginTop: '30px' }}>
-        <div className="custom_field">
-          <InputText field={ email }
-                     fieldName="email"
-                     label="Email"
-                     validationErrors={validationErrors}
-                     ref="email"
-          />
-        </div>
-        {usernameRequired ?
-          <div className="custom_field">
-            <InputText field={ username }
-                       fieldName="username"
-                       label="username"
-                       validationErrors={validationErrors}
-                       ref="username"
-            />
-          </div>
-          : ''}
-        <div className="custom_field">
-          <InputText field={ password } fieldName="password" label="Password" type="password"
-                     validationErrors={validationErrors}
-                     ref="password"
-          />
-        </div>
-        <div className="custom_field repeat_password">
-          <InputText field={ repeat_password } fieldName="repeat_password" label="Repeat Password" type="password"
-                     validationErrors={this.state.customErrors}
-                     ref="repeat_password"
-          />
-        </div>
-        {(options.length > 1) ?
-          <div className="custom_field">
-            <div className="form-group">
-              <label>Departments</label>
-              <Select
-                name="form-field-name"
-                value={this.state.departments}
-                options={options}
-                onChange={this.logChange.bind(this)}
-                multi={true}
-              />
+        <Error message={userCreateError} />
+        <div className="row">
+          <form className="createUserScreenForm form-horizontal col-xs-12" style={{ marginTop: '30px' }}>
+            <div className="custom_field">
+              <InputText field={email} fieldName="email" label="Email" validationErrors={validationErrors} ref="email" />
             </div>
-          </div>
-        :''}
-        <div className="custom_field">
-          <div className="form-group">
-            <label>Connection</label>
-            <select className="form-control" name="connection"
-                    onChange={this.onConnectionChange.bind(this)}
-                    ref="connection"
-            >
-              {connections.map((connection, index) => {
-                return <option key={index}
-                               value={connection.name}>{connection.name}</option>;
-              })}
-            </select>
-          </div>
+            {usernameRequired ?
+              <div className="custom_field">
+                <InputText field={ username }
+                           fieldName="username"
+                           label="username"
+                           validationErrors={validationErrors}
+                           ref="username"
+                />
+              </div>
+              : ''}
+            <div className="custom_field">
+              <InputText field={password} fieldName="password" label="Password" type="password" validationErrors={validationErrors} ref="password" />
+            </div>
+            <div className="custom_field repeat_password">
+              <InputText field={repeat_password} fieldName="repeat_password" label="Repeat Password" type="password" validationErrors={this.state.customErrors} ref="repeat_password" />
+            </div>
+            {(options.length > 1) ?
+              <div className="custom_field">
+                <div className="form-group">
+                  <label>Departments</label>
+                  <Select
+                    name="form-field-name"
+                    value={this.state.departments}
+                    options={options}
+                    onChange={this.logChange.bind(this)}
+                    multi={true}
+                  />
+                </div>
+              </div>
+            :''}
+            <div className="custom_field">
+              <div className="form-group">
+                <label>Connection</label>
+                <select className="form-control" name="connection" onChange={this.onConnectionChange} ref="connection">
+                  {connections.map((c, index) => <option key={index} value={c.name}>{c.name}</option>)}
+                </select>
+              </div>
+            </div>
+          </form>
         </div>
-      </form>
-    </div>
-    </Confirm>
-    )
+      </Confirm>
+    );
   }
 });
