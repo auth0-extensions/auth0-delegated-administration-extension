@@ -21,7 +21,7 @@ class Configuration extends Component {
   componentWillMount = () => {
     this.props.fetchScript('access');
     this.props.fetchScript('filter');
-    this.props.fetchScript('write');
+    this.props.fetchScript('create');
     this.props.fetchScript('memberships');
     this.props.fetchScript('settings');
   };
@@ -91,14 +91,14 @@ class Configuration extends Component {
                     <button onClick={this.saveScript('access')} className="btn btn-success">Save Access Hook</button>
                   </div>
                 </Tab>
-                <Tab eventKey={4} title="Write Hook">
-                  <p>The <strong>write hook</strong> will run every time a new user is created. This hook will allow you to shape the user object before it's sent to Auth0. The context object contains the request (with the current user) and the payload sent by the end user.</p>
+                <Tab eventKey={4} title="Create Hook">
+                  <p>The <strong>create hook</strong> will run every time a new user is created. This hook will allow you to shape the user object before it's sent to Auth0. The context object contains the request (with the current user) and the payload sent by the end user.</p>
                   <Editor
-                    value={this.state.scripts.write}
-                    onChange={this.updateScript('write')}
+                    value={this.state.scripts.create}
+                    onChange={this.updateScript('create')}
                   />
                   <div className="saveConfigurationButton">
-                    <button onClick={this.saveScript('write')} className="btn btn-success">Save Write Query
+                    <button onClick={this.saveScript('create')} className="btn btn-success">Save Create Query
                     </button>
                   </div>
                 </Tab>
