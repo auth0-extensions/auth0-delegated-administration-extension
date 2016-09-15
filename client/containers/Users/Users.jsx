@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { connectionActions, userActions } from '../../actions';
 
 import { UserOverview, UserForm } from '../../components/Users';
-import { Confirm, Error } from '../../components/Dashboard';
 import TabsHeader from '../../components/TabsHeader';
 
 import './Users.css';
@@ -35,13 +34,9 @@ class Users extends Component {
     this.setState({ showCreateForm: true });
   };
 
-  onCancelUserCreate = () => {
+  hideConfirmWindow = () => {
     this.setState({ showCreateForm: false });
     this.props.fetchUsers('', true);
-  };
-
-  onConfirmUserCreate = () => {
-    $('.createUserButton').click();
   };
 
   userWasSaved = () => {
@@ -49,10 +44,10 @@ class Users extends Component {
   };
 
   render() {
-    const { loading, error, users, total, connections, userCreateError, userCreateLoading } = this.props;
+    const { loading, error, users, total, connections, userCreateError, userCreateLoading, accessLevel } = this.props;
     return (
       <div className="users">
-        <TabsHeader />
+        <TabsHeader role={ accessLevel.role }/>
         <div className="row content-header">
           <div className="col-xs-12 userTableContent">
             <h2>Users</h2>
@@ -63,12 +58,6 @@ class Users extends Component {
             </a>
           </div>
         </div>
-        <Confirm
-          title="Create User" show={this.state.showCreateForm} loading={userCreateLoading}
-          onCancel={ this.onCancelUserCreate.bind(this)}
-          onConfirm={this.onConfirmUserCreate.bind(this)}
-        >
-          <Error message={userCreateError}/>
           <UserForm
             loading={ loading }
             connections={connections}
@@ -77,8 +66,12 @@ class Users extends Component {
             userWasSaved={this.userWasSaved}
             validationErrors={this.props.validationErrors}
             memberships={this.props.accessLevel.memberships}
+            title="Create User"
+            show={this.state.showCreateForm}
+            confirmLoading={userCreateLoading}
+            hideConfirmWindow={ this.hideConfirmWindow.bind(this)}
+            userCreateError={userCreateError}
           />
-        </Confirm>
         <UserOverview
           onReset={this.onReset}
           onSearch={this.onSearch}
@@ -86,6 +79,7 @@ class Users extends Component {
           users={users}
           total={total}
           loading={loading}
+          role={accessLevel.role}
         />
       </div>
     );

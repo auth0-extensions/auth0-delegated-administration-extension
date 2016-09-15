@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { NavigationLink } from '../components/Dashboard';
 
-export default () => (
-  <div className="widget-title title-with-nav-bars">
-    <ul className="nav nav-tabs">
-      <NavigationLink title="Users" route="/users" />
-      <NavigationLink title="Logs" route="/logs" />
-    </ul>
-  </div>
-);
+export default class TabsHeader extends Component {
+  render() {
+    const  isRoot = this.props.role === 2;
+    return (
+      <div className="widget-title title-with-nav-bars">
+        <ul className="nav nav-tabs">
+          <NavigationLink title="Users" route="/users"/>
+          { isRoot ?
+            <NavigationLink title="Logs" route="/logs"/>
+            : ''}
+        </ul>
+      </div>
+    )
+  }
+}

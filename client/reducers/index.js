@@ -14,6 +14,7 @@ import { user } from './user';
 import { userPicker } from './userPicker';
 import { users } from './users';
 import { scripts } from './scripts';
+import { settings } from './settings';
 import { deleteUser } from './deleteUser';
 import { passwordReset } from './passwordReset';
 import { passwordChange } from './passwordChange';
@@ -43,6 +44,7 @@ export default combineReducers({
   emailChange,
   userCreate,
   scripts,
+  settings,
   resendVerificationEmail,
   accessLevel,
   form: formReducer
