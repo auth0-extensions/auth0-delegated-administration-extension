@@ -4,7 +4,6 @@ import { NotFoundError } from 'auth0-extension-tools';
 import { hasAccessLevel } from '../lib/middlewares';
 import * as constants from '../constants';
 
-
 export default (scriptManager) => {
   const api = Router();
   api.get('/', hasAccessLevel(constants.SUPER_ACCESS_LEVEL), (req, res, next) => {
