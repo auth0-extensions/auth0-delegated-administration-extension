@@ -15,22 +15,21 @@ import users from './users';
 
 export default (storage) => {
   const scriptManager = new ScriptManager(storage);
-
-  const api = Router();
-
-  api.use(middlewares.authenticateUser(config('AUTH0_DOMAIN'), config('EXTENSION_CLIENT_ID')));
-  api.use(middlewares.managementApiClient({
+  const managementApiClient = middlewares.managementApiClient({
     domain: config('AUTH0_DOMAIN'),
     clientId: config('AUTH0_CLIENT_ID'),
     clientSecret: config('AUTH0_CLIENT_SECRET')
-  }));
+  });
+
+  const api = Router();
+  api.use(middlewares.authenticateUser(config('AUTH0_DOMAIN'), config('EXTENSION_CLIENT_ID')));
   api.use(getUserAccessLevel);
   api.use(hasAccessLevel(constants.ADMIN_ACCESS_LEVEL));
-  api.use('/applications', applications());
-  api.use('/connections', connections());
+  api.use('/applications', managementApiClient, applications());
+  api.use('/connections', managementApiClient, connections());
   api.use('/scripts', hasAccessLevel(constants.SUPER_ACCESS_LEVEL), scripts(storage, scriptManager));
-  api.use('/users', users(storage, scriptManager));
-  api.use('/logs', logs(scriptManager));
+  api.use('/users', managementApiClient, users(storage, scriptManager));
+  api.use('/logs', managementApiClient, logs(scriptManager));
 
   api.get('/settings', (req, res, next) => {
     const stylesContext = {
