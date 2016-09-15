@@ -17,6 +17,7 @@ export default (storage) => {
   const scriptManager = new ScriptManager(storage);
 
   const api = Router();
+
   api.use(middlewares.authenticateUser(config('AUTH0_DOMAIN'), config('EXTENSION_CLIENT_ID')));
   api.use(middlewares.managementApiClient({
     domain: config('AUTH0_DOMAIN'),
