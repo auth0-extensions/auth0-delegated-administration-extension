@@ -74,7 +74,7 @@ export default (storage) => {
     };
 
     scriptManager.execute('memberships', membershipContext)
-      .then(memberships => res.json({ memberships: memberships || [ ], role: req.user.role || 0 }))
+      .then(memberships => res.json({ memberships: memberships || [], role: req.user.role || 0 }))
       .catch(next);
   });
 
