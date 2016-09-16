@@ -6,6 +6,10 @@
   margin: 0 0 14px;
 }
 
+.CodeMirror span {
+  color: white;
+}
+
 /* PADDING */
 
 .CodeMirror-lines {
@@ -302,7 +306,6 @@ span.CodeMirror-selectedtext { background: none; }
 .cm-s-default {
   background-color: #263238;
   color: rgba(233, 237, 237, 1);
-  margin-left: -14px;
   line-height: 1.6;
   border-radius: 3px
 }
