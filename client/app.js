@@ -23,28 +23,28 @@ const history = useRouterHistory(createHistory)({
 const store = configureStore([ routerMiddleware(history) ], { });
 const reduxHistory = syncHistoryWithStore(history, store);
 
-store.subscribe(() => {
- switch (store.getState().lastAction.type) {
-   case constants.FETCH_SETTINGS_FULFILLED:
-     const  data = store.getState().settings.get('record');
-     const settings = data.get('settings');
-     const title = settings.get('title');
-     if(title !== '') document.title = title;
-       const css = settings.get('css');
-       if (css !== '') {
-         var head = document.getElementsByTagName('head')[0];
-         var link = document.createElement('link');
-         link.id = 'custom_css';
-         link.rel = 'stylesheet';
-         link.type = 'text/css';
-         link.href = css;
-         link.media = 'all';
-         head.appendChild(link);
-         }
-     break;
-   default:
-     break;
-   }
+store.subscribe(function () {
+  switch (store.getState().lastAction.type) {
+    case constants.FETCH_SETTINGS_FULFILLED:
+      const data = store.getState().settings.get('record');
+      const settings = data.get('settings');
+      const title = settings.get('title');
+      const head = document.getElementsByTagName('head')[0];
+      const link = document.createElement('link');
+      if (title !== '') document.title = title;
+      const css = settings.get('css');
+      if (css !== '') {
+        link.id = 'custom_css';
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = css;
+        link.media = 'all';
+        head.appendChild(link);
+      }
+      break;
+    default:
+      break;
+  }
 });
 store.dispatch(loadCredentials());
 

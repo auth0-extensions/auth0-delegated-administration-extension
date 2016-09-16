@@ -221,5 +221,5 @@ export const FETCH_SETTINGS_PENDING = 'FETCH_SETTINGS_PENDING';
 export const FETCH_SETTINGS_REJECTED = 'FETCH_SETTINGS_REJECTED';
 export const FETCH_SETTINGS_FULFILLED = 'FETCH_SETTINGS_FULFILLED';
 
-//Access level constants
+// Access level constants
 export const SUPER_ADMIN = 2;

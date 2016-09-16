@@ -1,11 +1,11 @@
-let _lock = null;
+let gLock = null;
 
 function getLock() {
-  if (window.config.AUTH0_CLIENT_ID && !_lock) {
-    _lock = new Auth0Lock(window.config.AUTH0_CLIENT_ID, window.config.AUTH0_DOMAIN);
+  if (window.config.AUTH0_CLIENT_ID && !gLock) {
+    gLock = new Auth0Lock(window.config.AUTH0_CLIENT_ID, window.config.AUTH0_DOMAIN);
   }
 
-  return _lock;
+  return gLock;
 }
 
 export function getProfile(token, callback) {
