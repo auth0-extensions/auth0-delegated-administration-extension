@@ -23,6 +23,10 @@ import { usernameChange } from './usernameChange';
 import { users } from './users';
 import { verificationEmail } from './verificationEmail';
 
+function lastAction(state = null, action) {
+  return action;
+}
+
 export default combineReducers({
   routing: routerReducer,
   accessLevel,
@@ -45,5 +49,6 @@ export default combineReducers({
   usernameChange,
   users,
   verificationEmail,
+  lastAction,
   form: formReducer
 });
