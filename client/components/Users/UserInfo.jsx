@@ -7,7 +7,7 @@ export default class UserInfo extends Component {
     error: PropTypes.string,
     loading: PropTypes.bool.isRequired,
     user: PropTypes.object.isRequired,
-    memberships: PropTypes.array
+    memberships: PropTypes.object
   };
 
   shouldComponentUpdate(nextProps) {

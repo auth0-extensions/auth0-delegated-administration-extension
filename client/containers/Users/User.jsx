@@ -27,11 +27,6 @@ export default connectContainer(class extends Component {
     ...userActions
   };
 
-  static propTypes = {
-    config: PropTypes.object.isRequired,
-    fetchConfiguration: PropTypes.func.isRequired
-  };
-
   componentWillMount() {
     this.props.fetchUser(this.props.params.id);
   }
@@ -45,19 +40,21 @@ export default connectContainer(class extends Component {
           <div className="col-xs-12">
             <h2 className="pull-left">User Details</h2>
             <div className="pull-right">
-              <UserActions
-                user={user}
-                databaseConnections={databaseConnections}
-                deleteUser={this.props.requestDeleteUser}
-                resetPassword={this.props.requestPasswordReset}
-                changePassword={this.props.requestPasswordChange}
-                removeMfa={this.props.requestRemoveMultiFactor}
-                blockUser={this.props.requestBlockUser}
-                unblockUser={this.props.requestUnblockUser}
-                changeUsername={this.props.requestUsernameChange}
-                changeEmail={this.props.requestEmailChange}
-                resendVerificationEmail={this.props.requestResendVerificationEmail}
-              />
+              {databaseConnections ?
+                <UserActions
+                  user={user}
+                  databaseConnections={databaseConnections}
+                  deleteUser={this.props.requestDeleteUser}
+                  resetPassword={this.props.requestPasswordReset}
+                  changePassword={this.props.requestPasswordChange}
+                  removeMfa={this.props.requestRemoveMultiFactor}
+                  blockUser={this.props.requestBlockUser}
+                  unblockUser={this.props.requestUnblockUser}
+                  changeUsername={this.props.requestUsernameChange}
+                  changeEmail={this.props.requestEmailChange}
+                  resendVerificationEmail={this.props.requestResendVerificationEmail}
+                />
+              : ''}
             </div>
           </div>
         </div>
@@ -68,7 +65,7 @@ export default connectContainer(class extends Component {
         </div>
         <div className="row user-tabs">
           <div className="col-xs-12">
-            <Tabs defaultActiveKey={1} animation={false}>
+            <Tabs defaultActiveKey={1} animation={false} id="userViewTabs">
               <Tab eventKey={1} title="User Information">
                 <UserInfo loading={user.get('loading')} user={user.get('record')} memberships={user.get('memberships')} error={user.get('error')} />
               </Tab>
