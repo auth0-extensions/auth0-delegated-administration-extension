@@ -9,7 +9,7 @@ import './User.css';
 import * as dialogs from './Dialogs'
 import TabsHeader from '../../components/TabsHeader';
 import LogDialog from '../../components/Logs/LogDialog';
-import { UserActions, UserDevices, UserHeader, UserProfile, UserLogs } from '../../components/Users';
+import { UserActions, UserDevices, UserHeader, UserProfile, UserLogs, UserInfo } from '../../components/Users';
 
 import getUserDatabaseConnections from '../../selectors/getUserDatabaseConnections';
 
@@ -69,8 +69,8 @@ export default connectContainer(class extends Component {
         <div className="row user-tabs">
           <div className="col-xs-12">
             <Tabs defaultActiveKey={1} animation={false}>
-              <Tab eventKey={1} title="Profile">
-                <UserProfile loading={user.get('loading')} user={user.get('record')} error={user.get('error')} />
+              <Tab eventKey={1} title="User Information">
+                <UserInfo loading={user.get('loading')} user={user.get('record')} memberships={user.get('memberships')} error={user.get('error')} />
               </Tab>
               <Tab eventKey={2} title="Devices">
                 <UserDevices loading={devices.get('loading')} devices={devices.get('records')} error={devices.get('error')} />
@@ -82,6 +82,9 @@ export default connectContainer(class extends Component {
                 <UserLogs onOpen={this.props.fetchLog} loading={logs.get('loading')}
                           logs={logs.get('records')} user={user.get('record')}
                           error={logs.get('error')} />
+              </Tab>
+              <Tab eventKey={4} title="Profile">
+                <UserProfile loading={user.get('loading')} user={user.get('record')} error={user.get('error')} />
               </Tab>
             </Tabs>
           </div>
