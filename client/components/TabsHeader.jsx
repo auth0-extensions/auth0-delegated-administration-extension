@@ -11,8 +11,8 @@ export default class TabsHeader extends Component {
     return (
       <div className="widget-title title-with-nav-bars">
         <ul className="nav nav-tabs">
-          <NavigationLink title="Users" route="/users" />
-          {isRoot ? <NavigationLink title="Logs" route="/logs" /> : null}
+          <NavigationLink title="Users" route="/users" icon="" />
+          {isRoot ? <NavigationLink title="Logs" route="/logs" icon="" /> : null}
         </ul>
       </div>
     );

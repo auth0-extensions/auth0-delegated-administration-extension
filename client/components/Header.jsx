@@ -44,8 +44,8 @@ export default class Header extends Component {
                   </span>
                   {showMenu ?
                     <ul role="menu" className="dropdown-menu">
-                      <NavigationLink title="Users & Logs" route="/users" />
-                      <NavigationLink title="Configuration" route="/configuration" />
+                      <NavigationLink title="Users & Logs" route="/users" icon="" />
+                      <NavigationLink title="Configuration" route="/configuration" icon="" />
                       <li role="presentation">
                         <a href="#" role="menuitem" tabIndex="-1" onClick={onLogout}>
                           Logout

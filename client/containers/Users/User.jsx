@@ -25,12 +25,12 @@ export default connectContainer(class extends Component {
   static actionsToProps = {
     ...logActions,
     ...userActions
-  }
+  };
 
   static propTypes = {
     config: PropTypes.object.isRequired,
     fetchConfiguration: PropTypes.func.isRequired
-  }
+  };
 
   componentWillMount() {
     this.props.fetchUser(this.props.params.id);

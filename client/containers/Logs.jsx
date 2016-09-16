@@ -21,7 +21,7 @@ class LogsContainer extends Component {
     this.props.fetchLogs(this.props.logs.nextPage);
   }
 
-  createToolbar(isBottom: false) {
+  createToolbar(isBottom:false) {
     if (isBottom && (!this.props.logs.records || this.props.logs.records.size <= 20)) {
       return <div></div>;
     }
@@ -41,7 +41,8 @@ class LogsContainer extends Component {
     return (
       <div>
         <TabsHeader role={ accessLevel.role }/>
-        <LogDialog onClose={this.props.clearLog} error={log.error} loading={log.loading} log={log.record} logId={log.id} />
+        <LogDialog onClose={this.props.clearLog} error={log.error} loading={log.loading} log={log.record}
+                   logId={log.id}/>
         <div className="row">
           <div className="col-xs-12 wrapper">
             {this.createToolbar(false)}
@@ -49,15 +50,15 @@ class LogsContainer extends Component {
         </div>
         <div className="row">
           <div className="col-xs-12 wrapper">
-            <Error message={logs.error} />
+            <Error message={logs.error}/>
             <LoadingPanel show={logs.loading}>
-              <LogsTable onOpen={this.props.fetchLog} loading={logs.loading} logs={logs.records} />
+              <LogsTable onOpen={this.props.fetchLog} loading={logs.loading} logs={logs.records}/>
             </LoadingPanel>
           </div>
         </div>
         <div className="row">
           <div className="col-xs-12 wrapper">
-            <TableTotals currentCount={logs.records.size} totalCount={logs.total} />
+            <TableTotals currentCount={logs.records.size} totalCount={logs.total}/>
             {this.createToolbar(true)}
           </div>
         </div>
