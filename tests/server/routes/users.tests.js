@@ -1,3 +1,4 @@
+const expect = require('expect');
 const Promise = require('bluebird');
 const request = require('supertest');
 const express = require('express');
@@ -10,7 +11,7 @@ describe('#users', () => {
   const fakeApiClient = (req, res, next) => {
     req.auth0 = {
       users: {
-        getAll: () => Promise.resolve([])
+        getAll: () => Promise.resolve({ users: [] })
       }
     };
 
@@ -37,8 +38,9 @@ describe('#users', () => {
       .get('/users')
       .expect('Content-Type', /json/)
       .expect(200)
-      .end((err) => {
+      .end((err, res) => {
         if (err) throw err;
+        expect(res.body).toEqual({ users: [] });
         done();
       });
   });
