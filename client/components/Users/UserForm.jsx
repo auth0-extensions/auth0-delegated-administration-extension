@@ -25,7 +25,7 @@ export default createForm('user', class extends Component {
     this.state = {
       usernameRequired: false,
       memberships: false,
-      customErrors: { }
+      customErrors: {}
     };
   }
 
@@ -54,7 +54,7 @@ export default createForm('user', class extends Component {
     if (this.refs.connection && this.refs.connection.value)
       obj.connection = this.refs.connection.value;
 
-    if(options.length === 1) {
+    if (options.length === 1) {
       obj.group = options[0].value;
     } else if (this.state.memberships) {
       obj.group = this.state.memberships;
@@ -118,30 +118,36 @@ export default createForm('user', class extends Component {
     const connections = _.filter(this.props.connections, (connection) => connection.strategy === 'auth0');
 
     const usernameRequired = this.state.usernameRequired;
-    const { fields: { email, username, password, repeat_password, connection },
-            validationErrors, memberships, title, show,
-            confirmLoading, userCreateError } = this.props;
+    const {
+      fields: { email, username, password, repeat_password, connection },
+      validationErrors, memberships, title, show,
+      confirmLoading, userCreateError
+    } = this.props;
     const options = this.getOptions(memberships);
     return (
-      <Confirm title={title} show={show} loading={confirmLoading} onCancel={this.props.hideConfirmWindow} onConfirm={function(){
-        this.onConfirmUserCreate(options);
-      }.bind(this)}>
-        <Error message={userCreateError} />
+      <Confirm title={title} show={show} loading={confirmLoading} onCancel={this.props.hideConfirmWindow}
+               onConfirm={function () {
+                 this.onConfirmUserCreate(options);
+               }.bind(this)}>
+        <Error message={userCreateError}/>
         <div className="row">
           <form className="createUserScreenForm form-horizontal col-xs-12" style={{ marginTop: '30px' }}>
             <div className="custom_field">
-              <InputText field={email} fieldName="email" label="Email" validationErrors={validationErrors} ref="email" />
+              <InputText field={email} fieldName="email" label="Email" validationErrors={validationErrors} ref="email"/>
             </div>
             {usernameRequired ?
               <div className="custom_field">
-                <InputText field={username} fieldName="username" label="username" validationErrors={validationErrors} ref="username" />
+                <InputText field={username} fieldName="username" label="username" validationErrors={validationErrors}
+                           ref="username"/>
               </div>
               : ''}
             <div className="custom_field">
-              <InputText field={password} fieldName="password" label="Password" type="password" validationErrors={validationErrors} ref="password" />
+              <InputText field={password} fieldName="password" label="Password" type="password"
+                         validationErrors={validationErrors} ref="password"/>
             </div>
             <div className="custom_field repeat_password">
-              <InputText field={repeat_password} fieldName="repeat_password" label="Repeat Password" type="password" validationErrors={this.state.customErrors} ref="repeat_password" />
+              <InputText field={repeat_password} fieldName="repeat_password" label="Repeat Password" type="password"
+                         validationErrors={this.state.customErrors} ref="repeat_password"/>
             </div>
             {(options.length > 1) ?
               <div className="custom_field">
@@ -156,7 +162,7 @@ export default createForm('user', class extends Component {
                   />
                 </div>
               </div>
-            : ''}
+              : ''}
             <div className="custom_field">
               <div className="form-group">
                 <label>Connection</label>

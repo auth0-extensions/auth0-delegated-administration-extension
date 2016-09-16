@@ -10,7 +10,7 @@ export default class Header extends Component {
     onLogout: React.PropTypes.func.isRequired
   };
 
-  getPicture(iss, user) {
+  getPicture = (iss, user) => {
     if (user && user.get('picture')) {
       return user.get('picture');
     }

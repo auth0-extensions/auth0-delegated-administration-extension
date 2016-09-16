@@ -55,7 +55,7 @@ class Configuration extends Component {
 
 
   render() {
-    const { scripts, loading, error } = this.props;
+    const { loading, error } = this.props;
 
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>

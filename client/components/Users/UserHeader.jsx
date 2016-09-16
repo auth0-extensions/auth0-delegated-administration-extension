@@ -5,7 +5,7 @@ export default class UserHeader extends Component {
     error: PropTypes.string,
     loading: PropTypes.bool.isRequired,
     user: PropTypes.object.isRequired
-  }
+  };
 
   shouldComponentUpdate(nextProps) {
     return nextProps.user !== this.props.user || nextProps.loading !== this.props.loading;

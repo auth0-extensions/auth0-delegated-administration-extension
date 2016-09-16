@@ -14,7 +14,7 @@ export default class UserActions extends Component {
     resetPassword: PropTypes.func.isRequired,
     unblockUser: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired
-  }
+  };
 
   state = {
     user: null,
@@ -117,7 +117,7 @@ export default class UserActions extends Component {
         Remove MFA ({user.multifactor[0]})
       </MenuItem>
     );
-  }
+  };
 
   getBlockedAction = (user, loading) => {
     if (user.blocked) {
@@ -133,43 +133,43 @@ export default class UserActions extends Component {
         Block User
       </MenuItem>
     );
-  }
+  };
 
   deleteUser = () => {
     this.props.deleteUser(this.state.user);
-  }
+  };
 
   resetPassword = () => {
     this.props.resetPassword(this.state.user, this.state.databaseConnections[0]);
-  }
+  };
 
   changePassword = () => {
     this.props.changePassword(this.state.user, this.state.databaseConnections[0]);
-  }
+  };
 
   changeUsername = () => {
     this.props.changeUsername(this.state.user, this.state.databaseConnections[0]);
-  }
+  };
 
   changeEmail = () => {
     this.props.changeEmail(this.state.user, this.state.databaseConnections[0]);
-  }
+  };
 
   resendVerificationEmail = () => {
     this.props.resendVerificationEmail(this.state.user, this.state.databaseConnections[0]);
-  }
+  };
 
   blockUser = () => {
     this.props.blockUser(this.state.user);
-  }
+  };
 
   unblockUser = () => {
     this.props.unblockUser(this.state.user);
-  }
+  };
 
   removeMfa = () => {
     this.props.removeMfa(this.state.user, this.state.user.multifactor[0]);
-  }
+  };
 
   render() {
     if (!this.state.user) {

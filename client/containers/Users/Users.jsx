@@ -55,26 +55,26 @@ class Users extends Component {
               id="addUser"
               className="btn btn-success pull-right new"
               href="#"
-              onClick={this.openCreateForm} >
+              onClick={this.openCreateForm}>
               <i className="icon-budicon-473"></i>
               Create User
             </a>
           </div>
         </div>
-          <UserForm
-            loading={ loading }
-            connections={connections}
-            createUser={this.props.createUser}
-            fetchUsers={this.props.fetchUsers}
-            userWasSaved={this.userWasSaved}
-            validationErrors={this.props.validationErrors}
-            memberships={this.props.accessLevel.memberships}
-            title="Create User"
-            show={this.state.showCreateForm}
-            confirmLoading={userCreateLoading}
-            hideConfirmWindow={this.hideConfirmWindow}
-            userCreateError={userCreateError}
-          />
+        <UserForm
+          loading={ loading }
+          connections={connections}
+          createUser={this.props.createUser}
+          fetchUsers={this.props.fetchUsers}
+          userWasSaved={this.userWasSaved}
+          validationErrors={this.props.validationErrors}
+          memberships={this.props.accessLevel.memberships}
+          title="Create User"
+          show={this.state.showCreateForm}
+          confirmLoading={userCreateLoading}
+          hideConfirmWindow={this.hideConfirmWindow}
+          userCreateError={userCreateError}
+        />
         <UserOverview
           onReset={this.onReset}
           onSearch={this.onSearch}
