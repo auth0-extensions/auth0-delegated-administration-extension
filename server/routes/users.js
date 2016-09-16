@@ -78,12 +78,9 @@ export default (storage, scriptManager) => {
         };
 
         return scriptManager.execute('memberships', membershipContext)
-          .then(memberships => {
-            user.memberships = memberships;
-            return user;
-          });
+          .then(memberships => ({ user, memberships }));
       })
-      .then(user => res.json({ user }))
+      .then(data => res.json(data))
       .catch(next);
   });
 

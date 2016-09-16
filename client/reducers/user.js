@@ -10,6 +10,7 @@ const initialState = {
   error: null,
   userId: null,
   record: { },
+  memberships: [],
   logs: {
     loading: false,
     error: null,
@@ -102,7 +103,8 @@ export const user = createReducer(fromJS(initialState), {
 
     return state.merge({
       loading: false,
-      record: fromJS(data.user)
+      record: fromJS(data.user),
+      memberships: fromJS(data.memberships)
     });
   },
 

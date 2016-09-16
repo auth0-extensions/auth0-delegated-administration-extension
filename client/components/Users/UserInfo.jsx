@@ -6,16 +6,16 @@ export default class UserInfo extends Component {
   static propTypes = {
     error: PropTypes.string,
     loading: PropTypes.bool.isRequired,
-    user: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired,
+    memberships: PropTypes.array
   };
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.user !== this.props.user || nextProps.loading !== this.props.loading;
+    return nextProps.user !== this.props.user || nextProps.memberships !== this.props.memberships || nextProps.loading !== this.props.loading;
   }
 
-  getDepartments = (user) => {
-    if (user.size === 0) return '';
-    const meta = user.get('memberships') || [];
+  getDepartments = (memberships) => {
+    const meta = memberships || [];
     return meta.join(', ');
   };
 
@@ -30,8 +30,8 @@ export default class UserInfo extends Component {
   };
 
   render() {
-    const { user, error, loading } = this.props;
-    const departments = this.getDepartments(user);
+    const { user, error, loading, memberships } = this.props;
+    const departments = this.getDepartments(memberships);
     const identities = this.getIdentities(user);
     const blocked = this.getBlocked(user);
     return (
