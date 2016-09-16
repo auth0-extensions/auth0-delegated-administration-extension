@@ -55,7 +55,7 @@ describe('#scripts', () => {
 
     it('should execute script and catch error', (done) => {
       scriptmanager.execute('settings', {}).catch(error => {
-        expect(error.name).toEqual('ReferenceError');
+        expect(error.name).toEqual('ValidationError');
         done();
       });
     });

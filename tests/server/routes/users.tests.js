@@ -1,97 +1,72 @@
 const expect = require('expect');
 const Promise = require('bluebird');
 
-import ScriptManager from '../../../server/routes/users';
+import Users from '../../../server/lib/users';
+import ScriptManager from '../../../server/lib/scriptmanager';
 
 describe('#users', () => {
-  let scriptmanager;
+  let request;
+
   const storage = {
     read: () => Promise.resolve(storage.data),
     write: (obj) => {
       storage.data = obj;
     },
     data: {
-      scripts: {
-        access: 'This is access script', // for reading
-        filter: 'function(ctx, callback) { callback(null, ctx.user.name); }', // for successful executing
-        create: '', // for writing
-        memberships: 'function (ctx, callback) { callback(new Error("MembershipsError")); }', // for error return
-        settings: 'function (ctx, callback) { console.log(ctx); callback(); }' // for error catch
-      }
+      scripts: {}
     }
   };
 
-  before(() => {
-    scriptmanager = new ScriptManager(storage);
+  const scriptManager = new ScriptManager(storage);
+  const users = new Users(scriptManager);
+
+  beforeEach(() => {
+    request = {
+      data: {},
+      auth0: {
+        users: {
+          create: (data) => {
+            request.data = data;
+          },
+          getAll: () => Promise.resolve({ users: [] })
+        }
+      }
+    };
   });
 
-  describe('#ScriptManager', () => {
-    it('should return text of script', (done) => {
-      scriptmanager.get('access').then(script => {
-        expect(script).toEqual('This is access script');
-        done();
-      });
-    });
+  describe('#Users routing', () => {
+    it('should create user', (done) => {
+      const userData = {
+        email: 'some@email.com',
+        connection: 'connection',
+        group: 'group',
+        password: 'password'
+      };
 
-    it('should execute script and return result', (done) => {
-      const conext = {
-        user: {
-          name: 'PassedTest'
+      const res = {
+        status: () => res,
+        send: () => {
+          expect(request.data).toEqual(userData);
+          done();
         }
       };
 
-      scriptmanager.execute('filter', conext).then(result => {
-        expect(result).toEqual('PassedTest');
-        done();
-      });
+      request.body = userData;
+
+      users.create(request, res);
     });
 
-    it('should execute script and return error', (done) => {
-      scriptmanager.execute('memberships', {}).catch(error => {
-        expect(error.message).toEqual('MembershipsError');
-        done();
-      });
-    });
+    it('should list users', (done) => {
+      const res = {
+        json: (data) => {
+          expect(data.users).toEqual([]);
+          done();
+        }
+      };
 
-    it('should execute script and catch error', (done) => {
-      scriptmanager.execute('settings', {}).catch(error => {
-        expect(error.name).toEqual('ReferenceError');
-        done();
-      });
-    });
+      request.query = {};
 
-    it('should write script to storage', (done) => {
-      scriptmanager.save('create', 'And this is Create').then(() => {
-        expect(storage.data.scripts.create).toEqual('And this is Create');
-        done();
-      });
-    });
-
-    it('should return null if there is no data', (done) => {
-      storage.data = {};
-
-      scriptmanager.get('access').then(script => {
-        expect(script).toEqual(null);
-        done();
-      });
-    });
-
-    it('should return null if trying to execute nonexistent script', (done) => {
-      storage.data = {};
-
-      scriptmanager.execute('filter').then(result => {
-        expect(result).toEqual(null);
-        done();
-      });
-    });
-
-    it('should throw an error if storage isn`t provided', (done) => {
-      try {
-        const brokenManager = new ScriptManager();
-      } catch (error) {
-        expect(error.message).toEqual('Must provide a storage object.');
-        done();
-      }
+      users.getAll(request, res);
     });
   });
 });
