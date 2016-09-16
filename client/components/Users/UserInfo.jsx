@@ -15,16 +15,8 @@ export default class UserInfo extends Component {
 
   getDepartments = (user) => {
     if (user.size === 0) return '';
-    const meta = user.get('app_metadata') ? user.get('app_metadata').toJSON() : {};
-    let result = '';
-    if (meta && typeof meta['delegated-admin'] !== 'undefined' && typeof meta['delegated-admin'].department !== 'undefined') {
-      if (typeof meta['delegated-admin'].department === 'object') {
-        result = meta['delegated-admin'].department.join(', ');
-      } else {
-        result = meta['delegated-admin'].department;
-      }
-    }
-    return result;
+    const meta = user.get('memberships') || [];
+    return meta.join(', ');
   };
 
   getIdentities = (user) => {

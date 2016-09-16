@@ -72,6 +72,17 @@ export default (storage, scriptManager) => {
    */
   api.get('/:id', verifyUserAccess(scriptManager), (req, res, next) => {
     req.auth0.users.get({ id: req.params.id })
+      .then(user => {
+        const membershipContext = {
+          request: { user }
+        };
+
+        return scriptManager.execute('memberships', membershipContext)
+          .then(memberships => {
+            user.memberships = memberships;
+            return user;
+          });
+      })
       .then(user => res.json({ user }))
       .catch(next);
   });
