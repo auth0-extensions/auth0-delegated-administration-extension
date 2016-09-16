@@ -1,12 +1,37 @@
-const expect = require('expect');
+const path = require('path');
 const Promise = require('bluebird');
+const request = require('supertest');
+const express = require('express');
+const nconf = require('nconf');
+import { middlewares } from 'auth0-extension-express-tools';
 
-import Users from '../../../server/lib/users';
+import config from '../../../server/lib/config';
+import users from '../../../server/routes/users';
 import ScriptManager from '../../../server/lib/scriptmanager';
 
-describe('#users', () => {
-  let request;
 
+describe('#users', () => {
+  nconf
+    .argv()
+    .env()
+    .file(path.join(__dirname, '../../../server/config.json'))
+    .defaults({
+      DATA_CACHE_MAX_AGE: 1000 * 10,
+      NODE_ENV: 'test',
+      HOSTING_ENV: 'default',
+      PORT: 3000,
+      TITLE: 'User Management'
+    });
+
+  config.setProvider((key) => nconf.get(key), null);
+
+  const managementApiClient = middlewares.managementApiClient({
+    domain: config('AUTH0_DOMAIN'),
+    clientId: config('AUTH0_CLIENT_ID'),
+    clientSecret: config('AUTH0_CLIENT_SECRET')
+  });
+
+  const app = express();
   const storage = {
     read: () => Promise.resolve(storage.data),
     write: (obj) => {
@@ -18,55 +43,17 @@ describe('#users', () => {
   };
 
   const scriptManager = new ScriptManager(storage);
-  const users = new Users(scriptManager);
 
-  beforeEach(() => {
-    request = {
-      data: {},
-      auth0: {
-        users: {
-          create: (data) => {
-            request.data = data;
-          },
-          getAll: () => Promise.resolve({ users: [] })
-        }
-      }
-    };
-  });
+  app.use('/users', managementApiClient, users(storage, scriptManager));
 
-  describe('#Users routing', () => {
-    it('should create user', (done) => {
-      const userData = {
-        email: 'some@email.com',
-        connection: 'connection',
-        group: 'group',
-        password: 'password'
-      };
-
-      const res = {
-        status: () => res,
-        send: () => {
-          expect(request.data).toEqual(userData);
-          done();
-        }
-      };
-
-      request.body = userData;
-
-      users.create(request, res);
-    });
-
-    it('should list users', (done) => {
-      const res = {
-        json: (data) => {
-          expect(data.users).toEqual([]);
-          done();
-        }
-      };
-
-      request.query = {};
-
-      users.getAll(request, res);
-    });
+  it('should get list of users', (done) => {
+    request(app)
+      .get('/users')
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .end((err) => {
+        if (err) throw err;
+        done();
+      });
   });
 });
