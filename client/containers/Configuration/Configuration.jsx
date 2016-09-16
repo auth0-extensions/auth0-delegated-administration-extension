@@ -69,11 +69,11 @@ class Configuration extends Component {
           </div>
           <div className="row user-tabs">
             <div className="col-xs-12">
-              <Tabs defaultActiveKey={this.state.activeTab} animation={false}>
+              <Tabs defaultActiveKey={this.state.activeTab} animation={false} id="configurationTabs">
                 <Tab eventKey={1} title="Filter Hook">
                   <p>The <strong>filter hook</strong> allows you to specify which records are shown to the current users when loading the list of users or searching. For example: <i>Only show users from my department</i>. This has to be defined using the lucene syntax.</p>
                   <Editor
-                    value={this.state.scripts.filter}
+                    value={String(this.state.scripts.filter)}
                     onChange={this.updateScript('filter')}
                   />
                   <div className="saveConfigurationButton">
@@ -84,7 +84,7 @@ class Configuration extends Component {
                 <Tab eventKey={2} title="Access Hook">
                   <p>The <strong>access hook</strong> will allow you to specify if the current user is allowed to access a specific user (eg: view the details, delete the user, ...).</p>
                   <Editor
-                    value={this.state.scripts.access}
+                    value={String(this.state.scripts.access)}
                     onChange={this.updateScript('access')}
                   />
                   <div className="saveConfigurationButton">
@@ -94,7 +94,7 @@ class Configuration extends Component {
                 <Tab eventKey={4} title="Create Hook">
                   <p>The <strong>create hook</strong> will run every time a new user is created. This hook will allow you to shape the user object before it's sent to Auth0. The context object contains the request (with the current user) and the payload sent by the end user.</p>
                   <Editor
-                    value={this.state.scripts.create}
+                    value={String(this.state.scripts.create)}
                     onChange={this.updateScript('create')}
                   />
                   <div className="saveConfigurationButton">
@@ -105,7 +105,7 @@ class Configuration extends Component {
                 <Tab eventKey={3} title="Memberships Query">
                   <p>With the <strong>membership query</strong> you can specify in which groups the current user can create new users. Only in their own department? Or other departments also?</p>
                   <Editor
-                    value={this.state.scripts.memberships}
+                    value={String(this.state.scripts.memberships)}
                     onChange={this.updateScript('memberships')}
                   />
                   <div className="saveConfigurationButton">
@@ -116,7 +116,7 @@ class Configuration extends Component {
                 <Tab eventKey={5} title="Settings Query">
                   <p>With the <strong>settings query</strong> you can control the title and the look-and-feel of the dashboard after the user has logged in?</p>
                   <Editor
-                    value={this.state.scripts.settings}
+                    value={String(this.state.scripts.settings)}
                     onChange={this.updateScript('settings')}
                   />
                   <div className="saveConfigurationButton">
