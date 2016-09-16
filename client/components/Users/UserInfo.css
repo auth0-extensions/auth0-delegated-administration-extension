@@ -1,0 +1,5 @@
+.user-info {
+  margin-bottom: 5px;
+  display: flex;
+  flex-flow: row wrap;
+}
