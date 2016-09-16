@@ -5,6 +5,7 @@ import { NavigationLink } from '../components/Dashboard';
 export default class Header extends Component {
   static propTypes = {
     user: React.PropTypes.object,
+    settings: React.PropTypes.object,
     accessLevel: React.PropTypes.object,
     issuer: React.PropTypes.string,
     onLogout: React.PropTypes.func.isRequired
@@ -20,17 +21,17 @@ export default class Header extends Component {
     }
 
     return `https://cdn.auth0.com/avatars/${iss.slice(0, 2).toLowerCase()}.png`;
-  };
+  }
 
   render() {
-    const { user, issuer, onLogout, accessLevel } = this.props;
+    const { user, issuer, onLogout, accessLevel, settings } = this.props;
     const showMenu = accessLevel.role === 2;
     return (
       <header className="dashboard-header">
         <nav role="navigation" className="navbar navbar-default">
           <div className="container">
             <div id="header" className="navbar-header" style={{ width: '800px' }}>
-              <a className="navbar-brand" href="#">{window.config.TITLE}</a>
+              <a className="navbar-brand" href="#">{settings.get('settings').get('title') || window.config.TITLE}</a>
             </div>
             <div id="navbar-collapse" className="collapse navbar-collapse">
               <ul className="nav navbar-nav navbar-right">
