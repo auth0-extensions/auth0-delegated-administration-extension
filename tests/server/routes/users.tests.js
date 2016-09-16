@@ -1,35 +1,21 @@
-const path = require('path');
 const Promise = require('bluebird');
 const request = require('supertest');
 const express = require('express');
-const nconf = require('nconf');
-import { middlewares } from 'auth0-extension-express-tools';
 
-import config from '../../../server/lib/config';
 import users from '../../../server/routes/users';
 import ScriptManager from '../../../server/lib/scriptmanager';
 
 
 describe('#users', () => {
-  nconf
-    .argv()
-    .env()
-    .file(path.join(__dirname, '../../../server/config.json'))
-    .defaults({
-      DATA_CACHE_MAX_AGE: 1000 * 10,
-      NODE_ENV: 'test',
-      HOSTING_ENV: 'default',
-      PORT: 3000,
-      TITLE: 'User Management'
-    });
+  const fakeApiClient = (req, res, next) => {
+    req.auth0 = {
+      users: {
+        getAll: () => Promise.resolve([])
+      }
+    };
 
-  config.setProvider((key) => nconf.get(key), null);
-
-  const managementApiClient = middlewares.managementApiClient({
-    domain: config('AUTH0_DOMAIN'),
-    clientId: config('AUTH0_CLIENT_ID'),
-    clientSecret: config('AUTH0_CLIENT_SECRET')
-  });
+    next();
+  };
 
   const app = express();
   const storage = {
@@ -44,7 +30,7 @@ describe('#users', () => {
 
   const scriptManager = new ScriptManager(storage);
 
-  app.use('/users', managementApiClient, users(storage, scriptManager));
+  app.use('/users', fakeApiClient, users(storage, scriptManager));
 
   it('should get list of users', (done) => {
     request(app)
