@@ -3,7 +3,6 @@ import { ValidationError } from 'auth0-extension-tools';
 
 import * as constants from '../constants';
 
-
 export default (storage, scriptManager) => {
   const api = Router();
   api.get('/:name', (req, res, next) => {

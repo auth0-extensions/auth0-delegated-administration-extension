@@ -7,9 +7,8 @@ export default class Header extends Component {
     user: React.PropTypes.object,
     accessLevel: React.PropTypes.object,
     issuer: React.PropTypes.string,
-    onLogout: React.PropTypes.func.isRequired,
-    settings: React.PropTypes.object
-  }
+    onLogout: React.PropTypes.func.isRequired
+  };
 
   getPicture(iss, user) {
     if (user && user.get('picture')) {
@@ -21,15 +20,11 @@ export default class Header extends Component {
     }
 
     return `https://cdn.auth0.com/avatars/${iss.slice(0, 2).toLowerCase()}.png`;
-  }
+  };
 
   render() {
-    const { user, issuer, onLogout, accessLevel, settings = { } } = this.props;
+    const { user, issuer, onLogout, accessLevel } = this.props;
     const showMenu = accessLevel.role === 2;
-
-    if (settings) {
-      settings.title ? (document.title = settings.title) : '';
-    }
     return (
       <header className="dashboard-header">
         <nav role="navigation" className="navbar navbar-default">

@@ -6,15 +6,15 @@ export default class SearchBar extends Component {
     enabled: PropTypes.func.isRequired,
     onReset: PropTypes.func.isRequired,
     onSearch: PropTypes.func.isRequired
-  }
+  };
 
-  defaultProps:{ enabled: true }
+  defaultProps:{ enabled: true };
 
   onKeyPress = (e) => {
     if (e.key === 'Enter') {
       this.props.onSearch(findDOMNode(this.refs.search).value);
     }
-  }
+  };
 
   render() {
     return (

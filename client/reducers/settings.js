@@ -20,10 +20,26 @@ export const settings = createReducer(fromJS(initialState), {
       loading: false,
       error: `An error occured while loading the connections: ${action.errorMessage}`
     }),
-  [constants.FETCH_SETTINGS_FULFILLED]: (state, action) =>
-    state.merge({
+  [constants.FETCH_SETTINGS_FULFILLED]: (state, action) => {
+    const data = fromJS(action.payload.data);
+    const settings = data.get('settings');
+    const title = settings.get('title');
+    if(title !== '') document.title = title;
+    const css = settings.get('css');
+    if (css !== '') {
+      var head = document.getElementsByTagName('head')[0];
+      var link = document.createElement('link');
+      link.id = 'custom_css';
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = css;
+      link.media = 'all';
+      head.appendChild(link);
+    }
+    return state.merge({
       loading: false,
       error: null,
-      record: fromJS(action.payload.data)
-    })
+      record: data
+    });
+  }
 });
