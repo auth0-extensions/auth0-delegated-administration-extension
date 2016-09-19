@@ -5,8 +5,7 @@ import { Table, TableCell, TableRouteCell, TableBody, TableTextCell, TableHeader
 export default class UsersTable extends Component {
   static propTypes = {
     users: React.PropTypes.array.isRequired,
-    loading: React.PropTypes.bool.isRequired,
-    renderActions: React.PropTypes.func.isRequired
+    loading: React.PropTypes.bool.isRequired
   }
 
   shouldComponentUpdate(nextProps) {
@@ -14,7 +13,7 @@ export default class UsersTable extends Component {
   }
 
   render() {
-    const { users, renderActions } = this.props;
+    const { users } = this.props;
     return (
       <Table>
         <TableHeader>

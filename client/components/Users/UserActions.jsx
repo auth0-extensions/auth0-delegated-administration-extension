@@ -45,7 +45,7 @@ export default class UserActions extends Component {
     <MenuItem disabled={loading || false} onClick={this.deleteUser}>
       Delete User
     </MenuItem>
-  );
+  )
 
   getResetPasswordAction = (user, loading) => {
     if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
@@ -57,7 +57,7 @@ export default class UserActions extends Component {
         Reset Password
       </MenuItem>
     );
-  };
+  }
 
   getChangePasswordAction = (user, loading) => {
     if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
@@ -69,7 +69,7 @@ export default class UserActions extends Component {
         Change Password
       </MenuItem>
     );
-  };
+  }
 
   getChangeUsernameAction = (user, loading) => {
     if (!this.state.databaseConnections || !this.state.databaseConnections.length || !user.username) {
@@ -81,7 +81,7 @@ export default class UserActions extends Component {
         Change Username
       </MenuItem>
     );
-  };
+  }
 
   getChangeEmailAction = (user, loading) => {
     if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
@@ -93,7 +93,7 @@ export default class UserActions extends Component {
         Change Email
       </MenuItem>
     );
-  };
+  }
 
   getResendEmailVerificationAction = (user, loading) => {
     if (!this.state.databaseConnections || !this.state.databaseConnections.length || user.email_verified) {
@@ -105,7 +105,7 @@ export default class UserActions extends Component {
         Resend Verification Email
       </MenuItem>
     );
-  };
+  }
 
   getMultifactorAction = (user, loading) => {
     if (!user.multifactor || !user.multifactor.length) {

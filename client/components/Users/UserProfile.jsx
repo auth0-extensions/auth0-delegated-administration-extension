@@ -9,7 +9,7 @@ export default class UserProfile extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.user !== this.props.user || nextProps.loading !== this.props.loading;
+    return nextProps.error !== this.props.error || nextProps.user !== this.props.user || nextProps.loading !== this.props.loading;
   }
 
   render() {
