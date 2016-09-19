@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Button, ButtonToolbar } from 'react-bootstrap';
 
@@ -9,15 +9,23 @@ import { Error, LoadingPanel, TableTotals } from '../components/Dashboard';
 import TabsHeader from '../components/TabsHeader';
 
 class LogsContainer extends Component {
+  static propTypes = {
+    clearLog: React.PropTypes.func.isRequired,
+    fetchLog: React.PropTypes.func.isRequired,
+    fetchLogs: React.PropTypes.func.isRequired,
+    log: React.PropTypes.object,
+    logs: React.PropTypes.object.isRequired
+  }
+
   componentWillMount() {
     this.props.fetchLogs();
   }
 
-  refresh() {
+  refresh = () => {
     this.props.fetchLogs();
   }
 
-  loadMore() {
+  loadMore = () => {
     this.props.fetchLogs(this.props.logs.nextPage);
   }
 
@@ -26,23 +34,24 @@ class LogsContainer extends Component {
       return <div></div>;
     }
 
-    return <ButtonToolbar className="pull-right">
-      <Button bsSize="small" onClick={this.refresh.bind(this)} disabled={this.props.logs.loading}>
-        <i className="icon icon-budicon-257"></i> Refresh
-      </Button>
-      <Button bsStyle="primary" bsSize="small" disabled={this.props.logs.loading} onClick={this.loadMore.bind(this)}>
-        <i className="icon icon-budicon-686"></i> Load More
-      </Button>
-    </ButtonToolbar>;
+    return (
+      <ButtonToolbar className="pull-right">
+        <Button bsSize="small" onClick={this.refresh} disabled={this.props.logs.loading}>
+          <i className="icon icon-budicon-257"></i> Refresh
+        </Button>
+        <Button bsStyle="primary" bsSize="small" disabled={this.props.logs.loading} onClick={this.loadMore}>
+          <i className="icon icon-budicon-686"></i> Load More
+        </Button>
+      </ButtonToolbar>
+    );
   }
 
   render() {
     const { log, logs, accessLevel } = this.props;
     return (
       <div>
-        <TabsHeader role={ accessLevel.role } />
-        <LogDialog onClose={this.props.clearLog} error={log.error} loading={log.loading} log={log.record}
-                   logId={log.id} />
+        <TabsHeader role={accessLevel.role} />
+        <LogDialog onClose={this.props.clearLog} error={log.error} loading={log.loading} log={log.record} logId={log.id} />
         <div className="row">
           <div className="col-xs-12 wrapper">
             {this.createToolbar(false)}

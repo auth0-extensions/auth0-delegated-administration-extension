@@ -72,10 +72,7 @@ export default createForm('user', class extends Component {
   }
 
   onConnectionChange = (e) => {
-    const connection = _.find(this.props.connections, (connection) => {
-      return connection.name === e.target.value;
-    });
-
+    const connection = _.find(this.props.connections, (conn) => conn.name === e.target.value);
     if (connection && connection.options && connection.options.requires_username) {
       this.setState({
         usernameRequired: true

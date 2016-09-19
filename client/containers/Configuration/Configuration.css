@@ -1,17 +1,6 @@
-.CodeMirror-gutters{
-    width: 45px !important;
-    height: 300px !important;
-}
-.CodeMirror-gutter-elt{
-    left: -31px !important;
-    font-weight: bold !important;
-}
-.CodeMirror-sizer{
-    margin-left: 45px !important;
-}
-.saveConfiguration-button{
-    padding-top: 20px;
-    text-align: right;
+.saveConfigurationButton {
+  padding-top: 20px;
+  text-align: right;
 }
 /* BASICS */
 

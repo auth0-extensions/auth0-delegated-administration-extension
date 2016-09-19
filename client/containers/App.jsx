@@ -9,9 +9,14 @@ import Header from '../components/Header';
 class App extends Component {
   static propTypes = {
     user: PropTypes.object,
+    settings: PropTypes.object,
     issuer: PropTypes.string,
-    logout: PropTypes.func
-  };
+    logout: PropTypes.func,
+    fetchApplications: PropTypes.func.isRequired,
+    fetchConnections: PropTypes.func.isRequired,
+    getAccessLevel: PropTypes.func.isRequired,
+    getAppSettings: PropTypes.func.isRequired
+  }
 
   componentWillMount() {
     this.props.fetchApplications();

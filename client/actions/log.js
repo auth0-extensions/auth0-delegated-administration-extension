@@ -1,9 +1,6 @@
 import axios from 'axios';
 import * as constants from '../constants';
 
-/*
- * Load logs.
- */
 export function fetchLogs(page = 0) {
   return {
     type: constants.FETCH_LOGS,
@@ -21,9 +18,6 @@ export function fetchLogs(page = 0) {
   };
 }
 
-/*
- * Get the details for a single log.
- */
 export function fetchLog(logId) {
   return {
     type: constants.FETCH_LOG,
@@ -38,9 +32,6 @@ export function fetchLog(logId) {
   };
 }
 
-/*
- * Remove the current log.
- */
 export function clearLog() {
   return {
     type: constants.CLEAR_LOG

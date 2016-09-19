@@ -24,10 +24,10 @@ export default (storage) => {
   const api = Router();
   api.use(middlewares.authenticateUser(config('AUTH0_DOMAIN'), config('EXTENSION_CLIENT_ID')));
   api.use(getUserAccessLevel);
-  api.use(hasAccessLevel(constants.ADMIN_ACCESS_LEVEL));
+  api.use(hasAccessLevel(constants.USER_ACCESS_LEVEL));
   api.use('/applications', managementApiClient, applications());
   api.use('/connections', managementApiClient, connections());
-  api.use('/scripts', hasAccessLevel(constants.SUPER_ACCESS_LEVEL), scripts(storage, scriptManager));
+  api.use('/scripts', hasAccessLevel(constants.ADMIN_ACCESS_LEVEL), scripts(storage, scriptManager));
   api.use('/users', managementApiClient, users(storage, scriptManager));
   api.use('/logs', managementApiClient, logs(scriptManager));
 
