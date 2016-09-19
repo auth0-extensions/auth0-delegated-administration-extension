@@ -14,6 +14,7 @@ import { mfa } from './mfa';
 import { passwordChange } from './passwordChange';
 import { passwordReset } from './passwordReset';
 import { scripts } from './scripts';
+import { updateScript } from './updateScript';
 import { settings } from './settings';
 import { unblock } from './unblock';
 import { user } from './user';
@@ -41,6 +42,7 @@ export default combineReducers({
   passwordChange,
   passwordReset,
   scripts,
+  updateScript,
   settings,
   unblock,
   user,
