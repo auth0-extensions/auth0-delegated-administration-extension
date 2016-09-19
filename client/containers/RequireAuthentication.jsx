@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
 export default function RequireAuthentication(InnerComponent) {
   class RequireAuthenticationContainer extends React.Component {
+    static propTypes = {
+      push: PropTypes.func.isRequired,
+      auth: PropTypes.object.isRequired,
+      location: PropTypes.object.isRequired
+    }
+
     componentWillMount() {
       this.requireAuthentication();
     }
@@ -24,7 +30,7 @@ export default function RequireAuthentication(InnerComponent) {
 
     render() {
       if (this.props.auth.isAuthenticated) {
-        return <InnerComponent {...this.props}/>;
+        return <InnerComponent {...this.props} />;
       }
 
       return <div></div>;

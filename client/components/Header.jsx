@@ -1,6 +1,7 @@
-import './Header.css';
 import React, { Component } from 'react';
-import { NavigationLink } from '../components/Dashboard';
+import { Link } from 'react-router';
+
+import './Header.css';
 
 export default class Header extends Component {
   static propTypes = {
@@ -23,9 +24,44 @@ export default class Header extends Component {
     return `https://cdn.auth0.com/avatars/${iss.slice(0, 2).toLowerCase()}.png`;
   }
 
+  getMenu(isAdmin) {
+    if (!isAdmin) {
+      return (
+        <ul role="menu" className="dropdown-menu">
+          <li role="presentation">
+            <a href="#" role="menuitem" tabIndex="-1" onClick={this.props.onLogout}>
+              Logout
+            </a>
+          </li>
+        </ul>
+      );
+    }
+
+    return (
+      <ul role="menu" className="dropdown-menu">
+        <li role="presentation">
+          <Link to="/users">
+            Users & Logs
+          </Link>
+        </li>
+        <li role="presentation">
+          <Link to="/configuration">
+            Configuration
+          </Link>
+        </li>
+        <li role="presentation">
+          <a href="#" role="menuitem" tabIndex="-1" onClick={this.props.onLogout}>
+            Logout
+          </a>
+        </li>
+      </ul>
+    );
+  }
+
   render() {
-    const { user, issuer, onLogout, accessLevel, settings } = this.props;
+    const { user, issuer, accessLevel, settings } = this.props;
     const showMenu = accessLevel.role === 2;
+    console.log(showMenu, accessLevel);
     return (
       <header className="dashboard-header">
         <nav role="navigation" className="navbar navbar-default">
@@ -43,25 +79,7 @@ export default class Header extends Component {
                     </span>
                     <i className="icon-budicon-460"></i>
                   </span>
-                  {showMenu ?
-                    <ul role="menu" className="dropdown-menu">
-                      <NavigationLink title="Users & Logs" route="/users" />
-                      <NavigationLink title="Configuration" route="/configuration" />
-                      <li role="presentation">
-                        <a href="#" role="menuitem" tabIndex="-1" onClick={onLogout}>
-                          Logout
-                        </a>
-                      </li>
-                    </ul>
-                    :
-                    <ul role="menu" className="dropdown-menu">
-                      <li role="presentation">
-                        <a href="#" role="menuitem" tabIndex="-1" onClick={onLogout}>
-                          Logout
-                        </a>
-                      </li>
-                    </ul>
-                  }
+                  {this.getMenu(showMenu)}
                 </li>
               </ul>
             </div>

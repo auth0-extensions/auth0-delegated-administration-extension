@@ -6,7 +6,7 @@ import { logActions, userActions } from '../../actions';
 
 import './User.css';
 
-import * as dialogs from './Dialogs'
+import * as dialogs from './Dialogs';
 import TabsHeader from '../../components/TabsHeader';
 import LogDialog from '../../components/Logs/LogDialog';
 import { UserActions, UserDevices, UserHeader, UserProfile, UserLogs, UserInfo } from '../../components/Users';
