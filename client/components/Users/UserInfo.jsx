@@ -7,14 +7,11 @@ export default class UserInfo extends Component {
     error: PropTypes.string,
     loading: PropTypes.bool.isRequired,
     user: PropTypes.object.isRequired,
-    memberships: PropTypes.object
+    memberships: PropTypes.array
   };
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.user !== this.props.user
-      || nextProps.memberships !== this.props.memberships
-      || nextProps.loading !== this.props.loading
-      || nextProps.error !== this.props.error;
+    return nextProps.user !== this.props.user || nextProps.memberships !== this.props.memberships || nextProps.loading !== this.props.loading;
   }
 
   getDepartments = (memberships) => {

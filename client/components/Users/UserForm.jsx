@@ -15,10 +15,11 @@ export default createForm('user', class extends Component {
     userWasSaved: React.PropTypes.func.isRequired,
     fetchUsers: React.PropTypes.func.isRequired,
     title: React.PropTypes.string.isRequired,
+    closeConfirmation: React.PropTypes.func.isRequired,
     confirmLoading: PropTypes.bool.isRequired,
     hideConfirmWindow: PropTypes.func.isRequired,
     userCreateError: PropTypes.string
-  };
+  }
 
   constructor(props) {
     super(props);
@@ -29,7 +30,7 @@ export default createForm('user', class extends Component {
     };
   }
 
-  onConfirmUserCreate = (options) => {
+  onConfirmUserCreate = () => {
     let obj = {};
     if (this.refs.email && this.refs.email.props.field.value)
       obj.email = this.refs.email.props.field.value;
@@ -41,7 +42,7 @@ export default createForm('user', class extends Component {
       if (this.refs.password.props.field.value !== this.refs.repeat_password.props.field.value) {
         this.setState({
           customErrors: {
-            repeat_password: ['Repeat Password must be equal to password']
+            repeat_password: [ 'Repeat Password must be equal to password' ]
           }
         });
       } else {
@@ -54,24 +55,24 @@ export default createForm('user', class extends Component {
     if (this.refs.connection && this.refs.connection.value)
       obj.connection = this.refs.connection.value;
 
-    if(options.length === 1) {
-      obj.group = options[0].value;
-    } else if (this.state.memberships) {
+    if (this.state.memberships) {
       obj.group = this.state.memberships;
     }
     obj["email_verified"] = false;
-    if (!this.state.customErrors.repeat_password) {
+    if (!this.state.customErrors.repeat_password)
       this.props.createUser(obj, function () {
         this.props.userWasSaved();
         setTimeout(function () {
           this.props.fetchUsers('', true);
         }.bind(this), 500);
       }.bind(this));
-    }
   };
 
   onConnectionChange = (e) => {
-    const connection = _.find(this.props.connections, (conn) => conn.name === e.target.value);
+    const connection = _.find(this.props.connections, (connection) => {
+      return connection.name === e.target.value;
+    });
+
     if (connection && connection.options && connection.options.requires_username) {
       this.setState({
         usernameRequired: true
@@ -81,7 +82,7 @@ export default createForm('user', class extends Component {
         usernameRequired: false
       });
     }
-  };
+  }
 
   static formFields = [
     'email',
@@ -104,6 +105,13 @@ export default createForm('user', class extends Component {
     _.each(memberships, (a, idx) => {
       options[idx] = { value: a, label: a };
     });
+    if (options.length == 1 && !this.state.memberships) {
+      /* THis runs on render, not allowed
+      this.setState({
+        memberships: options[0].value
+    });
+    */
+    }
     return options;
   };
 
@@ -120,9 +128,7 @@ export default createForm('user', class extends Component {
             confirmLoading, userCreateError } = this.props;
     const options = this.getOptions(memberships);
     return (
-      <Confirm title={title} show={show} loading={confirmLoading} onCancel={this.props.hideConfirmWindow} onConfirm={function(){
-        this.onConfirmUserCreate(options);
-      }.bind(this)}>
+      <Confirm title={title} show={show} loading={confirmLoading} onCancel={this.props.hideConfirmWindow} onConfirm={this.onConfirmUserCreate}>
         <Error message={userCreateError} />
         <div className="row">
           <form className="createUserScreenForm form-horizontal col-xs-12" style={{ marginTop: '30px' }}>
