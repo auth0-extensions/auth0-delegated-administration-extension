@@ -5,6 +5,7 @@ import { NavigationLink } from '../components/Dashboard';
 export default class Header extends Component {
   static propTypes = {
     user: React.PropTypes.object,
+    settings: React.PropTypes.object,
     accessLevel: React.PropTypes.object,
     issuer: React.PropTypes.string,
     onLogout: React.PropTypes.func.isRequired
