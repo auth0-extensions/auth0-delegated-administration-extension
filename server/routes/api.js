@@ -32,13 +32,13 @@ export default (storage) => {
   api.use('/logs', managementApiClient, logs(scriptManager));
 
   api.get('/settings', (req, res, next) => {
-    const stylesContext = {
+    const settingsContext = {
       request: {
         user: req.user
       }
     };
 
-    scriptManager.execute('settings', stylesContext)
+    scriptManager.execute('settings', settingsContext)
       .then(settings => res.json({ settings }))
       .catch(next);
   });

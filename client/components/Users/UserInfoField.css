@@ -1,0 +1,13 @@
+.user-info-field {
+  margin: 20px 0;
+  flex-basis: 33.33%;
+}
+
+.user-info-field-title {
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  color: #999;
+}
