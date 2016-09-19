@@ -11,7 +11,7 @@ export default class Header extends Component {
     onLogout: React.PropTypes.func.isRequired
   };
 
-  getPicture(iss, user) {
+  getPicture = (iss, user) => {
     if (user && user.get('picture')) {
       return user.get('picture');
     }
@@ -21,17 +21,17 @@ export default class Header extends Component {
     }
 
     return `https://cdn.auth0.com/avatars/${iss.slice(0, 2).toLowerCase()}.png`;
-  }
+  };
 
   render() {
-    const { user, issuer, onLogout, accessLevel, settings } = this.props;
+    const { user, issuer, onLogout, accessLevel } = this.props;
     const showMenu = accessLevel.role === 2;
     return (
       <header className="dashboard-header">
         <nav role="navigation" className="navbar navbar-default">
           <div className="container">
             <div id="header" className="navbar-header" style={{ width: '800px' }}>
-              <a className="navbar-brand" href="#">{settings.get('settings').get('title') || window.config.TITLE}</a>
+              <a className="navbar-brand" href="#">{window.config.TITLE}</a>
             </div>
             <div id="navbar-collapse" className="collapse navbar-collapse">
               <ul className="nav navbar-nav navbar-right">
@@ -45,8 +45,8 @@ export default class Header extends Component {
                   </span>
                   {showMenu ?
                     <ul role="menu" className="dropdown-menu">
-                      <NavigationLink title="Users & Logs" route="/users" />
-                      <NavigationLink title="Configuration" route="/configuration" />
+                      <NavigationLink title="Users & Logs" route="/users" icon="" />
+                      <NavigationLink title="Configuration" route="/configuration" icon="" />
                       <li role="presentation">
                         <a href="#" role="menuitem" tabIndex="-1" onClick={onLogout}>
                           Logout

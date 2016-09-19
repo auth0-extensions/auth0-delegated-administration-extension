@@ -8,7 +8,7 @@ export default class UserLogs extends Component {
     loading: React.PropTypes.bool.isRequired,
     user: React.PropTypes.object.isRequired,
     logs: React.PropTypes.object.isRequired
-  }
+  };
 
   shouldComponentUpdate(nextProps) {
     return nextProps.logs !== this.props.logs || nextProps.user !== this.props.user || nextProps.loading !== this.props.loading;

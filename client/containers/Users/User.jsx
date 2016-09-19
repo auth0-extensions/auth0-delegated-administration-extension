@@ -25,12 +25,7 @@ export default connectContainer(class extends Component {
   static actionsToProps = {
     ...logActions,
     ...userActions
-  }
-
-  static propTypes = {
-    config: PropTypes.object.isRequired,
-    fetchConfiguration: PropTypes.func.isRequired
-  }
+  };
 
   componentWillMount() {
     this.props.fetchUser(this.props.params.id);
@@ -40,51 +35,55 @@ export default connectContainer(class extends Component {
     const { user, databaseConnections, log, logs, devices } = this.props;
     return (
       <div className="user">
-        <TabsHeader role={this.props.accessLevel.role} />
+        <TabsHeader role={this.props.accessLevel.role}/>
         <div className="row content-header">
           <div className="col-xs-12">
             <h2 className="pull-left">User Details</h2>
             <div className="pull-right">
-              <UserActions
-                user={user}
-                databaseConnections={databaseConnections}
-                deleteUser={this.props.requestDeleteUser}
-                resetPassword={this.props.requestPasswordReset}
-                changePassword={this.props.requestPasswordChange}
-                removeMfa={this.props.requestRemoveMultiFactor}
-                blockUser={this.props.requestBlockUser}
-                unblockUser={this.props.requestUnblockUser}
-                changeUsername={this.props.requestUsernameChange}
-                changeEmail={this.props.requestEmailChange}
-                resendVerificationEmail={this.props.requestResendVerificationEmail}
-              />
+              {databaseConnections ?
+                <UserActions
+                  user={user}
+                  databaseConnections={databaseConnections}
+                  deleteUser={this.props.requestDeleteUser}
+                  resetPassword={this.props.requestPasswordReset}
+                  changePassword={this.props.requestPasswordChange}
+                  removeMfa={this.props.requestRemoveMultiFactor}
+                  blockUser={this.props.requestBlockUser}
+                  unblockUser={this.props.requestUnblockUser}
+                  changeUsername={this.props.requestUsernameChange}
+                  changeEmail={this.props.requestEmailChange}
+                  resendVerificationEmail={this.props.requestResendVerificationEmail}
+                />
+                : ''}
             </div>
           </div>
         </div>
         <div className="row">
           <div className="col-xs-12">
-            <UserHeader loading={user.get('loading')} user={user.get('record')} error={user.get('error')} />
+            <UserHeader loading={user.get('loading')} user={user.get('record')} error={user.get('error')}/>
           </div>
         </div>
         <div className="row user-tabs">
           <div className="col-xs-12">
-            <Tabs defaultActiveKey={1} animation={false}>
+            <Tabs defaultActiveKey={1} animation={false} id="userViewTabs">
               <Tab eventKey={1} title="User Information">
-                <UserInfo loading={user.get('loading')} user={user.get('record')} memberships={user.get('memberships')} error={user.get('error')} />
+                <UserInfo loading={user.get('loading')} user={user.get('record')} memberships={user.get('memberships')}
+                          error={user.get('error')}/>
               </Tab>
               <Tab eventKey={2} title="Devices">
-                <UserDevices loading={devices.get('loading')} devices={devices.get('records')} error={devices.get('error')} />
+                <UserDevices loading={devices.get('loading')} devices={devices.get('records')}
+                             error={devices.get('error')}/>
               </Tab>
               <Tab eventKey={3} title="Logs">
                 <LogDialog onClose={this.props.clearLog} error={log.get('error')}
                            loading={log.get('loading')} log={log.get('record')}
-                           logId={log.get('logId')} />
+                           logId={log.get('logId')}/>
                 <UserLogs onOpen={this.props.fetchLog} loading={logs.get('loading')}
                           logs={logs.get('records')} user={user.get('record')}
-                          error={logs.get('error')} />
+                          error={logs.get('error')}/>
               </Tab>
               <Tab eventKey={4} title="Profile">
-                <UserProfile loading={user.get('loading')} user={user.get('record')} error={user.get('error')} />
+                <UserProfile loading={user.get('loading')} user={user.get('record')} error={user.get('error')}/>
               </Tab>
             </Tabs>
           </div>
