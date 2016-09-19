@@ -2,7 +2,7 @@ import auth0 from 'auth0';
 import request from 'request';
 import Promise from 'bluebird';
 import { Router } from 'express';
-import { managementApi } from 'auth0-extension-tools';
+import { managementApi, ArgumentError } from 'auth0-extension-tools';
 
 import config from '../lib/config';
 import { verifyUserAccess } from '../lib/middlewares';
@@ -115,7 +115,7 @@ export default (storage, scriptManager) => {
    */
   api.put('/:id/change-password', verifyUserAccess(scriptManager), (req, res, next) => {
     if (req.body.password !== req.body.confirmPassword) {
-      return next(new Error('Passwords don\'t match'));
+      return next(new ArgumentError('Passwords don\'t match'));
     }
 
     return req.auth0.users.update({ id: req.params.id }, {
