@@ -9,9 +9,14 @@ import Header from '../components/Header';
 class App extends Component {
   static propTypes = {
     user: PropTypes.object,
+    settings: PropTypes.object,
     issuer: PropTypes.string,
-    logout: PropTypes.func
-  };
+    logout: PropTypes.func,
+    fetchApplications: PropTypes.func.isRequired,
+    fetchConnections: PropTypes.func.isRequired,
+    getAccessLevel: PropTypes.func.isRequired,
+    getAppSettings: PropTypes.func.isRequired
+  }
 
   componentWillMount() {
     this.props.fetchApplications();
@@ -23,7 +28,12 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Header user={this.props.user} issuer={this.props.issuer} onLogout={this.props.logout} accessLevel={this.props.accessLevel.toJSON()} />
+        <Header
+          user={this.props.user}
+          issuer={this.props.issuer}
+          settings={this.props.settings}
+          onLogout={this.props.logout} accessLevel={this.props.accessLevel.toJSON()}
+        />
         <div className="container">
           <div className="row">
             <section className="content-page current">
