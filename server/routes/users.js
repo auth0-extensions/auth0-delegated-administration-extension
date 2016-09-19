@@ -96,16 +96,15 @@ export default (storage, scriptManager) => {
   /*
    * Trigger a password reset for the user.
    */
-  api.post('/:email/password-reset', (req, res, next) => {
+  api.post('/:id/password-reset', verifyUserAccess(scriptManager), (req, res, next) => {
     const client = new auth0.AuthenticationClient({
       domain: config('AUTH0_DOMAIN'),
       clientId: config('AUTH0_CLIENT_ID')
     });
-    client.requestChangePasswordEmail({
-      email: req.params.email,
-      connection: req.body.connection,
-      client_id: req.body.clientId
-    })
+
+    req.auth0.users.get({ id: req.params.id, fields: 'email' })
+      .then(user => ({ email: user.email, connection: req.body.connection, client_id: req.body.clientId }))
+      .then(data => client.requestChangePasswordEmail(data))
       .then(() => res.sendStatus(204))
       .catch(next);
   });
