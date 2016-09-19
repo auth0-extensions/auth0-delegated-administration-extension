@@ -6,7 +6,7 @@ export default class UsersTable extends Component {
   static propTypes = {
     users: React.PropTypes.array.isRequired,
     loading: React.PropTypes.bool.isRequired
-  };
+  }
 
   shouldComponentUpdate(nextProps) {
     return nextProps.users !== this.props.users;

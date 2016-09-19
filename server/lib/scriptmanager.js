@@ -1,9 +1,9 @@
 import Promise from 'bluebird';
 import safeEval from 'safe-eval';
+import memoizer from 'lru-memoizer';
 import { ArgumentError } from 'auth0-extension-tools';
 
 import parseScriptError from './errors/parseScriptError';
-
 
 export default class ScriptManager {
   constructor(storage) {
@@ -12,6 +12,21 @@ export default class ScriptManager {
     }
 
     this.storage = storage;
+    this.getCached = Promise.promisify(
+      memoizer({
+        load: (name, callback) => {
+          this.get(name)
+            .then((script) => {
+              callback(null, script);
+              return null;
+            })
+            .catch(callback);
+        },
+        hash: (name) => name,
+        max: 100,
+        maxAge: 1000 * 10
+      })
+    );
   }
 
   get(name) {
@@ -35,7 +50,7 @@ export default class ScriptManager {
   }
 
   execute(name, ctx) {
-    return this.get(name)
+    return this.getCached(name)
       .then(script => {
         if (!script) {
           return null;

@@ -6,7 +6,7 @@ import { logActions, userActions } from '../../actions';
 
 import './User.css';
 
-import * as dialogs from './Dialogs'
+import * as dialogs from './Dialogs';
 import TabsHeader from '../../components/TabsHeader';
 import LogDialog from '../../components/Logs/LogDialog';
 import { UserActions, UserDevices, UserHeader, UserProfile, UserLogs, UserInfo } from '../../components/Users';
@@ -25,7 +25,15 @@ export default connectContainer(class extends Component {
   static actionsToProps = {
     ...logActions,
     ...userActions
-  };
+  }
+
+  static propTypes = {
+    config: PropTypes.object.isRequired,
+    clearLog: React.PropTypes.func.isRequired,
+    fetchLog: React.PropTypes.func.isRequired,
+    fetchUser: React.PropTypes.func.isRequired,
+    fetchConfiguration: PropTypes.func.isRequired
+  }
 
   componentWillMount() {
     this.props.fetchUser(this.props.params.id);
@@ -40,21 +48,19 @@ export default connectContainer(class extends Component {
           <div className="col-xs-12">
             <h2 className="pull-left">User Details</h2>
             <div className="pull-right">
-              {databaseConnections ?
-                <UserActions
-                  user={user}
-                  databaseConnections={databaseConnections}
-                  deleteUser={this.props.requestDeleteUser}
-                  resetPassword={this.props.requestPasswordReset}
-                  changePassword={this.props.requestPasswordChange}
-                  removeMfa={this.props.requestRemoveMultiFactor}
-                  blockUser={this.props.requestBlockUser}
-                  unblockUser={this.props.requestUnblockUser}
-                  changeUsername={this.props.requestUsernameChange}
-                  changeEmail={this.props.requestEmailChange}
-                  resendVerificationEmail={this.props.requestResendVerificationEmail}
-                />
-              : ''}
+              <UserActions
+                user={user}
+                databaseConnections={databaseConnections}
+                deleteUser={this.props.requestDeleteUser}
+                resetPassword={this.props.requestPasswordReset}
+                changePassword={this.props.requestPasswordChange}
+                removeMfa={this.props.requestRemoveMultiFactor}
+                blockUser={this.props.requestBlockUser}
+                unblockUser={this.props.requestUnblockUser}
+                changeUsername={this.props.requestUsernameChange}
+                changeEmail={this.props.requestEmailChange}
+                resendVerificationEmail={this.props.requestResendVerificationEmail}
+              />
             </div>
           </div>
         </div>
@@ -65,7 +71,7 @@ export default connectContainer(class extends Component {
         </div>
         <div className="row user-tabs">
           <div className="col-xs-12">
-            <Tabs defaultActiveKey={1} animation={false} id="userViewTabs">
+            <Tabs defaultActiveKey={1} animation={false}>
               <Tab eventKey={1} title="User Information">
                 <UserInfo loading={user.get('loading')} user={user.get('record')} memberships={user.get('memberships')} error={user.get('error')} />
               </Tab>
@@ -73,12 +79,16 @@ export default connectContainer(class extends Component {
                 <UserDevices loading={devices.get('loading')} devices={devices.get('records')} error={devices.get('error')} />
               </Tab>
               <Tab eventKey={3} title="Logs">
-                <LogDialog onClose={this.props.clearLog} error={log.get('error')}
-                           loading={log.get('loading')} log={log.get('record')}
-                           logId={log.get('logId')} />
-                <UserLogs onOpen={this.props.fetchLog} loading={logs.get('loading')}
-                          logs={logs.get('records')} user={user.get('record')}
-                          error={logs.get('error')} />
+                <LogDialog
+                  onClose={this.props.clearLog} error={log.get('error')}
+                  loading={log.get('loading')} log={log.get('record')}
+                  logId={log.get('logId')}
+                />
+                <UserLogs
+                  onOpen={this.props.fetchLog} loading={logs.get('loading')}
+                  logs={logs.get('records')} user={user.get('record')}
+                  error={logs.get('error')}
+                />
               </Tab>
               <Tab eventKey={4} title="Profile">
                 <UserProfile loading={user.get('loading')} user={user.get('record')} error={user.get('error')} />

@@ -1,6 +1,7 @@
-import './Header.css';
 import React, { Component } from 'react';
-import { NavigationLink } from '../components/Dashboard';
+import { Link } from 'react-router';
+
+import './Header.css';
 
 export default class Header extends Component {
   static propTypes = {
@@ -21,17 +22,52 @@ export default class Header extends Component {
     }
 
     return `https://cdn.auth0.com/avatars/${iss.slice(0, 2).toLowerCase()}.png`;
-  };
+  }
+
+  getMenu(isAdmin) {
+    if (!isAdmin) {
+      return (
+        <ul role="menu" className="dropdown-menu">
+          <li role="presentation">
+            <a href="#" role="menuitem" tabIndex="-1" onClick={this.props.onLogout}>
+              Logout
+            </a>
+          </li>
+        </ul>
+      );
+    }
+
+    return (
+      <ul role="menu" className="dropdown-menu">
+        <li role="presentation">
+          <Link to="/users">
+            Users & Logs
+          </Link>
+        </li>
+        <li role="presentation">
+          <Link to="/configuration">
+            Configuration
+          </Link>
+        </li>
+        <li role="presentation">
+          <a href="#" role="menuitem" tabIndex="-1" onClick={this.props.onLogout}>
+            Logout
+          </a>
+        </li>
+      </ul>
+    );
+  }
 
   render() {
-    const { user, issuer, onLogout, accessLevel } = this.props;
+    const { user, issuer, accessLevel, settings } = this.props;
     const showMenu = accessLevel.role === 2;
+
     return (
       <header className="dashboard-header">
         <nav role="navigation" className="navbar navbar-default">
           <div className="container">
             <div id="header" className="navbar-header" style={{ width: '800px' }}>
-              <a className="navbar-brand" href="#">{window.config.TITLE}</a>
+              <a className="navbar-brand" href="#">{settings.get('settings').get('title') || window.config.TITLE}</a>
             </div>
             <div id="navbar-collapse" className="collapse navbar-collapse">
               <ul className="nav navbar-nav navbar-right">
@@ -43,25 +79,7 @@ export default class Header extends Component {
                     </span>
                     <i className="icon-budicon-460"></i>
                   </span>
-                  {showMenu ?
-                    <ul role="menu" className="dropdown-menu">
-                      <NavigationLink title="Users & Logs" route="/users" icon="" />
-                      <NavigationLink title="Configuration" route="/configuration" icon="" />
-                      <li role="presentation">
-                        <a href="#" role="menuitem" tabIndex="-1" onClick={onLogout}>
-                          Logout
-                        </a>
-                      </li>
-                    </ul>
-                    :
-                    <ul role="menu" className="dropdown-menu">
-                      <li role="presentation">
-                        <a href="#" role="menuitem" tabIndex="-1" onClick={onLogout}>
-                          Logout
-                        </a>
-                      </li>
-                    </ul>
-                  }
+                  {this.getMenu(showMenu)}
                 </li>
               </ul>
             </div>

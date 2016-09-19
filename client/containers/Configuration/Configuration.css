@@ -1,30 +1,8 @@
-.CodeMirror-gutters{
-    width: 45px !important;
-    height: 300px !important;
+.saveConfigurationButton {
+  padding-top: 20px;
+  text-align: right;
 }
-.CodeMirror-gutter-elt{
-    left: -31px !important;
-    font-weight: bold !important;
-}
-.CodeMirror-sizer{
-    margin-left: 45px !important;
-}
-.saveConfigurationButton{
-    padding-top: 20px;
-    text-align: right;
-}
-/* BASICS */
 
-.CodeMirror {
-    /* Set height, width, borders, and global font properties here */
-    font-family: monospace;
-    height: 300px;
-    color: black;
-}
-.hidden{
-    display: none;
-}
-.CodeMirror-lint-marker-error, .CodeMirror-lint-marker-warning {
-    left: -12px;
-    top: -1px;
+.hidden {
+  display: none;
 }

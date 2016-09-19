@@ -11,7 +11,10 @@ export default class UserInfo extends Component {
   };
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.user !== this.props.user || nextProps.memberships !== this.props.memberships || nextProps.loading !== this.props.loading;
+    return nextProps.user !== this.props.user
+      || nextProps.memberships !== this.props.memberships
+      || nextProps.loading !== this.props.loading
+      || nextProps.error !== this.props.error;
   }
 
   getDepartments = (memberships) => {
