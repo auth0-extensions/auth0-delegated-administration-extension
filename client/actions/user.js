@@ -292,11 +292,11 @@ export function cancelPasswordReset() {
  */
 export function resetPassword(application) {
   return (dispatch, getState) => {
-    const { userId, userEmail, connection } = getState().passwordReset.toJS();
+    const { userId, connection } = getState().passwordReset.toJS();
     dispatch({
       type: constants.PASSWORD_RESET,
       payload: {
-        promise: axios.post(`/api/users/${userEmail}/password-reset`, {
+        promise: axios.post(`/api/users/${userId}/password-reset`, {
           connection,
           clientId: application
         })
