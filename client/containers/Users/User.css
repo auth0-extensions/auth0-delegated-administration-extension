@@ -94,26 +94,3 @@
   position: relative;
   bottom: 5px;
 }
-.userInfoBlock{
-  float: left;
-  padding-left: 20px;
-}
-.userInfoBlock_1,.userInfoBlock_3 {
-  width: 31%;
-}
-.userInfoBlock_2{
-  width: 38%;
-}
-.userInfoBlock div {
-  height: 80px;
-}
-.userInfoBlock div{
-  font-weight: bolder;
-}
-.userInfoBlock div h5{
-  color: grey;
-  text-transform: uppercase;
-}
-.userInfoBlock div span{
-  color: #000000;
-}

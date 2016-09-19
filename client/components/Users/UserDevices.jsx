@@ -17,7 +17,7 @@ export default class UserDevices extends Component {
     error: PropTypes.string,
     devices: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired
-  };
+  }
 
   shouldComponentUpdate(nextProps) {
     return nextProps.devices !== this.props.devices || nextProps.user !== this.props.user || nextProps.loading !== this.props.loading;

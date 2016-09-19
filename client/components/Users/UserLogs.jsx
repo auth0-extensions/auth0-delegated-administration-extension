@@ -1,5 +1,15 @@
 import React, { Component } from 'react';
-import { Error, LoadingPanel, Table, TableBody, TableIconCell, TableTextCell, TableHeader, TableColumn, TableRow } from '../Dashboard';
+import {
+  Error,
+  LoadingPanel,
+  Table,
+  TableBody,
+  TableIconCell,
+  TableTextCell,
+  TableHeader,
+  TableColumn,
+  TableRow
+} from '../Dashboard';
 
 export default class UserLogs extends Component {
   static propTypes = {
@@ -8,7 +18,7 @@ export default class UserLogs extends Component {
     loading: React.PropTypes.bool.isRequired,
     user: React.PropTypes.object.isRequired,
     logs: React.PropTypes.object.isRequired
-  };
+  }
 
   shouldComponentUpdate(nextProps) {
     return nextProps.logs !== this.props.logs || nextProps.user !== this.props.user || nextProps.loading !== this.props.loading;
@@ -49,7 +59,7 @@ export default class UserLogs extends Component {
                 </TableRow>
               );
             })
-          }
+            }
           </TableBody>
         </Table>
       </LoadingPanel>

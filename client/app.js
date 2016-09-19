@@ -23,7 +23,7 @@ const history = useRouterHistory(createHistory)({
 const store = configureStore([ routerMiddleware(history) ], { });
 const reduxHistory = syncHistoryWithStore(history, store);
 
-store.subscribe(function () {
+store.subscribe(() => {
   switch (store.getState().lastAction.type) {
     case constants.FETCH_SETTINGS_FULFILLED:
       const data = store.getState().settings.get('record');

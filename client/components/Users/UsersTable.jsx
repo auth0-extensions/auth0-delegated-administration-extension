@@ -15,7 +15,7 @@ export default class UsersTable extends Component {
   static propTypes = {
     users: React.PropTypes.array.isRequired,
     loading: React.PropTypes.bool.isRequired
-  };
+  }
 
   shouldComponentUpdate(nextProps) {
     return nextProps.users !== this.props.users;
@@ -26,7 +26,7 @@ export default class UsersTable extends Component {
     return (
       <Table>
         <TableHeader>
-          <TableColumn width="6%"/>
+          <TableColumn width="6%" />
           <TableColumn width="25%">Name</TableColumn>
           <TableColumn width="29%">Email</TableColumn>
           <TableColumn width="15%">Latest Login</TableColumn>
@@ -38,7 +38,7 @@ export default class UsersTable extends Component {
             <TableRow key={index}>
               <TableCell>
                 <img className="img-circle" src={user.picture} alt={user.name || user.email || user.user_id}
-                     width="32"/>
+                     width="32" />
               </TableCell>
               <TableRouteCell
                 route={`/users/${user.user_id}`}>{user.name || user.email || user.user_id}</TableRouteCell>

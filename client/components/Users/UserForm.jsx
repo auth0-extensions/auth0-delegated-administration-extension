@@ -17,8 +17,9 @@ export default createForm('user', class extends Component {
     title: React.PropTypes.string.isRequired,
     confirmLoading: PropTypes.bool.isRequired,
     hideConfirmWindow: PropTypes.func.isRequired,
-    userCreateError: PropTypes.string
-  };
+    userCreateError: PropTypes.string,
+    appSettings: PropTypes.object
+  }
 
   constructor(props) {
     super(props);
@@ -68,7 +69,7 @@ export default createForm('user', class extends Component {
         }.bind(this), 500);
       }.bind(this));
     }
-  };
+  }
 
   onConnectionChange = (e) => {
     const connection = _.find(this.props.connections, (connection) => {
@@ -84,7 +85,7 @@ export default createForm('user', class extends Component {
         usernameRequired: false
       });
     }
-  };
+  }
 
   static formFields = [
     'email',
@@ -121,34 +122,36 @@ export default createForm('user', class extends Component {
     const {
       fields: { email, username, password, repeat_password, connection },
       validationErrors, memberships, title, show,
-      confirmLoading, userCreateError
+      confirmLoading, userCreateError, settings
     } = this.props;
     const options = this.getOptions(memberships);
-    const label = this.props.settings && this.props.settings.dist && this.props.settings.dist.memberships ? this.props.settings.dist.memberships : 'Memberships';
+    const label = settings.settings && settings.settings.dict && settings.settings.dict.memberships ? settings.settings.dict.memberships : 'Memberships';
     return (
       <Confirm title={title} show={show} loading={confirmLoading} onCancel={this.props.hideConfirmWindow}
                onConfirm={function () {
                  this.onConfirmUserCreate(options);
-               }.bind(this)}>
-        <Error message={userCreateError}/>
+               }}
+      >
+        <Error message={userCreateError} />
         <div className="row">
           <form className="createUserScreenForm form-horizontal col-xs-12" style={{ marginTop: '30px' }}>
             <div className="custom_field">
-              <InputText field={email} fieldName="email" label="Email" validationErrors={validationErrors} ref="email"/>
+              <InputText field={email} fieldName="email" label="Email" validationErrors={validationErrors}
+                         ref="email" />
             </div>
             {usernameRequired ?
               <div className="custom_field">
                 <InputText field={username} fieldName="username" label="username" validationErrors={validationErrors}
-                           ref="username"/>
+                           ref="username" />
               </div>
               : ''}
             <div className="custom_field">
               <InputText field={password} fieldName="password" label="Password" type="password"
-                         validationErrors={validationErrors} ref="password"/>
+                         validationErrors={validationErrors} ref="password" />
             </div>
             <div className="custom_field repeat_password">
               <InputText field={repeat_password} fieldName="repeat_password" label="Repeat Password" type="password"
-                         validationErrors={this.state.customErrors} ref="repeat_password"/>
+                         validationErrors={this.state.customErrors} ref="repeat_password" />
             </div>
             {(options.length > 1) ?
               <div className="custom_field">

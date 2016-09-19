@@ -26,7 +26,7 @@ class App extends Component {
         <Header
           user={this.props.user}
           issuer={this.props.issuer}
-          settings={this.props.settings}
+          appSettings={this.props.settings}
           onLogout={this.props.logout} accessLevel={this.props.accessLevel.toJSON()}
         />
         <div className="container">
@@ -34,7 +34,10 @@ class App extends Component {
             <section className="content-page current">
               <div className="col-xs-12">
                 <div id="content-area" className="tab-content">
-                  {React.cloneElement(this.props.children, { accessLevel: this.props.accessLevel.toJSON(), settings: this.props.settings.toJSON() })}
+                  {React.cloneElement(this.props.children, {
+                    accessLevel: this.props.accessLevel.toJSON(),
+                    appSettings: this.props.settings.toJSON()
+                  })}
                 </div>
               </div>
             </section>

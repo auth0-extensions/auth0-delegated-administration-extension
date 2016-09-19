@@ -69,14 +69,14 @@ class Configuration extends Component {
           </div>
           <div className="row user-tabs">
             <div className="col-xs-12">
-              <Tabs defaultActiveKey={this.state.activeTab} animation={false} id="configurationTabs">
+              <Tabs defaultActiveKey={this.state.activeTab} animation={false} id="configuration-tabs">
                 <Tab eventKey={1} title="Filter Hook">
                   <p>The <strong>filter hook</strong> allows you to specify which records are shown to the current users when loading the list of users or searching. For example: <i>Only show users from my department</i>. This has to be defined using the lucene syntax.</p>
                   <Editor
                     value={String(this.state.scripts.filter)}
                     onChange={this.updateScript('filter')}
                   />
-                  <div className="saveConfigurationButton">
+                  <div className="saveConfiguration-button">
                     <button onClick={this.saveScript('filter')} className="btn btn-success">Save Filter Hook
                     </button>
                   </div>
@@ -87,7 +87,7 @@ class Configuration extends Component {
                     value={String(this.state.scripts.access)}
                     onChange={this.updateScript('access')}
                   />
-                  <div className="saveConfigurationButton">
+                  <div className="saveConfiguration-button">
                     <button onClick={this.saveScript('access')} className="btn btn-success">Save Access Hook</button>
                   </div>
                 </Tab>
@@ -97,7 +97,7 @@ class Configuration extends Component {
                     value={String(this.state.scripts.create)}
                     onChange={this.updateScript('create')}
                   />
-                  <div className="saveConfigurationButton">
+                  <div className="saveConfiguration-button">
                     <button onClick={this.saveScript('create')} className="btn btn-success">Save Create Query
                     </button>
                   </div>
@@ -108,7 +108,7 @@ class Configuration extends Component {
                     value={String(this.state.scripts.memberships)}
                     onChange={this.updateScript('memberships')}
                   />
-                  <div className="saveConfigurationButton">
+                  <div className="saveConfiguration-button">
                     <button onClick={this.saveScript('memberships')} className="btn btn-success">Save Memberships Query
                     </button>
                   </div>
@@ -119,7 +119,7 @@ class Configuration extends Component {
                     value={String(this.state.scripts.settings)}
                     onChange={this.updateScript('settings')}
                   />
-                  <div className="saveConfigurationButton">
+                  <div className="saveConfiguration-button">
                     <button onClick={this.saveScript('settings')} className="btn btn-success">Save Settings Query
                     </button>
                   </div>
