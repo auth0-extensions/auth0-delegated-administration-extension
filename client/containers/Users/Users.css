@@ -169,3 +169,9 @@
     border-top-color: #505050;
     border-width: 6px 3.5px 1.5px;
 }
+.modal .modal-dialog .modal-body {
+    overflow-y: visible;
+}
+.modal-content{
+    overflow-y: visible;
+}
