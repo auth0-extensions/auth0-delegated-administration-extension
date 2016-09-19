@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { LoadingPanel, Error } from '../../components/Dashboard';
 
 import { connect } from 'react-redux';
@@ -9,6 +9,11 @@ import Editor from '../../components/Editor';
 import './Configuration.css';
 
 class Configuration extends Component {
+  static propTypes = {
+    fetchScript: PropTypes.func.isRequired,
+    updateScript: PropTypes.func.isRequired
+  }
+
   constructor(props) {
     super(props);
 
@@ -32,18 +37,6 @@ class Configuration extends Component {
     });
   }
 
-  updateScript = (name) => (code) => {
-    const scripts = this.state.scripts;
-    scripts[name] = code;
-    this.setState({
-      scripts
-    });
-  };
-
-  saveScript = (name) => () => {
-    this.props.updateScript(name, this.state.scripts[name]);
-  };
-
   getValue = (scripts, index) => {
     const val = scripts.get(index);
     if (val) {
@@ -53,6 +46,17 @@ class Configuration extends Component {
     return '';
   };
 
+  saveScript = (name) => () => {
+    this.props.updateScript(name, this.state.scripts[name]);
+  };
+
+  updateScript = (name) => (code) => {
+    const scripts = this.state.scripts;
+    scripts[name] = code;
+    this.setState({
+      scripts
+    });
+  };
 
   render() {
     const { scripts, loading, error } = this.props;

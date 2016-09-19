@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 
 import { connectionActions, userActions } from '../../actions';
 
-import { UserOverview, UserForm } from '../../components/Users';
 import TabsHeader from '../../components/TabsHeader';
+import { UserOverview, UserForm } from '../../components/Users';
 
 import './Users.css';
 
@@ -47,31 +47,30 @@ class Users extends Component {
     const { loading, error, users, total, connections, userCreateError, userCreateLoading, accessLevel } = this.props;
     return (
       <div className="users">
-        <TabsHeader role={ accessLevel.role }/>
+        <TabsHeader role={accessLevel.role} />
         <div className="row content-header">
           <div className="col-xs-12 userTableContent">
             <h2>Users</h2>
-            <a id="addUser" className="btn btn-success pull-right new" href="#"
-               onClick={ this.openCreateForm.bind(this) }>
+            <a id="addUser" className="btn btn-success pull-right new" href="#" onClick={this.openCreateForm}>
               <i className="icon-budicon-473"></i>
               Create User
             </a>
           </div>
         </div>
-          <UserForm
-            loading={ loading }
-            connections={connections}
-            createUser={this.props.createUser}
-            fetchUsers={this.props.fetchUsers}
-            userWasSaved={this.userWasSaved}
-            validationErrors={this.props.validationErrors}
-            memberships={this.props.accessLevel.memberships}
-            title="Create User"
-            show={this.state.showCreateForm}
-            confirmLoading={userCreateLoading}
-            hideConfirmWindow={ this.hideConfirmWindow.bind(this)}
-            userCreateError={userCreateError}
-          />
+        <UserForm
+          loading={ loading }
+          connections={connections}
+          createUser={this.props.createUser}
+          fetchUsers={this.props.fetchUsers}
+          userWasSaved={this.userWasSaved}
+          validationErrors={this.props.validationErrors}
+          memberships={this.props.accessLevel.memberships}
+          title="Create User"
+          show={this.state.showCreateForm}
+          confirmLoading={userCreateLoading}
+          hideConfirmWindow={ this.hideConfirmWindow.bind(this)}
+          userCreateError={userCreateError}
+        />
         <UserOverview
           onReset={this.onReset}
           onSearch={this.onSearch}
