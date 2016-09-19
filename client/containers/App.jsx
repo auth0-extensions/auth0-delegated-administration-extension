@@ -33,6 +33,7 @@ class App extends Component {
           issuer={this.props.issuer}
           appSettings={this.props.settings}
           onLogout={this.props.logout} accessLevel={this.props.accessLevel.toJSON()}
+          settings={this.props.settings}
         />
         <div className="container">
           <div className="row">
