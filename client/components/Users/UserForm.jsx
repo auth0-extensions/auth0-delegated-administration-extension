@@ -124,6 +124,7 @@ export default createForm('user', class extends Component {
       confirmLoading, userCreateError
     } = this.props;
     const options = this.getOptions(memberships);
+    const label = this.props.settings && this.props.settings.dist && this.props.settings.dist.memberships ? this.props.settings.dist.memberships : 'Memberships';
     return (
       <Confirm title={title} show={show} loading={confirmLoading} onCancel={this.props.hideConfirmWindow}
                onConfirm={function () {
@@ -152,7 +153,7 @@ export default createForm('user', class extends Component {
             {(options.length > 1) ?
               <div className="custom_field">
                 <div className="form-group">
-                  <label>Memberships</label>
+                  <label>{label}</label>
                   <Select
                     name="form-field-name"
                     value={this.state.memberships}

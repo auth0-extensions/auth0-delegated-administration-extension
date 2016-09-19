@@ -28,18 +28,21 @@ store.subscribe(function () {
     case constants.FETCH_SETTINGS_FULFILLED:
       const data = store.getState().settings.get('record');
       const settings = data.get('settings');
-      const title = settings.get('title');
-      const head = document.getElementsByTagName('head')[0];
-      const link = document.createElement('link');
-      if (title !== '') document.title = title;
-      const css = settings.get('css');
-      if (css !== '') {
-        link.id = 'custom_css';
-        link.rel = 'stylesheet';
-        link.type = 'text/css';
-        link.href = css;
-        link.media = 'all';
-        head.appendChild(link);
+      const dict = settings.get('dict');
+      if (dict) {
+        const title = dict.get('title');
+        const head = document.getElementsByTagName('head')[0];
+        const link = document.createElement('link');
+        if (typeof title !== 'undefined' && title !== '') document.title = title;
+        const css = dict.get('css');
+        if (typeof css !== 'undefined' && css !== '') {
+          link.id = 'custom_css';
+          link.rel = 'stylesheet';
+          link.type = 'text/css';
+          link.href = css;
+          link.media = 'all';
+          head.appendChild(link);
+        }
       }
       break;
     default:

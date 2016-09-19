@@ -62,7 +62,7 @@ class Users extends Component {
           </div>
         </div>
         <UserForm
-          loading={ loading }
+          loading={loading}
           connections={connections}
           createUser={this.props.createUser}
           fetchUsers={this.props.fetchUsers}
@@ -74,6 +74,7 @@ class Users extends Component {
           confirmLoading={userCreateLoading}
           hideConfirmWindow={this.hideConfirmWindow}
           userCreateError={userCreateError}
+          settings={this.props.settings}
         />
         <UserOverview
           onReset={this.onReset}
