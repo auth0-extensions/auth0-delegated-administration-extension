@@ -34,7 +34,7 @@ export default (scriptManager) => {
         return req.auth0.users.get({ id: log.user_id })
           .then(user => {
             if (!user) {
-              next(new NotFoundError(`User not found: ${req.params.id}`));
+              throw new NotFoundError(`User not found: ${req.params.id}`);
             }
 
             const accessContext = {
@@ -46,9 +46,8 @@ export default (scriptManager) => {
               }
             };
 
-            return scriptManager.execute('access', accessContext);
-          })
-          .then(() => log);
+            return scriptManager.execute('access', accessContext).then(() => log);
+          });
       })
       .then(log => res.json({ log }))
       .catch(next);

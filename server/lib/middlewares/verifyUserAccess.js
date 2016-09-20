@@ -10,7 +10,7 @@ module.exports = (scriptManager) => (req, res, next) => {
   return req.auth0.users.get({ id: req.params.id })
     .then(user => {
       if (!user) {
-        next(new NotFoundError(`User not found: ${req.params.id}`));
+        throw new NotFoundError(`User not found: ${req.params.id}`);
       }
 
       const accessContext = {
