@@ -3,12 +3,28 @@ import { connect } from 'react-redux';
 
 import { connectionActions, userActions } from '../../actions';
 
-import TabsHeader from '../../components/TabsHeader';
 import { UserOverview, UserForm } from '../../components/Users';
+import TabsHeader from '../../components/TabsHeader';
 
 import './Users.css';
 
 class Users extends Component {
+  static propTypes = {
+    loading: React.PropTypes.bool.isRequired,
+    error: React.PropTypes.string,
+    users: React.PropTypes.array,
+    connections: React.PropTypes.array,
+    userCreateError: React.PropTypes.string,
+    userCreateLoading: React.PropTypes.bool,
+    validationErrors: React.PropTypes.object,
+    accessLevel: React.PropTypes.object,
+    appSettings: React.PropTypes.object,
+    total: React.PropTypes.number,
+    fetchUsers: React.PropTypes.func.isRequired,
+    createUser: React.PropTypes.func.isRequired,
+    fetchConnections: React.PropTypes.func.isRequired
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -23,25 +39,25 @@ class Users extends Component {
 
   onSearch = (query) => {
     this.props.fetchUsers(query);
-  };
+  }
 
   onReset = () => {
     this.props.fetchUsers('', true);
-  };
+  }
 
   openCreateForm = (e) => {
     e.preventDefault();
     this.setState({ showCreateForm: true });
-  };
+  }
 
   hideConfirmWindow = () => {
     this.setState({ showCreateForm: false });
     this.props.fetchUsers('', true);
-  };
+  }
 
   userWasSaved = () => {
     this.setState({ showCreateForm: false });
-  };
+  }
 
   render() {
     const { loading, error, users, total, connections, userCreateError, userCreateLoading, accessLevel } = this.props;
@@ -51,14 +67,19 @@ class Users extends Component {
         <div className="row content-header">
           <div className="col-xs-12 userTableContent">
             <h2>Users</h2>
-            <a id="addUser" className="btn btn-success pull-right new" href="#" onClick={this.openCreateForm}>
+            <a
+              id="add_user"
+              className="btn btn-success pull-right new"
+              href="#"
+              onClick={this.openCreateForm}
+            >
               <i className="icon-budicon-473"></i>
               Create User
             </a>
           </div>
         </div>
         <UserForm
-          loading={ loading }
+          loading={loading}
           connections={connections}
           createUser={this.props.createUser}
           fetchUsers={this.props.fetchUsers}
@@ -68,8 +89,9 @@ class Users extends Component {
           title="Create User"
           show={this.state.showCreateForm}
           confirmLoading={userCreateLoading}
-          hideConfirmWindow={ this.hideConfirmWindow.bind(this)}
+          hideConfirmWindow={this.hideConfirmWindow}
           userCreateError={userCreateError}
+          settings={this.props.appSettings}
         />
         <UserOverview
           onReset={this.onReset}
