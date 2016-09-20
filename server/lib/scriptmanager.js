@@ -43,6 +43,10 @@ export default class ScriptManager {
   save(name, script) {
     return this.storage.read()
       .then(data => {
+        if (!data.scripts) {
+          data.scripts = {};
+        }
+
         data.scripts[name] = script;
         return data;
       })
