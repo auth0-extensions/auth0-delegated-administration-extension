@@ -3,25 +3,24 @@ import { fromJS } from 'immutable';
 import * as constants from '../constants';
 import createReducer from '../utils/createReducer';
 
-const initialState = {
-  loading: false,
-  error: null,
-  records: { }
-};
-
-export const scripts = createReducer(fromJS(initialState), {
-  [constants.FETCH_SCRIPT_PENDING]: (state) =>
-    state.merge({
-      loading: true,
-      error: null
-    }),
+export const scripts = createReducer(fromJS({ }), {
+  [constants.FETCH_SCRIPT_PENDING]: (state, action) =>
+    state
+      .setIn([ action.meta.name ], fromJS({ loading: true, error: null, script: null })),
   [constants.FETCH_SCRIPT_REJECTED]: (state, action) =>
-    state.merge({
-      loading: false,
-      error: `An error occured while loading the script: ${action.errorMessage}`
-    }),
+    state
+      .setIn([ action.meta.name ], fromJS({ loading: false, error: `An error occured while loading the script: ${action.errorMessage}` })),
   [constants.FETCH_SCRIPT_FULFILLED]: (state, action) =>
     state
-      .setIn([ 'loading' ], false)
-      .setIn([ 'records', action.meta.name ], fromJS(action.payload.data.script))
+      .setIn([ action.meta.name ], fromJS({ loading: false, script: action.payload.data.script })),
+  [constants.UPDATE_SCRIPT_PENDING]: (state, action) =>
+    state
+      .setIn([ action.meta.name, 'loading' ], true),
+  [constants.UPDATE_SCRIPT_REJECTED]: (state, action) =>
+    state
+      .setIn([ action.meta.name, 'loading' ], false)
+      .setIn([ action.meta.name, 'error' ], `An error occured while saving the script: ${action.errorMessage}`),
+  [constants.UPDATE_SCRIPT_FULFILLED]: (state, action) =>
+    state
+      .setIn([ action.meta.name, 'loading' ], false)
 });
