@@ -20,8 +20,8 @@ const checkRole = (data) => {
 
   const parsedData = (Array.isArray(data)) ? data : data.replace(', ', ',', 'g').split(',');
 
+  if (parsedData.indexOf(constants.USER_ROLE_NAME) >= 0) accessLevel = constants.USER_ACCESS_LEVEL;
   if (parsedData.indexOf(constants.ADMIN_ROLE_NAME) >= 0) accessLevel = constants.ADMIN_ACCESS_LEVEL;
-  if (parsedData.indexOf(constants.SUPER_ROLE_NAME) >= 0) accessLevel = constants.SUPER_ACCESS_LEVEL;
 
   return accessLevel;
 };

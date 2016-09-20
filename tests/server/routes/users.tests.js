@@ -1,3 +1,4 @@
+import nock from 'nock';
 import expect from 'expect';
 import Promise from 'bluebird';
 import request from 'supertest';
@@ -75,6 +76,28 @@ describe('#users router', () => {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use('/users', fakeApiClient, addUserToReq, getUserAccessLevel, users(storage, scriptManager));
+
+  before(() => {
+    const domain = new RegExp(config('AUTH0_DOMAIN'));
+
+    nock(domain)
+      .post('/dbconnections/change_password')
+      .reply(204);
+
+    nock(domain)
+      .get(/logs/)
+      .times(2)
+      .reply(200, []);
+
+    nock(domain)
+      .get(/logs/)
+      .times(2)
+      .reply(400, []);
+
+    nock(domain)
+      .post('/oauth/token')
+      .reply(200, { ok: true, access_token: 'access_token' });
+  });
 
   describe('#List', () => {
     it('should return "access denied" error', (done) => {
@@ -407,6 +430,7 @@ describe('#users router', () => {
     it('should reset password', (done) => {
       request(app)
         .post('/users/1/password-reset')
+        .send({ connection: 'connection' })
         .expect(204)
         .end((err) => {
           if (err) throw err;
@@ -417,6 +441,40 @@ describe('#users router', () => {
     it('should return "access denied" error', (done) => {
       request(app)
         .post('/users/5/password-reset')
+        .expect(400)
+        .end((err) => {
+          if (err) throw err;
+          done();
+        });
+    });
+  });
+
+  describe('#Logs for user', () => {
+    it('should return list of logs', (done) => {
+      request(app)
+        .get('/users/1/logs')
+        .expect(200)
+        .end((err, res) => {
+          if (err) throw err;
+          expect(res.body).toEqual([]);
+          done();
+        });
+    });
+
+    it('should return "bad request" error', (done) => {
+      request(app)
+        .get('/users/1/logs')
+        .expect(500)
+        .end((err, res) => {
+          expect(res.error).toMatch(/Error: Request Error: 400/);
+          if (err) throw err;
+          done();
+        });
+    });
+
+    it('should return "access denied" error', (done) => {
+      request(app)
+        .get('/users/5/logs')
         .expect(400)
         .end((err) => {
           if (err) throw err;

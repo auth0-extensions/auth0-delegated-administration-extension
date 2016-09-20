@@ -8,6 +8,7 @@ import logs from '../../../server/routes/logs';
 import ScriptManager from '../../../server/lib/scriptmanager';
 import { getUserAccessLevel } from '../../../server/lib/middlewares';
 import { user, defaultLogs, defaultUsers, defaultScripts } from '../../utils/dummyData';
+import * as constants from '../../../server/constants';
 
 
 describe('#logs router', () => {
@@ -70,7 +71,7 @@ describe('#logs router', () => {
     });
 
     it('should return list of logs', (done) => {
-      user.app_metadata.roles = 'Delegated Admin - Administrator';
+      user.app_metadata.roles = constants.ADMIN_ROLE_NAME;
 
       request(app)
         .get('/logs')
@@ -110,7 +111,7 @@ describe('#logs router', () => {
     });
 
     it('should return "access denied" error', (done) => {
-      user.app_metadata.roles = 'Delegated Admin - User';
+      user.app_metadata.roles = constants.USER_ROLE_NAME;
 
       request(app)
         .get('/logs/2')

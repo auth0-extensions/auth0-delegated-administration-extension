@@ -6,7 +6,7 @@ import * as constants from '../constants';
 
 export default (scriptManager) => {
   const api = Router();
-  api.get('/', hasAccessLevel(constants.SUPER_ACCESS_LEVEL), (req, res, next) => {
+  api.get('/', hasAccessLevel(constants.ADMIN_ACCESS_LEVEL), (req, res, next) => {
     req.auth0.logs
       .getAll({
         q: 'NOT type: sapi AND NOT type:fapi',
@@ -27,7 +27,7 @@ export default (scriptManager) => {
           throw new Error('Invalid log record.');
         }
 
-        if (req.user.role === constants.SUPER_ACCESS_LEVEL) {
+        if (req.user.role === constants.ADMIN_ACCESS_LEVEL) {
           return log;
         }
 
