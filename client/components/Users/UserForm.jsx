@@ -64,9 +64,7 @@ export default createForm('user', class extends Component {
     if (!this.state.customErrors.repeat_password) {
       this.props.createUser(obj, function () {
         this.props.userWasSaved();
-        setTimeout(function () {
-          this.props.fetchUsers('', true);
-        }.bind(this), 500);
+        this.props.fetchUsers('', true);
       }.bind(this));
     }
   }
