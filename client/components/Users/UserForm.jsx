@@ -42,7 +42,7 @@ export default createForm('user', class extends Component {
       if (this.refs.password.props.field.value !== this.refs.repeat_password.props.field.value) {
         this.setState({
           customErrors: {
-            repeat_password: ['Repeat Password must be equal to password']
+            repeat_password: [ 'Repeat Password must be equal to password' ]
           }
         });
       } else {
@@ -110,9 +110,7 @@ export default createForm('user', class extends Component {
     if (this.props.loading || this.props.error) {
       return <div></div>;
     }
-
     const connections = _.filter(this.props.connections, (connection) => connection.strategy === 'auth0');
-
     const usernameRequired = this.state.usernameRequired;
     const {
       fields: { email, username, password, repeat_password, connection },
