@@ -6,7 +6,7 @@ import { logActions, userActions } from '../../actions';
 
 import './User.css';
 
-import * as dialogs from './Dialogs';
+import * as dialogs from './Dialogs'
 import TabsHeader from '../../components/TabsHeader';
 import LogDialog from '../../components/Logs/LogDialog';
 import { UserActions, UserDevices, UserHeader, UserProfile, UserLogs, UserInfo } from '../../components/Users';
@@ -79,16 +79,12 @@ export default connectContainer(class extends Component {
                 <UserDevices loading={devices.get('loading')} devices={devices.get('records')} error={devices.get('error')} />
               </Tab>
               <Tab eventKey={3} title="Logs">
-                <LogDialog
-                  onClose={this.props.clearLog} error={log.get('error')}
-                  loading={log.get('loading')} log={log.get('record')}
-                  logId={log.get('logId')}
-                />
-                <UserLogs
-                  onOpen={this.props.fetchLog} loading={logs.get('loading')}
-                  logs={logs.get('records')} user={user.get('record')}
-                  error={logs.get('error')}
-                />
+                <LogDialog onClose={this.props.clearLog} error={log.get('error')}
+                           loading={log.get('loading')} log={log.get('record')}
+                           logId={log.get('logId')} />
+                <UserLogs onOpen={this.props.fetchLog} loading={logs.get('loading')}
+                          logs={logs.get('records')} user={user.get('record')}
+                          error={logs.get('error')} />
               </Tab>
               <Tab eventKey={4} title="Profile">
                 <UserProfile loading={user.get('loading')} user={user.get('record')} error={user.get('error')} />

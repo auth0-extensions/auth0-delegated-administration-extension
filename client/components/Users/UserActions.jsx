@@ -19,7 +19,7 @@ export default class UserActions extends Component {
   state = {
     user: null,
     loading: false
-  };
+  }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.user) {

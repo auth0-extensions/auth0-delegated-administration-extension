@@ -2,7 +2,18 @@
   padding-top: 20px;
   text-align: right;
 }
+/* BASICS */
 
-.hidden {
-  display: none;
+.CodeMirror {
+    /* Set height, width, borders, and global font properties here */
+    font-family: monospace;
+    height: 300px;
+    color: black;
+}
+.hidden{
+    display: none;
+}
+.CodeMirror-lint-marker-error, .CodeMirror-lint-marker-warning {
+    left: -12px;
+    top: -1px;
 }
