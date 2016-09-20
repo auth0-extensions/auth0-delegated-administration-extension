@@ -76,22 +76,30 @@ describe('#scripts', () => {
       });
     });
 
-    it('should return null if trying to execute nonexistent script', (done) => {
+    it('should return null if trying to get nonexistent script', (done) => {
       storage.data = {};
 
-      scriptmanager.execute('filter').then(result => {
+      scriptmanager.get('filter').then(result => {
+        expect(result).toEqual(null);
+        done();
+      });
+    });
+
+    it('should return null if trying to get nonexistent script', (done) => {
+      const emptyManager = new ScriptManager(storage);
+
+      emptyManager.execute('filter').then(result => {
         expect(result).toEqual(null);
         done();
       });
     });
 
     it('should throw an error if storage isn`t provided', (done) => {
-      try {
+      expect(() => {
         const brokenManager = new ScriptManager();
-      } catch (error) {
-        expect(error.message).toEqual('Must provide a storage object.');
-        done();
-      }
+      }).toThrow(/Must provide a storage object/);
+
+      done();
     });
   });
 });

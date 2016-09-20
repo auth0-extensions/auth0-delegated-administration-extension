@@ -1,3 +1,4 @@
+import Promise from 'bluebird';
 import { Router } from 'express';
 import { NotFoundError } from 'auth0-extension-tools';
 
@@ -24,7 +25,7 @@ export default (scriptManager) => {
     req.auth0.logs.get({ id: req.params.id })
       .then(log => {
         if (log && (log.type === 'fapi' || log.type === 'sapi')) {
-          throw new Error('Invalid log record.');
+          return Promise.reject(new Error('Invalid log record.'));
         }
 
         if (req.user.role === constants.ADMIN_ACCESS_LEVEL) {
@@ -34,7 +35,7 @@ export default (scriptManager) => {
         return req.auth0.users.get({ id: log.user_id })
           .then(user => {
             if (!user) {
-              next(new NotFoundError(`User not found: ${req.params.id}`));
+              throw new NotFoundError(`User not found: ${req.params.id}`);
             }
 
             const accessContext = {
@@ -46,9 +47,8 @@ export default (scriptManager) => {
               }
             };
 
-            return scriptManager.execute('access', accessContext);
-          })
-          .then(() => log);
+            return scriptManager.execute('access', accessContext).then(() => log);
+          });
       })
       .then(log => res.json({ log }))
       .catch(next);

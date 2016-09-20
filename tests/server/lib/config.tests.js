@@ -1,16 +1,15 @@
 import { expect } from 'chai';
-import config, { setProvider } from '../../../server/lib/config';
+
+import config from '../../../server/lib/config';
+import { defaultConfig } from '../../utils/dummyData';
+
 
 describe('config', () => {
   describe('#get', () => {
     it('should return setting from provider if configured', () => {
-      setProvider((key) => {
-        if (key === 'DUMMY_KEY') {
-          return 'CUSTOM_VALUE';
-        }
-        return 12345;
-      });
-      expect(config('DUMMY_KEY')).to.equal('CUSTOM_VALUE');
+      config.setProvider((key) => defaultConfig[key], null);
+
+      expect(config('AUTH0_DOMAIN')).to.equal(defaultConfig.AUTH0_DOMAIN);
     });
   });
 });

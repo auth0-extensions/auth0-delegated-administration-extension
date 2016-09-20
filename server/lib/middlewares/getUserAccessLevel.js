@@ -28,7 +28,6 @@ const checkRole = (data) => {
 
 module.exports = function getUserAccessLevel(req, res, next) {
   const roles = getUserRoles(req.user);
-  const request = req;
-  request.user.role = checkRole(roles);
+  req.user.role = checkRole(roles);
   next();
 };
