@@ -10,7 +10,7 @@ const initialState = {
 };
 
 export const updateScript = createReducer(fromJS(initialState), {
-    [constants.UPDATE_SCRIPT]: (state) =>
+  [constants.UPDATE_SCRIPT]: (state, action) =>
   state.merge({
     loading: true,
     error: null,
