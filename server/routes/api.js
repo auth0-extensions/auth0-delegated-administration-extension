@@ -39,7 +39,7 @@ export default (storage) => {
     };
 
     scriptManager.execute('settings', settingsContext)
-      .then(settings => res.json({ settings }))
+      .then(settings => res.json({ settings: settings || {} }))
       .catch(next);
   });
 
