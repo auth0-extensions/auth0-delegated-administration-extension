@@ -170,8 +170,8 @@
     border-width: 6px 3.5px 1.5px;
 }
 .modal .modal-dialog .modal-body {
-    overflow-y: visible;
+    overflow-y: visible !important;
 }
-.modal-content{
-    overflow-y: visible;
+.modal .modal-dialog .modal-content {
+    overflow: visible !important;
 }
