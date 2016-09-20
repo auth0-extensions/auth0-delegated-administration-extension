@@ -85,13 +85,21 @@ describe('#scripts', () => {
       });
     });
 
-    it('should throw an error if storage isn`t provided', (done) => {
-      try {
-        const brokenManager = new ScriptManager();
-      } catch (error) {
-        expect(error.message).toEqual('Must provide a storage object.');
+    it('should return null if trying to get nonexistent script', (done) => {
+      const emptyManager = new ScriptManager(storage);
+
+      emptyManager.execute('filter').then(result => {
+        expect(result).toEqual(null);
         done();
-      }
+      });
+    });
+
+    it('should throw an error if storage isn`t provided', (done) => {
+      expect(() => {
+        const brokenManager = new ScriptManager();
+      }).toThrow(/Must provide a storage object/);
+
+      done();
     });
   });
 });
