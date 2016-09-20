@@ -29,7 +29,7 @@ class LogsContainer extends Component {
     this.props.fetchLogs(this.props.logs.nextPage);
   }
 
-  createToolbar(isBottom: false) {
+  createToolbar(isBottom:false) {
     if (isBottom && (!this.props.logs.records || this.props.logs.records.size <= 20)) {
       return <div></div>;
     }
@@ -51,7 +51,8 @@ class LogsContainer extends Component {
     return (
       <div>
         <TabsHeader role={accessLevel.role} />
-        <LogDialog onClose={this.props.clearLog} error={log.error} loading={log.loading} log={log.record} logId={log.id} />
+        <LogDialog onClose={this.props.clearLog} error={log.error} loading={log.loading} log={log.record}
+                   logId={log.id} />
         <div className="row">
           <div className="col-xs-12 wrapper">
             {this.createToolbar(false)}

@@ -47,7 +47,7 @@ class Users extends Component {
     const { loading, error, users, total, connections, userCreateError, userCreateLoading, accessLevel } = this.props;
     return (
       <div className="users">
-        <TabsHeader role={ accessLevel.role }/>
+        <TabsHeader role={ accessLevel.role } />
         <div className="row content-header">
           <div className="col-xs-12 userTableContent">
             <h2>Users</h2>

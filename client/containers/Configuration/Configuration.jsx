@@ -106,7 +106,8 @@ class Configuration extends Component {
             <div className="col-xs-12">
               <Tabs defaultActiveKey={this.state.activeTab} animation={false}>
                 <Tab eventKey={1} title="Filter Hook">
-                  <LoadingPanel show={updateLoading && updatedScript === 'filter'} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
+                  <LoadingPanel show={updateLoading && updatedScript === 'filter'}
+                                animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
                     <p>The <strong>filter hook</strong> allows you to specify which records are shown to the current
                       users when loading the list of users or searching. For example: <i>Only show users from my
                         department </i>. This has to be defined using the lucene syntax.</p>
@@ -122,7 +123,8 @@ class Configuration extends Component {
                   </LoadingPanel>
                 </Tab>
                 <Tab eventKey={2} title="Access Hook">
-                  <LoadingPanel show={updateLoading && updatedScript === 'access'} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
+                  <LoadingPanel show={updateLoading && updatedScript === 'access'}
+                                animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
                     <p>The <strong>access hook</strong> will allow you to specify if the current user is allowed to
                       access a specific user (eg: view the details, delete the user, ...)
                     </p>
@@ -137,7 +139,8 @@ class Configuration extends Component {
                   </LoadingPanel>
                 </Tab>
                 <Tab eventKey={4} title="Create Hook">
-                  <LoadingPanel show={updateLoading && updatedScript === 'create'} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
+                  <LoadingPanel show={updateLoading && updatedScript === 'create'}
+                                animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
                     <p>The <strong>create hook</strong> will run every time a new user is created. This hook will allow
                       you to shape the user object before it's sent to Auth0. The context object contains the request
                       (with the current user) and the payload sent by the end user.
@@ -154,7 +157,8 @@ class Configuration extends Component {
                   </LoadingPanel>
                 </Tab>
                 <Tab eventKey={3} title="Memberships Query">
-                  <LoadingPanel show={updateLoading && updatedScript === 'memberships'} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
+                  <LoadingPanel show={updateLoading && updatedScript === 'memberships'}
+                                animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
                     <p>With the <strong>membership query</strong> you can specify in which groups the current user can
                       create new users. Only in their own department? Or other departments also?
                     </p>
@@ -171,7 +175,8 @@ class Configuration extends Component {
                   </LoadingPanel>
                 </Tab>
                 <Tab eventKey={5} title="Settings Query">
-                  <LoadingPanel show={updateLoading && updatedScript === 'settings'} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
+                  <LoadingPanel show={updateLoading && updatedScript === 'settings'}
+                                animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
                     <p>With the <strong>settings query</strong> you can control the title and the look-and-feel of the
                       dashboard after the user has logged in?
                     </p>
