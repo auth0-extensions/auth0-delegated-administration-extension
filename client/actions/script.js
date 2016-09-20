@@ -25,7 +25,8 @@ export function updateScript(script, data, onSuccess) {
             onSuccess();
           }
           dispatch(fetchScript(script));
-        }
+        },
+        name: script
       },
       payload: {
         promise: axios.post(`/api/scripts/${script}`, { script: data }, {
