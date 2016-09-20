@@ -33,7 +33,6 @@ export default connectContainer(class extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    console.log('Should update:', this.props.scripts !== nextProps.scripts);
     return this.props.scripts !== nextProps.scripts;
   }
 
@@ -123,7 +122,7 @@ export default connectContainer(class extends Component {
                   </div>
                 </LoadingPanel>
               </Tab>
-              <Tab eventKey={4} title="Create Hook">
+              <Tab eventKey={3} title="Create Hook">
                 <LoadingPanel show={scripts.create && scripts.create.loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
                   <Error message={scripts.create && scripts.create.error} />
                   <p>
@@ -140,7 +139,7 @@ export default connectContainer(class extends Component {
                   </div>
                 </LoadingPanel>
               </Tab>
-              <Tab eventKey={3} title="Memberships Query">
+              <Tab eventKey={4} title="Memberships Query">
                 <LoadingPanel show={scripts.memberships && scripts.memberships.loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
                   <Error message={scripts.memberships && scripts.memberships.error} />
                   <p>
