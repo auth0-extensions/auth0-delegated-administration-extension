@@ -1,3 +1,4 @@
+import Promise from 'bluebird';
 import { Router } from 'express';
 import { NotFoundError } from 'auth0-extension-tools';
 
@@ -24,7 +25,7 @@ export default (scriptManager) => {
     req.auth0.logs.get({ id: req.params.id })
       .then(log => {
         if (log && (log.type === 'fapi' || log.type === 'sapi')) {
-          throw new Error('Invalid log record.');
+          return Promise.reject(new Error('Invalid log record.'));
         }
 
         if (req.user.role === constants.ADMIN_ACCESS_LEVEL) {
