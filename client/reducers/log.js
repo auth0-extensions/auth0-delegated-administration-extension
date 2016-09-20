@@ -29,7 +29,7 @@ export const log = createReducer(fromJS(initialState), {
     }),
   [constants.FETCH_LOG_FULFILLED]: (state, action) => {
     const { data } = action.payload;
-    if (data.log._id !== state.get('logId')) {
+    if (data.log._id !== state.get('logId')) { // eslint-disable-line no-underscore-dangle
       return state;
     }
 

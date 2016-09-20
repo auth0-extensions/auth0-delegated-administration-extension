@@ -21,10 +21,9 @@ export const settings = createReducer(fromJS(initialState), {
       error: `An error occured while loading the connections: ${action.errorMessage}`
     }),
   [constants.FETCH_SETTINGS_FULFILLED]: (state, action) =>
-     state.merge({
-      loading: false,
-      error: null,
-      record: fromJS(action.payload.data)
-    })
-
+   state.merge({
+     loading: false,
+     error: null,
+     record: fromJS(action.payload.data)
+   })
 });

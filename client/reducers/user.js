@@ -35,8 +35,8 @@ const userLogs = createReducer(fromJS(initialState.logs), {
       loading: false,
       error: `An error occured while loading the user logs: ${action.errorMessage}`
     }),
-  [constants.FETCH_USER_LOGS_FULFILLED]: (state, action) => {
-    return state.merge({
+  [constants.FETCH_USER_LOGS_FULFILLED]: (state, action) =>
+    state.merge({
       loading: false,
       records: fromJS(typeof action.payload.data.logs !== 'undefined' ?
         action.payload.data.logs.map(log => {
@@ -55,8 +55,7 @@ const userLogs = createReducer(fromJS(initialState.logs), {
         }) :
         []
       )
-    });
-  }
+    })
 });
 
 const userDevices = createReducer(fromJS(initialState.devices), {

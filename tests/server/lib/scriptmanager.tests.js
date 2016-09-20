@@ -96,9 +96,9 @@ describe('#scripts', () => {
 
     it('should throw an error if storage isn`t provided', (done) => {
       expect(() => {
-        const brokenManager = new ScriptManager();
+        const manager = new ScriptManager();
+        expect(manager).toEqual(null);
       }).toThrow(/Must provide a storage object/);
-
       done();
     });
   });
