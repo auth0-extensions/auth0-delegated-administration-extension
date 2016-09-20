@@ -52,7 +52,7 @@ class Users extends Component {
           <div className="col-xs-12 userTableContent">
             <h2>Users</h2>
             <a
-              id="addUser"
+              id="add_user"
               className="btn btn-success pull-right new"
               href="#"
               onClick={this.openCreateForm}>
