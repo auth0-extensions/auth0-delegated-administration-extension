@@ -68,7 +68,7 @@ export default (storage, scriptManager) => {
       })
       .then(data =>
         Promise.map(data.users, (user) =>
-          scriptManager.execute('access', { request: { user: req.user }, payload: { user } }))
+          scriptManager.execute('access', { request: { user: req.user }, payload: { user, action: 'read:user' } }))
           .then(() => data))
       .then(users => res.json(users))
       .catch(next);
@@ -77,7 +77,7 @@ export default (storage, scriptManager) => {
   /*
    * Get a single user.
    */
-  api.get('/:id', verifyUserAccess(scriptManager), (req, res, next) => {
+  api.get('/:id', verifyUserAccess('read:user', scriptManager), (req, res, next) => {
     req.auth0.users.get({ id: req.params.id })
       .then(user => {
         const membershipContext = {
@@ -94,7 +94,7 @@ export default (storage, scriptManager) => {
   /*
    * Deleta a user.
    */
-  api.delete('/:id', verifyUserAccess(scriptManager), (req, res, next) => {
+  api.delete('/:id', verifyUserAccess('delete:user', scriptManager), (req, res, next) => {
     req.auth0.users.delete({ id: req.params.id })
       .then(() => res.sendStatus(204))
       .catch(next);
@@ -103,7 +103,7 @@ export default (storage, scriptManager) => {
   /*
    * Trigger a password reset for the user.
    */
-  api.post('/:id/password-reset', verifyUserAccess(scriptManager), (req, res, next) => {
+  api.post('/:id/password-reset', verifyUserAccess('reset:password', scriptManager), (req, res, next) => {
     const client = new auth0.AuthenticationClient({
       domain: config('AUTH0_DOMAIN'),
       clientId: config('AUTH0_CLIENT_ID')
@@ -119,7 +119,7 @@ export default (storage, scriptManager) => {
   /*
    * Change the password of a user.
    */
-  api.put('/:id/change-password', verifyUserAccess(scriptManager), (req, res, next) => {
+  api.put('/:id/change-password', verifyUserAccess('change:password', scriptManager), (req, res, next) => {
     if (req.body.password !== req.body.confirmPassword) {
       return next(new ArgumentError('Passwords don\'t match'));
     }
@@ -137,7 +137,7 @@ export default (storage, scriptManager) => {
   /*
    * Change the username of a user.
    */
-  api.put('/:id/change-username', verifyUserAccess(scriptManager), (req, res, next) =>
+  api.put('/:id/change-username', verifyUserAccess('change:username', scriptManager), (req, res, next) =>
     req.auth0.users.update({ id: req.params.id }, { username: req.body.username })
       .then(() => res.sendStatus(204))
       .catch(next));
@@ -145,7 +145,7 @@ export default (storage, scriptManager) => {
   /*
    * Change the email of a user.
    */
-  api.put('/:id/change-email', verifyUserAccess(scriptManager), (req, res, next) =>
+  api.put('/:id/change-email', verifyUserAccess('change:email', scriptManager), (req, res, next) =>
     req.auth0.users.update({ id: req.params.id }, { email: req.body.email })
       .then(() => res.sendStatus(204))
       .catch(next));
@@ -153,7 +153,7 @@ export default (storage, scriptManager) => {
   /*
    * Get all devices for the user.
    */
-  api.get('/:id/devices', verifyUserAccess(scriptManager), (req, res, next) => {
+  api.get('/:id/devices', verifyUserAccess('read:devices', scriptManager), (req, res, next) => {
     req.auth0.deviceCredentials.getAll({ user_id: req.params.id })
       .then(devices => res.json({ devices }))
       .catch(next);
@@ -162,7 +162,7 @@ export default (storage, scriptManager) => {
   /*
    * Get all logs for a user.
    */
-  api.get('/:id/logs', verifyUserAccess(scriptManager), (req, res, next) => {
+  api.get('/:id/logs', verifyUserAccess('read:logs', scriptManager), (req, res, next) => {
     managementApi.getAccessTokenCached(config('AUTH0_DOMAIN'), config('AUTH0_CLIENT_ID'), config('AUTH0_CLIENT_SECRET'))
       .then(accessToken => {
         const options = {
@@ -196,7 +196,7 @@ export default (storage, scriptManager) => {
   /*
    * Remove MFA for the user.
    */
-  api.delete('/:id/multifactor/:provider', verifyUserAccess(scriptManager), (req, res, next) => {
+  api.delete('/:id/multifactor/:provider', verifyUserAccess('remove:multifactor-provider', scriptManager), (req, res, next) => {
     req.auth0.users.deleteMultifactorProvider({ id: req.params.id, provider: req.params.provider })
       .then(() => res.sendStatus(204))
       .catch(next);
@@ -205,7 +205,7 @@ export default (storage, scriptManager) => {
   /*
    * Block a user.
    */
-  api.put('/:id/block', verifyUserAccess(scriptManager), (req, res, next) => {
+  api.put('/:id/block', verifyUserAccess('block:user', scriptManager), (req, res, next) => {
     req.auth0.users.update({ id: req.params.id }, { blocked: true })
       .then(() => res.sendStatus(204))
       .catch(next);
@@ -214,7 +214,7 @@ export default (storage, scriptManager) => {
   /*
    * Unblock a user.
    */
-  api.put('/:id/unblock', verifyUserAccess(scriptManager), (req, res, next) => {
+  api.put('/:id/unblock', verifyUserAccess('unblock:user', scriptManager), (req, res, next) => {
     req.auth0.users.update({ id: req.params.id }, { blocked: false })
       .then(() => res.sendStatus(204))
       .catch(next);
@@ -223,7 +223,7 @@ export default (storage, scriptManager) => {
   /*
    * Send verification email to the user.
    */
-  api.post('/:id/send-verification-email', verifyUserAccess(scriptManager), (req, res, next) => {
+  api.post('/:id/send-verification-email', verifyUserAccess('send:verification-email', scriptManager), (req, res, next) => {
     const data = {
       user_id: req.params.id
     };

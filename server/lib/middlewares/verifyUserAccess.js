@@ -2,7 +2,7 @@ import Promise from 'bluebird';
 import { NotFoundError } from 'auth0-extension-tools';
 
 
-module.exports = (scriptManager) => (req, res, next) =>
+module.exports = (action, scriptManager) => (req, res, next) =>
   req.auth0.users.get({ id: req.params.id })
     .then(user => {
       if (!user) {
@@ -14,7 +14,8 @@ module.exports = (scriptManager) => (req, res, next) =>
           user: req.user
         },
         payload: {
-          user
+          user,
+          action
         }
       };
 
