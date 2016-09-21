@@ -6,7 +6,7 @@ import './Header.css';
 export default class Header extends Component {
   static propTypes = {
     user: React.PropTypes.object,
-    getDictValue: React.PropTypes.object,
+    getDictValue: React.PropTypes.func,
     accessLevel: React.PropTypes.object,
     issuer: React.PropTypes.string,
     onLogout: React.PropTypes.func.isRequired

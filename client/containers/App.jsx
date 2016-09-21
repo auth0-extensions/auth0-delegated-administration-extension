@@ -50,7 +50,8 @@ class App extends Component {
                 <div id="content-area" className="tab-content">
                   {React.cloneElement(this.props.children, {
                     accessLevel: this.props.accessLevel.toJSON(),
-                    appSettings: this.props.settings.toJSON()
+                    appSettings: this.props.settings.toJSON(),
+                    getDictValue: this.getDictValue
                   })}
                 </div>
               </div>

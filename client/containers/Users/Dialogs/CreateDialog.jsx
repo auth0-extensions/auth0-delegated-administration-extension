@@ -21,6 +21,7 @@ export default connectContainer(class extends Component {
     connections: PropTypes.object.isRequired,
     userCreate: PropTypes.object.isRequired,
     createUser: PropTypes.func.isRequired,
+    getDictValue: PropTypes.func.isRequired,
     cancelCreateUser: PropTypes.func.isRequired
   }
 
@@ -44,7 +45,7 @@ export default connectContainer(class extends Component {
     return (
       <Confirm title="Create User" show={record !== null} loading={loading} onCancel={this.props.cancelCreateUser} onConfirm={this.onConfirm}>
         <Error message={error} />
-        <UserForm ref="form" connections={connections.records} initialValues={record} memberships={accessLevel.memberships} onSubmit={this.onSubmit} />
+        <UserForm ref="form" connections={connections.records} initialValues={record} memberships={accessLevel.memberships} onSubmit={this.onSubmit} getDictValue={this.props.getDictValue} />
       </Confirm>
     );
   }
