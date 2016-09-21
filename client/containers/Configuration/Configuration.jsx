@@ -87,7 +87,7 @@ export default connectContainer(class extends Component {
         </div>
         <div className="row configuration-tabs">
           <div className="col-xs-12">
-            <Tabs defaultActiveKey={this.state.activeTab} animation={false}>
+            <Tabs defaultActiveKey={this.state.activeTab} animation={false} id="configuration-tabs" >
               <Tab eventKey={1} title="Filter Hook">
                 <LoadingPanel show={scripts.filter && scripts.filter.loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
                   <Error message={scripts.filter && scripts.filter.error} />

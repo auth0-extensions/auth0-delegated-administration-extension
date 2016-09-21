@@ -6,7 +6,7 @@ import createReducer from '../utils/createReducer';
 const initialState = {
   loading: false,
   error: null,
-  record: { settings: { title: '', css: '' } }
+  record: { settings: { dict: { title: '', memberships: '' }, css: '' } }
 };
 
 export const settings = createReducer(fromJS(initialState), {
@@ -21,9 +21,10 @@ export const settings = createReducer(fromJS(initialState), {
       error: `An error occured while loading the connections: ${action.errorMessage}`
     }),
   [constants.FETCH_SETTINGS_FULFILLED]: (state, action) =>
-   state.merge({
-     loading: false,
-     error: null,
-     record: fromJS(action.payload.data)
-   })
+    state.merge({
+      loading: false,
+      error: null,
+      record: fromJS(action.payload.data)
+    })
+
 });

@@ -27,6 +27,7 @@ export default (storage, scriptManager) => {
       },
       payload: {
         email: req.body.email,
+        username: req.body.username,
         connection: req.body.connection,
         memberships: req.body.memberships,
         password: req.body.password
