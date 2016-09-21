@@ -12,3 +12,4 @@ export default (err, name) => {
 
   return caughtError;
 };
+
