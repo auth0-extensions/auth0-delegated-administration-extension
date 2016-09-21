@@ -14,6 +14,9 @@ export default (storage, scriptManager) => {
    * Create user.
    */
   api.post('/', (req, res, next) => {
+    if (!req.body.email || req.body.email.length === 0) {
+      return next(new ValidationError('The email address is required.'));
+    }
     if (req.body.password !== req.body.repeatPassword) {
       return next(new ValidationError('The passwords do not match.'));
     }
