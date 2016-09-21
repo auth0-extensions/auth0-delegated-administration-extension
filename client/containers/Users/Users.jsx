@@ -11,6 +11,22 @@ import { UserOverview, UserForm } from '../../components/Users';
 import './Users.css';
 
 class Users extends Component {
+  static propTypes = {
+    loading: React.PropTypes.bool.isRequired,
+    error: React.PropTypes.string,
+    users: React.PropTypes.array,
+    connections: React.PropTypes.array,
+    userCreateError: React.PropTypes.string,
+    userCreateLoading: React.PropTypes.bool,
+    validationErrors: React.PropTypes.object,
+    accessLevel: React.PropTypes.object,
+    appSettings: React.PropTypes.object,
+    total: React.PropTypes.number,
+    fetchUsers: React.PropTypes.func.isRequired,
+    createUser: React.PropTypes.func.isRequired,
+    fetchConnections: React.PropTypes.func.isRequired
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -25,11 +41,11 @@ class Users extends Component {
 
   onSearch = (query) => {
     this.props.fetchUsers(query);
-  };
+  }
 
   onReset = () => {
     this.props.fetchUsers('', true);
-  };
+  }
 
   createUser = () => {
     this.props.requestCreateUser(this.props.accessLevel.get('record').get('memberships').toJS());

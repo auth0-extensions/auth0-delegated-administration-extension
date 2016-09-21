@@ -11,8 +11,7 @@ export default class UserOverview extends React.Component {
     error: React.PropTypes.object,
     users: React.PropTypes.array.isRequired,
     total: React.PropTypes.number.isRequired,
-    loading: React.PropTypes.bool.isRequired,
-    renderActions: React.PropTypes.func.isRequired
+    loading: React.PropTypes.bool.isRequired
   }
 
   onKeyPress = (e) => {
@@ -22,8 +21,7 @@ export default class UserOverview extends React.Component {
   }
 
   render() {
-    const { loading, error, users, total, renderActions } = this.props;
-
+    const { loading, error, users, total } = this.props;
     return (
       <div>
         <LoadingPanel show={loading}>
@@ -35,7 +33,7 @@ export default class UserOverview extends React.Component {
           <SearchBar onReset={this.props.onReset} onSearch={this.props.onSearch} enabled={!loading} />
           <div className="row">
             <div className="col-xs-12">
-              <UsersTable loading={loading} users={users} renderActions={renderActions} />
+              <UsersTable loading={loading} users={users} />
             </div>
           </div>
           <div className="row">
