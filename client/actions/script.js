@@ -15,11 +15,17 @@ export function fetchScript(name) {
   };
 }
 
-export function updateScript(script, data) {
+export function updateScript(script, data, onSuccess) {
   return (dispatch) => {
     dispatch({
       type: constants.UPDATE_SCRIPT,
       meta: {
+        onSuccess: () => {
+          if (onSuccess) {
+            onSuccess();
+          }
+          dispatch(fetchScript(script));
+        },
         name: script
       },
       payload: {

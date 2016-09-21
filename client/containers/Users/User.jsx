@@ -28,11 +28,15 @@ export default connectContainer(class extends Component {
   }
 
   static propTypes = {
-    config: PropTypes.object.isRequired,
+    accessLevel: PropTypes.object.isRequired,
+    user: PropTypes.object,
+    log: PropTypes.object,
+    logs: PropTypes.object,
+    devices: PropTypes.object,
+    params: PropTypes.object,
     clearLog: React.PropTypes.func.isRequired,
     fetchLog: React.PropTypes.func.isRequired,
-    fetchUser: React.PropTypes.func.isRequired,
-    fetchConfiguration: PropTypes.func.isRequired
+    fetchUser: React.PropTypes.func.isRequired
   }
 
   componentWillMount() {
@@ -48,19 +52,21 @@ export default connectContainer(class extends Component {
           <div className="col-xs-12">
             <h2 className="pull-left">User Details</h2>
             <div className="pull-right">
-              <UserActions
-                user={user}
-                databaseConnections={databaseConnections}
-                deleteUser={this.props.requestDeleteUser}
-                resetPassword={this.props.requestPasswordReset}
-                changePassword={this.props.requestPasswordChange}
-                removeMfa={this.props.requestRemoveMultiFactor}
-                blockUser={this.props.requestBlockUser}
-                unblockUser={this.props.requestUnblockUser}
-                changeUsername={this.props.requestUsernameChange}
-                changeEmail={this.props.requestEmailChange}
-                resendVerificationEmail={this.props.requestResendVerificationEmail}
-              />
+              {databaseConnections ?
+                <UserActions
+                  user={user}
+                  databaseConnections={databaseConnections}
+                  deleteUser={this.props.requestDeleteUser}
+                  resetPassword={this.props.requestPasswordReset}
+                  changePassword={this.props.requestPasswordChange}
+                  removeMfa={this.props.requestRemoveMultiFactor}
+                  blockUser={this.props.requestBlockUser}
+                  unblockUser={this.props.requestUnblockUser}
+                  changeUsername={this.props.requestUsernameChange}
+                  changeEmail={this.props.requestEmailChange}
+                  resendVerificationEmail={this.props.requestResendVerificationEmail}
+                />
+                : ''}
             </div>
           </div>
         </div>
@@ -71,12 +77,14 @@ export default connectContainer(class extends Component {
         </div>
         <div className="row user-tabs">
           <div className="col-xs-12">
-            <Tabs defaultActiveKey={1} animation={false}>
+            <Tabs defaultActiveKey={1} animation={false} id="user_info_tabs">
               <Tab eventKey={1} title="User Information">
-                <UserInfo loading={user.get('loading')} user={user.get('record')} memberships={user.get('memberships')} error={user.get('error')} />
+                <UserInfo loading={user.get('loading')} user={user.get('record')}
+                          memberships={user.get('memberships').toJSON()} error={user.get('error')} />
               </Tab>
               <Tab eventKey={2} title="Devices">
-                <UserDevices loading={devices.get('loading')} devices={devices.get('records')} error={devices.get('error')} />
+                <UserDevices loading={devices.get('loading')} devices={devices.get('records')}
+                             error={devices.get('error')} />
               </Tab>
               <Tab eventKey={3} title="Logs">
                 <LogDialog
