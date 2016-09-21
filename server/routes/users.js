@@ -26,7 +26,7 @@ export default (storage, scriptManager) => {
         email: req.body.email,
         username: req.body.username,
         connection: req.body.connection,
-        group: req.body.group,
+        memberships: req.body.memberships,
         password: req.body.password
       }
     };
