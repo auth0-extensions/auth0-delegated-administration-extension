@@ -51,14 +51,16 @@ class Users extends Component {
         <div className="row content-header">
           <div className="col-xs-12 userTableContent">
             <h2>Users</h2>
-            <a id="addUser" className="btn btn-success pull-right new" href="#" onClick={this.openCreateForm}>
-              <i className="icon-budicon-473"></i>
-              Create User
-            </a>
+            {(connections.length) ?
+              <a id="addUser" className="btn btn-success pull-right new" href="#" onClick={this.openCreateForm}>
+                <i className="icon-budicon-473"></i>
+                Create User
+              </a>
+            : ''}
           </div>
         </div>
         <UserForm
-          loading={ loading }
+          loading={loading}
           connections={connections}
           createUser={this.props.createUser}
           fetchUsers={this.props.fetchUsers}
@@ -68,7 +70,7 @@ class Users extends Component {
           title="Create User"
           show={this.state.showCreateForm}
           confirmLoading={userCreateLoading}
-          hideConfirmWindow={ this.hideConfirmWindow.bind(this)}
+          hideConfirmWindow={this.hideConfirmWindow.bind(this)}
           userCreateError={userCreateError}
         />
         <UserOverview

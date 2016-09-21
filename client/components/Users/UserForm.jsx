@@ -52,8 +52,12 @@ export default createForm('user', class extends Component {
         obj.password = this.refs.password.props.field.value;
       }
     }
-    if (this.refs.connection && this.refs.connection.value)
+
+    if (this.refs.connection && this.refs.connection.value) {
       obj.connection = this.refs.connection.value;
+    } else {
+      obj.connection = (this.props.connections && this.props.connections[0]) ? this.props.connections[0].name : '';
+    }
 
     if (this.state.memberships) {
       obj.group = this.state.memberships;
@@ -90,7 +94,7 @@ export default createForm('user', class extends Component {
   ];
 
   logChange = (values) => {
-    let membership = [];
+    const membership = [];
     values.map((val) => membership.push(val.value));
     this.setState({
       memberships: membership
@@ -98,11 +102,11 @@ export default createForm('user', class extends Component {
   };
 
   getOptions = (memberships) => {
-    let options = [];
+    const options = [];
     _.each(memberships, (a, idx) => {
       options[idx] = { value: a, label: a };
     });
-    if (options.length == 1 && !this.state.memberships) {
+    if (options.length === 1 && !this.state.memberships) {
       /* THis runs on render, not allowed
       this.setState({
         memberships: options[0].value
@@ -124,6 +128,16 @@ export default createForm('user', class extends Component {
             validationErrors, memberships, title, show,
             confirmLoading, userCreateError } = this.props;
     const options = this.getOptions(memberships);
+
+    let isUsernameRequired = false;
+
+    if (connections && connections.length === 1) {
+      const connection = connections[0];
+      if (connection && connection.options && connection.options.requires_username) {
+        isUsernameRequired = true;
+      }
+    }
+
     return (
       <Confirm title={title} show={show} loading={confirmLoading} onCancel={this.props.hideConfirmWindow} onConfirm={this.onConfirmUserCreate}>
         <Error message={userCreateError} />
@@ -132,9 +146,9 @@ export default createForm('user', class extends Component {
             <div className="custom_field">
               <InputText field={email} fieldName="email" label="Email" validationErrors={validationErrors} ref="email" />
             </div>
-            {usernameRequired ?
+            {usernameRequired || isUsernameRequired ?
               <div className="custom_field">
-                <InputText field={username} fieldName="username" label="username" validationErrors={validationErrors} ref="username" />
+                <InputText field={username} fieldName="username" label="Username" validationErrors={validationErrors} ref="username" />
               </div>
               : ''}
             <div className="custom_field">
@@ -157,14 +171,21 @@ export default createForm('user', class extends Component {
                 </div>
               </div>
             : ''}
-            <div className="custom_field">
-              <div className="form-group">
-                <label>Connection</label>
-                <select className="form-control" name="connection" onChange={this.onConnectionChange} ref="connection">
-                  {connections.map((c, index) => <option key={index} value={c.name}>{c.name}</option>)}
-                </select>
+            {(connections.length > 1) ?
+              <div className="custom_field">
+                <div className="form-group">
+                  <label>Connection</label>
+                  <select
+                    className="form-control"
+                    name="connection"
+                    onChange={this.onConnectionChange}
+                    ref="connection"
+                  >
+                    {connections.map((c, index) => <option key={index} value={c.name}>{c.name}</option>)}
+                  </select>
+                </div>
               </div>
-            </div>
+            : ''}
           </form>
         </div>
       </Confirm>
