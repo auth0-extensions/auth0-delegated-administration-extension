@@ -26,7 +26,7 @@ export default (storage) => {
   api.use(getUserAccessLevel);
   api.use(hasAccessLevel(constants.USER_ACCESS_LEVEL));
   api.use('/applications', managementApiClient, applications());
-  api.use('/connections', managementApiClient, connections());
+  api.use('/connections', managementApiClient, connections(scriptManager));
   api.use('/scripts', hasAccessLevel(constants.ADMIN_ACCESS_LEVEL), scripts(storage, scriptManager));
   api.use('/users', managementApiClient, users(storage, scriptManager));
   api.use('/logs', managementApiClient, logs(scriptManager));
