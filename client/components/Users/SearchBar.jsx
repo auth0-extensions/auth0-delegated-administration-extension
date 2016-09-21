@@ -3,18 +3,21 @@ import React, { PropTypes, Component } from 'react';
 
 export default class SearchBar extends Component {
   static propTypes = {
-    enabled: PropTypes.func.isRequired,
+    enabled: PropTypes.bool.isRequired,
     onReset: PropTypes.func.isRequired,
     onSearch: PropTypes.func.isRequired
-  };
-
-  defaultProps:{ enabled: true };
+  }
 
   onKeyPress = (e) => {
     if (e.key === 'Enter') {
       this.props.onSearch(findDOMNode(this.refs.search).value);
     }
-  };
+  }
+
+  onResetSearch = () => {
+    findDOMNode(this.refs.search).value = '';
+    this.props.onReset();
+  }
 
   render() {
     return (
@@ -29,7 +32,7 @@ export default class SearchBar extends Component {
               />
             </span>
             <span className="controls pull-right">
-              <button onClick={this.props.onReset} type="reset" disabled={!this.props.enabled}>
+              <button onClick={this.onResetSearch} type="reset" disabled={!this.props.enabled}>
                 Reset <i className="icon-budicon-471"></i>
               </button>
             </span>

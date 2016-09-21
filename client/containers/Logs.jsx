@@ -14,6 +14,7 @@ class LogsContainer extends Component {
     fetchLog: React.PropTypes.func.isRequired,
     fetchLogs: React.PropTypes.func.isRequired,
     log: React.PropTypes.object,
+    accessLevel: React.PropTypes.object,
     logs: React.PropTypes.object.isRequired
   }
 
@@ -51,7 +52,13 @@ class LogsContainer extends Component {
     return (
       <div>
         <TabsHeader role={accessLevel.role} />
-        <LogDialog onClose={this.props.clearLog} error={log.error} loading={log.loading} log={log.record} logId={log.id} />
+        <LogDialog
+          onClose={this.props.clearLog}
+          error={log.error}
+          loading={log.loading}
+          log={log.record}
+          logId={log.id}
+        />
         <div className="row">
           <div className="col-xs-12 wrapper">
             {this.createToolbar(false)}
