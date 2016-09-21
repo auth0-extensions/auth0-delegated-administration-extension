@@ -6,7 +6,7 @@ import { ArgumentError } from 'auth0-extension-tools';
 import parseScriptError from './errors/parseScriptError';
 
 export default class ScriptManager {
-  constructor(storage) {
+  constructor(storage, cacheAge = 1000 * 10) {
     if (storage === null || storage === undefined) {
       throw new ArgumentError('Must provide a storage object.');
     }
@@ -24,7 +24,7 @@ export default class ScriptManager {
         },
         hash: (name) => name,
         max: 100,
-        maxAge: 1000 * 10
+        maxAge: cacheAge
       })
     );
   }
