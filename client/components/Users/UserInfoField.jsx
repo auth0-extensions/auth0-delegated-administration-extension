@@ -3,7 +3,8 @@ import './UserInfoField.css';
 
 export default class UserInfoField extends Component {
   static propTypes = {
-    title: PropTypes.string.isRequired
+    title: PropTypes.string.isRequired,
+    children: PropTypes.object.isRequired
   }
 
   shouldComponentUpdate(nextProps) {

@@ -77,7 +77,7 @@ export default connectContainer(class extends Component {
         </div>
         <div className="row user-tabs">
           <div className="col-xs-12">
-            <Tabs defaultActiveKey={1} animation={false} id="user_info_tabs">
+            <Tabs defaultActiveKey={1} animation={false} id="user-info-tabs">
               <Tab eventKey={1} title="User Information">
                 <UserInfo loading={user.get('loading')} user={user.get('record')}
                           memberships={user.get('memberships').toJSON()} error={user.get('error')} />

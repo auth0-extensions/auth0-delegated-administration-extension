@@ -15,10 +15,11 @@ export default createForm('user', class extends Component {
     userWasSaved: React.PropTypes.func.isRequired,
     fetchUsers: React.PropTypes.func.isRequired,
     title: React.PropTypes.string.isRequired,
-    confirmLoading: PropTypes.bool.isRequired,
-    hideConfirmWindow: PropTypes.func.isRequired,
-    userCreateError: PropTypes.string,
-    appSettings: PropTypes.object
+    confirmLoading: React.PropTypes.bool.isRequired,
+    hideConfirmWindow: React.PropTypes.func.isRequired,
+    userCreateError: React.PropTypes.string,
+    settings: React.PropTypes.object,
+    validationErrors: React.PropTypes.array
   }
 
   constructor(props) {
@@ -30,19 +31,22 @@ export default createForm('user', class extends Component {
     };
   }
 
-  onConfirmUserCreate = (options) => {
+  onConfirmUserCreate = () => {
+    const options = this.getOptions();
     let obj = {};
-    if (this.refs.email && this.refs.email.props.field.value)
+    if (this.refs.email && this.refs.email.props.field.value) {
       obj.email = this.refs.email.props.field.value;
+    }
 
-    if (this.refs.username && this.refs.username.props.field.value)
+    if (this.refs.username && this.refs.username.props.field.value) {
       obj.username = this.refs.username.props.field.value;
+    }
 
     if (this.refs.password && this.refs.password.props.field.value) {
-      if (this.refs.password.props.field.value !== this.refs.repeat_password.props.field.value) {
+      if (this.refs.password.props.field.value !== this.refs.repeatPassword.props.field.value) {
         this.setState({
           customErrors: {
-            repeat_password: ['Repeat Password must be equal to password']
+            repeatPassword: ['Repeat Password must be equal to password']
           }
         });
       } else {
@@ -52,20 +56,22 @@ export default createForm('user', class extends Component {
         obj.password = this.refs.password.props.field.value;
       }
     }
-    if (this.refs.connection && this.refs.connection.value)
+    if (this.refs.connection && this.refs.connection.value) {
       obj.connection = this.refs.connection.value;
+    }
 
     if (options.length === 1) {
       obj.group = options[0].value;
     } else if (this.state.memberships) {
       obj.group = this.state.memberships;
     }
-    obj["email_verified"] = false;
-    if (!this.state.customErrors.repeat_password) {
-      this.props.createUser(obj, function () {
+    obj.email_verified = false;
+
+    if (!this.state.customErrors.repeatPassword) {
+      this.props.createUser(obj, () => {
         this.props.userWasSaved();
         this.props.fetchUsers('', true);
-      }.bind(this));
+      });
     }
   }
 
@@ -86,7 +92,7 @@ export default createForm('user', class extends Component {
     'email',
     'username',
     'password',
-    'repeat_password',
+    'repeatPassword',
     'connection'
   ];
 
@@ -98,9 +104,9 @@ export default createForm('user', class extends Component {
     });
   };
 
-  getOptions = (memberships) => {
+  getOptions = () => {
     let options = [];
-    _.each(memberships, (a, idx) => {
+    _.each(this.props.memberships, (a, idx) => {
       options[idx] = { value: a, label: a };
     });
     return options;
@@ -113,38 +119,62 @@ export default createForm('user', class extends Component {
     const connections = _.filter(this.props.connections, (connection) => connection.strategy === 'auth0');
     const usernameRequired = this.state.usernameRequired;
     const {
-      fields: { email, username, password, repeat_password, connection },
-      validationErrors, memberships, title, show,
+      fields: { email, username, password, repeatPassword },
+      validationErrors, title, show,
       confirmLoading, userCreateError, settings
     } = this.props;
-    const options = this.getOptions(memberships);
+    const options = this.getOptions();
     const label = settings.settings && settings.settings.dict && settings.settings.dict.memberships ? settings.settings.dict.memberships : 'Memberships';
     return (
-      <Confirm title={title} show={show} loading={confirmLoading} onCancel={this.props.hideConfirmWindow}
-               onConfirm={function () {
-                 this.onConfirmUserCreate(options);
-               }.bind(this)}
+      <Confirm
+        title={title}
+        show={show}
+        loading={confirmLoading}
+        onCancel={this.props.hideConfirmWindow}
+        onConfirm={this.onConfirmUserCreate}
       >
         <Error message={userCreateError} />
         <div className="row">
           <form className="createUserScreenForm form-horizontal col-xs-12" style={{ marginTop: '30px' }}>
             <div className="custom_field">
-              <InputText field={email} fieldName="email" label="Email" validationErrors={validationErrors}
-                         ref="email" />
+              <InputText
+                field={email}
+                fieldName="email"
+                label="Email"
+                validationErrors={validationErrors}
+                ref="email"
+              />
             </div>
             {usernameRequired ?
               <div className="custom_field">
-                <InputText field={username} fieldName="username" label="username" validationErrors={validationErrors}
-                           ref="username" />
+                <InputText
+                  field={username}
+                  fieldName="username"
+                  label="username"
+                  validationErrors={validationErrors}
+                  ref="Username"
+                />
               </div>
               : ''}
             <div className="custom_field">
-              <InputText field={password} fieldName="password" label="Password" type="password"
-                         validationErrors={validationErrors} ref="password" />
+              <InputText
+                field={password}
+                fieldName="password"
+                label="Password"
+                type="password"
+                validationErrors={validationErrors}
+                ref="password"
+              />
             </div>
             <div className="custom_field repeat_password">
-              <InputText field={repeat_password} fieldName="repeat_password" label="Repeat Password" type="password"
-                         validationErrors={this.state.customErrors} ref="repeat_password" />
+              <InputText
+                field={repeatPassword}
+                fieldName="repeatPassword"
+                label="Repeat Password"
+                type="password"
+                validationErrors={this.state.customErrors}
+                ref="repeatPassword"
+              />
             </div>
             {(options.length > 1) ?
               <div className="custom_field">

@@ -25,36 +25,38 @@ const reduxHistory = syncHistoryWithStore(history, store);
 
 store.subscribe(() => {
   switch (store.getState().lastAction.type) {
-    case constants.FETCH_SETTINGS_FULFILLED:
+    case constants.FETCH_SETTINGS_FULFILLED: {
       const data = store.getState().settings.get('record');
       const settings = data.get('settings');
-      const dict = settings.get('dict');
-      if (dict) {
-        const title = dict.get('title');
+
+      const title = settings.get('title');
+      if (title && title !== '') {
+        document.title = title;
+      }
+
+      const css = settings.get('css');
+      if (css !== '') {
         const head = document.getElementsByTagName('head')[0];
         const link = document.createElement('link');
-        if (typeof title !== 'undefined' && title !== '') document.title = title;
-        const css = dict.get('css');
-        if (typeof css !== 'undefined' && css !== '') {
-          link.id = 'custom_css';
-          link.rel = 'stylesheet';
-          link.type = 'text/css';
-          link.href = css;
-          link.media = 'all';
-          head.appendChild(link);
-        }
+        link.id = 'custom_css';
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = css;
+        link.media = 'all';
+        head.appendChild(link);
       }
       break;
-    default:
-      break;
   }
+default:
+  break;
+}
 });
 store.dispatch(loadCredentials());
 
 // Render application.
 ReactDOM.render(
-  <Provider store={store}>
-    {routes(reduxHistory)}
+<Provider store={store}>
+  {routes(reduxHistory)}
   </Provider>,
   document.getElementById('app')
 );
@@ -63,6 +65,6 @@ store.dispatch(push('/users'));
 
 // Show the developer tools.
 if (process.env.NODE_ENV !== 'production') {
-  const showDevTools = require('./showDevTools');
+  const showDevTools = require('./showDevTools'); // eslint-disable-line global-require
   showDevTools(store);
 }

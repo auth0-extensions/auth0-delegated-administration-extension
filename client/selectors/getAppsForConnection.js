@@ -1,24 +1,14 @@
-export default function normalizeErrorMiddleware() {
-  return () => {
-    return next => action => {
-      if (action && action.type.endsWith('_REJECTED') && action.payload) {
-        // Try to get the default error message from the response.
-        let errorMessage = action.payload.statusText || action.payload.status || 'Unknown Server Error';
+import { createSelector } from 'reselect';
 
-        // Maybe some data is available.
-        let error = action.payload.data && action.payload.data.message;
-        if (!error) {
-          error = action.payload.response && action.payload.response.data && action.payload.response.data.message;
-        }
+const getApps = (state) =>
+state.applications.get('records');
 
-        if (error) {
-          errorMessage = error.message || error;
-        }
+const getConnection = (state, connectionName) =>
+connectionName && state.connections.get('records').find(conn => conn.get('name') === connectionName);
 
-        action.errorMessage = errorMessage;
-      }
+const getAppsForConnection = createSelector(
+    [ getApps, getConnection ],
+    (apps, connection) => apps.filter(app => connection && connection.get('enabled_clients').indexOf(app.get('client_id')) >= 0)
+);
 
-      next(action);
-    };
-  };
-}
+export default getAppsForConnection;
