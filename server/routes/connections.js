@@ -19,10 +19,7 @@ export default (scriptManager) => {
               .value();
 
             if (settings && settings.connections && Array.isArray(settings.connections) && settings.connections.length) {
-              result = _.chain(connections)
-                .filter(conn => (settings.connections.indexOf(conn.name) >= 0))
-                .sortBy(conn => conn.name.toLowerCase())
-                .value();
+              result = result.filter(conn => (settings.connections.indexOf(conn.name) >= 0));
             }
 
             return result;
