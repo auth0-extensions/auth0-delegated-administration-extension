@@ -150,9 +150,9 @@ export default createForm('user', class extends Component {
                 <InputText
                   field={username}
                   fieldName="username"
-                  label="username"
+                  label="Username"
                   validationErrors={validationErrors}
-                  ref="Username"
+                  ref="username"
                 />
               </div>
               : ''}
