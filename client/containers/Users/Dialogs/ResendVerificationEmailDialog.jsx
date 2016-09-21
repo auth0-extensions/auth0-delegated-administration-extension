@@ -24,7 +24,7 @@ export default connectContainer(class extends Component {
   }
 
   onConfirm = () => {
-    this.props.resendVerificationEmail();
+    this.props.resendVerificationEmail(this.props.verificationEmail.toJS().userId);
   }
 
   render() {
@@ -32,7 +32,7 @@ export default connectContainer(class extends Component {
     const { userName, error, requesting, loading } = this.props.verificationEmail.toJS();
 
     return (
-      <Confirm title="Change Username?" show={requesting} loading={loading} onCancel={cancelResendVerificationEmail} onConfirm={this.onConfirm}>
+      <Confirm title="Resend Verification Email?" show={requesting} loading={loading} onCancel={cancelResendVerificationEmail} onConfirm={this.onConfirm}>
         <Error message={error} />
         <p>
           Do you really want to resend verification email to <strong>{userName}</strong>?
