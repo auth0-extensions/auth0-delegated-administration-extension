@@ -122,7 +122,7 @@ export default createForm('user', class extends Component {
 
     const connections = _.filter(this.props.connections, (connection) => connection.strategy === 'auth0');
     const usernameRequired = this.state.usernameRequired;
-    const { fields: { email, username, password, repeatPassword, connection },
+    const { fields: { email, username, password, repeatPassword },
             validationErrors, title, show,
             confirmLoading, userCreateError, settings } = this.props;
     const options = this.getOptions();
@@ -164,7 +164,7 @@ export default createForm('user', class extends Component {
                   fieldName="username"
                   label="Username"
                   validationErrors={validationErrors}
-                  ref="Username"
+                  ref="username"
                 />
               </div>
               : ''}
