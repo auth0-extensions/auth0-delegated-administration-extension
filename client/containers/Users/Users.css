@@ -158,16 +158,16 @@
     padding-right: 0px;
     width: 20px;
 }
-.select-menu-outer{
-    z-index: 9000;
-    position: fixed !important;
-}
+
 .Select-input{
     margin-top: 4px;
 }
 .Select-arrow{
     border-top-color: #505050;
     border-width: 6px 3.5px 1.5px;
+}
+.Select-menu-outer {
+    position: static;
 }
 
 button.new {

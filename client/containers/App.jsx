@@ -25,15 +25,23 @@ class App extends Component {
     this.props.getAppSettings();
   }
 
+  getDictValue = (index, defaultValue) => {
+    const appSettings = this.props.settings;
+    let val = '';
+    if (appSettings.get('settings') && appSettings.get('settings').get('dict')) {
+      val = appSettings.get('settings').get('dict').get(index)
+    }
+    return val || defaultValue;
+  }
+
   render() {
     return (
       <div>
         <Header
           user={this.props.user}
           issuer={this.props.issuer}
-          appSettings={this.props.settings}
+          getDictValue={this.getDictValue}
           onLogout={this.props.logout} accessLevel={this.props.accessLevel.toJSON()}
-          settings={this.props.settings}
         />
         <div className="container">
           <div className="row">
