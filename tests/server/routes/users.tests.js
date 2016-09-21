@@ -171,7 +171,7 @@ describe('#users router', () => {
     it('should create new user', (done) => {
       const newUser = {
         email: 'user6@example.com',
-        group: 'deptA'
+        memberships: [ 'deptA' ]
       };
 
       request(app)
@@ -181,7 +181,7 @@ describe('#users router', () => {
         .end((err) => {
           if (err) throw err;
           expect(defaultUsers[5].email).toEqual(newUser.email);
-          expect(defaultUsers[5].app_metadata.department).toEqual(newUser.group);
+          expect(defaultUsers[5].app_metadata.department).toEqual(newUser.memberships[0]);
           done();
         });
     });
@@ -189,7 +189,7 @@ describe('#users router', () => {
     it('should return "access denied" error', (done) => {
       const newUser = {
         email: 'user7@example.com',
-        group: 'deptB'
+        memberships: [ 'deptB' ]
       };
 
       request(app)

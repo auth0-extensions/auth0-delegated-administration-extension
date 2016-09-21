@@ -56,7 +56,7 @@ export default createForm('user', class extends Component {
       obj.connection = this.refs.connection.value;
 
     if (this.state.memberships) {
-      obj.group = this.state.memberships;
+      obj.memberships = this.state.memberships;
     }
     obj["email_verified"] = false;
     if (!this.state.customErrors.repeat_password)
