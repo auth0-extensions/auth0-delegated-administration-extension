@@ -134,3 +134,7 @@
 .repeat_password label {
     padding-top: 4px;
 }
+
+button.new {
+  margin-top: 28px;
+}

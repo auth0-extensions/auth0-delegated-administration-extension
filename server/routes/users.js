@@ -2,7 +2,7 @@ import auth0 from 'auth0';
 import request from 'request';
 import Promise from 'bluebird';
 import { Router } from 'express';
-import { managementApi, ArgumentError } from 'auth0-extension-tools';
+import { managementApi, ArgumentError, ValidationError } from 'auth0-extension-tools';
 
 import config from '../lib/config';
 import { verifyUserAccess } from '../lib/middlewares';
@@ -14,6 +14,10 @@ export default (storage, scriptManager) => {
    * Create user.
    */
   api.post('/', (req, res, next) => {
+    if (req.body.password !== req.body.repeatPassword) {
+      return next(new ValidationError('The passwords do not match.'));
+    }
+
     const createContext = {
       request: {
         user: req.user
@@ -26,7 +30,7 @@ export default (storage, scriptManager) => {
       }
     };
 
-    scriptManager.execute('create', createContext)
+    return scriptManager.execute('create', createContext)
       .then(result => req.auth0.users.create(result || createContext.payload))
       .then(() => res.status(201).send())
       .catch(next);

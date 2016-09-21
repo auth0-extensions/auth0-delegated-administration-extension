@@ -1,4 +1,5 @@
 export BlockDialog from './BlockDialog';
+export CreateDialog from './CreateDialog';
 export DeleteDialog from './DeleteDialog';
 export EmailChangeDialog from './EmailChangeDialog';
 export PasswordChangeDialog from './PasswordChangeDialog';

@@ -29,6 +29,57 @@ export function fetchUsers(search = '', reset = false, page = 0) {
 }
 
 /*
+ * Create a user.
+ */
+export function createUser(user, onSuccess) {
+  return (dispatch) => {
+    dispatch({
+      type: constants.CREATE_USER,
+      meta: {
+        user,
+        onSuccess: () => {
+          if (onSuccess) {
+            onSuccess();
+          } else {
+            dispatch(fetchUsers());
+          }
+        }
+      },
+      payload: {
+        promise: axios.post('/api/users/', user, {
+          responseType: 'json'
+        })
+      }
+    });
+  };
+}
+
+/*
+ * Show dialog to create a user.
+ */
+export function requestCreateUser(memberships) {
+  return (dispatch, getState) => {
+    const connections = getState().connections.get('records').toJS();
+    dispatch({
+      type: constants.REQUEST_CREATE_USER,
+      payload: {
+        connection: connections && connections.length && connections[0].name,
+        memberships: memberships && memberships.length === 1 ? [ memberships[0] ] : [ ]
+      }
+    });
+  };
+}
+
+/*
+ * Cancel creating a user.
+ */
+export function cancelCreateUser() {
+  return {
+    type: constants.CANCEL_CREATE_USER
+  };
+}
+
+/*
  * Fetch the user details.
  */
 export function fetchUserDetail(userId, onSuccess) {
@@ -114,31 +165,6 @@ export function requestBlockUser(user) {
 export function cancelBlockUser() {
   return {
     type: constants.CANCEL_BLOCK_USER
-  };
-}
-
-/*
- * Create the user details.
- */
-export function createUser(data, onSuccess) {
-  return (dispatch) => {
-    dispatch({
-      type: constants.CREATE_USER,
-      meta: {
-        onSuccess: () => {
-          if (onSuccess) {
-            onSuccess();
-          } else {
-            dispatch(fetchUsers());
-          }
-        }
-      },
-      payload: {
-        promise: axios.post('/api/users/', data, {
-          responseType: 'json'
-        })
-      }
-    });
   };
 }
 

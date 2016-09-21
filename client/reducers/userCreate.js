@@ -5,12 +5,21 @@ import createReducer from '../utils/createReducer';
 
 const initialState = {
   error: null,
+  record: null,
   loading: false,
   validationErrors: { }
 };
 
 export const userCreate = createReducer(fromJS(initialState), {
-  [constants.CREATE_USER]: (state) =>
+  [constants.REQUEST_CREATE_USER]: (state, action) =>
+    state.merge({
+      ...initialState,
+      record: {
+        memberships: action.payload.memberships,
+        connection: action.payload.connection
+      }
+    }),
+  [constants.CANCEL_CREATE_USER]: (state) =>
     state.merge({
       ...initialState
     }),
