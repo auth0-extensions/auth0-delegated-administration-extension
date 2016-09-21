@@ -6,7 +6,7 @@ import './Header.css';
 export default class Header extends Component {
   static propTypes = {
     user: React.PropTypes.object,
-    appSettings: React.PropTypes.object,
+    getDictValue: React.PropTypes.func,
     accessLevel: React.PropTypes.object,
     issuer: React.PropTypes.string,
     onLogout: React.PropTypes.func.isRequired
@@ -59,15 +59,14 @@ export default class Header extends Component {
   }
 
   render() {
-    const { user, issuer, accessLevel, appSettings } = this.props;
+    const { user, issuer, accessLevel } = this.props;
     const showMenu = accessLevel.role === 2;
-    const title = (appSettings.get('settings') && appSettings.get('settings').get('dict')) ? appSettings.get('settings').get('dict').get('title') : '';
     return (
       <header className="dashboard-header">
         <nav role="navigation" className="navbar navbar-default">
           <div className="container">
             <div id="header" className="navbar-header" style={{ width: '800px' }}>
-              <a className="navbar-brand" href="#">{title || window.config.TITLE}</a>
+              <a className="navbar-brand" href="#">{this.props.getDictValue('title', window.config.TITLE)}</a>
             </div>
             <div id="navbar-collapse" className="collapse navbar-collapse">
               <ul className="nav navbar-nav navbar-right">

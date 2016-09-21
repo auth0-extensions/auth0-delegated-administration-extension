@@ -9,7 +9,8 @@ export default createForm('user', class extends Component {
     fields: PropTypes.object.isRequired,
     initialValues: PropTypes.object,
     connections: PropTypes.array.isRequired,
-    memberships: PropTypes.array.isRequired
+    memberships: PropTypes.array.isRequired,
+    getDictValue: React.PropTypes.func
   }
 
   static formFields = [
@@ -43,7 +44,7 @@ export default createForm('user', class extends Component {
     return (
       <div className="custom_field">
         <div className="form-group">
-          <label>Memberships</label>
+          <label>{this.props.getDictValue('memberships', 'Memberships')}</label>
           <MultiSelect
             options={memberships.map(m => ({ value: m, label: m }))}
             multi

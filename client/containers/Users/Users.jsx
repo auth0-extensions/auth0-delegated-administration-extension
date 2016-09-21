@@ -23,6 +23,7 @@ class Users extends Component {
     appSettings: React.PropTypes.object,
     total: React.PropTypes.number,
     fetchUsers: React.PropTypes.func.isRequired,
+    getDictValue: React.PropTypes.func.isRequired,
     createUser: React.PropTypes.func.isRequired,
     fetchConnections: React.PropTypes.func.isRequired
   }
@@ -67,7 +68,7 @@ class Users extends Component {
             : ''}
           </div>
         </div>
-        <dialogs.CreateDialog />
+        <dialogs.CreateDialog getDictValue={this.props.getDictValue} />
         <UserOverview
           onReset={this.onReset}
           onSearch={this.onSearch}
