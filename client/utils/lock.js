@@ -1,11 +1,11 @@
-let gLock = null;
+let lockInstance = null;
 
 function getLock() {
-  if (window.config.AUTH0_CLIENT_ID && !gLock) {
-    gLock = new Auth0Lock(window.config.AUTH0_CLIENT_ID, window.config.AUTH0_DOMAIN);
+  if (window.config.AUTH0_CLIENT_ID && !lockInstance) {
+    lockInstance = new Auth0Lock(window.config.AUTH0_CLIENT_ID, window.config.AUTH0_DOMAIN);  // eslint-disable-line no-undef
   }
 
-  return gLock;
+  return lockInstance;
 }
 
 export function getProfile(token, callback) {

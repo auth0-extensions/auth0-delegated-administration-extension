@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Error,  LoadingPanel,  Table,  TableBody,  TableIconCell,  TableTextCell,  TableHeader,  TableColumn,  TableRow } from '../Dashboard';
+import { Error, LoadingPanel, Table, TableBody, TableIconCell, TableTextCell, TableHeader, TableColumn, TableRow } from '../Dashboard';
 
 export default class UserLogs extends Component {
   static propTypes = {
@@ -49,7 +49,7 @@ export default class UserLogs extends Component {
                 </TableRow>
               );
             })
-            }
+          }
           </TableBody>
         </Table>
       </LoadingPanel>

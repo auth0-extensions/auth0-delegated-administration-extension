@@ -46,17 +46,17 @@ store.subscribe(() => {
         head.appendChild(link);
       }
       break;
+    }
+    default:
+      break;
   }
-default:
-  break;
-}
 });
 store.dispatch(loadCredentials());
 
 // Render application.
 ReactDOM.render(
-<Provider store={store}>
-  {routes(reduxHistory)}
+  <Provider store={store}>
+    {routes(reduxHistory)}
   </Provider>,
   document.getElementById('app')
 );

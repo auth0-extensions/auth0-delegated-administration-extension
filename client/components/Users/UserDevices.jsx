@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Error,  LoadingPanel,  Table,  TableBody,  TableIconCell,  TableTextCell,  TableHeader,  TableColumn,  TableRow } from '../Dashboard';
+import { Error, LoadingPanel, Table, TableBody, TableIconCell, TableTextCell, TableHeader, TableColumn, TableRow } from '../Dashboard';
 
 export default class UserDevices extends Component {
   static propTypes = {
@@ -32,13 +32,13 @@ export default class UserDevices extends Component {
             <TableColumn width="27%"># of Tokens/Public Keys</TableColumn>
           </TableHeader>
           <TableBody>
-            {Object.keys(devices).sort().map((device) =>
-              <TableRow key={device}>
-                <TableIconCell color="green" icon="243" />
-                <TableTextCell>{device}</TableTextCell>
-                <TableTextCell>{devices[device]}</TableTextCell>
-              </TableRow>
-            )}
+          {Object.keys(devices).sort().map((device) =>
+            <TableRow key={device}>
+              <TableIconCell color="green" icon="243" />
+              <TableTextCell>{device}</TableTextCell>
+              <TableTextCell>{devices[device]}</TableTextCell>
+            </TableRow>
+          )}
           </TableBody>
         </Table>
       </LoadingPanel>
