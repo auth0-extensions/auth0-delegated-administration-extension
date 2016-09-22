@@ -30,7 +30,7 @@ export default createForm('user', class extends Component {
     }
 
     return (
-      <div className="custom_field">
+      <div className="custom-field">
         <InputText field={usernameField} fieldName="username" label="Username" ref="username" />
       </div>
     );
@@ -42,7 +42,7 @@ export default createForm('user', class extends Component {
     }
     const noConnections = (!connections || connections.length <= 1);
     return (
-      <div className={noConnections ? 'custom_field noConnections' : 'custom_field'}>
+      <div className={noConnections ? 'custom-field no-connections' : 'custom-field'}>
         <div className="form-group">
           <label>{this.props.getDictValue('memberships', 'Memberships')}</label>
           <MultiSelect
@@ -63,7 +63,7 @@ export default createForm('user', class extends Component {
     const options = connections.map(conn => ({ value: conn.name, text: conn.name }));
 
     return (
-      <div className="custom_field">
+      <div className="custom-field">
         <InputCombo options={options} field={field} fieldName="connection" label="Connection" onChange={this.onConnectionChange} />
       </div>
     );
@@ -74,16 +74,16 @@ export default createForm('user', class extends Component {
     const { fields, memberships } = this.props;
 
     return (
-      <form className="createUserScreenForm form-horizontal" style={{ marginTop: '30px' }}>
-        <div className="custom_field">
+      <form className="create-user form-horizontal" style={{ marginTop: '30px' }}>
+        <div className="custom-field">
           <InputText field={fields.email} fieldName="email" label="Email" ref="email" />
         </div>
         {this.renderUsername(connections, fields.connection, fields.username)}
-        <div className="custom_field">
+        <div className="custom-field">
           <InputText field={fields.password} fieldName="password" label="Password" type="password" ref="password" />
         </div>
-        <div className="custom_field repeat_password">
-          <InputText field={fields.repeatPassword} fieldName="repeat_password" label="Repeat Password" type="password" ref="repeatPassword" />
+        <div className="custom-field repeat-password">
+          <InputText field={fields.repeatPassword} fieldName="repeat-password" label="Repeat Password" type="password" ref="repeatPassword" />
         </div>
         {this.renderMemberships(fields.memberships, memberships, connections)}
         {this.renderConnections(fields.connection, connections)}

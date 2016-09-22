@@ -111,27 +111,23 @@
     bottom: 5px;
 }
 
-.createUserButton {
-    display: none;
-}
-
-.userTableContent a {
+.user-table-content a {
     margin-top: -50px;
 }
 
-.custom_field input, .custom_field select, .Select--multi {
+.custom-field input, .custom-field select, .Select--multi {
     width: 71%;
     float: right;
     margin-right: 10%;
 }
 
-.custom_field label {
+.custom-field label {
     width: 15%;
     text-align: right;
     padding-top: 12px;
 }
 
-.repeat_password label {
+.repeat-password label {
     padding-top: 4px;
 }
 
@@ -178,7 +174,7 @@
     max-height: 145px;
 }
 
-.noConnections .Select-menu {
+.no-connections .Select-menu {
     max-height: 105px;
 }
 

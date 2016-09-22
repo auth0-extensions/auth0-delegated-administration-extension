@@ -80,7 +80,7 @@ export default connectContainer(class extends Component {
     return (
       <div className="configuration">
         <div className="row content-header">
-          <div className="col-xs-12 userTableContent">
+          <div className="col-xs-12 user-table-content">
             <h2>Configuration</h2>
             <p>This configuration page allows you to fine tune the behavior of the Delegated Administration dashboard.</p>
           </div>
