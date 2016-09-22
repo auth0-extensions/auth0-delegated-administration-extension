@@ -82,7 +82,7 @@ export default connectContainer(class extends Component {
         <div className="row content-header">
           <div className="col-xs-12 user-table-content">
             <h2>Configuration</h2>
-            <p>This configuration page allows you to fine tune the behavior of the Delegated Administration dashboard.</p>
+            <p>This configuration page allows you to fine tune the behavior of the Delegated Administration dashboard. More information and examples of hooks are available <a href="https://auth0.com/docs/extensions/delegated-admin">on the documentation page</a>.</p>
           </div>
         </div>
         <div className="row configuration-tabs">
