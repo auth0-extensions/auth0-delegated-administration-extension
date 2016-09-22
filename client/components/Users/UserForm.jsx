@@ -36,13 +36,13 @@ export default createForm('user', class extends Component {
     );
   }
 
-  renderMemberships(membershipsField, memberships) {
+  renderMemberships(membershipsField, memberships, connections) {
     if (!memberships || memberships.length <= 1) {
       return null;
     }
-
+    const noConnections = (!connections || connections.length <= 1);
     return (
-      <div className="custom_field">
+      <div className={noConnections ? 'custom_field noConnections' : 'custom_field'}>
         <div className="form-group">
           <label>{this.props.getDictValue('memberships', 'Memberships')}</label>
           <MultiSelect
@@ -85,7 +85,7 @@ export default createForm('user', class extends Component {
         <div className="custom_field repeat_password">
           <InputText field={fields.repeatPassword} fieldName="repeat_password" label="Repeat Password" type="password" ref="repeatPassword" />
         </div>
-        {this.renderMemberships(fields.memberships, memberships)}
+        {this.renderMemberships(fields.memberships, memberships, connections)}
         {this.renderConnections(fields.connection, connections)}
       </form>
     );

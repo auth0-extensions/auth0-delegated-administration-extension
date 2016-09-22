@@ -178,6 +178,10 @@
     max-height: 145px;
 }
 
+.noConnections .Select-menu {
+    max-height: 105px;
+}
+
 .modal .modal-dialog .modal-body {
     overflow-y: visible;
 }
