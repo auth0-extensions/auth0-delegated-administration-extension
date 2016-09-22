@@ -58,7 +58,7 @@ class Users extends Component {
       <div className="users">
         <TabsHeader role={accessLevel.get('record').get('role')} />
         <div className="row content-header">
-          <div className="col-xs-12 userTableContent">
+          <div className="col-xs-12 user-table-content">
             <h1>Users</h1>
             {(connections.length) ?
               <button className="btn btn-success pull-right new" onClick={this.createUser}>

@@ -15,15 +15,16 @@ export function fetchScript(name) {
   };
 }
 
-export function updateScript(script, data) {
+export function updateScript(name, script) {
   return (dispatch) => {
     dispatch({
       type: constants.UPDATE_SCRIPT,
       meta: {
-        name: script
+        name,
+        script
       },
       payload: {
-        promise: axios.post(`/api/scripts/${script}`, { script: data }, {
+        promise: axios.post(`/api/scripts/${name}`, { script }, {
           responseType: 'json'
         })
       }
