@@ -15,7 +15,8 @@ export const scripts = createReducer(fromJS({ }), {
       .setIn([ action.meta.name ], fromJS({ loading: false, script: action.payload.data.script })),
   [constants.UPDATE_SCRIPT_PENDING]: (state, action) =>
     state
-      .setIn([ action.meta.name, 'loading' ], true),
+      .setIn([ action.meta.name, 'loading' ], true)
+      .setIn([ action.meta.name, 'script' ], action.meta.script),
   [constants.UPDATE_SCRIPT_REJECTED]: (state, action) =>
     state
       .setIn([ action.meta.name, 'loading' ], false)

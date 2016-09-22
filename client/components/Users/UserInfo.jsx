@@ -35,6 +35,16 @@ export default class UserInfo extends Component {
     return user.get('blocked') ? 'Yes' : 'No';
   }
 
+  renderUsername(username) {
+    if (!username) {
+      return null;
+    }
+
+    return (
+      <UserInfoField title="Username">{username}</UserInfoField>
+    );
+  }
+
   render() {
     const { user, error, loading, memberships } = this.props;
     const departments = this.getDepartments(memberships);
@@ -46,6 +56,7 @@ export default class UserInfo extends Component {
           <div className="user-info">
             <UserInfoField title="User ID">{user.get('user_id')}</UserInfoField>
             <UserInfoField title="Name">{user.get('name')}</UserInfoField>
+            {this.renderUsername(user.get('username'))}
             <UserInfoField title="Email">{user.get('email')}</UserInfoField>
             <UserInfoField title="Identity">{identity.connection}</UserInfoField>
             <UserInfoField title="Blocked">{blocked}</UserInfoField>

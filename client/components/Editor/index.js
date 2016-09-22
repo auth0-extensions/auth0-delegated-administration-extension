@@ -58,6 +58,7 @@ export default class Editor extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    console.log(nextProps.value, this.state.value);
     if (nextProps.value && !this.state.value) {
       const { editor } = this.refs;
       if (editor) {
