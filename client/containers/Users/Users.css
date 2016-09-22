@@ -175,12 +175,11 @@
 }
 
 .Select-menu {
-    max-height: 130px;
+    max-height: 150px;
 }
 
 .modal .modal-dialog .modal-body {
     overflow-y: visible;
-    z-index: 99999;
 }
 
 button.new {

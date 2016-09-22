@@ -74,7 +74,7 @@ export default createForm('user', class extends Component {
     const { fields, memberships } = this.props;
 
     return (
-      <form className="createUserScreenForm form-horizontal col-xs-12" style={{ marginTop: '30px' }}>
+      <form className="createUserScreenForm form-horizontal" style={{ marginTop: '30px' }}>
         <div className="custom_field">
           <InputText field={fields.email} fieldName="email" label="Email" ref="email" />
         </div>
