@@ -68,3 +68,7 @@ Customers can choose to implement their custom style, to do so the following set
 ```
 
 The CSS file has to be hosted by the customer and can be used to change the style of every component. An example can be found under [docs/theme](docs/theme).
+
+## Usage
+
+See the [official documentation page on docs.auth0.com](https://auth0.com/docs/extensions/delegated-admin).

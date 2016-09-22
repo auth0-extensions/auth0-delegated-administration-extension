@@ -10,6 +10,7 @@ const initialState = {
   error: null,
   userId: null,
   record: { },
+  memberships: [],
   logs: {
     loading: false,
     error: null,
@@ -21,6 +22,65 @@ const initialState = {
     records: { }
   }
 };
+
+const userLogs = createReducer(fromJS(initialState.logs), {
+  [constants.FETCH_USER_LOGS_PENDING]: (state) =>
+    state.merge({
+      ...initialState.logs,
+      loading: true
+    }),
+  [constants.FETCH_USER_LOGS_REJECTED]: (state, action) =>
+    state.merge({
+      ...initialState.logs,
+      loading: false,
+      error: `An error occured while loading the user logs: ${action.errorMessage}`
+    }),
+  [constants.FETCH_USER_LOGS_FULFILLED]: (state, action) =>
+    state.merge({
+      loading: false,
+      records: fromJS(typeof action.payload.data.logs !== 'undefined' ?
+        action.payload.data.logs.map(log => {
+          log.time_ago = moment(log.date).fromNow();
+          log.type = logTypes[log.type];
+          if (!log.type) {
+            log.type = {
+              event: 'Unknown Error',
+              icon: {
+                name: '354',
+                color: '#FFA500'
+              }
+            };
+          }
+          return log;
+        }) :
+        []
+      )
+    })
+});
+
+const userDevices = createReducer(fromJS(initialState.devices), {
+  [constants.FETCH_USER_DEVICES_PENDING]: (state) =>
+    state.merge({
+      ...initialState.devices,
+      loading: true
+    }),
+  [constants.FETCH_USER_DEVICES_REJECTED]: (state, action) =>
+    state.merge({
+      ...initialState.devices,
+      error: `An error occured while loading the devices: ${action.errorMessage}`
+    }),
+  [constants.FETCH_USER_DEVICES_FULFILLED]: (state, action) => {
+    const devices = action.payload.data.devices.reduce((map, device) => {
+      map[device.device_name] = (map[device.device_name] || 0) + 1;
+      return map;
+    }, { });
+
+    return state.merge({
+      loading: false,
+      records: fromJS(devices)
+    });
+  }
+});
 
 export const user = createReducer(fromJS(initialState), {
   [constants.FETCH_USER_PENDING]: (state, action) =>
@@ -42,7 +102,8 @@ export const user = createReducer(fromJS(initialState), {
 
     return state.merge({
       loading: false,
-      record: fromJS(data.user)
+      record: fromJS(data.user),
+      memberships: fromJS(data.memberships)
     });
   },
 
@@ -71,64 +132,4 @@ export const user = createReducer(fromJS(initialState), {
     state.merge({
       devices: userDevices(state.get('devices'), action)
     })
-});
-
-const userLogs = createReducer(fromJS(initialState.logs), {
-  [constants.FETCH_USER_LOGS_PENDING]: (state) =>
-    state.merge({
-      ...initialState.logs,
-      loading: true
-    }),
-  [constants.FETCH_USER_LOGS_REJECTED]: (state, action) =>
-    state.merge({
-      ...initialState.logs,
-      loading: false,
-      error: `An error occured while loading the user logs: ${action.errorMessage}`
-    }),
-  [constants.FETCH_USER_LOGS_FULFILLED]: (state, action) => {
-    return state.merge({
-      loading: false,
-      records: fromJS(typeof action.payload.data.logs !== 'undefined' ?
-        action.payload.data.logs.map(log => {
-          log.time_ago = moment(log.date).fromNow();
-          log.type = logTypes[log.type];
-          if (!log.type) {
-            log.type = {
-              event: 'Unknown Error',
-              icon: {
-                name: '354',
-                color: '#FFA500'
-              }
-            };
-          }
-          return log;
-        }) :
-        []
-      )
-    });
-  }
-});
-
-const userDevices = createReducer(fromJS(initialState.devices), {
-  [constants.FETCH_USER_DEVICES_PENDING]: (state) =>
-    state.merge({
-      ...initialState.devices,
-      loading: true
-    }),
-  [constants.FETCH_USER_DEVICES_REJECTED]: (state, action) =>
-    state.merge({
-      ...initialState.devices,
-      error: `An error occured while loading the devices: ${action.errorMessage}`
-    }),
-  [constants.FETCH_USER_DEVICES_FULFILLED]: (state, action) => {
-    const devices = action.payload.data.devices.reduce((map, device) => {
-      map[device.device_name] = (map[device.device_name] || 0) + 1;
-      return map;
-    }, { });
-
-    return state.merge({
-      loading: false,
-      records: fromJS(devices)
-    });
-  }
 });

@@ -9,7 +9,7 @@ class LoadingPanel extends Component {
     super(props);
 
     this.state = {
-      show: false
+      show: props.show || false
     };
 
     // Default styles.
@@ -54,6 +54,7 @@ class LoadingPanel extends Component {
   componentWillReceiveProps(nextProps) {
     if (!nextProps.show) {
       clearTimeout(this.showTimer);
+      this.showTimer = null;
       return this.stopLoading();
     }
 

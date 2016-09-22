@@ -1,17 +1,22 @@
 import React, { Component, PropTypes } from 'react';
 import connectContainer from 'redux-static';
 
-import { Error, Confirm } from '../../components/Dashboard';
+import { userActions } from '../../../actions';
+import { Error, Confirm } from '../../../components/Dashboard';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     passwordChange: state.passwordChange
   });
 
+  static actionsToProps = {
+    ...userActions
+  }
+
   static propTypes = {
-    onCancel: PropTypes.func.isRequired,
-    onConfirm: PropTypes.func.isRequired,
-    passwordChange: PropTypes.object.isRequired
+    passwordChange: PropTypes.object.isRequired,
+    changePassword: PropTypes.func.isRequired,
+    cancelPasswordChange: PropTypes.func.isRequired
   }
 
   shouldComponentUpdate(nextProps) {
@@ -19,11 +24,11 @@ export default connectContainer(class extends Component {
   }
 
   onConfirm = () => {
-    this.props.onConfirm(this.refs.password.value, this.refs.repeatPassword.value);
+    this.props.changePassword(this.refs.password.value, this.refs.repeatPassword.value);
   }
 
   render() {
-    const { onCancel } = this.props;
+    const { cancelPasswordChange } = this.props;
     const { connection, userEmail, userName, error, requesting, loading } = this.props.passwordChange.toJS();
 
     if (!requesting) {
@@ -31,7 +36,7 @@ export default connectContainer(class extends Component {
     }
 
     return (
-      <Confirm title="Change Password?" show={requesting} loading={loading} onCancel={onCancel} onConfirm={this.onConfirm}>
+      <Confirm title="Change Password?" show={requesting} loading={loading} onCancel={cancelPasswordChange} onConfirm={this.onConfirm}>
         <Error message={error} />
         <p>
           Do you really want to reset the password for <strong>{userName}</strong>?

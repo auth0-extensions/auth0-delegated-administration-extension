@@ -1,11 +1,11 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 
-class Table extends Component {
+export default class Table extends Component {
   render() {
-    return <table className="table data-table" style={{ tableLayout: 'fixed' }}>
-        { this.props.children }
-      </table>;
+    return (
+      <table className="table data-table" style={{ tableLayout: 'fixed' }}>
+        {this.props.children}
+      </table>
+    );
   }
 }
-
-export default Table;

@@ -2,6 +2,15 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 
 class InputCombo extends Component {
+  onChange = (event) => {
+    const { field } = this.props;
+    field.onChange(event);
+
+    if (this.props.onChange) {
+      this.props.onChange(event);
+    }
+  }
+
   render() {
     const { label, field, fieldName, options, validationErrors } = this.props;
     const classes = classNames({
@@ -9,16 +18,18 @@ class InputCombo extends Component {
       'has-error': validationErrors && validationErrors[fieldName] && validationErrors[fieldName].length
     });
 
-    return <div className={classes}>
-      <label>{label}</label>
-      <select className="form-control" {...field}>
-        <option value=""></option>
-        {options.map((option, index) => {
-          return <option key={index} value={option.value}>{option.text}</option>;
-        })}
-      </select>
-      { validationErrors && validationErrors[fieldName] && validationErrors[fieldName].length && <div className="help-block">{ validationErrors[fieldName][0] }</div> }
-    </div>;
+    return (
+      <div className={classes}>
+        <label>{label}</label>
+        <select className="form-control" {...this.props} {...field} onChange={this.onChange}>
+          {options.length > 1 && <option value=""></option>}
+          {options.map((option, index) => {
+            return <option key={index} value={option.value}>{option.text}</option>;
+          })}
+        </select>
+        {validationErrors && validationErrors[fieldName] && validationErrors[fieldName].length && <div className="help-block">{validationErrors[fieldName][0]}</div>}
+      </div>
+    );
   }
 }
 

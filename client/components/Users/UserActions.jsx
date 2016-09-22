@@ -3,14 +3,17 @@ import { MenuItem, DropdownButton } from 'react-bootstrap';
 
 export default class UserActions extends Component {
   static propTypes = {
-    user: PropTypes.object.isRequired,
-    databaseConnections: PropTypes.object.isRequired,
     blockUser: PropTypes.func.isRequired,
-    unblockUser: PropTypes.func.isRequired,
-    removeMfa: PropTypes.func.isRequired,
+    changeEmail: PropTypes.func.isRequired,
+    changePassword: PropTypes.func.isRequired,
+    changeUsername: PropTypes.func.isRequired,
+    databaseConnections: PropTypes.object.isRequired,
     deleteUser: PropTypes.func.isRequired,
+    removeMfa: PropTypes.func.isRequired,
+    resendVerificationEmail: PropTypes.func.isRequired,
     resetPassword: PropTypes.func.isRequired,
-    changePassword: PropTypes.func.isRequired
+    unblockUser: PropTypes.func.isRequired,
+    user: PropTypes.object.isRequired
   }
 
   state = {
@@ -42,7 +45,7 @@ export default class UserActions extends Component {
     <MenuItem disabled={loading || false} onClick={this.deleteUser}>
       Delete User
     </MenuItem>
-  );
+  )
 
   getResetPasswordAction = (user, loading) => {
     if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
@@ -54,7 +57,7 @@ export default class UserActions extends Component {
         Reset Password
       </MenuItem>
     );
-  };
+  }
 
   getChangePasswordAction = (user, loading) => {
     if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
@@ -66,7 +69,43 @@ export default class UserActions extends Component {
         Change Password
       </MenuItem>
     );
-  };
+  }
+
+  getChangeUsernameAction = (user, loading) => {
+    if (!this.state.databaseConnections || !this.state.databaseConnections.length || !user.username) {
+      return null;
+    }
+
+    return (
+      <MenuItem disabled={loading || false} onClick={this.changeUsername}>
+        Change Username
+      </MenuItem>
+    );
+  }
+
+  getChangeEmailAction = (user, loading) => {
+    if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
+      return null;
+    }
+
+    return (
+      <MenuItem disabled={loading || false} onClick={this.changeEmail}>
+        Change Email
+      </MenuItem>
+    );
+  }
+
+  getResendEmailVerificationAction = (user, loading) => {
+    if (!this.state.databaseConnections || !this.state.databaseConnections.length || user.email_verified) {
+      return null;
+    }
+
+    return (
+      <MenuItem disabled={loading || false} onClick={this.resendVerificationEmail}>
+        Resend Verification Email
+      </MenuItem>
+    );
+  }
 
   getMultifactorAction = (user, loading) => {
     if (!user.multifactor || !user.multifactor.length) {
@@ -108,6 +147,18 @@ export default class UserActions extends Component {
     this.props.changePassword(this.state.user, this.state.databaseConnections[0]);
   }
 
+  changeUsername = () => {
+    this.props.changeUsername(this.state.user, this.state.databaseConnections[0]);
+  }
+
+  changeEmail = () => {
+    this.props.changeEmail(this.state.user, this.state.databaseConnections[0]);
+  }
+
+  resendVerificationEmail = () => {
+    this.props.resendVerificationEmail(this.state.user, this.state.databaseConnections[0]);
+  }
+
   blockUser = () => {
     this.props.blockUser(this.state.user);
   }
@@ -132,6 +183,9 @@ export default class UserActions extends Component {
         {this.getResetPasswordAction(this.state.user, this.state.loading)}
         {this.getChangePasswordAction(this.state.user, this.state.loading)}
         {this.getDeleteAction(this.state.user, this.state.loading)}
+        {this.getChangeUsernameAction(this.state.user, this.state.loading)}
+        {this.getChangeEmailAction(this.state.user, this.state.loading)}
+        {this.getResendEmailVerificationAction(this.state.user, this.state.loading)}
       </DropdownButton>
     );
   }

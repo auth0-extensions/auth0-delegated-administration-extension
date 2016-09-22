@@ -1,12 +1,13 @@
+import Promise from 'bluebird';
 import { Router } from 'express';
+import { NotFoundError } from 'auth0-extension-tools';
 
-export default () => {
+import { hasAccessLevel } from '../lib/middlewares';
+import * as constants from '../constants';
+
+export default (scriptManager) => {
   const api = Router();
-
-  /*
-   * List the most recent logs.
-   */
-  api.get('/', (req, res, next) => {
+  api.get('/', hasAccessLevel(constants.ADMIN_ACCESS_LEVEL), (req, res, next) => {
     req.auth0.logs
       .getAll({
         q: 'NOT type: sapi AND NOT type:fapi',
@@ -20,17 +21,34 @@ export default () => {
       .catch(next);
   });
 
-  /*
-   * List a single log record.
-   */
   api.get('/:id', (req, res, next) => {
     req.auth0.logs.get({ id: req.params.id })
       .then(log => {
         if (log && (log.type === 'fapi' || log.type === 'sapi')) {
-          throw new Error('Invalid log record.');
+          return Promise.reject(new Error('Invalid log record.'));
         }
 
-        return log;
+        if (req.user.role === constants.ADMIN_ACCESS_LEVEL) {
+          return log;
+        }
+
+        return req.auth0.users.get({ id: log.user_id })
+          .then(user => {
+            if (!user) {
+              throw new NotFoundError(`User not found: ${req.params.id}`);
+            }
+
+            const accessContext = {
+              request: {
+                user: req.user
+              },
+              payload: {
+                user
+              }
+            };
+
+            return scriptManager.execute('access', accessContext).then(() => log);
+          });
       })
       .then(log => res.json({ log }))
       .catch(next);

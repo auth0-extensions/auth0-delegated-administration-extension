@@ -21,9 +21,11 @@
       "SwitchCase": 1
     }],
     "jsx-quotes": [2, "prefer-double"],
+    "prefer-stateless-function": 0,
     "new-cap": 0,
     "no-multiple-empty-lines": 2,
     "no-unused-vars": 2,
+    "no-param-reassign": 0,
     "no-var": 2,
     "object-curly-spacing": [2, "always"],
     "quotes": [2, "single", "avoid-escape"],

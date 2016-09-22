@@ -11,7 +11,7 @@ class InputText extends Component {
 
     return <div className={classes}>
       <label>{label}</label>
-      <input className="form-control"  type="text" {...field} />
+      <input className="form-control"  type={this.props.type || 'text'} {...field} />
       { validationErrors && validationErrors[fieldName] && validationErrors[fieldName].length && <div className="help-block">{ validationErrors[fieldName][0] }</div> }
     </div>;
   }

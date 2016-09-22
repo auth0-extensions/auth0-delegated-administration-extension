@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Alert } from 'react-bootstrap';
 
 class Error extends Component {
-  onDismiss() {
+  onDismiss = () => {
     if (this.props.onDismiss) {
       this.props.onDismiss();
     }
@@ -13,10 +13,12 @@ class Error extends Component {
       return this.props.children || <div></div>;
     }
 
-    return <Alert bsStyle="danger" onDismiss={this.onDismiss.bind(this)} dismissAfter={this.props.dismissAfter || 10000}>
-       <h4>Oh snap! You got an error!</h4>
-       <p>{this.props.message}</p>
-     </Alert>;
+    return (
+      <Alert bsStyle="danger" onDismiss={this.onDismiss} dismissAfter={this.props.dismissAfter || 10000}>
+        <h4>Oh snap! You got an error!</h4>
+        <p>{this.props.message}</p>
+      </Alert>
+    );
   }
 }
 

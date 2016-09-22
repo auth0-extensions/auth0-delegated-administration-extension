@@ -1,9 +1,9 @@
 {
   "title": "Delegated Administration Dashboard",
   "name": "auth0-delegated-admin",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "author": "auth0",
-  "description": "This extension allows non-dashboard administrators to manage your users.",
+  "description": "This extension allows non-dashboard administrators to manage (a subset of) users.",
   "type": "application",
   "logoUrl": "https://cdn.auth0.com/extensions/auth0-delegated-admin/assets/logo.svg",
   "initialUrlPath": "/",
@@ -20,7 +20,7 @@
   },
   "secrets": {
     "EXTENSION_CLIENT_ID": {
-      "description": "Client ID of the application you created in the Auth0 Management Dashboard",
+      "description": "Client ID of the application you created in the Auth0 Dashboard",
       "required": true
     },
     "TITLE": {

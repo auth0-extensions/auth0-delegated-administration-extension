@@ -1,6 +1,7 @@
 import Confirm from './Confirm';
 import Error from './Error';
 import Json from './Json';
+import MultiSelect from './MultiSelect';
 import InputText from './InputText';
 import InputCombo from './InputCombo';
 import LoadingPanel from './LoadingPanel';
@@ -22,6 +23,7 @@ export {
   Confirm,
   Error,
   Json,
+  MultiSelect,
   InputText,
   InputCombo,
   LoadingPanel,

@@ -3,7 +3,6 @@ import { Link } from 'react-router';
 import classNames from 'classnames';
 
 class NavigationLink extends Component {
-
   render() {
     const { route } = this.props;
 
