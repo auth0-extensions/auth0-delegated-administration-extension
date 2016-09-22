@@ -171,11 +171,7 @@
 }
 
 .Select-menu {
-    max-height: 145px;
-}
-
-.no-connections .Select-menu {
-    max-height: 105px;
+    max-height: 182px;
 }
 
 .modal .modal-dialog .modal-body {
