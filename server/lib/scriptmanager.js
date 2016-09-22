@@ -3,6 +3,7 @@ import safeEval from 'safe-eval';
 import memoizer from 'lru-memoizer';
 import { ArgumentError } from 'auth0-extension-tools';
 
+import logger from './logger';
 import parseScriptError from './errors/parseScriptError';
 
 export default class ScriptManager {
@@ -11,6 +12,7 @@ export default class ScriptManager {
       throw new ArgumentError('Must provide a storage object.');
     }
 
+    this.log = logger.debug.bind(logger);
     this.storage = storage;
     this.getCached = Promise.promisify(
       memoizer({
@@ -63,6 +65,8 @@ export default class ScriptManager {
         return new Promise((resolve, reject) => {
           try {
             const func = safeEval(script);
+
+            ctx.log = this.log;
             func(ctx, (err, res) => {
               if (err) {
                 reject(parseScriptError(err, name));

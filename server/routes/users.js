@@ -4,6 +4,7 @@ import Promise from 'bluebird';
 import { Router } from 'express';
 import { managementApi, ArgumentError, ValidationError } from 'auth0-extension-tools';
 
+import logger from '../lib/logger';
 import config from '../lib/config';
 import { verifyUserAccess } from '../lib/middlewares';
 
