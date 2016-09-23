@@ -28,13 +28,15 @@ store.subscribe(() => {
     case constants.FETCH_SETTINGS_FULFILLED: {
       const data = store.getState().settings.get('record');
       const settings = data.get('settings');
-
-      const title = settings.get('title');
-      if (title && title !== '') {
-        document.title = title;
+      const dict = settings.get('dict');
+      if (dict) {
+        const title = dict.get('title');
+        if (title && title !== '') {
+          document.title = title;
+        }
       }
-
       const css = settings.get('css');
+
       if (css !== '') {
         const head = document.getElementsByTagName('head')[0];
         const link = document.createElement('link');
