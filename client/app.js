@@ -26,6 +26,7 @@ const reduxHistory = syncHistoryWithStore(history, store);
 store.subscribe(() => {
   switch (store.getState().lastAction.type) {
     case constants.FETCH_SETTINGS_FULFILLED: {
+      document.getElementById('app').style.display = 'none';
       const data = store.getState().settings.get('record');
       const settings = data.get('settings');
       const dict = settings.get('dict');
@@ -47,6 +48,7 @@ store.subscribe(() => {
         link.media = 'all';
         head.appendChild(link);
       }
+      document.getElementById('app').style.display = 'block';
       break;
     }
     default:
