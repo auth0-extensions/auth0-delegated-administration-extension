@@ -186,6 +186,42 @@ describe('#users router', () => {
         });
     });
 
+    it('should return "The email address is required" error', (done) => {
+      const newUser = {
+        email: '',
+        memberships: [ 'deptA' ]
+      };
+
+      request(app)
+        .post('/users')
+        .send(newUser)
+        .expect(400)
+        .end((err, res) => {
+          if (err) throw err;
+          expect(res.error).toMatch(/The email address is required/);
+          done();
+        });
+    });
+
+    it('should return "The passwords do not match" error', (done) => {
+      const newUser = {
+        email: 'user7@example.com',
+        password: 'password',
+        repeatPassword: 'repeatPassword',
+        memberships: [ 'deptA' ]
+      };
+
+      request(app)
+        .post('/users')
+        .send(newUser)
+        .expect(400)
+        .end((err, res) => {
+          if (err) throw err;
+          expect(res.error).toMatch(/The passwords do not match/);
+          done();
+        });
+    });
+
     it('should return "access denied" error', (done) => {
       const newUser = {
         email: 'user7@example.com',
@@ -211,6 +247,17 @@ describe('#users router', () => {
         .end((err) => {
           if (err) throw err;
           expect(defaultUsers[5]).toEqual(undefined);
+          done();
+        });
+    });
+
+    it('should not remove current user', (done) => {
+      request(app)
+        .delete('/users/3')
+        .expect(400)
+        .end((err, res) => {
+          if (err) throw err;
+          expect(res.error).toMatch(/You cannot delete yourself/);
           done();
         });
     });
