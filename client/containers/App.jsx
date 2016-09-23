@@ -19,10 +19,10 @@ class App extends Component {
   }
 
   componentWillMount() {
+    this.props.getAppSettings();
     this.props.fetchApplications();
     this.props.fetchConnections();
     this.props.getAccessLevel();
-    this.props.getAppSettings();
   }
 
   getDictValue = (index, defaultValue) => {

@@ -25,8 +25,15 @@ const reduxHistory = syncHistoryWithStore(history, store);
 
 store.subscribe(() => {
   switch (store.getState().lastAction.type) {
-    case constants.FETCH_SETTINGS_FULFILLED: {
+    case constants.FETCH_SETTINGS_PENDING: {
       document.getElementById('app').style.display = 'none';
+      break;
+    }
+    case constants.FETCH_SETTINGS_REJECTED: {
+      document.getElementById('app').style.display = 'block';
+      break;
+    }
+    case constants.FETCH_SETTINGS_FULFILLED: {
       const data = store.getState().settings.get('record');
       const settings = data.get('settings');
       const dict = settings.get('dict');
