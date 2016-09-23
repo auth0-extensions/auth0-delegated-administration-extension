@@ -4,7 +4,6 @@ import Promise from 'bluebird';
 import { Router } from 'express';
 import { managementApi, ArgumentError, ValidationError } from 'auth0-extension-tools';
 
-import logger from '../lib/logger';
 import config from '../lib/config';
 import { verifyUserAccess } from '../lib/middlewares';
 
@@ -97,7 +96,11 @@ export default (storage, scriptManager) => {
    * Deleta a user.
    */
   api.delete('/:id', verifyUserAccess('delete:user', scriptManager), (req, res, next) => {
-    req.auth0.users.delete({ id: req.params.id })
+    if (req.user.sub === req.params.id) {
+      return next(new ValidationError('You cannot delete yourself.'));
+    }
+
+    return req.auth0.users.delete({ id: req.params.id })
       .then(() => res.sendStatus(204))
       .catch(next);
   });
