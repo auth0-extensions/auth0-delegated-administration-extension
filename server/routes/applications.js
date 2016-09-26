@@ -4,10 +4,13 @@ import { Router } from 'express';
 export default () => {
   const api = Router();
   api.get('/', (req, res, next) => {
-    req.auth0.clients.getAll({ fields: 'client_id,name,callbacks,global' })
+    req.auth0.clients.getAll({ fields: 'client_id,name,callbacks,global,app_type' })
       .then(clients => _.chain(clients)
-        .filter({ global: false })
-        .sortBy((client) => client.name.toLowerCase())
+        .filter(client =>
+          !client.global &&
+          (client.app_type === 'spa' || client.app_type === 'native' || client.app_type === 'regular_web')
+        )
+        .sortBy(client => client.name.toLowerCase())
         .value()
       )
       .then(clients => res.json(clients))
@@ -15,4 +18,5 @@ export default () => {
   });
 
   return api;
-};
+}
+;
