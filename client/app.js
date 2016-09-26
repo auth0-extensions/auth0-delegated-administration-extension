@@ -25,14 +25,6 @@ const reduxHistory = syncHistoryWithStore(history, store);
 
 store.subscribe(() => {
   switch (store.getState().lastAction.type) {
-    case constants.FETCH_SETTINGS_PENDING: {
-      document.getElementById('app').style.display = 'none';
-      break;
-    }
-    case constants.FETCH_SETTINGS_REJECTED: {
-      document.getElementById('app').style.display = 'block';
-      break;
-    }
     case constants.FETCH_SETTINGS_FULFILLED: {
       const data = store.getState().settings.get('record');
       const settings = data.get('settings');
@@ -44,7 +36,6 @@ store.subscribe(() => {
         }
       }
       const css = settings.get('css');
-
       if (css !== '') {
         const head = document.getElementsByTagName('head')[0];
         const link = document.createElement('link');
@@ -55,7 +46,6 @@ store.subscribe(() => {
         link.media = 'all';
         head.appendChild(link);
       }
-      document.getElementById('app').style.display = 'block';
       break;
     }
     default:
