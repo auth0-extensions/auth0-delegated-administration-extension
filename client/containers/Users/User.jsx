@@ -79,12 +79,15 @@ export default connectContainer(class extends Component {
           <div className="col-xs-12">
             <Tabs defaultActiveKey={1} animation={false} id="user-info-tabs">
               <Tab eventKey={1} title="User Information">
-                <UserInfo loading={user.get('loading')} user={user.get('record')}
-                          memberships={user.get('memberships').toJSON()} error={user.get('error')} />
+                <UserInfo
+                  loading={user.get('loading')} user={user.get('record')}
+                  memberships={user.get('memberships') && user.get('memberships').toJSON()} error={user.get('error')}
+                />
               </Tab>
               <Tab eventKey={2} title="Devices">
-                <UserDevices loading={devices.get('loading')} devices={devices.get('records')}
-                             error={devices.get('error')} />
+                <UserDevices
+                  loading={devices.get('loading')} devices={devices.get('records')} error={devices.get('error')}
+                />
               </Tab>
               <Tab eventKey={3} title="Logs">
                 <LogDialog
