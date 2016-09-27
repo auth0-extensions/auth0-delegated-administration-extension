@@ -12,7 +12,7 @@ const initialState = {
 describe('User Create reducer', () => {
   it('should return the initial state', () => {
     expect(
-      user(undefined, {}).toJSON()
+      userCreate(undefined, {}).toJSON()
     ).toEqual(
       initialState
     );
