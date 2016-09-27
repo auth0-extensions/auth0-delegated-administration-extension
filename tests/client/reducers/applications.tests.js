@@ -15,7 +15,7 @@ describe('applications reducer', () => {
     ).toEqual(
       initialState
     );
-  })
+  });
 
   it('should handle FETCH_APPLICATIONS_PENDING', () => {
     expect(
@@ -74,4 +74,4 @@ describe('applications reducer', () => {
       }
     );
   });
-})
+});

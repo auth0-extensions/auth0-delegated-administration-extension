@@ -17,7 +17,7 @@ describe('unblock reducer', () => {
     ).toEqual(
       initialState
     );
-  })
+  });
 
   it('should handle REQUEST_UNBLOCK_USER', () => {
     expect(
@@ -114,4 +114,4 @@ describe('unblock reducer', () => {
       initialState
     );
   });
-})
+});

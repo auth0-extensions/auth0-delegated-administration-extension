@@ -19,7 +19,7 @@ describe('Password Reset reducer', () => {
     ).toEqual(
       initialState
     );
-  })
+  });
 
   it('should handle REQUEST_PASSWORD_RESET', () => {
     expect(
@@ -93,7 +93,6 @@ describe('Password Reset reducer', () => {
   });
 
   it('should handle CANCEL_PASSWORD_RESET', () => {
-
     expect(
       passwordReset(initialState, {
         type: constants.CANCEL_PASSWORD_RESET
@@ -149,4 +148,4 @@ describe('Password Reset reducer', () => {
       initialState
     );
   });
-})
+});

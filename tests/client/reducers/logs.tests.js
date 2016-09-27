@@ -16,7 +16,7 @@ describe('logs reducer', () => {
     ).toEqual(
       initialState
     );
-  })
+  });
 
   it('should handle FETCH_LOGS_PENDING (page=1)', () => {
     expect(
@@ -124,7 +124,7 @@ describe('logs reducer', () => {
               }
             },
             user_name: 'test@mail.com',
-            time_ago:  moment('2016-09-26T13:03:50.703Z').fromNow()
+            time_ago: moment('2016-09-26T13:03:50.703Z').fromNow()
           },
           {
             _id: '49559553682563810286559514516535449676088458549131214850',
@@ -139,7 +139,7 @@ describe('logs reducer', () => {
               }
             },
             user_name: 'test@mail.com',
-            time_ago:  moment('2016-09-26T13:03:36.005Z').fromNow()
+            time_ago: moment('2016-09-26T13:03:36.005Z').fromNow()
           }
         ],
         currentRecord: null,
@@ -148,4 +148,4 @@ describe('logs reducer', () => {
       }
     );
   });
-})
+});

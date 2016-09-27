@@ -18,7 +18,7 @@ describe('Resend verification reducer', () => {
     ).toEqual(
       initialState
     );
-  })
+  });
 
   it('should handle REQUEST_RESEND_VERIFICATION_EMAIL', () => {
     expect(
@@ -142,4 +142,4 @@ describe('Resend verification reducer', () => {
       initialState
     );
   });
-})
+});

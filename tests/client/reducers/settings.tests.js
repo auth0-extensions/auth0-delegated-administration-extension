@@ -15,7 +15,7 @@ describe('settings reducer', () => {
     ).toEqual(
       initialState
     );
-  })
+  });
 
   it('should handle FETCH_SETTINGS_PENDING', () => {
     expect(
@@ -56,8 +56,8 @@ describe('settings reducer', () => {
       {
         loading: false,
         error: null,
-        record: { settings: { dict: { title: 'test', memberships: 'test1, test2' }, css: 'style.css' }}
+        record: { settings: { dict: { title: 'test', memberships: 'test1, test2' }, css: 'style.css' } }
       }
     );
   });
-})
+});

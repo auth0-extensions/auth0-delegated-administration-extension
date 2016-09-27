@@ -16,7 +16,7 @@ describe('log reducer', () => {
     ).toEqual(
       initialState
     );
-  })
+  });
 
   it('should handle CLEAR_LOG', () => {
     expect(
@@ -184,4 +184,4 @@ describe('log reducer', () => {
       }
     );
   });
-})
+});

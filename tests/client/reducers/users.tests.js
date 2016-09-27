@@ -19,7 +19,7 @@ describe('users reducer', () => {
     ).toEqual(
       initialState
     );
-  })
+  });
 
   it('should handle FETCH_USERS_PENDING', () => {
     expect(
@@ -44,7 +44,7 @@ describe('users reducer', () => {
       users({
         loading: false,
         error: null,
-        records: ['test'],
+        records: [ 'test' ],
         total: 0
       }, {
         type: constants.FETCH_USERS_PENDING,
@@ -56,7 +56,7 @@ describe('users reducer', () => {
       {
         loading: true,
         error: null,
-        records: ['test'],
+        records: [ 'test' ],
         total: 0
       }
     );
@@ -305,4 +305,4 @@ describe('users reducer', () => {
       }
     );
   });
-})
+});

@@ -19,7 +19,7 @@ describe('email change reducer', () => {
     ).toEqual(
       initialState
     );
-  })
+  });
 
   it('should handle REQUEST_EMAIL_CHANGE', () => {
     expect(
@@ -149,4 +149,4 @@ describe('email change reducer', () => {
       initialState
     );
   });
-})
+});

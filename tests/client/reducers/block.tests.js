@@ -17,7 +17,7 @@ describe('block reducer', () => {
     ).toEqual(
       initialState
     );
-  })
+  });
 
   it('should handle REQUEST_BLOCK_USER', () => {
     expect(
@@ -111,4 +111,4 @@ describe('block reducer', () => {
       initialState
     );
   });
-})
+});

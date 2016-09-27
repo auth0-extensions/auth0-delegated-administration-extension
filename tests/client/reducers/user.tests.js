@@ -28,7 +28,7 @@ describe('user reducer', () => {
     ).toEqual(
       initialState
     );
-  })
+  });
 
   it('should handle FETCH_USER_LOGS_PENDING', () => {
     expect(
@@ -271,7 +271,6 @@ describe('user reducer', () => {
   });
 
 
-  //devices
   it('should handle FETCH_USER_DEVICES_PENDING', () => {
     expect(
       user(initialState, {
@@ -389,7 +388,6 @@ describe('user reducer', () => {
     );
   });
 
-  //user
   it('should handle FETCH_USER_PENDING', () => {
     expect(
       user(initialState, {
@@ -489,7 +487,7 @@ describe('user reducer', () => {
               user_id: 1,
               name: 'test'
             },
-            memberships: ['department_1', 'department_2']
+            memberships: [ 'department_1', 'department_2' ]
           }
         }
       }).toJSON()
@@ -502,7 +500,7 @@ describe('user reducer', () => {
           user_id: 1,
           name: 'test'
         },
-        memberships: ['department_1', 'department_2'],
+        memberships: [ 'department_1', 'department_2' ],
         logs: {
           loading: false,
           error: null,
@@ -516,5 +514,4 @@ describe('user reducer', () => {
       }
     );
   });
-
-})
+});

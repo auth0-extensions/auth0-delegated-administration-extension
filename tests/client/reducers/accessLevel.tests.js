@@ -15,7 +15,7 @@ describe('accessLevel reducer', () => {
     ).toEqual(
       initialState
     );
-  })
+  });
 
   it('should handle FETCH_ACCESS_LEVEL_PENDING', () => {
     expect(
@@ -50,14 +50,14 @@ describe('accessLevel reducer', () => {
     expect(
       accessLevel(initialState, {
         type: constants.FETCH_ACCESS_LEVEL_FULFILLED,
-        payload: { data: { access_level: 2, memberships: ['test1', 'test2'] } }
+        payload: { data: { access_level: 2, memberships: [ 'test1', 'test2' ] } }
       }).toJSON()
     ).toEqual(
       {
         loading: false,
         error: null,
-        record: { access_level: 2, memberships: ['test1', 'test2'] }
+        record: { access_level: 2, memberships: [ 'test1', 'test2' ] }
       }
     );
   });
-})
+});

@@ -15,7 +15,7 @@ describe('connections reducer', () => {
     ).toEqual(
       initialState
     );
-  })
+  });
 
   it('should handle FETCH_CONNECTIONS_PENDING', () => {
     expect(
@@ -76,4 +76,4 @@ describe('connections reducer', () => {
       }
     );
   });
-})
+});

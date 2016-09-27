@@ -20,7 +20,7 @@ describe('auth reducer', () => {
     ).toEqual(
       initialState
     );
-  })
+  });
 
   it('should handle LOGIN_PENDING', () => {
     expect(
@@ -62,8 +62,7 @@ describe('auth reducer', () => {
   it('should handle LOGIN_FAILED without error payload', () => {
     expect(
       auth(initialState, {
-        type: constants.LOGIN_FAILED,
-
+        type: constants.LOGIN_FAILED
       }).toJSON()
     ).toEqual(
       {
@@ -114,4 +113,4 @@ describe('auth reducer', () => {
       initialState
     );
   });
-})
+});

@@ -20,7 +20,7 @@ describe('User Name Change reducer', () => {
     ).toEqual(
       initialState
     );
-  })
+  });
 
   it('should handle REQUEST_USERNAME_CHANGE', () => {
     expect(
@@ -155,4 +155,4 @@ describe('User Name Change reducer', () => {
       initialState
     );
   });
-})
+});

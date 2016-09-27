@@ -17,7 +17,7 @@ describe('User Delete reducer', () => {
     ).toEqual(
       initialState
     );
-  })
+  });
 
   it('should handle REQUEST_DELETE_USER', () => {
     expect(
@@ -111,4 +111,4 @@ describe('User Delete reducer', () => {
       initialState
     );
   });
-})
+});

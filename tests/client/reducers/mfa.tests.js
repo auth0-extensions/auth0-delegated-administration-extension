@@ -18,7 +18,7 @@ describe('mfa reducer', () => {
     ).toEqual(
       initialState
     );
-  })
+  });
 
   it('should handle REQUEST_REMOVE_MULTIFACTOR', () => {
     expect(
@@ -27,7 +27,7 @@ describe('mfa reducer', () => {
         user: {
           user_id: 'user_1',
           user_name: 'user',
-          email: 'test@mail.com',
+          email: 'test@mail.com'
         },
         provider: {}
       }).toJSON()
@@ -66,7 +66,6 @@ describe('mfa reducer', () => {
   });
 
   it('should handle CANCEL_REMOVE_MULTIFACTOR', () => {
-
     expect(
       mfa(initialState, {
         type: constants.CANCEL_REMOVE_MULTIFACTOR
@@ -120,4 +119,4 @@ describe('mfa reducer', () => {
       initialState
     );
   });
-})
+});

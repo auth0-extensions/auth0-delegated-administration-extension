@@ -19,7 +19,7 @@ describe('Password Change reducer', () => {
     ).toEqual(
       initialState
     );
-  })
+  });
 
   it('should handle REQUEST_PASSWORD_CHANGE', () => {
     expect(
@@ -149,4 +149,4 @@ describe('Password Change reducer', () => {
       initialState
     );
   });
-})
+});

@@ -12,11 +12,11 @@ const initialState = {
 describe('User Create reducer', () => {
   it('should return the initial state', () => {
     expect(
-      userCreate(undefined, {}).toJSON()
+      user(undefined, {}).toJSON()
     ).toEqual(
       initialState
     );
-  })
+  });
 
   it('should handle REQUEST_CREATE_USER', () => {
     expect(
@@ -107,4 +107,4 @@ describe('User Create reducer', () => {
       initialState
     );
   });
-})
+});
