@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import { logout } from '../actions/auth';
 import { applicationActions, connectionActions, authActions } from '../actions';
+import { LoadingPanel } from '../components/Dashboard';
 
 import Header from '../components/Header';
 
@@ -12,6 +13,7 @@ class App extends Component {
     settings: PropTypes.object,
     issuer: PropTypes.string,
     logout: PropTypes.func,
+    settingsLoading: PropTypes.bool,
     fetchApplications: PropTypes.func.isRequired,
     fetchConnections: PropTypes.func.isRequired,
     getAccessLevel: PropTypes.func.isRequired,
@@ -19,10 +21,10 @@ class App extends Component {
   }
 
   componentWillMount() {
+    this.props.getAppSettings();
     this.props.fetchApplications();
     this.props.fetchConnections();
     this.props.getAccessLevel();
-    this.props.getAppSettings();
   }
 
   getDictValue = (index, defaultValue) => {
@@ -35,29 +37,32 @@ class App extends Component {
   }
 
   render() {
+    const { settingsLoading } = this.props;
     return (
       <div>
-        <Header
-          user={this.props.user}
-          issuer={this.props.issuer}
-          getDictValue={this.getDictValue}
-          onLogout={this.props.logout} accessLevel={this.props.accessLevel.toJSON()}
-        />
-        <div className="container">
-          <div className="row">
-            <section className="content-page current">
-              <div className="col-xs-12">
-                <div id="content-area" className="tab-content">
-                  {React.cloneElement(this.props.children, {
-                    accessLevel: this.props.accessLevel.toJSON(),
-                    appSettings: this.props.settings.toJSON(),
-                    getDictValue: this.getDictValue
-                  })}
+        <LoadingPanel show={settingsLoading}>
+          <Header
+            user={this.props.user}
+            issuer={this.props.issuer}
+            getDictValue={this.getDictValue}
+            onLogout={this.props.logout} accessLevel={this.props.accessLevel.toJSON()}
+          />
+          <div className="container">
+            <div className="row">
+              <section className="content-page current">
+                <div className="col-xs-12">
+                  <div id="content-area" className="tab-content">
+                    {React.cloneElement(this.props.children, {
+                      accessLevel: this.props.accessLevel.toJSON(),
+                      appSettings: this.props.settings.toJSON(),
+                      getDictValue: this.getDictValue
+                    })}
+                  </div>
                 </div>
-              </div>
-            </section>
+              </section>
+            </div>
           </div>
-        </div>
+        </LoadingPanel>
       </div>
     );
   }
@@ -69,7 +74,8 @@ function select(state) {
     user: state.auth.get('user'),
     ruleStatus: state.ruleStatus,
     accessLevel: state.accessLevel.get('record'),
-    settings: state.settings.get('record')
+    settings: state.settings.get('record'),
+    settingsLoading: state.settings.get('loading')
   };
 }
 
