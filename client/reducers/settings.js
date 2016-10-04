@@ -9,8 +9,8 @@ const initialState = {
   record: { settings: { dict: { title: '', memberships: '' }, css: '' } }
 };
 
-export const settings = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
-  [constants.FETCH_SETTINGS_PENDING]: (state) =>
+export const settings = createReducer(fromJS(initialState), {
+  [constants.FETCH_SETTINGS_PENDING]: (state, action) =>
     state.merge({
       loading: true,
       error: null
