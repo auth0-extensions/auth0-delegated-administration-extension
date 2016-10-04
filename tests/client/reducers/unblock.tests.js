@@ -62,6 +62,7 @@ describe('unblock reducer', () => {
   });
 
   it('should handle CANCEL_UNBLOCK_USER', () => {
+
     expect(
       unblock(initialState, {
         type: constants.CANCEL_UNBLOCK_USER

@@ -93,6 +93,7 @@ describe('Password Change reducer', () => {
   });
 
   it('should handle CANCEL_PASSWORD_CHANGE', () => {
+
     expect(
       passwordChange(initialState, {
         type: constants.CANCEL_PASSWORD_CHANGE

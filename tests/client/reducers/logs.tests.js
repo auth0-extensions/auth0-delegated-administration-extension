@@ -1,9 +1,7 @@
 import expect from 'expect';
-import moment from 'moment';
-
 import { logs } from '../../../client/reducers/logs';
 import * as constants from '../../../client/constants';
-
+import moment from 'moment';
 const initialState = {
   loading: false,
   error: null,
@@ -119,7 +117,7 @@ describe('logs reducer', () => {
             connection: 'Username-Password-Authentication',
             date: '2016-09-26T13:03:50.703Z',
             type: {
-              event: 'Unknown Event',
+              event: 'Unknown Error',
               icon: {
                 name: '354',
                 color: '#FFA500'
