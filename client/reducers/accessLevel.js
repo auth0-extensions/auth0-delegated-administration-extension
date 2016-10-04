@@ -9,7 +9,7 @@ const initialState = {
   record: { access_level: 0, memberships: [] }
 };
 
-export const accessLevel = createReducer(fromJS(initialState), {
+export const accessLevel = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
   [constants.FETCH_ACCESS_LEVEL_PENDING]: (state) =>
     state.merge({
       loading: true,

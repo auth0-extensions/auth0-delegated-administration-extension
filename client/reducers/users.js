@@ -11,7 +11,7 @@ const initialState = {
   total: 0
 };
 
-export const users = createReducer(fromJS(initialState), {
+export const users = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
   [constants.FETCH_USERS_PENDING]: (state, action) =>
     state.merge({
       ...initialState,

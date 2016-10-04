@@ -13,7 +13,7 @@ const initialState = {
   connection: null
 };
 
-export const passwordChange = createReducer(fromJS(initialState), {
+export const passwordChange = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
   [constants.REQUEST_PASSWORD_CHANGE]: (state, action) =>
     state.merge({
       ...initialState,

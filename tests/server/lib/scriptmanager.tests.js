@@ -1,5 +1,5 @@
-const expect = require('expect');
-const Promise = require('bluebird');
+import expect from 'expect';
+import Promise from 'bluebird';
 
 import ScriptManager from '../../../server/lib/scriptmanager';
 
