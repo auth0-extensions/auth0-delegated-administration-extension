@@ -53,7 +53,7 @@ export default class Editor extends Component {
   }
 
   componentDidMount() {
-    const { editor } = this.refs;
+    const { editor } = this.refs; // eslint-disable-line react/no-string-refs
     editor.getCodeMirror().refresh();
   }
 
@@ -63,7 +63,7 @@ export default class Editor extends Component {
         value: nextProps.value
       });
 
-      const { editor } = this.refs;
+      const { editor } = this.refs; // eslint-disable-line react/no-string-refs
       if (editor) {
         editor.getCodeMirror().setValue(nextProps.value);
       }
@@ -71,7 +71,7 @@ export default class Editor extends Component {
   }
 
   componentDidUpdate() {
-    const { editor } = this.refs;
+    const { editor } = this.refs; // eslint-disable-line react/no-string-refs
     editor.getCodeMirror().refresh();
   }
 
@@ -89,7 +89,7 @@ export default class Editor extends Component {
     const { options } = this.props;
     return (
       <CodeMirror
-        ref="editor"
+        ref="editor" // eslint-disable-line react/no-string-refs
         value={this.state.value || ''}
         onChange={this.onChange}
         options={options}
