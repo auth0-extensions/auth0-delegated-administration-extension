@@ -43,7 +43,7 @@ export default (storage) => {
       .catch(next);
   });
 
-  api.get('/me', (req, res, next) => {
+  api.get('/me', (req, res) => {
     const membershipContext = {
       request: {
         user: req.user
