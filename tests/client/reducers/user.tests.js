@@ -1,8 +1,7 @@
 import expect from 'expect';
-import moment from 'moment';
-
 import { user } from '../../../client/reducers/user';
 import * as constants from '../../../client/constants';
+import moment from 'moment';
 
 const initialState = {
   loading: false,
