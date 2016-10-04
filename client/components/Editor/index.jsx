@@ -94,6 +94,6 @@ export default class Editor extends Component {
         onChange={this.onChange}
         options={options}
       />
-  );
+    );
   }
 }
