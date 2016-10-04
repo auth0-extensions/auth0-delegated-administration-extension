@@ -10,6 +10,7 @@ import ScriptManager from '../lib/scriptmanager';
 import applications from './applications';
 import connections from './connections';
 import scripts from './scripts';
+import me from './me';
 import logs from './logs';
 import users from './users';
 
@@ -30,7 +31,7 @@ export default (storage) => {
   api.use('/scripts', hasAccessLevel(constants.ADMIN_ACCESS_LEVEL), scripts(storage, scriptManager));
   api.use('/users', managementApiClient, users(storage, scriptManager));
   api.use('/logs', managementApiClient, logs(scriptManager));
-
+  api.use('/me', me(scriptManager));
   api.get('/settings', (req, res, next) => {
     const settingsContext = {
       request: {
@@ -41,18 +42,6 @@ export default (storage) => {
     scriptManager.execute('settings', settingsContext)
       .then(settings => res.json({ settings: settings || {} }))
       .catch(next);
-  });
-
-  api.get('/me', (req, res) => {
-    const membershipContext = {
-      request: {
-        user: req.user
-      }
-    };
-
-    scriptManager.execute('memberships', membershipContext)
-      .then(memberships => res.json({ memberships: memberships || [], role: req.user.role || 0 }))
-      .catch(() => res.json({ memberships: [], role: req.user.role || 0 }));
   });
 
   return api;

@@ -3,10 +3,15 @@ import Select from 'react-select';
 import '../../../node_modules/react-select/dist/react-select.css';
 
 export default class MultiSelect extends Component {
+  static defaultProps = {
+    allowCreate: false
+  };
+
   static propTypes = {
     onBlur: PropTypes.func.isRequired,
     onChange: PropTypes.func.isRequired,
-    value: PropTypes.any
+    value: PropTypes.any,
+    allowCreate: PropTypes.boolean
   };
 
   constructor() {
@@ -37,7 +42,19 @@ export default class MultiSelect extends Component {
   }
 
   render() {
-    const { value, onBlur, onChange, ...otherProps } = this.props
+    const { value, onBlur, onChange, allowCreate, ...otherProps } = this.props
+    if (allowCreate) {
+      return (
+        <Select.Creatable
+          {...otherProps}
+          // see https://github.com/JedWatson/react-select/issues/488
+          value={value || ''}
+          onChange={this.handleChange}
+          onBlur={this.handleBlur}
+        />
+      );
+    }
+
     return (
       <Select
         {...otherProps}

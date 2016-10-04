@@ -31,38 +31,39 @@ class App extends Component {
     const appSettings = this.props.settings;
     let val = '';
     if (appSettings.get('settings') && appSettings.get('settings').get('dict')) {
-      val = appSettings.get('settings').get('dict').get(index)
+      val = appSettings.get('settings').get('dict').get(index);
     }
     return val || defaultValue;
   }
 
   render() {
     const { settingsLoading } = this.props;
+    if (settingsLoading) {
+      return <LoadingPanel show={settingsLoading} />;
+    }
     return (
       <div>
-        <LoadingPanel show={settingsLoading}>
-          <Header
-            user={this.props.user}
-            issuer={this.props.issuer}
-            getDictValue={this.getDictValue}
-            onLogout={this.props.logout} accessLevel={this.props.accessLevel.toJSON()}
-          />
-          <div className="container">
-            <div className="row">
-              <section className="content-page current">
-                <div className="col-xs-12">
-                  <div id="content-area" className="tab-content">
-                    {React.cloneElement(this.props.children, {
-                      accessLevel: this.props.accessLevel.toJSON(),
-                      appSettings: this.props.settings.toJSON(),
-                      getDictValue: this.getDictValue
-                    })}
-                  </div>
+        <Header
+          user={this.props.user}
+          issuer={this.props.issuer}
+          getDictValue={this.getDictValue}
+          onLogout={this.props.logout} accessLevel={this.props.accessLevel.toJSON()}
+        />
+        <div className="container">
+          <div className="row">
+            <section className="content-page current">
+              <div className="col-xs-12">
+                <div id="content-area" className="tab-content">
+                  {React.cloneElement(this.props.children, {
+                    accessLevel: this.props.accessLevel.toJSON(),
+                    appSettings: this.props.settings.toJSON(),
+                    getDictValue: this.getDictValue
+                  })}
                 </div>
-              </section>
-            </div>
+              </div>
+            </section>
           </div>
-        </LoadingPanel>
+        </div>
       </div>
     );
   }

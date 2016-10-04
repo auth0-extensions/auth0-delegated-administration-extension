@@ -88,7 +88,7 @@ export default connectContainer(class extends Component {
         <div className="row configuration-tabs">
           <div className="col-xs-12">
             <Tabs defaultActiveKey={this.state.activeTab} animation={false} id="configuration-tabs" >
-              <Tab eventKey={1} title="Filter Hook">
+              <Tab eventKey={1} title={code.filter && code.filter.length ? <span>Filter Hook</span> : <i>Filter Hook</i>}>
                 <LoadingPanel show={scripts.filter && scripts.filter.loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
                   <Error message={scripts.filter && scripts.filter.error} />
                   <p>
@@ -106,7 +106,7 @@ export default connectContainer(class extends Component {
                   </div>
                 </LoadingPanel>
               </Tab>
-              <Tab eventKey={2} title="Access Hook">
+              <Tab eventKey={2} title={code.access && code.access.length ? <span>Access Hook</span> : <i>Access Hook</i>}>
                 <LoadingPanel show={scripts.access && scripts.access.loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
                   <Error message={scripts.access && scripts.access.error} />
                   <p>
@@ -118,11 +118,13 @@ export default connectContainer(class extends Component {
                     onChange={this.onEditorChanged('access')}
                   />
                   <div className="save-config">
-                    <button onClick={this.saveScript('access')} className="btn btn-success">Save Access Hook</button>
+                    <button onClick={this.saveScript('access')} className="btn btn-success">
+                      Save Access Hook
+                    </button>
                   </div>
                 </LoadingPanel>
               </Tab>
-              <Tab eventKey={3} title="Create Hook">
+              <Tab eventKey={3} title={code.create && code.create.length ? <span>Create Hook</span> : <i>Create Hook</i>}>
                 <LoadingPanel show={scripts.create && scripts.create.loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
                   <Error message={scripts.create && scripts.create.error} />
                   <p>
@@ -134,12 +136,13 @@ export default connectContainer(class extends Component {
                     onChange={this.onEditorChanged('create')}
                   />
                   <div className="save-config">
-                    <button onClick={this.saveScript('create')} className="btn btn-success">Save Create Hook
+                    <button onClick={this.saveScript('create')} className="btn btn-success">
+                      Save Create Hook
                     </button>
                   </div>
                 </LoadingPanel>
               </Tab>
-              <Tab eventKey={4} title="Memberships Query">
+              <Tab eventKey={4} title={code.memberships && code.memberships.length ? <span>Memberships Hook</span> : <i>Memberships Hook</i>}>
                 <LoadingPanel show={scripts.memberships && scripts.memberships.loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
                   <Error message={scripts.memberships && scripts.memberships.error} />
                   <p>
@@ -151,13 +154,13 @@ export default connectContainer(class extends Component {
                     onChange={this.onEditorChanged('memberships')}
                   />
                   <div className="save-config">
-                    <button onClick={this.saveScript('memberships')} className="btn btn-success">Save Memberships Query
-                      Query
+                    <button onClick={this.saveScript('memberships')} className="btn btn-success">
+                      Save Memberships Query
                     </button>
                   </div>
                 </LoadingPanel>
               </Tab>
-              <Tab eventKey={5} title="Settings Query">
+              <Tab eventKey={5} title={code.settings && code.settings.length ? <span>Settings Query</span> : <i>Settings Query</i>}>
                 <LoadingPanel show={scripts.settings && scripts.settings.loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
                   <Error message={scripts.settings && scripts.settings.error} />
                   <p>
@@ -169,7 +172,8 @@ export default connectContainer(class extends Component {
                     onChange={this.onEditorChanged('settings')}
                   />
                   <div className="save-config">
-                    <button onClick={this.saveScript('settings')} className="btn btn-success">Save Settings Query
+                    <button onClick={this.saveScript('settings')} className="btn btn-success">
+                      Save Settings Query
                     </button>
                   </div>
                 </LoadingPanel>

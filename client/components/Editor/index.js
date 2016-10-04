@@ -45,10 +45,10 @@ export default class Editor extends Component {
     }
   }
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      value: null
+      value: props.value || ''
     };
   }
 
@@ -58,7 +58,11 @@ export default class Editor extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.value && !this.state.value) {
+    if (this.props.value !== nextProps.value) {
+      this.setState({
+        value: nextProps.value
+      });
+
       const { editor } = this.refs;
       if (editor) {
         editor.getCodeMirror().setValue(nextProps.value);
@@ -82,11 +86,11 @@ export default class Editor extends Component {
   };
 
   render() {
-    const { value, options } = this.props;
+    const { options } = this.props;
     return (
       <CodeMirror
         ref="editor"
-        value={this.state.value || value || ''}
+        value={this.state.value || ''}
         onChange={this.onChange}
         options={options}
       />
