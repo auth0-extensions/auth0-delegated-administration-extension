@@ -10,7 +10,7 @@ const initialState = {
 };
 
 export const accessLevel = createReducer(fromJS(initialState), {
-  [constants.FETCH_ACCESS_LEVEL]: (state) =>
+  [constants.FETCH_ACCESS_LEVEL_PENDING]: (state, action) =>
     state.merge({
       loading: true,
       error: null

@@ -10,7 +10,7 @@ const initialState = {
 };
 
 export const settings = createReducer(fromJS(initialState), {
-  [constants.FETCH_SETTINGS]: (state) =>
+  [constants.FETCH_SETTINGS_PENDING]: (state, action) =>
     state.merge({
       loading: true,
       error: null
