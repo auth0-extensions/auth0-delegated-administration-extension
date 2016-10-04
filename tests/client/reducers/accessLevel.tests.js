@@ -5,7 +5,7 @@ import * as constants from '../../../client/constants';
 const initialState = {
   loading: false,
   error: null,
-  record: { access_level: 0, memberships: [] }
+  record: { access_level: 0, memberships: [], createMemberships: false }
 };
 
 describe('accessLevel reducer', () => {
@@ -26,7 +26,7 @@ describe('accessLevel reducer', () => {
       {
         loading: true,
         error: null,
-        record: { access_level: 0, memberships: [] }
+        record: { access_level: 0, memberships: [], createMemberships: false }
       }
     );
   });
@@ -41,7 +41,7 @@ describe('accessLevel reducer', () => {
       {
         loading: false,
         error: 'An error occured while loading the settings: ERROR',
-        record: { access_level: 0, memberships: [] }
+        record: { access_level: 0, memberships: [], createMemberships: false }
       }
     );
   });

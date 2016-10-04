@@ -87,7 +87,7 @@ export default class ScriptManager {
 
         return new Promise((resolve, reject) => {
           try {
-            const func = safeEval(script);
+            const func = safeEval(script, { require }, { filename: `${name}.js` });
             func(this.createContext(ctx), (err, res) => {
               if (err) {
                 reject(parseScriptError(err, name));

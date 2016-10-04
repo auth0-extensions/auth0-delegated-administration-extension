@@ -39,7 +39,7 @@ export default class Editor extends Component {
           eqeqeq: true,
           laxcomma: true,
           '-W025': true,
-          predef: [ 'module' ]
+          predef: [ 'module', 'require' ]
         }
       }
     }

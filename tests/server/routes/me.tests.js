@@ -35,7 +35,7 @@ describe('# /me', () => {
 
         expect(res.body.createMemberships).toEqual(false);
         expect(res.body.memberships).toEqual([]);
-        expect(res.body.role).toEqual(0);
+        expect(res.body.role).toEqual(1);
         return done();
       });
   });
@@ -54,7 +54,7 @@ describe('# /me', () => {
 
         expect(res.body.createMemberships).toEqual(false);
         expect(res.body.memberships).toEqual([]);
-        expect(res.body.role).toEqual(0);
+        expect(res.body.role).toEqual(1);
         return done();
       });
   });
@@ -74,7 +74,7 @@ describe('# /me', () => {
         expect(res.body.createMemberships).toEqual(false);
         expect(res.body.memberships.length).toEqual(2);
         expect(res.body.memberships[1]).toEqual('Finance');
-        expect(res.body.role).toEqual(0);
+        expect(res.body.role).toEqual(1);
         return done();
       });
   });
@@ -94,7 +94,7 @@ describe('# /me', () => {
         expect(res.body.createMemberships).toEqual(false);
         expect(res.body.memberships.length).toEqual(2);
         expect(res.body.memberships[1]).toEqual('Finance');
-        expect(res.body.role).toEqual(0);
+        expect(res.body.role).toEqual(1);
         return done();
       });
   });
@@ -114,7 +114,7 @@ describe('# /me', () => {
         expect(res.body.createMemberships).toEqual(true);
         expect(res.body.memberships.length).toEqual(2);
         expect(res.body.memberships[1]).toEqual('Finance');
-        expect(res.body.role).toEqual(0);
+        expect(res.body.role).toEqual(1);
         return done();
       });
   });
