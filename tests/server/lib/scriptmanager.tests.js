@@ -5,12 +5,16 @@ import ScriptManager from '../../../server/lib/scriptmanager';
 
 describe('#scripts', () => {
   let scriptmanager;
+  let data;
   const storage = {
-    read: () => Promise.resolve(storage.data),
+    read: () => Promise.resolve(data),
     write: (obj) => {
-      storage.data = obj;
-    },
-    data: {
+      data = obj;
+    }
+  };
+
+  beforeEach(() => {
+    data = {
       scripts: {
         access: 'This is access script', // for reading
         filter: 'function(ctx, callback) { callback(null, ctx.user.name); }', // for successful executing
@@ -18,10 +22,7 @@ describe('#scripts', () => {
         memberships: 'function (ctx, callback) { callback(new Error("MembershipsError")); }', // for error return
         settings: 'function (ctx, callback) { console.log(ctx); callback(); }' // for error catch
       }
-    }
-  };
-
-  before(() => {
+    };
     scriptmanager = new ScriptManager(storage);
   });
 
@@ -62,13 +63,13 @@ describe('#scripts', () => {
 
     it('should write script to storage', (done) => {
       scriptmanager.save('create', 'And this is Create').then(() => {
-        expect(storage.data.scripts.create).toEqual('And this is Create');
+        expect(data.scripts.create).toEqual('And this is Create');
         done();
       });
     });
 
     it('should return null if there is no data', (done) => {
-      storage.data = {};
+      data = {};
 
       scriptmanager.get('access').then(script => {
         expect(script).toEqual(null);
@@ -77,7 +78,7 @@ describe('#scripts', () => {
     });
 
     it('should return null if trying to get nonexistent script', (done) => {
-      storage.data = {};
+      data = {};
 
       scriptmanager.get('filter').then(result => {
         expect(result).toEqual(null);
@@ -88,8 +89,49 @@ describe('#scripts', () => {
     it('should return null if trying to get nonexistent script', (done) => {
       const emptyManager = new ScriptManager(storage);
 
-      emptyManager.execute('filter').then(result => {
+      emptyManager.execute('fameiomzjazm').then(result => {
         expect(result).toEqual(null);
+        done();
+      });
+    });
+
+    it('should support reading custom data', (done) => {
+      function readHook(ctx, cb) {
+        ctx.read()
+          .then(function(customData) {
+            cb(null, customData);
+          });
+      }
+
+      data.scripts.customRead = readHook.toString();
+      data.customData = {
+        myCustomCounter: 22
+      };
+
+      const emptyManager = new ScriptManager(storage);
+      emptyManager.execute('customRead').then(customData => {
+        expect(customData.myCustomCounter).toEqual(22);
+        done();
+      });
+    });
+
+    it('should support writing custom data', (done) => {
+      function writeHook(ctx, cb) {
+        ctx.read()
+          .then(() => ctx.write({ myCustomCounter: 50 }))
+          .then(() => {
+            cb(null, { });
+          });
+      }
+
+      data.scripts.customWrite = writeHook.toString();
+      data.customData = {
+        myCustomCounter: 50
+      };
+
+      const emptyManager = new ScriptManager(storage);
+      emptyManager.execute('customWrite').then(() => {
+        expect(data.customData.myCustomCounter).toEqual(50);
         done();
       });
     });

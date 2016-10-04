@@ -55,6 +55,29 @@ export default class ScriptManager {
       .then(data => this.storage.write(data));
   }
 
+  readCustomData() {
+    return this.storage.read()
+      .then(data => data.customData || { });
+  }
+
+  writeCustomData(customData) {
+    return this.storage.read()
+      .then(data => {
+        data.customData = customData;
+        return data;
+      })
+      .then(data => this.storage.write(data));
+  }
+
+  createContext(ctx) {
+    return {
+      log: this.log,
+      read: this.readCustomData.bind(this),
+      write: this.writeCustomData.bind(this),
+      ...ctx
+    };
+  }
+
   execute(name, ctx) {
     return this.getCached(name)
       .then(script => {
@@ -65,9 +88,7 @@ export default class ScriptManager {
         return new Promise((resolve, reject) => {
           try {
             const func = safeEval(script);
-
-            ctx.log = this.log;
-            func(ctx, (err, res) => {
+            func(this.createContext(ctx), (err, res) => {
               if (err) {
                 reject(parseScriptError(err, name));
               } else {

@@ -43,7 +43,7 @@ export default createForm('user', class extends Component {
       .uniq()
       .sort()
       .value();
-    if (allMemberships.length <= 1) {
+    if (allMemberships.length <= 1 && !createMemberships) {
       return null;
     }
 

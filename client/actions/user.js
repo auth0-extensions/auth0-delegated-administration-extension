@@ -4,6 +4,7 @@ import { push } from 'react-router-redux';
 import * as constants from '../constants';
 import { fetchUserLogs } from './userLog';
 import { fetchUserDevices } from './userDevice';
+import { getAccessLevel } from './auth';
 
 /*
  * Search for users.
@@ -41,6 +42,7 @@ export function createUser(user, onSuccess) {
           if (onSuccess) {
             onSuccess();
           } else {
+            dispatch(getAccessLevel());
             dispatch(fetchUsers());
           }
         }
