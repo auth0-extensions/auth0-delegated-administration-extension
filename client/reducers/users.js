@@ -29,10 +29,10 @@ export const users = createReducer(fromJS(initialState), {
       loading: false,
       total: data.total,
       nextPage: action.meta.page + 1,
-      records: state.get('records').concat(fromJS(data.users.map(user => ({
+      records: fromJS(data.users.map(user => ({
         ...user,
         last_login_relative: user.last_login ? moment(user.last_login).fromNow() : 'Never'
-      }))))
+      })))
     });
   },
   [constants.BLOCK_USER_FULFILLED]: (state, action) =>

@@ -20,7 +20,7 @@ export default class UserInfo extends Component {
       || nextProps.error !== this.props.error;
   }
 
-  getDepartments = (memberships) => {
+  getMemberships = (memberships) => {
     const meta = memberships || [];
     return meta.join(', ');
   }
@@ -47,7 +47,7 @@ export default class UserInfo extends Component {
 
   render() {
     const { user, error, loading, memberships } = this.props;
-    const departments = this.getDepartments(memberships);
+    const currentMemberships = this.getMemberships(memberships);
     const identity = this.getIdentities(user);
     const blocked = this.getBlocked(user);
     return (
@@ -62,7 +62,7 @@ export default class UserInfo extends Component {
             <UserInfoField title="Blocked">{blocked}</UserInfoField>
             <UserInfoField title="Last IP">{user.get('last_ip')}</UserInfoField>
             <UserInfoField title="Logins Count">{user.get('logins_count')}</UserInfoField>
-            <UserInfoField title="Memberships">{departments}</UserInfoField>
+            <UserInfoField title="Memberships">{currentMemberships}</UserInfoField>
             <UserInfoField title="Signed Up">{moment(user.get('created_at')).fromNow()}</UserInfoField>
             <UserInfoField title="Updated">{moment(user.get('updated_at')).fromNow()}</UserInfoField>
             <UserInfoField title="Last Login">{moment(user.get('last_login')).fromNow()}</UserInfoField>
