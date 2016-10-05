@@ -41,9 +41,7 @@ describe('# /me', () => {
   });
 
   it('should return default if script fails', (done) => {
-    const script = (ctx, cb) => cb(new Error('foo'));
-
-    const app = initServer(script);
+    const app = initServer('(ctx, cb) => cb(new Error("foo"))');
     request(app)
       .get('/me')
       .expect(200)
@@ -60,7 +58,7 @@ describe('# /me', () => {
   });
 
   it('should support scripts that return an array', (done) => {
-    const script = (ctx, cb) => cb(null, [ 'IT', 'Finance' ]);
+    const script = '(ctx, cb) => cb(null, [ "IT", "Finance" ])';
 
     const app = initServer(script);
     request(app)
@@ -80,7 +78,7 @@ describe('# /me', () => {
   });
 
   it('should support scripts that return an object', (done) => {
-    const script = (ctx, cb) => cb(null, { memberships: [ 'IT', 'Finance' ] });
+    const script = '(ctx, cb) => cb(null, { memberships: [ "IT", "Finance" ] })';
 
     const app = initServer(script);
     request(app)
@@ -100,7 +98,7 @@ describe('# /me', () => {
   });
 
   it('should support scripts that return an object with createMemberships', (done) => {
-    const script = (ctx, cb) => cb(null, { createMemberships: true, memberships: [ 'IT', 'Finance' ] });
+    const script = '(ctx, cb) => cb(null, { createMemberships: true, memberships: [ "IT", "Finance" ] })';
 
     const app = initServer(script);
     request(app)

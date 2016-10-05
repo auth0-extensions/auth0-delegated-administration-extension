@@ -13,6 +13,7 @@ export default class ScriptManager {
     }
 
     this.log = logger.debug.bind(logger);
+    this.cache = { };
     this.storage = storage;
     this.getCached = Promise.promisify(
       memoizer({
@@ -72,6 +73,7 @@ export default class ScriptManager {
   createContext(ctx) {
     return {
       log: this.log,
+      global: this.cache,
       read: this.readCustomData.bind(this),
       write: this.writeCustomData.bind(this),
       ...ctx

@@ -96,14 +96,13 @@ describe('#scripts', () => {
     });
 
     it('should support reading custom data', (done) => {
-      function readHook(ctx, cb) {
-        ctx.read()
-          .then(function(customData) {
-            cb(null, customData);
-          });
-      }
-
-      data.scripts.customRead = readHook.toString();
+      data.scripts.customRead = `function readHook(ctx, cb) {
+          ctx.read()
+            .then((customData) => {
+              cb(null, customData);
+            });
+        }
+        `;
       data.customData = {
         myCustomCounter: 22
       };
@@ -116,15 +115,15 @@ describe('#scripts', () => {
     });
 
     it('should support writing custom data', (done) => {
-      function writeHook(ctx, cb) {
-        ctx.read()
-          .then(() => ctx.write({ myCustomCounter: 50 }))
-          .then(() => {
-            cb(null, { });
-          });
-      }
-
-      data.scripts.customWrite = writeHook.toString();
+      data.scripts.customWrite = `
+        function writeHook(ctx, cb) {
+          ctx.read()
+            .then(() => ctx.write({ myCustomCounter: 50 }))
+            .then(() => {
+              cb(null, { });
+            });
+        }
+        `;
       data.customData = {
         myCustomCounter: 50
       };
@@ -136,7 +135,27 @@ describe('#scripts', () => {
       });
     });
 
-    it('should throw an error if storage isn`t provided', (done) => {
+    it('should have a cache', (done) => {
+      data.scripts.cacheCounter = `function writeHook(ctx, cb) {
+          ctx.read()
+            .then(() => {
+              ctx.global.counter = (ctx.global.counter || 0) + 1;
+              cb(null, ctx.global);
+            });
+        }`;
+
+      const emptyManager = new ScriptManager(storage);
+      emptyManager.execute('cacheCounter').then(() => {
+        emptyManager.execute('cacheCounter').then(() => {
+          emptyManager.execute('cacheCounter').then((res) => {
+            expect(res.counter).toEqual(3);
+            done();
+          });
+        });
+      });
+    });
+
+    it('should throw an error if storage isnt provided', (done) => {
       expect(() => {
         const manager = new ScriptManager();
         expect(manager).toEqual(null);
