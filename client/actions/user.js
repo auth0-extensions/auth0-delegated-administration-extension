@@ -43,7 +43,7 @@ export function createUser(user, onSuccess) {
             onSuccess();
           } else {
             // Give indexing some time when we reload users.
-            setTimeout(fetchUsers, 1000);
+            setTimeout(() => dispatch(fetchUsers()), 1000);
             dispatch(getAccessLevel());
           }
         }
