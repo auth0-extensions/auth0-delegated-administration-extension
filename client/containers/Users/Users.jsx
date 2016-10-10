@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 import { connectionActions, userActions } from '../../actions';
-
 
 import * as dialogs from './Dialogs';
 import TabsHeader from '../../components/TabsHeader';
@@ -12,20 +11,21 @@ import './Users.css';
 
 class Users extends Component {
   static propTypes = {
-    loading: React.PropTypes.bool.isRequired,
-    error: React.PropTypes.string,
-    users: React.PropTypes.array,
-    connections: React.PropTypes.array,
-    userCreateError: React.PropTypes.string,
-    userCreateLoading: React.PropTypes.bool,
-    validationErrors: React.PropTypes.object,
-    accessLevel: React.PropTypes.object,
-    appSettings: React.PropTypes.object,
-    total: React.PropTypes.number,
-    fetchUsers: React.PropTypes.func.isRequired,
-    getDictValue: React.PropTypes.func.isRequired,
-    createUser: React.PropTypes.func.isRequired,
-    fetchConnections: React.PropTypes.func.isRequired
+    loading: PropTypes.bool.isRequired,
+    error: PropTypes.string,
+    users: PropTypes.array,
+    connections: PropTypes.array,
+    userCreateError: PropTypes.string,
+    userCreateLoading: PropTypes.bool,
+    validationErrors: PropTypes.object,
+    accessLevel: PropTypes.object,
+    appSettings: PropTypes.object,
+    total: PropTypes.number,
+    fetchUsers: PropTypes.func.isRequired,
+    getDictValue: PropTypes.func.isRequired,
+    createUser: PropTypes.func.isRequired,
+    fetchConnections: PropTypes.func.isRequired,
+    requestCreateUser: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -49,7 +49,9 @@ class Users extends Component {
   }
 
   createUser = () => {
-    this.props.requestCreateUser(this.props.accessLevel.get('record').get('memberships').toJS());
+    this.props.requestCreateUser(
+      this.props.accessLevel.get('record').get('memberships') && this.props.accessLevel.get('record').get('memberships').toJS()
+    );
   }
 
   render() {

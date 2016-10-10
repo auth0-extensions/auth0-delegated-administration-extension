@@ -12,6 +12,22 @@ export default class Header extends Component {
     onLogout: React.PropTypes.func.isRequired
   };
 
+  getName(iss, user) {
+    if (user && user.get('name')) {
+      return user.get('name');
+    }
+
+    if (user && user.get('nickname')) {
+      return user.get('nickname');
+    }
+
+    if (user && user.get('email')) {
+      return user.get('email');
+    }
+
+    return iss;
+  }
+
   getPicture(iss, user) {
     if (user && user.get('picture')) {
       return user.get('picture');
@@ -74,7 +90,7 @@ export default class Header extends Component {
                   <span role="button" data-toggle="dropdown" data-target="#" className="btn-dro btn-username">
                     <img role="presentation" src={this.getPicture(issuer, user)} className="picture avatar" />
                     <span className="username-text">
-                      {issuer}
+                      {this.getName(issuer, user)}
                     </span>
                     <i className="icon-budicon-460"></i>
                   </span>

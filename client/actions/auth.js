@@ -2,10 +2,19 @@ import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 
 import * as constants from '../constants';
-import { show, parseHash } from '../utils/lock';
+
+const auth0 = new Auth0({
+  domain: window.config.AUTH0_DOMAIN,
+  clientID: window.config.AUTH0_CLIENT_ID,
+  callbackURL: `${window.config.BASE_URL}/login`,
+  callbackOnLocationHash: true
+});
 
 export function login(returnUrl) {
-  show(returnUrl);
+  auth0.login({
+    state: returnUrl,
+    scope: 'openid name email nickname groups roles app_metadata authorization'
+  });
 
   return {
     type: constants.SHOW_LOGIN
@@ -37,7 +46,7 @@ export function logout() {
 export function loadCredentials() {
   return (dispatch) => {
     if (window.location.hash) {
-      const { id_token: idToken } = parseHash(window.location.hash);
+      const { idToken } = auth0.parseHash(window.location.hash);
       if (idToken) {
         const decodedToken = jwtDecode(idToken);
         if (isExpired(decodedToken)) {
@@ -74,7 +83,9 @@ export function getAccessLevel(onSuccess) {
     },
     payload: {
       promise: axios.get('/api/me', {
-        responseType: 'json'
+        responseType: 'json',
+        timeout: 5000,
+        headers: { 'Content-Type': 'application/json' }
       })
     }
   };
