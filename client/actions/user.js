@@ -4,6 +4,7 @@ import { push } from 'react-router-redux';
 import * as constants from '../constants';
 import { fetchUserLogs } from './userLog';
 import { fetchUserDevices } from './userDevice';
+import { getAccessLevel } from './auth';
 
 /*
  * Search for users.
@@ -41,7 +42,9 @@ export function createUser(user, onSuccess) {
           if (onSuccess) {
             onSuccess();
           } else {
-            dispatch(fetchUsers());
+            // Give indexing some time when we reload users.
+            setTimeout(() => dispatch(fetchUsers()), 1000);
+            dispatch(getAccessLevel());
           }
         }
       },
@@ -91,6 +94,8 @@ export function fetchUserDetail(userId, onSuccess) {
     },
     payload: {
       promise: axios.get(`/api/users/${userId}`, {
+        timeout: 5000,
+        headers: { 'Content-Type': 'application/json' },
         responseType: 'json'
       })
     }

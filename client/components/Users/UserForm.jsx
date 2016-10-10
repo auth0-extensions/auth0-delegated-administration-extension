@@ -10,6 +10,7 @@ export default createForm('user', class extends Component {
     initialValues: PropTypes.object,
     connections: PropTypes.array.isRequired,
     memberships: PropTypes.array.isRequired,
+    createMemberships: PropTypes.boolean,
     getDictValue: React.PropTypes.func
   }
 
@@ -36,8 +37,13 @@ export default createForm('user', class extends Component {
     );
   }
 
-  renderMemberships(membershipsField, memberships) {
-    if (!memberships || memberships.length <= 1) {
+  renderMemberships(membershipsField, memberships, createMemberships) {
+    const allMemberships = _(memberships || [])
+      .concat(membershipsField.value)
+      .uniq()
+      .sort()
+      .value();
+    if (allMemberships.length <= 1 && !createMemberships) {
       return null;
     }
 
@@ -46,7 +52,8 @@ export default createForm('user', class extends Component {
         <div className="form-group">
           <label>{this.props.getDictValue('memberships', 'Memberships')}</label>
           <MultiSelect
-            options={memberships.map(m => ({ value: m, label: m }))}
+            allowCreate={createMemberships}
+            options={allMemberships.map(m => ({ value: m, label: m }))}
             multi
             {...membershipsField}
           />
@@ -71,11 +78,11 @@ export default createForm('user', class extends Component {
 
   render() {
     const connections = this.props.connections;
-    const { fields, memberships } = this.props;
+    const { fields, memberships, createMemberships } = this.props;
 
     return (
       <form className="create-user form-horizontal" style={{ marginTop: '30px' }}>
-        {this.renderMemberships(fields.memberships, memberships)}
+        {this.renderMemberships(fields.memberships, memberships, createMemberships)}
         <div className="custom-field">
           <InputText field={fields.email} fieldName="email" label="Email" ref="email" />
         </div>

@@ -86,7 +86,26 @@ export default (storage, scriptManager) => {
         };
 
         return scriptManager.execute('memberships', membershipContext)
-          .then(memberships => ({ user, memberships }));
+          .then(result => {
+            if (result && Array.isArray(result)) {
+              return {
+                user,
+                memberships: result
+              };
+            }
+
+            if (result && result.memberships) {
+              return {
+                user,
+                memberships: result.memberships
+              };
+            }
+
+            return {
+              user,
+              memberships: [ ]
+            };
+          });
       })
       .then(data => res.json(data))
       .catch(next);

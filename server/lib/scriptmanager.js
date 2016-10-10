@@ -13,6 +13,7 @@ export default class ScriptManager {
     }
 
     this.log = logger.debug.bind(logger);
+    this.cache = { };
     this.storage = storage;
     this.getCached = Promise.promisify(
       memoizer({
@@ -55,6 +56,30 @@ export default class ScriptManager {
       .then(data => this.storage.write(data));
   }
 
+  readCustomData() {
+    return this.storage.read()
+      .then(data => data.customData || { });
+  }
+
+  writeCustomData(customData) {
+    return this.storage.read()
+      .then(data => {
+        data.customData = customData;
+        return data;
+      })
+      .then(data => this.storage.write(data));
+  }
+
+  createContext(ctx) {
+    return {
+      log: this.log,
+      global: this.cache,
+      read: this.readCustomData.bind(this),
+      write: this.writeCustomData.bind(this),
+      ...ctx
+    };
+  }
+
   execute(name, ctx) {
     return this.getCached(name)
       .then(script => {
@@ -64,10 +89,8 @@ export default class ScriptManager {
 
         return new Promise((resolve, reject) => {
           try {
-            const func = safeEval(script);
-
-            ctx.log = this.log;
-            func(ctx, (err, res) => {
+            const func = safeEval(script, { require }, { filename: `${name}.js` });
+            func(this.createContext(ctx), (err, res) => {
               if (err) {
                 reject(parseScriptError(err, name));
               } else {
