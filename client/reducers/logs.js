@@ -11,7 +11,7 @@ const initialState = {
   currentRecord: null
 };
 
-export const logs = createReducer(fromJS(initialState), {
+export const logs = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
   [constants.FETCH_LOGS_PENDING]: (state, action) =>
     state.merge({
       ...initialState,
@@ -34,7 +34,7 @@ export const logs = createReducer(fromJS(initialState), {
         log.type = logTypes[log.type];
         if (!log.type) {
           log.type = {
-            event: 'Unknown Error',
+            event: 'Unknown Event',
             icon: {
               name: '354',
               color: '#FFA500'

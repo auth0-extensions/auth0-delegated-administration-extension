@@ -5,7 +5,7 @@ import * as constants from '../../../client/constants';
 const initialState = {
   loading: false,
   error: null,
-  record: { access_level: 0, memberships: [], createMemberships: false }
+  record: { role: 0, memberships: [], createMemberships: false }
 };
 
 describe('accessLevel reducer', () => {
@@ -26,7 +26,7 @@ describe('accessLevel reducer', () => {
       {
         loading: true,
         error: null,
-        record: { access_level: 0, memberships: [], createMemberships: false }
+        record: { role: 0, memberships: [], createMemberships: false }
       }
     );
   });
@@ -41,7 +41,7 @@ describe('accessLevel reducer', () => {
       {
         loading: false,
         error: 'An error occured while loading the settings: ERROR',
-        record: { access_level: 0, memberships: [], createMemberships: false }
+        record: { role: 2, memberships: [], createMemberships: false }
       }
     );
   });
@@ -50,13 +50,13 @@ describe('accessLevel reducer', () => {
     expect(
       accessLevel(initialState, {
         type: constants.FETCH_ACCESS_LEVEL_FULFILLED,
-        payload: { data: { access_level: 2, memberships: [ 'test1', 'test2' ] } }
+        payload: { data: { role: 2, memberships: [ 'test1', 'test2' ] } }
       }).toJSON()
     ).toEqual(
       {
         loading: false,
         error: null,
-        record: { access_level: 2, memberships: [ 'test1', 'test2' ] }
+        record: { role: 2, memberships: [ 'test1', 'test2' ] }
       }
     );
   });

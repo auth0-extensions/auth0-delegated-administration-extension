@@ -3,7 +3,7 @@ import jwtDecode from 'jwt-decode';
 
 import * as constants from '../constants';
 
-const auth0 = new Auth0({
+const auth0 = new Auth0({ // eslint-disable-line no-undef
   domain: window.config.AUTH0_DOMAIN,
   clientID: window.config.AUTH0_CLIENT_ID,
   callbackURL: `${window.config.BASE_URL}/login`,

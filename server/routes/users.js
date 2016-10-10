@@ -206,7 +206,7 @@ export default (storage, scriptManager) => {
           }
 
           if (response.statusCode < 200 || response.statusCode >= 300) {
-            return next(new Error(body && (body.error || body.message || body.code) || `Request Error: ${response.statusCode}`));
+            return next(new Error((body && (body.error || body.message || body.code)) || `Request Error: ${response.statusCode}`));
           }
 
           return res.json(body);

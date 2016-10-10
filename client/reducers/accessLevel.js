@@ -9,7 +9,7 @@ const initialState = {
   record: { role: 0, memberships: [], createMemberships: false }
 };
 
-export const accessLevel = createReducer(fromJS(initialState), {
+export const accessLevel = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
   [constants.FETCH_ACCESS_LEVEL_PENDING]: (state) =>
     state.merge({
       loading: true,
@@ -19,7 +19,7 @@ export const accessLevel = createReducer(fromJS(initialState), {
     state.merge({
       loading: false,
       error: `An error occured while loading the settings: ${action.errorMessage}`,
-      record: fromJS({ role: 2 })
+      record: fromJS({ ...initialState.record, role: 2 })
     }),
   [constants.FETCH_ACCESS_LEVEL_FULFILLED]: (state, action) =>
     state.merge({
