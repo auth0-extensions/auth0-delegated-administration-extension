@@ -11,7 +11,7 @@ const initialState = {
   record: Map()
 };
 
-export const log = createReducer(fromJS(initialState), {
+export const log = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
   [constants.CLEAR_LOG]: (state) =>
     state.merge({
       ...initialState

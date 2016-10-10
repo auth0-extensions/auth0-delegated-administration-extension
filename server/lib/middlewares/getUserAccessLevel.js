@@ -1,5 +1,7 @@
-import * as constants from '../../constants';
 import _ from 'lodash';
+
+import * as constants from '../../constants';
+
 
 const getUserRoles = (user) => {
   const roles = [

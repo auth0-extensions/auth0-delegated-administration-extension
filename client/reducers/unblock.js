@@ -11,7 +11,7 @@ const initialState = {
   userName: null
 };
 
-export const unblock = createReducer(fromJS(initialState), {
+export const unblock = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
   [constants.REQUEST_UNBLOCK_USER]: (state, action) =>
     state.merge({
       userId: action.user.user_id,
