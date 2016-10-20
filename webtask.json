@@ -6,6 +6,7 @@
   "useHashName": false,
   "description": "This extension allows non-dashboard administrators to manage (a subset of) users.",
   "type": "application",
+  "category": "end_user",
   "logoUrl": "https://cdn.auth0.com/extensions/auth0-delegated-admin/assets/logo.svg",
   "initialUrlPath": "/",
   "docsUrl": "https://auth0.com/docs/extensions/delegated-admin",
