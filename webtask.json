@@ -3,6 +3,7 @@
   "name": "auth0-delegated-admin",
   "version": "2.2.0",
   "author": "auth0",
+  "useHashName": false,
   "description": "This extension allows non-dashboard administrators to manage (a subset of) users.",
   "type": "application",
   "logoUrl": "https://cdn.auth0.com/extensions/auth0-delegated-admin/assets/logo.svg",
@@ -15,7 +16,6 @@
   ],
   "auth0": {
     "createClient": true,
-    "useHashName": false,
     "onUninstallPath": "/.extensions/on-uninstall",
     "scopes": "read:clients delete:clients read:connections read:users update:users delete:users create:users read:logs read:device_credentials update:device_credentials delete:device_credentials"
   },
