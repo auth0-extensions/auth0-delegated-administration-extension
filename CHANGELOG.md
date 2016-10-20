@@ -1,3 +1,9 @@
+## [2.2.0] - 2016-10-20
+
+### Changed
+
+- Extension no longer uses to hash as a name (auth0-delegated-admin is used instead).
+
 ## [2.1.0] - 2016-10-10
 
 ### Changed
