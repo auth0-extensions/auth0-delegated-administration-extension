@@ -1,3 +1,9 @@
+## [2.3.0] - 2016-10-20
+
+### Changed
+
+- The Memberships hooks is now consistent with the other hooks. `ctx.request.user` represents the user that is currently logged in and `ctx.payload.user` represents the user for which the memberships have to be loaded.
+
 ## [2.2.0] - 2016-10-20
 
 ### Changed

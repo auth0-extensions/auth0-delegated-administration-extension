@@ -13,6 +13,9 @@ export default (scriptManager) => {
     const membershipContext = {
       request: {
         user: req.user
+      },
+      payload: {
+        user: req.user
       }
     };
 

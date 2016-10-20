@@ -82,7 +82,12 @@ export default (storage, scriptManager) => {
     req.auth0.users.get({ id: req.params.id })
       .then(user => {
         const membershipContext = {
-          request: { user }
+          request: {
+            user: req.user
+          },
+          payload: {
+            user
+          }
         };
 
         return scriptManager.execute('memberships', membershipContext)
