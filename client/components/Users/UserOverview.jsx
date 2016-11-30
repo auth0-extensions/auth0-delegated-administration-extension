@@ -1,8 +1,8 @@
 import React from 'react';
 import { findDOMNode } from 'react-dom';
 
-import { SearchBar, UsersTable, UserPaginator } from './';
-import { Error, LoadingPanel, TableTotals } from '../Dashboard';
+import { SearchBar, UsersTable } from './';
+import { Error, LoadingPanel, TableTotals } from 'auth0-extension-ui';
 
 export default class UserOverview extends React.Component {
   static propTypes = {

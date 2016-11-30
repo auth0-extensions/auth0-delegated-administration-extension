@@ -1,7 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { Button, Modal } from 'react-bootstrap';
-
-import { Error, Json, LoadingPanel } from '../Dashboard';
+import { Error, Json, LoadingPanel } from 'auth0-extension-ui';
 
 export default class LogDialog extends Component {
   static propTypes = {
