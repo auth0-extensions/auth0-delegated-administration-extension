@@ -1,9 +1,9 @@
 import moment from 'moment';
 import React, { PropTypes, Component } from 'react';
+import { Error, LoadingPanel } from 'auth0-extension-ui';
 
 import './UserInfo.css';
 import UserInfoField from './UserInfoField';
-import { Error, LoadingPanel } from '../Dashboard';
 
 export default class UserInfo extends Component {
   static propTypes = {

@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { LoadingPanel, Error } from '../../components/Dashboard';
+import { LoadingPanel, Error } from 'auth0-extension-ui';
 
 import connectContainer from 'redux-static';
 import { Tabs, Tab } from 'react-bootstrap';

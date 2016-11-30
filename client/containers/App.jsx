@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { logout } from '../actions/auth';
 import { applicationActions, connectionActions, authActions } from '../actions';
-import { LoadingPanel } from '../components/Dashboard';
+import { LoadingPanel } from 'auth0-extension-ui';
 
 import Header from '../components/Header';
 

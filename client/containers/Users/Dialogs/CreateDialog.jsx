@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import connectContainer from 'redux-static';
+import { Error, Confirm } from 'auth0-extension-ui';
 
 import { userActions } from '../../../actions';
 import { UserForm } from '../../../components/Users';
-import { Error, Confirm } from '../../../components/Dashboard';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
