@@ -32,6 +32,7 @@
     "auth0": "^2.1.0",
     "auth0-extension-express-tools": "^0.6.0",
     "auth0-extension-tools": "^0.14.0",
+    "auth0-extension-ui": "git+https://github.com/auth0-extensions/auth0-extension-ui#next",
     "axios": "^0.14.0",
     "babel": "^6.5.2",
     "babel-core": "^6.17.0",
