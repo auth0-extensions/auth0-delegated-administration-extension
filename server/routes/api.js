@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { middlewares, routes } from 'auth0-extension-express-tools';
+import { middlewares } from 'auth0-extension-express-tools';
 
 import { requireScope } from '../lib/middlewares';
 import config from '../lib/config';
@@ -22,17 +22,6 @@ export default (storage) => {
   });
 
   const api = Router();
-  api.use(routes.dashboardAdmins({
-    secret: config('EXTENSION_SECRET'),
-    audience: 'urn:delegated-admin',
-    rta: config('AUTH0_RTA').replace('https://', ''),
-    domain: config('AUTH0_DOMAIN'),
-    baseUrl: config('PUBLIC_WT_URL'),
-    clientName: 'Delegated Administration',
-    urlPrefix: '/admins',
-    sessionStorageKey: 'delegated-admin:apiToken',
-    scopes: 'read:clients delete:clients read:connections read:users update:users delete:users create:users read:logs read:device_credentials update:device_credentials delete:device_credentials'
-  }));
 
   // Allow end users to authenticate.
   api.use(middlewares.authenticateUsers.optional({
