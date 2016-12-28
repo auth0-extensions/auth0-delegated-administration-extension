@@ -115,18 +115,6 @@
     margin-top: -50px;
 }
 
-.custom-field input, .custom-field select, .Select--multi {
-    width: 71%;
-    float: right;
-    margin-right: 10%;
-}
-
-.custom-field label {
-    width: 15%;
-    text-align: right;
-    padding-top: 12px;
-}
-
 .repeat-password label {
     padding-top: 4px;
 }
