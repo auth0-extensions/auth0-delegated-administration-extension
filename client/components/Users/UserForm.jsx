@@ -49,7 +49,7 @@ class AddUserForm extends Component {
         </label>
         <div className="col-xs-9" style={{ padding: '0 0 15px 7px' }}>
           <Field
-            name={memberships}
+            name="memberships"
             id="memberships"
             component={Multiselect}
             loadOptions={(input, callback) => {
