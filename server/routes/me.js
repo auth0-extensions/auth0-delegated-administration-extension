@@ -7,7 +7,7 @@ export default (scriptManager) => {
     const me = {
       createMemberships: false,
       memberships: [],
-      role: req.user.role || 0
+      role: req.user.scope.indexOf('manage:configuration') ? 2 : req.user.scope.indexOf('manage:users') ? 1 : 0
     };
 
     const membershipContext = {
