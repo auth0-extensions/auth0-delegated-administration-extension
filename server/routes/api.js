@@ -5,6 +5,8 @@ import { requireScope } from '../lib/middlewares';
 import config from '../lib/config';
 
 import ScriptManager from '../lib/scriptmanager';
+import getScopes from '../lib/getScopes';
+import * as constants from '../constants';
 
 import applications from './applications';
 import connections from './connections';
@@ -30,7 +32,7 @@ export default (storage) => {
     credentialsRequired: false,
     onLoginSuccess: (req, res, next) => {
       const currentRequest = req;
-      currentRequest.user.scope = req.user.permissions || req.user.app_metadata.permissions || req.user.app_metadata.authorization.permissions;
+      currentRequest.user.scope = getScopes(req.user);
       next();
     }
   }));
@@ -43,15 +45,15 @@ export default (storage) => {
     baseUrl: config('PUBLIC_WT_URL'),
     onLoginSuccess: (req, res, next) => {
       const currentRequest = req;
-      currentRequest.user.scope = [ 'manage:users', 'manage:configuration' ];
+      currentRequest.user.scope = [ constants.USER_PERMISSION, constants.ADMIN_PERMISSION ];
       next();
     }
   }));
 
-  api.use(requireScope('manage:users'));
+  api.use(requireScope(constants.USER_PERMISSION));
   api.use('/applications', managementApiClient, applications());
   api.use('/connections', managementApiClient, connections(scriptManager));
-  api.use('/scripts', requireScope('manage:configuration'), scripts(storage, scriptManager));
+  api.use('/scripts', requireScope(constants.ADMIN_PERMISSION), scripts(storage, scriptManager));
   api.use('/users', managementApiClient, users(storage, scriptManager));
   api.use('/logs', managementApiClient, logs(scriptManager));
   api.use('/me', me(scriptManager));
