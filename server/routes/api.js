@@ -1,9 +1,8 @@
 import { Router } from 'express';
-import { middlewares } from 'auth0-extension-express-tools';
+import { middlewares, routes } from 'auth0-extension-express-tools';
 
-import { getUserAccessLevel, hasAccessLevel } from '../lib/middlewares';
+import { requireScope } from '../lib/middlewares';
 import config from '../lib/config';
-import * as constants from '../constants';
 
 import ScriptManager from '../lib/scriptmanager';
 
@@ -23,12 +22,47 @@ export default (storage) => {
   });
 
   const api = Router();
-  api.use(middlewares.authenticateUser(config('AUTH0_DOMAIN'), config('EXTENSION_CLIENT_ID')));
-  api.use(getUserAccessLevel);
-  api.use(hasAccessLevel(constants.USER_ACCESS_LEVEL));
+  api.use(routes.dashboardAdmins({
+    secret: config('EXTENSION_SECRET'),
+    audience: 'urn:delegated-admin',
+    rta: config('AUTH0_RTA').replace('https://', ''),
+    domain: config('AUTH0_DOMAIN'),
+    baseUrl: config('PUBLIC_WT_URL'),
+    clientName: 'Delegated Administration',
+    urlPrefix: '/admins',
+    sessionStorageKey: 'delegated-admin:apiToken',
+    scopes: 'read:clients delete:clients read:connections read:users update:users delete:users create:users read:logs read:device_credentials update:device_credentials delete:device_credentials'
+  }));
+
+  // Allow end users to authenticate.
+  api.use(middlewares.authenticateUsers.optional({
+    domain: config('AUTH0_DOMAIN'),
+    audience: config('EXTENSION_CLIENT_ID'),
+    credentialsRequired: false,
+    onLoginSuccess: (req, res, next) => {
+      const currentRequest = req;
+      currentRequest.user.scope = req.user.permissions || req.user.app_metadata.permissions || req.user.app_metadata.authorization.permissions;
+      next();
+    }
+  }));
+
+  // Allow dashboard admins to authenticate.
+  api.use(middlewares.authenticateAdmins.optional({
+    credentialsRequired: false,
+    secret: config('EXTENSION_SECRET'),
+    audience: 'urn:delegated-admin',
+    baseUrl: config('PUBLIC_WT_URL'),
+    onLoginSuccess: (req, res, next) => {
+      const currentRequest = req;
+      currentRequest.user.scope = [ 'manage:users', 'manage:configuration' ];
+      next();
+    }
+  }));
+
+  api.use(requireScope('manage:users'));
   api.use('/applications', managementApiClient, applications());
   api.use('/connections', managementApiClient, connections(scriptManager));
-  api.use('/scripts', hasAccessLevel(constants.ADMIN_ACCESS_LEVEL), scripts(storage, scriptManager));
+  api.use('/scripts', requireScope('manage:configuration'), scripts(storage, scriptManager));
   api.use('/users', managementApiClient, users(storage, scriptManager));
   api.use('/logs', managementApiClient, logs(scriptManager));
   api.use('/me', me(scriptManager));
