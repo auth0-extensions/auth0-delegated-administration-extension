@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import connectContainer from 'redux-static';
 import { Error, Confirm } from 'auth0-extension-ui';
+import { Modal } from 'react-bootstrap';
 
 import { userActions } from '../../../actions';
 import { UserForm } from '../../../components/Users';
@@ -33,26 +34,28 @@ export default connectContainer(class extends Component {
     this.props.createUser(user);
   }
 
-  onConfirm = () => {
-    this.refs.form.submit();
-  }
-
   render() {
     const { error, loading, record } = this.props.userCreate.toJS();
     const connections = this.props.connections.toJS();
     const accessLevel = this.props.accessLevel.get('record').toJS();
 
     return (
-      <Confirm title="Create User" show={record !== null} loading={loading} onCancel={this.props.cancelCreateUser} onConfirm={this.onConfirm}>
-        <Error message={error} />
+      <Modal show={record !== null} className="modal-overflow-visible" onHide={this.props.cancelCreateUser}>
+        <Modal.Header closeButton={loading} className="has-border">
+          <Modal.Title>Create User</Modal.Title>
+        </Modal.Header>
+
         <UserForm
-          ref="form"
           connections={connections.records} initialValues={record}
           createMemberships={accessLevel.createMemberships}
-          memberships={accessLevel.memberships} onSubmit={this.onSubmit}
+          memberships={accessLevel.memberships}
           getDictValue={this.props.getDictValue}
-        />
-      </Confirm>
+          onClose={this.props.cancelCreateUser}
+          onSubmit={this.onSubmit}
+        >
+          <Error message={error} />
+        </UserForm>
+      </Modal>
     );
   }
 });
