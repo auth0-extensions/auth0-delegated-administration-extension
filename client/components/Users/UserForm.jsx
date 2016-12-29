@@ -73,7 +73,7 @@ class AddUserForm extends Component {
 
     return (
       <Field
-        label="Interval"
+        label="Connection"
         name="connection"
         id="connection"
         component={InputCombo}
