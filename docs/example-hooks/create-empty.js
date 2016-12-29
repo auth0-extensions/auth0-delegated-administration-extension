@@ -1,5 +1,5 @@
 /*
- * This default create hook will allow dashboard user to create new users.
+ * This default write hook will allow dashboard user to create new users.
  */
 function(ctx, callback) {
   return callback(null, {
