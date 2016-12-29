@@ -7,7 +7,6 @@ import { reduxForm, Field, formValueSelector } from 'redux-form';
 
 class AddUserForm extends Component {
   static propTypes = {
-    fields: PropTypes.object.isRequired,
     initialValues: PropTypes.object,
     connections: PropTypes.array.isRequired,
     memberships: PropTypes.array.isRequired,
@@ -17,7 +16,8 @@ class AddUserForm extends Component {
     hasMembership: PropTypes.array,
     onClose: React.PropTypes.func.isRequired,
     handleSubmit: React.PropTypes.func.isRequired,
-    submitting: React.PropTypes.boolean
+    submitting: React.PropTypes.boolean,
+    customfields: React.PropTypes.string
   }
 
   renderUsername(connections, hasSelectedConnection) {
@@ -83,8 +83,45 @@ class AddUserForm extends Component {
     );
   }
 
+  getFieldComponent(componentName) {
+    switch (componentName) {
+      case 'InputText': {
+        return InputText;
+      }
+      case 'InputCombo': {
+        return InputCombo;
+      }
+      default: {
+        return InputText;
+      }
+    }
+  }
+
+  renderCustomFields(customfields) {
+    if (customfields) {
+      const fields = JSON.parse(customfields);
+      return (
+        <div>
+          { _.map(fields, (field) => ((
+            <Field
+              name={field.name}
+              type={field.type}
+              label={field.label}
+              component={this.getFieldComponent(field.component)}
+              options={field.options ? _.map(field.options, (i) => ({ value: i, text: i })) : null}
+            />
+          )
+          ))}
+        </div>
+      );
+    }
+
+    return null;
+  }
+
   render() {
     const connections = this.props.connections;
+    const customfields = this.props.customfields;
     const {
       handleSubmit,
       submitting,
@@ -119,6 +156,7 @@ class AddUserForm extends Component {
               component={InputText}
             />
             {this.renderConnections(connections)}
+            {this.renderCustomFields(customfields)}
           </div>
         </Modal.Body>
         <Modal.Footer>
