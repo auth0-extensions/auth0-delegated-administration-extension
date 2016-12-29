@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableColumn,
   TableRow
-} from '../Dashboard';
+} from 'auth0-extension-ui';
 
 export default class UsersTable extends Component {
   static propTypes = {

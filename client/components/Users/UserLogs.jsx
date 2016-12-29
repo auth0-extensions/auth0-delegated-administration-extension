@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Error, LoadingPanel, Table, TableBody, TableIconCell, TableTextCell, TableHeader, TableColumn, TableRow } from '../Dashboard';
+import { Error, LoadingPanel, Table, TableBody, TableIconCell, TableTextCell, TableHeader, TableColumn, TableRow } from 'auth0-extension-ui';
 
 export default class UserLogs extends Component {
   static propTypes = {

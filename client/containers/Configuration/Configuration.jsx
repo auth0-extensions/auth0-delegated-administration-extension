@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { LoadingPanel, Error } from '../../components/Dashboard';
+import { LoadingPanel, Error, Json } from 'auth0-extension-ui';
 
 import connectContainer from 'redux-static';
 import { Tabs, Tab } from 'react-bootstrap';
@@ -58,6 +58,7 @@ export default connectContainer(class extends Component {
     this.props.fetchScript('create');
     this.props.fetchScript('memberships');
     this.props.fetchScript('settings');
+    this.props.fetchScript('customfields');
   };
 
   saveScript = (name) => () => {
@@ -124,11 +125,11 @@ export default connectContainer(class extends Component {
                   </div>
                 </LoadingPanel>
               </Tab>
-              <Tab eventKey={3} title={code.create && code.create.length ? <span>Create Hook</span> : <i>Create Hook</i>}>
+              <Tab eventKey={3} title={code.create && code.create.length ? <span>Write Hook</span> : <i>Write Hook</i>}>
                 <LoadingPanel show={scripts.create && scripts.create.loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
                   <Error message={scripts.create && scripts.create.error} />
                   <p>
-                    The <strong>create hook</strong> will run every time a new user is created. This hook will allow
+                    The <strong>write hook</strong> will run every time a new user is created. This hook will allow
                     you to shape the user object before it's sent to Auth0. The context object contains the request (with the current user) and the payload sent by the end user.
                   </p>
                   <Editor
@@ -137,7 +138,7 @@ export default connectContainer(class extends Component {
                   />
                   <div className="save-config">
                     <button onClick={this.saveScript('create')} className="btn btn-success">
-                      Save Create Hook
+                      Save Write Hook
                     </button>
                   </div>
                 </LoadingPanel>
@@ -174,6 +175,42 @@ export default connectContainer(class extends Component {
                   <div className="save-config">
                     <button onClick={this.saveScript('settings')} className="btn btn-success">
                       Save Settings Query
+                    </button>
+                  </div>
+                </LoadingPanel>
+              </Tab>
+              <Tab eventKey={6} title={code.customfields && code.customfields.length ? <span>Custom Fields</span> : <i>Custom Fields</i>}>
+                <LoadingPanel show={scripts.customfields && scripts.customfields.loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
+                  <Error message={scripts.customfields && scripts.customfields.error} />
+                  <p>
+                    With the <strong>custom fields</strong> you can add more fields to the create user form.
+                    You can use <a href="https://github.com/auth0-extensions/auth0-extension-ui">auth0-extension-ui</a> components to add more fields and you should use JSON syntax to add them. The supported components are <strong>InputText</strong> and <strong>InputCombo</strong>. Don't forget to decide what do to with added fields in 'Write Hook'.
+                  </p>
+                  <p>Example:</p>
+                  <p>
+                    { JSON.stringify([
+                    {
+                      "name": "phone",
+                      "type": "text",
+                      "label": "Phone",
+                      "component": "InputText"
+                    },
+                    {
+                      "name": "gender",
+                      "type": "select",
+                      "options": [ "male", "female" ],
+                      "label": "Gender",
+                      "component": "InputCombo"
+                    }
+                  ]) }
+                  </p>
+                  <Editor
+                    value={code.customfields || ''}
+                    onChange={this.onEditorChanged('customfields')}
+                  />
+                  <div className="save-config">
+                    <button onClick={this.saveScript('customfields')} className="btn btn-success">
+                      Save Custom Fields
                     </button>
                   </div>
                 </LoadingPanel>

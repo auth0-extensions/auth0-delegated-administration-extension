@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import connectContainer from 'redux-static';
 
 import { userActions } from '../../../actions';
-import { Error, Confirm } from '../../../components/Dashboard';
+import { Error, Confirm } from 'auth0-extension-ui';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({

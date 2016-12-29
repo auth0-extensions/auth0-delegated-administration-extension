@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react';
-import { Table, TableIconCell, TableBody, TableTextCell, TableHeader, TableColumn, TableRow } from '../Dashboard';
+import { Table, TableIconCell, TableBody, TableTextCell, TableHeader, TableColumn, TableRow } from 'auth0-extension-ui';
 
 export default class LogsTable extends Component {
   static propTypes = {
