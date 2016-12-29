@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { LoadingPanel, Error } from 'auth0-extension-ui';
+import { LoadingPanel, Error, Json } from 'auth0-extension-ui';
 
 import connectContainer from 'redux-static';
 import { Tabs, Tab } from 'react-bootstrap';
@@ -58,6 +58,7 @@ export default connectContainer(class extends Component {
     this.props.fetchScript('create');
     this.props.fetchScript('memberships');
     this.props.fetchScript('settings');
+    this.props.fetchScript('customfields');
   };
 
   saveScript = (name) => () => {
@@ -174,6 +175,42 @@ export default connectContainer(class extends Component {
                   <div className="save-config">
                     <button onClick={this.saveScript('settings')} className="btn btn-success">
                       Save Settings Query
+                    </button>
+                  </div>
+                </LoadingPanel>
+              </Tab>
+              <Tab eventKey={6} title={code.customfields && code.customfields.length ? <span>Custom Fields</span> : <i>Custom Fields</i>}>
+                <LoadingPanel show={scripts.customfields && scripts.customfields.loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
+                  <Error message={scripts.customfields && scripts.customfields.error} />
+                  <p>
+                    With the <strong>custom fields</strong> you can add more fields to the create user form.
+                    You can use <a href="https://github.com/auth0-extensions/auth0-extension-ui">auth0-extension-ui</a> components to add more fields and you should use JSON syntax to add them. The supported components are <strong>InputText</strong> and <strong>InputCombo</strong>. Don't forget to decide what do to with added fields in 'Create Hook'.
+                  </p>
+                  <p>Example:</p>
+                  <p>
+                    { JSON.stringify([
+                    {
+                      "name": "phone",
+                      "type": "text",
+                      "label": "Phone",
+                      "component": "InputText"
+                    },
+                    {
+                      "name": "gender",
+                      "type": "select",
+                      "options": [ "male", "female" ],
+                      "label": "Gender",
+                      "component": "InputCombo"
+                    }
+                  ]) }
+                  </p>
+                  <Editor
+                    value={code.customfields || ''}
+                    onChange={this.onEditorChanged('customfields')}
+                  />
+                  <div className="save-config">
+                    <button onClick={this.saveScript('customfields')} className="btn btn-success">
+                      Save Custom Fields
                     </button>
                   </div>
                 </LoadingPanel>
