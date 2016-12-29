@@ -1,5 +1,5 @@
 /*
- * This create hook will run each time a user is created.
+ * This hook will run each time a user is created.
  * When admins create users they can assign them to any vendor they like.
  * If the vendor does not exist, it will automatically be stored in storage.
  *
