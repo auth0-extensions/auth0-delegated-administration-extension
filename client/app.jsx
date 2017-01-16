@@ -1,3 +1,4 @@
+import 'string.prototype.endswith';
 import axios from 'axios';
 import React from 'react';
 import ReactDOM from 'react-dom';

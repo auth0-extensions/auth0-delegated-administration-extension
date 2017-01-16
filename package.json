@@ -78,6 +78,7 @@
     "reselect": "^2.5.4",
     "safe-eval": "^0.3.0",
     "semver": "^5.1.0",
+    "string.prototype.endswith": "^0.2.0",
     "webtask-tools": "^3.1.0",
     "winston": "^2.2.0"
   },
