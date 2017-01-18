@@ -1,6 +1,6 @@
 {
   "name": "auth0-delegated-admin",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "description": "Delegated Administration Dashboard",
   "engines": {
     "node": "6.2.0"
@@ -18,7 +18,7 @@
     "extension:build": "webpack -p --config ./build/extension/webpack.config.js",
     "extension:size": "cross-env NODE_ENV=production webpack -p --config ./build/extension/webpack.config.js --json > ./build/extension/bundle-size.json && node ./build/extension/bundle-size.js",
     "win-extension:bundle": "copy dist\\auth0-delegated-admin.extension.%npm_package_version%.js build\\bundle.js /y",
-    "build": "npm run clean && npm run client:build && npm run extension:build",
+    "build": "npm run clean && npm run client:build && npm run extension:build && cp dist/auth0-delegated-admin.extension.$npm_package_version.js build/bundle.js",
     "win-build": "cross-env NODE_ENV=production && npm run clean && npm run client:build && npm run extension:build && npm run win-extension:bundle",
     "lint:js": "eslint --ignore-path .gitignore --ignore-pattern docs --ignore-pattern tests --ignore-pattern build --ignore-pattern webpack ."
   },
