@@ -1,18 +1,24 @@
+## [2.3.1] - 2017-01-18
+
+### Fixed
+
+- Polyfill for `string.endsWith` in IE
+
 ## [2.3.0] - 2016-10-20
 
-### Changed
+### Changes
 
 - The Memberships hooks is now consistent with the other hooks. `ctx.request.user` represents the user that is currently logged in and `ctx.payload.user` represents the user for which the memberships have to be loaded.
 
 ## [2.2.0] - 2016-10-20
 
-### Changed
+### Changes
 
 - Extension no longer uses to hash as a name (auth0-delegated-admin is used instead).
 
 ## [2.1.0] - 2016-10-10
 
-### Changed
+### Changes
 
 - Only show web, spa and mobile apps in password reset page
 - Better loading animation at startup.
@@ -34,6 +40,6 @@
 
 ## [2.0.0]
 
-### Changed
+### Changes
 
 - Support delegated administration with memberships (eg: people in my group, department, office, ...) through "hooks".
