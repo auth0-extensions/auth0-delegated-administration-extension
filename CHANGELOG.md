@@ -1,3 +1,9 @@
+## [2.3.3] - 2017-01-20
+
+### Fixed
+
+- Polyfill for `Promise` in IE
+
 ## [2.3.2] - 2017-01-18
 
 ### Fixed

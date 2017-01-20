@@ -1,6 +1,6 @@
 {
   "name": "auth0-delegated-admin",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "description": "Delegated Administration Dashboard",
   "engines": {
     "node": "6.2.0"
@@ -47,6 +47,7 @@
     "chai": "^3.5.0",
     "codemirror": "^5.19.0",
     "ejs": "^2.4.2",
+    "es6-promise": "^4.0.5",
     "expect": "^1.20.2",
     "express": "^4.13.4",
     "express-jwt": "^3.4.0",
