@@ -1,3 +1,9 @@
+## [2.3.4] - 2017-01-20
+
+### Fixed
+
+- Polyfill everything with 'babel-polyfill'
+
 ## [2.3.3] - 2017-01-20
 
 ### Fixed

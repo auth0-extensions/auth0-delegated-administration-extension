@@ -1,4 +1,4 @@
-import 'es6-promise/auto';
+import 'babel-polyfill';
 import 'string.prototype.endswith';
 
 import axios from 'axios';
