@@ -25,13 +25,7 @@ export default (storage, scriptManager) => {
       request: {
         user: req.user
       },
-      payload: {
-        email: req.body.email,
-        username: req.body.username,
-        connection: req.body.connection,
-        memberships: req.body.memberships,
-        password: req.body.password
-      }
+      payload: req.body
     };
 
     return scriptManager.execute('create', createContext)
