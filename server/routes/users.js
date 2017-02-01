@@ -62,8 +62,11 @@ export default (storage, scriptManager) => {
         return req.auth0.users.getAll(options);
       })
       .then(data =>
-        Promise.map(data.users, user =>
-          scriptManager.execute('access', { request: { user: req.user }, payload: { user, action: 'read:user' } }))
+        Promise.map(data.users, (user, index) =>
+          scriptManager.execute('access', { request: { user: req.user }, payload: { user, action: 'read:user' } })
+            .then(parsedUser => {
+              data.users[index] = parsedUser || user;
+            }))
           .then(() => data))
       .then(users => res.json(users))
       .catch(next);
@@ -72,7 +75,7 @@ export default (storage, scriptManager) => {
   /*
    * Get a single user.
    */
-  api.get('/:id', verifyUserAccess('read:user', scriptManager), (req, res, next) => {
+  api.get('/:id', (req, res, next) => {
     req.auth0.users.get({ id: req.params.id })
       .then((user) => {
         const membershipContext = {
@@ -106,6 +109,12 @@ export default (storage, scriptManager) => {
             };
           });
       })
+      .then(data =>
+        scriptManager.execute('access', { request: { user: req.user }, payload: { user: data.user, action: 'read:user' } })
+          .then(parsedUser => {
+            data.user = parsedUser || data.user;
+            return data;
+          }))
       .then(data => res.json(data))
       .catch(next);
   });
