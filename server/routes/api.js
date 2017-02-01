@@ -1,11 +1,12 @@
 import { Router } from 'express';
 import { middlewares } from 'auth0-extension-express-tools';
 
-import { getUserAccessLevel, hasAccessLevel } from '../lib/middlewares';
+import { requireScope } from '../lib/middlewares';
 import config from '../lib/config';
-import * as constants from '../constants';
 
 import ScriptManager from '../lib/scriptmanager';
+import getScopes from '../lib/getScopes';
+import * as constants from '../constants';
 
 import applications from './applications';
 import connections from './connections';
@@ -23,12 +24,36 @@ export default (storage) => {
   });
 
   const api = Router();
-  api.use(middlewares.authenticateUser(config('AUTH0_DOMAIN'), config('EXTENSION_CLIENT_ID')));
-  api.use(getUserAccessLevel);
-  api.use(hasAccessLevel(constants.USER_ACCESS_LEVEL));
+
+  // Allow end users to authenticate.
+  api.use(middlewares.authenticateUsers.optional({
+    domain: config('AUTH0_DOMAIN'),
+    audience: config('EXTENSION_CLIENT_ID'),
+    credentialsRequired: false,
+    onLoginSuccess: (req, res, next) => {
+      const currentRequest = req;
+      currentRequest.user.scope = getScopes(req.user);
+      next();
+    }
+  }));
+
+  // Allow dashboard admins to authenticate.
+  api.use(middlewares.authenticateAdmins.optional({
+    credentialsRequired: false,
+    secret: config('EXTENSION_SECRET'),
+    audience: 'urn:delegated-admin',
+    baseUrl: config('PUBLIC_WT_URL'),
+    onLoginSuccess: (req, res, next) => {
+      const currentRequest = req;
+      currentRequest.user.scope = [ constants.USER_PERMISSION, constants.ADMIN_PERMISSION ];
+      next();
+    }
+  }));
+
+  api.use(requireScope(constants.USER_PERMISSION));
   api.use('/applications', managementApiClient, applications());
   api.use('/connections', managementApiClient, connections(scriptManager));
-  api.use('/scripts', hasAccessLevel(constants.ADMIN_ACCESS_LEVEL), scripts(storage, scriptManager));
+  api.use('/scripts', requireScope(constants.ADMIN_PERMISSION), scripts(storage, scriptManager));
   api.use('/users', managementApiClient, users(storage, scriptManager));
   api.use('/logs', managementApiClient, logs(scriptManager));
   api.use('/me', me(scriptManager));

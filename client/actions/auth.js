@@ -34,8 +34,7 @@ function isExpired(decodedToken) {
 
 export function logout() {
   return (dispatch) => {
-    localStorage.removeItem('apiToken');
-    sessionStorage.removeItem('apiToken');
+    sessionStorage.removeItem('delegated-admin:apiToken');
 
     dispatch({
       type: constants.LOGOUT_SUCCESS
@@ -45,27 +44,34 @@ export function logout() {
 
 export function loadCredentials() {
   return (dispatch) => {
-    if (window.location.hash) {
-      const { idToken } = auth0.parseHash(window.location.hash);
-      if (idToken) {
-        const decodedToken = jwtDecode(idToken);
+    const token = sessionStorage.getItem('delegated-admin:apiToken');
+    if (token || window.location.hash) {
+      let apiToken = token;
+
+      const hash = auth0.parseHash(window.location.hash);
+      if (hash && hash.idToken) {
+        apiToken = hash.idToken;
+      }
+
+      if (apiToken) {
+        const decodedToken = jwtDecode(apiToken);
         if (isExpired(decodedToken)) {
           return;
         }
 
-        axios.defaults.headers.common.Authorization = `Bearer ${idToken}`;
+        axios.defaults.headers.common.Authorization = `Bearer ${apiToken}`;
 
         dispatch({
           type: constants.LOADED_TOKEN,
           payload: {
-            token: idToken
+            token: apiToken
           }
         });
 
         dispatch({
           type: constants.LOGIN_SUCCESS,
           payload: {
-            token: idToken,
+            token: apiToken,
             decodedToken,
             user: decodedToken
           }
