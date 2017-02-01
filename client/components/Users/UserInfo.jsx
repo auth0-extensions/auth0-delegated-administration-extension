@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import moment from 'moment';
 import React, { PropTypes, Component } from 'react';
 import { Error, LoadingPanel } from 'auth0-extension-ui';
@@ -50,6 +51,8 @@ export default class UserInfo extends Component {
     const currentMemberships = this.getMemberships(memberships);
     const identity = this.getIdentities(user);
     const blocked = this.getBlocked(user);
+    const defaultFields = [ 'user_id', 'name', 'username', 'email', 'identities', 'app_metadata', 'created_at', 'email_verified', 'picture', 'updated_at' ];
+    const customFields = _.keys(_.omit(user.toJS(), defaultFields));
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
         <Error message={error}>
@@ -66,6 +69,9 @@ export default class UserInfo extends Component {
             <UserInfoField title="Signed Up">{moment(user.get('created_at')).fromNow()}</UserInfoField>
             <UserInfoField title="Updated">{moment(user.get('updated_at')).fromNow()}</UserInfoField>
             <UserInfoField title="Last Login">{moment(user.get('last_login')).fromNow()}</UserInfoField>
+            {customFields.map((item) =>
+              <UserInfoField title={item}>{user.get(item)}</UserInfoField>
+            )}
           </div>
         </Error>
       </LoadingPanel>

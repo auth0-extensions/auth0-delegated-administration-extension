@@ -21,5 +21,5 @@ module.exports = (action, scriptManager) => (req, res, next) =>
 
       return scriptManager.execute('access', accessContext);
     })
-    .then(next)
+    .then(() => next())
     .catch(next);
