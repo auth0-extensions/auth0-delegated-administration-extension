@@ -40,6 +40,11 @@ class Users extends Component {
     this.props.fetchConnections();
   };
 
+  onPageChange = (page) => {
+    console.log('page change requested', page);
+    this.props.fetchUsers('', false, page - 1);
+  }
+
   onSearch = (query) => {
     this.props.fetchUsers(query);
   }
@@ -55,7 +60,7 @@ class Users extends Component {
   }
 
   render() {
-    const { loading, error, users, total, connections, userCreateError, userCreateLoading, accessLevel } = this.props;
+    const { loading, error, users, total, connections, userCreateError, userCreateLoading, accessLevel, nextPage, pages } = this.props;
     return (
       <div className="users">
         <TabsHeader role={accessLevel.get('record').get('role')} />
@@ -74,9 +79,12 @@ class Users extends Component {
         <UserOverview
           onReset={this.onReset}
           onSearch={this.onSearch}
+          onPageChange={this.onPageChange}
           error={error}
           users={users}
           total={total}
+          nextPage={nextPage}
+          pages={pages}
           loading={loading}
           role={accessLevel.role}
         />
@@ -96,7 +104,8 @@ function mapStateToProps(state) {
     users: state.users.get('records').toJS(),
     connections: state.connections.get('records').toJS(),
     total: state.users.get('total'),
-    nextPage: state.users.get('nextPage')
+    nextPage: state.users.get('nextPage'),
+    pages: state.users.get('pages')
   };
 }
 
