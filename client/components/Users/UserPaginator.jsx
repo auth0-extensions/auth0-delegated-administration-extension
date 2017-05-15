@@ -11,6 +11,18 @@ export default class UserPaginator extends React.Component {
     return this.props.nextPage !== nextProps.nextPage;
   }
 
+  onPreviousPage = () => {
+    this.props.onPageChange(this.props.nextPage - 1);
+  }
+
+  onNextPage = () => {
+    this.props.onPageChange(this.props.nextPage + 1);
+  }
+  
+  changePage = (page) => {
+    this.props.onPageChange(page)
+  }
+
   render() {
     const { onPageChange, nextPage, pages } = this.props;
 
@@ -19,7 +31,7 @@ export default class UserPaginator extends React.Component {
         <ul className="pagination pull-right">
           <li
             style={{ cursor: 'pointer' }}
-            onClick={() => onPageChange(nextPage - 1)}
+            onClick={() => this.onPreviousPage()}
             className={nextPage - 2 < 0 ? 'disabled' : ''}
           >
             <a>
@@ -33,7 +45,7 @@ export default class UserPaginator extends React.Component {
                 key={i}
                 style={{ cursor: 'pointer' }}
                 className={nextPage === page ? 'active' : ''}
-                onClick={() => onPageChange(page)}
+                onClick={() => this.changePage(page)}
               >
                 <a>{page}</a>
               </li>
@@ -41,7 +53,7 @@ export default class UserPaginator extends React.Component {
           })}
           <li
             style={{ cursor: 'pointer' }}
-            onClick={() => onPageChange(nextPage + 1)}
+            onClick={() => this.onNextPage()}
             className={nextPage + 1 > pages ? 'disabled' : ''}
           >
             <a>

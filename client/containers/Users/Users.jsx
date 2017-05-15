@@ -41,7 +41,6 @@ class Users extends Component {
   };
 
   onPageChange = (page) => {
-    console.log('page change requested', page);
     this.props.fetchUsers('', false, page - 1);
   }
 
