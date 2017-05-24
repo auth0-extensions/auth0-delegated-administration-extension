@@ -6,6 +6,7 @@ import { connectionActions, userActions } from '../../actions';
 import * as dialogs from './Dialogs';
 import TabsHeader from '../../components/TabsHeader';
 import { UserOverview, UserForm } from '../../components/Users';
+import { Pagination, TableTotals } from '../../components/Dashboard';
 
 import './Users.css';
 
@@ -87,6 +88,20 @@ class Users extends Component {
           loading={loading}
           role={accessLevel.role}
         />
+        <div className="row">
+          <div className="col-xs-12">
+            {pages > 1 ?
+              <Pagination
+                totalItems={total}
+                handlePageChange={this.onPageChange}
+                perPage={100}
+                currentPage={nextPage}
+              /> :
+              <TableTotals currentCount={users.length} totalCount={total} />
+            }
+            
+          </div>
+        </div>
       </div>
     );
   }

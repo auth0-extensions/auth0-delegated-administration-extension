@@ -8,4 +8,3 @@ export UserProfile from './UserProfile';
 export UserInfo from './UserInfo';
 export UsersTable from './UsersTable';
 export SearchBar from './SearchBar';
-export UserPaginator from './UserPaginator';

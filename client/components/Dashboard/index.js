@@ -18,6 +18,7 @@ import TableRouteCell from './TableRouteCell';
 import TableActionCell from './TableActionCell';
 import TableTotals from './TableTotals';
 import TableAction from './TableAction';
+import Pagination from './Pagination';
 
 export {
   Confirm,
@@ -39,5 +40,6 @@ export {
   TableActionCell,
   TableCell,
   TableTotals,
-  TableAction
+  TableAction,
+  Pagination
 };

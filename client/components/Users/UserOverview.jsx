@@ -1,7 +1,7 @@
 import React from 'react';
 import { findDOMNode } from 'react-dom';
 
-import { SearchBar, UsersTable, UserPaginator } from './';
+import { SearchBar, UsersTable } from './';
 import { Error, LoadingPanel, TableTotals } from '../Dashboard';
 
 export default class UserOverview extends React.Component {
@@ -37,18 +37,6 @@ export default class UserOverview extends React.Component {
           <div className="row">
             <div className="col-xs-12">
               <UsersTable loading={loading} users={users} />
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-xs-12">
-              <TableTotals currentCount={users.length} totalCount={total} />
-              <UserPaginator
-                count={users.length}
-                total={total}
-                onPageChange={this.props.onPageChange}
-                pages={pages}
-                nextPage={nextPage}
-              />
             </div>
           </div>
         </LoadingPanel>
