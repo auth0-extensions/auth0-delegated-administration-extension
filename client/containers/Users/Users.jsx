@@ -94,7 +94,7 @@ class Users extends Component {
               <Pagination
                 totalItems={total}
                 handlePageChange={this.onPageChange}
-                perPage={100}
+                perPage={10}
                 currentPage={nextPage}
               /> :
               <TableTotals currentCount={users.length} totalCount={total} />
