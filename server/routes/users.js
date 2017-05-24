@@ -54,11 +54,11 @@ export default (storage, scriptManager) => {
     };
 
     scriptManager.execute('filter', filterContext)
-      .then(filter => {
+      .then((filter) => {
         const options = {
           sort: 'last_login:-1',
           q: (req.query.search && filter) ? `(${req.query.search}) AND ${filter}` : req.query.search || filter,
-          per_page: req.query.per_page || 100,
+          per_page: req.query.per_page || 10,
           page: req.query.page || 0,
           include_totals: true,
           fields: 'user_id,name,email,identities,picture,last_login,logins_count,multifactor,blocked,app_metadata',
@@ -68,7 +68,7 @@ export default (storage, scriptManager) => {
         return req.auth0.users.getAll(options);
       })
       .then(data =>
-        Promise.map(data.users, (user) =>
+        Promise.map(data.users, user =>
           scriptManager.execute('access', { request: { user: req.user }, payload: { user, action: 'read:user' } }))
           .then(() => data))
       .then(users => res.json(users))
@@ -80,7 +80,7 @@ export default (storage, scriptManager) => {
    */
   api.get('/:id', verifyUserAccess('read:user', scriptManager), (req, res, next) => {
     req.auth0.users.get({ id: req.params.id })
-      .then(user => {
+      .then((user) => {
         const membershipContext = {
           request: {
             user: req.user
@@ -91,7 +91,7 @@ export default (storage, scriptManager) => {
         };
 
         return scriptManager.execute('memberships', membershipContext)
-          .then(result => {
+          .then((result) => {
             if (result && Array.isArray(result)) {
               return {
                 user,
@@ -193,7 +193,7 @@ export default (storage, scriptManager) => {
    */
   api.get('/:id/logs', verifyUserAccess('read:logs', scriptManager), (req, res, next) => {
     managementApi.getAccessTokenCached(config('AUTH0_DOMAIN'), config('AUTH0_CLIENT_ID'), config('AUTH0_CLIENT_SECRET'))
-      .then(accessToken => {
+      .then((accessToken) => {
         const options = {
           uri: `https://${config('AUTH0_DOMAIN')}/api/v2/users/${encodeURIComponent(req.params.id)}/logs`,
           qs: {
