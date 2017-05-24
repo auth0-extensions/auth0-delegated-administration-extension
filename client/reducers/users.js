@@ -30,7 +30,7 @@ export const users = createReducer(fromJS(initialState), { // eslint-disable-lin
     return state.merge({
       loading: false,
       total: data.total,
-      pages: Math.ceil(data.total / 100),
+      pages: Math.ceil(data.total / 10),
       nextPage: action.meta.page + 1,
       records: fromJS(data.users.map(user => ({
         ...user,
