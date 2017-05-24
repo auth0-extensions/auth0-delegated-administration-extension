@@ -22,8 +22,14 @@ export default (storage) => {
     clientSecret: config('AUTH0_CLIENT_SECRET')
   });
 
+
   const api = Router();
-  api.use(middlewares.authenticateUser(config('AUTH0_DOMAIN'), config('EXTENSION_CLIENT_ID')));
+
+  api.use(middlewares.authenticateUsers.optional({
+    domain: config('AUTH0_DOMAIN'),
+    audience: config('EXTENSION_CLIENT_ID'),
+    credentialsRequired: true
+  }));
   api.use(getUserAccessLevel);
   api.use(hasAccessLevel(constants.USER_ACCESS_LEVEL));
   api.use('/applications', managementApiClient, applications());
