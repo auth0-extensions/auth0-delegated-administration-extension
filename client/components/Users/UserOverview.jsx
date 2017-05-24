@@ -1,7 +1,7 @@
 import React from 'react';
 import { findDOMNode } from 'react-dom';
 
-import { SearchBar, UsersTable } from './';
+import { SearchBar, UsersTable, UserPaginator } from './';
 import { Error, LoadingPanel, TableTotals } from '../Dashboard';
 
 export default class UserOverview extends React.Component {
