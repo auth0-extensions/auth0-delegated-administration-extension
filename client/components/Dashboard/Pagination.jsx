@@ -3,10 +3,7 @@ import { Button } from 'react-bootstrap';
 
 class Pagination extends Component {
   handlePageChange(diff) {
-    const page = this.props.currentPage + diff;
-    console.log('diff', diff);
-
-    this.props.handlePageChange(page);
+    this.props.handlePageChange(this.props.currentPage + diff);
   }
 
   render() {
