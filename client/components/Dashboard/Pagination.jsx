@@ -17,18 +17,21 @@ class Pagination extends Component {
           Page {this.props.currentPage} of {pages}
         </div>
         <div className="col-xs-4">
-          <Button bsSize="small" className="pull-right"
-            onClick={this.handlePageChange.bind(this, 1)}
-            disabled={this.props.currentPage === pages}
-          >
-            <i className="icon-budicon-175" />
-          </Button>
-          <Button bsSize="small" className="pull-right"
-            onClick={this.handlePageChange.bind(this, -1)}
-            disabled={this.props.currentPage === 1}
-          >
-            <i className="icon-budicon-176" />
-          </Button>
+          {this.props.currentPage !== pages &&
+            <Button bsSize="small" className="pull-right"
+              onClick={this.handlePageChange.bind(this, 1)}
+            >
+              <i className="icon-budicon-175" />
+            </Button>
+          }
+
+          {this.props.currentPage !== 1 &&
+            <Button bsSize="small" className="pull-right"
+              onClick={this.handlePageChange.bind(this, -1)}
+            >
+              <i className="icon-budicon-176" />
+            </Button>
+          }
         </div>
       </div>
     );
