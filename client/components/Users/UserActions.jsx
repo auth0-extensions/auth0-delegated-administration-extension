@@ -37,10 +37,6 @@ export default class UserActions extends Component {
     }
   }
 
-  shouldComponentUpdate(nextProps) {
-    return nextProps.user !== this.props.user || nextProps.databaseConnections !== this.props.databaseConnections;
-  }
-
   getDeleteAction = (user, loading) => (
     <MenuItem disabled={loading || false} onClick={this.deleteUser}>
       Delete User
