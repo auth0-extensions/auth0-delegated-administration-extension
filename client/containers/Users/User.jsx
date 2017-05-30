@@ -14,7 +14,7 @@ import { UserActions, UserDevices, UserHeader, UserProfile, UserLogs, UserInfo }
 import getUserDatabaseConnections from '../../selectors/getUserDatabaseConnections';
 
 export default connectContainer(class extends Component {
-  static stateToProps = (state) => ({
+  static stateToProps = state => ({
     user: state.user,
     databaseConnections: getUserDatabaseConnections(state),
     log: state.log,
@@ -52,21 +52,19 @@ export default connectContainer(class extends Component {
           <div className="col-xs-12">
             <h2 className="pull-left">User Details</h2>
             <div className="pull-right">
-              {databaseConnections ?
-                <UserActions
-                  user={user}
-                  databaseConnections={databaseConnections}
-                  deleteUser={this.props.requestDeleteUser}
-                  resetPassword={this.props.requestPasswordReset}
-                  changePassword={this.props.requestPasswordChange}
-                  removeMfa={this.props.requestRemoveMultiFactor}
-                  blockUser={this.props.requestBlockUser}
-                  unblockUser={this.props.requestUnblockUser}
-                  changeUsername={this.props.requestUsernameChange}
-                  changeEmail={this.props.requestEmailChange}
-                  resendVerificationEmail={this.props.requestResendVerificationEmail}
-                />
-                : ''}
+              <UserActions
+                user={user}
+                databaseConnections={databaseConnections}
+                deleteUser={this.props.requestDeleteUser}
+                resetPassword={this.props.requestPasswordReset}
+                changePassword={this.props.requestPasswordChange}
+                removeMfa={this.props.requestRemoveMultiFactor}
+                blockUser={this.props.requestBlockUser}
+                unblockUser={this.props.requestUnblockUser}
+                changeUsername={this.props.requestUsernameChange}
+                changeEmail={this.props.requestEmailChange}
+                resendVerificationEmail={this.props.requestResendVerificationEmail}
+              />
             </div>
           </div>
         </div>
