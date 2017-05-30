@@ -31,11 +31,18 @@ export default (storage, scriptManager) => {
         connection: req.body.connection,
         memberships: req.body.memberships,
         password: req.body.password
+      },
+      defaultPayload: {
+        email: req.body.email,
+        username: req.body.username,
+        password: req.body.password,
+        connection: req.body.connection,
+        app_metadata: (req.body.memberships && req.body.memberships.length && { memberships: req.body.memberships }) || { }
       }
     };
 
     return scriptManager.execute('create', createContext)
-      .then(result => req.auth0.users.create(result || createContext.payload))
+      .then(result => req.auth0.users.create(result || createContext.defaultPayload))
       .then(() => res.status(201).send())
       .catch(next);
   });
