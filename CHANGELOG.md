@@ -1,3 +1,14 @@
+## [2.4.0] - 2017-05-30
+
+### Fixed
+
+ - Always show user actions, also when database connections are not available
+
+### Changes
+
+ - Added users pagination.
+ - Create user by default with memberships in app_metadata in case the Create script is not available.
+
 ## [2.3.4] - 2017-01-20
 
 ### Fixed

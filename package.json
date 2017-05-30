@@ -1,6 +1,6 @@
 {
   "name": "auth0-delegated-admin",
-  "version": "2.3.4",
+  "version": "2.4.0",
   "description": "Delegated Administration Dashboard",
   "engines": {
     "node": "6.2.0"
@@ -139,7 +139,7 @@
     "file-loader": "0.11.1",
     "imports-loader": "0.7.1",
     "json-loader": "^0.5.4",
-    "mocha": "3.4.1",
+    "mocha": "3.4.2",
     "nock": "9.0.13",
     "nodemon": "^1.11.0",
     "nyc": "10.3.2",
@@ -159,7 +159,7 @@
     "redux-simple-router": "^2.0.4",
     "redux-static": "1.1.0",
     "request-promise": "^4.1.1",
-    "rimraf": "^2.5.2",
+    "rimraf": "2.6.1",
     "style-loader": "0.18.1",
     "supertest": "^2.0.1",
     "url-loader": "0.5.8",
