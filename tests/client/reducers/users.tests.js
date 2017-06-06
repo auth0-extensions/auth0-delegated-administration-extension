@@ -7,6 +7,8 @@ import * as constants from '../../../client/constants';
 const initialState = {
   loading: false,
   error: null,
+  currentPage: 1,
+  pages: 1,
   records: [],
   total: 0
 };
@@ -33,6 +35,8 @@ describe('users reducer', () => {
         loading: true,
         error: null,
         records: [],
+        currentPage: 1,
+        pages: 1,
         total: 0
       }
     );
@@ -56,7 +60,9 @@ describe('users reducer', () => {
         loading: true,
         error: null,
         records: [ 'test' ],
-        total: 0
+        total: 0,
+        currentPage: 1,
+        pages: 1
       }
     );
   });
@@ -72,7 +78,9 @@ describe('users reducer', () => {
         loading: false,
         error: 'An error occurred while retrieving list of users: ERROR',
         records: [],
-        total: 0
+        total: 0,
+        currentPage: 1,
+        pages: 1
       }
     );
   });
@@ -131,7 +139,9 @@ describe('users reducer', () => {
           }
         ],
         total: 2,
-        nextPage: 2
+        nextPage: 2,
+        currentPage: 1,
+        pages: 1
       }
     );
   });
