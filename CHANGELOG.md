@@ -1,3 +1,9 @@
+## [2.4.1] - 2017-05-30
+
+### Fixed
+
+ - Issue with extension startup
+
 ## [2.4.0] - 2017-05-30
 
 ### Fixed
