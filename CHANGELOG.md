@@ -1,3 +1,15 @@
+## [2.4.3] - 2017-06-06
+
+### Changes
+
+ - Update auth0.js and make it use the v2 logout endpoint
+
+## [2.4.2] - 2017-06-06
+
+### Fixed
+
+ - Improve logout in Auth0
+
 ## [2.4.1] - 2017-05-30
 
 ### Fixed

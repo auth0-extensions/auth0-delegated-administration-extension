@@ -37,8 +37,13 @@ export function logout() {
     localStorage.removeItem('apiToken');
     sessionStorage.removeItem('apiToken');
 
+    auth0.logout(
+      { returnTo: `${window.config.BASE_URL}`, client_id: window.config.AUTH0_CLIENT_ID },
+      { version: 'v2' }
+    );
+
     dispatch({
-      type: constants.LOGOUT_SUCCESS
+      type: constants.LOGOUT_PENDING
     });
   };
 }
