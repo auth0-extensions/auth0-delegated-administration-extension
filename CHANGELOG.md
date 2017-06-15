@@ -1,3 +1,10 @@
+## [2.4.4] - 2017-06-15
+
+### Changes
+
+ - Added option to use federated logout
+ - Fixed issue with hooks that seemed to call `require(.)`
+
 ## [2.4.3] - 2017-06-06
 
 ### Changes
