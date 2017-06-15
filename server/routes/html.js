@@ -48,7 +48,8 @@ export default () => {
       AUTH0_CLIENT_ID: config('EXTENSION_CLIENT_ID'),
       BASE_URL: urlHelpers.getBaseUrl(req),
       BASE_PATH: urlHelpers.getBasePath(req),
-      TITLE: config('TITLE')
+      TITLE: config('TITLE'),
+      FEDERATED_LOGOUT: config('FEDERATED_LOGOUT') === 'true'
     };
 
     // Render from CDN.

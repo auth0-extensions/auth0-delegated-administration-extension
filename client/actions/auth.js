@@ -37,10 +37,11 @@ export function logout() {
     localStorage.removeItem('apiToken');
     sessionStorage.removeItem('apiToken');
 
-    auth0.logout(
-      { returnTo: `${window.config.BASE_URL}`, client_id: window.config.AUTH0_CLIENT_ID },
-      { version: 'v2' }
-    );
+    if (window.config.FEDERATED_LOGOUT) {
+    	window.location.href = `https://${window.config.AUTH0_DOMAIN}/v2/logout?federated&client_id=${window.config.AUTH0_CLIENT_ID}&returnTo=${encodeURIComponent(window.config.BASE_URL)}`;
+    } else {
+    	window.location.href = `https://${window.config.AUTH0_DOMAIN}/v2/logout?client_id=${window.config.AUTH0_CLIENT_ID}&returnTo=${encodeURIComponent(window.config.BASE_URL)}`;
+    }
 
     dispatch({
       type: constants.LOGOUT_PENDING

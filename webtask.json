@@ -1,7 +1,7 @@
 {
   "title": "Delegated Administration Dashboard",
   "name": "auth0-delegated-admin",
-  "version": "2.4.3",
+  "version": "2.4.4",
   "author": "auth0",
   "useHashName": false,
   "description": "This extension allows non-dashboard administrators to manage (a subset of) users.",
@@ -34,6 +34,21 @@
       "description": "A CSS file containing custom styles for the extension",
       "example": "https://cdn.fabrikam.com/static/extensions/theme/fabrikam.css",
       "required": false
+    },
+		"FEDERATED_LOGOUT": {
+      "description": "Also sign out from the IDP when users logout?",
+      "type": "select",
+      "allowMultiple": false,
+      "options": [
+        {
+          "value": "false",
+          "text": "No"
+        },
+        {
+          "value": "true",
+          "text": "Yes"
+        }
+      ]
     }
   }
 }
