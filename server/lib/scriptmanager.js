@@ -1,3 +1,4 @@
+import requireLike from 'require-like';
 import Promise from 'bluebird';
 import safeEval from 'safe-eval';
 import memoizer from 'lru-memoizer';
@@ -12,6 +13,7 @@ export default class ScriptManager {
       throw new ArgumentError('Must provide a storage object.');
     }
 
+    this.hookRequire = requireLike('hooks');
     this.log = logger.debug.bind(logger);
     this.cache = { };
     this.storage = storage;
@@ -25,7 +27,7 @@ export default class ScriptManager {
             })
             .catch(callback);
         },
-        hash: (name) => name,
+        hash: name => name,
         max: 100,
         maxAge: cacheAge
       })
@@ -34,7 +36,7 @@ export default class ScriptManager {
 
   get(name) {
     return this.storage.read()
-      .then(data => {
+      .then((data) => {
         if (!data || !data.scripts) {
           return null;
         }
@@ -45,7 +47,7 @@ export default class ScriptManager {
 
   save(name, script) {
     return this.storage.read()
-      .then(data => {
+      .then((data) => {
         if (!data.scripts) {
           data.scripts = {};
         }
@@ -63,7 +65,7 @@ export default class ScriptManager {
 
   writeCustomData(customData) {
     return this.storage.read()
-      .then(data => {
+      .then((data) => {
         data.customData = customData;
         return data;
       })
@@ -82,22 +84,25 @@ export default class ScriptManager {
 
   execute(name, ctx) {
     return this.getCached(name)
-      .then(script => {
+      .then((script) => {
         if (!script) {
           return null;
         }
 
+        logger.debug(`Executing Delegated Admin hook: ${name}`);
         return new Promise((resolve, reject) => {
           try {
-            const func = safeEval(script, { require }, { filename: `${name}.js` });
+            const func = safeEval(script, { require: this.hookRequire });
             func(this.createContext(ctx), (err, res) => {
               if (err) {
+                logger.error(`Failed to execute Delegated Admin hook (${name}): "${err}"`);
                 reject(parseScriptError(err, name));
               } else {
                 resolve(res);
               }
             });
           } catch (err) {
+            logger.error(`Failed to compile Delegated Admin hook (${name}): "${err}"`);
             reject(parseScriptError(err, name));
           }
         });
