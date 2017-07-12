@@ -78,6 +78,11 @@ export default (storage, scriptManager) => {
   api.get('/:id', (req, res, next) => {
     req.auth0.users.get({ id: req.params.id })
       .then((user) => {
+        if (!user) {
+          res.status(404);
+          throw new Error('User not found');
+        }
+
         const membershipContext = {
           request: {
             user: req.user

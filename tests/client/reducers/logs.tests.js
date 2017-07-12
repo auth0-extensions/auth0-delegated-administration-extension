@@ -119,7 +119,7 @@ describe('logs reducer', () => {
             connection: 'Username-Password-Authentication',
             date: '2016-09-26T13:03:50.703Z',
             type: {
-              event: 'Unknown Error',
+              event: 'Unknown Event',
               icon: {
                 name: '354',
                 color: '#FFA500'
