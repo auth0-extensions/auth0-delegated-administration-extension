@@ -1,12 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { Pagination, TableTotals } from 'auth0-extension-ui';
 
 import { connectionActions, userActions } from '../../actions';
 
 import * as dialogs from './Dialogs';
 import TabsHeader from '../../components/TabsHeader';
 import { UserOverview, UserForm } from '../../components/Users';
-import { Pagination, TableTotals } from '../../components/Dashboard';
 
 import './Users.css';
 

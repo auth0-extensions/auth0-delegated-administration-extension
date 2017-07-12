@@ -40,6 +40,7 @@ module.exports = (cfg, storageProvider) => {
     rta: config('AUTH0_RTA').replace('https://', ''),
     domain: config('AUTH0_DOMAIN'),
     baseUrl: config('PUBLIC_WT_URL'),
+    webtaskUrl: config('PUBLIC_WT_URL'),
     clientName: 'Delegated Administration',
     urlPrefix: '/admins',
     sessionStorageKey: 'delegated-admin:apiToken',
