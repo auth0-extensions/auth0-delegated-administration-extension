@@ -17,7 +17,7 @@ class AddUserForm extends Component {
     onClose: React.PropTypes.func.isRequired,
     handleSubmit: React.PropTypes.func.isRequired,
     submitting: React.PropTypes.boolean,
-    customfields: React.PropTypes.string
+    customFields: React.PropTypes.string
   }
 
   renderUsername(connections, hasSelectedConnection) {
@@ -97,12 +97,11 @@ class AddUserForm extends Component {
     }
   }
 
-  renderCustomFields(customfields) {
-    if (customfields) {
-      const fields = JSON.parse(customfields);
+  renderCustomFields(customFields) {
+    if (customFields) {
       return (
         <div>
-          { _.map(fields, (field) => ((
+          { _.map(customFields, (field) => ((
             <Field
               name={field.name}
               type={field.type}
@@ -121,7 +120,7 @@ class AddUserForm extends Component {
 
   render() {
     const connections = this.props.connections;
-    const customfields = this.props.customfields;
+    const customFields = this.props.customFields;
     const {
       handleSubmit,
       submitting,
@@ -156,7 +155,7 @@ class AddUserForm extends Component {
               component={InputText}
             />
             {this.renderConnections(connections)}
-            {this.renderCustomFields(customfields)}
+            {this.renderCustomFields(customFields)}
           </div>
         </Modal.Body>
         <Modal.Footer>

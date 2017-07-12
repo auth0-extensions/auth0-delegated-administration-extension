@@ -11,7 +11,7 @@ export default connectContainer(class extends Component {
     userCreate: state.userCreate,
     accessLevel: state.accessLevel,
     connections: state.connections,
-    scripts: state.scripts
+    settings: state.settings
   });
 
   static actionsToProps = {
@@ -22,20 +22,15 @@ export default connectContainer(class extends Component {
   static propTypes = {
     accessLevel: PropTypes.object.isRequired,
     connections: PropTypes.object.isRequired,
-    scripts: PropTypes.object.isRequired,
     userCreate: PropTypes.object.isRequired,
     createUser: PropTypes.func.isRequired,
     getDictValue: PropTypes.func.isRequired,
     cancelCreateUser: PropTypes.func.isRequired,
-    fetchScript: PropTypes.func.isRequired
+    settings: PropTypes.object.isRequired
   }
 
-  componentWillMount = () => {
-    this.props.fetchScript('customfields');
-  };
-
   shouldComponentUpdate(nextProps) {
-    return nextProps.userCreate !== this.props.userCreate || nextProps.connections !== this.props.connections || nextProps.accessLevel !== this.props.accessLevel;
+    return nextProps.userCreate !== this.props.userCreate || nextProps.connections !== this.props.connections || nextProps.accessLevel !== this.props.accessLevel || nextProps.settings !== this.props.settings;
   }
 
   onSubmit = (user) => {
@@ -44,9 +39,10 @@ export default connectContainer(class extends Component {
 
   render() {
     const { error, loading, record } = this.props.userCreate.toJS();
-    const { customfields: { script } } = this.props.scripts.toJS();
     const connections = this.props.connections.toJS();
     const accessLevel = this.props.accessLevel.get('record').toJS();
+    const { settings } = this.props.settings.get('record').toJS();
+    const customFields = (settings && settings.customFields) || [];
 
     return (
       <Modal show={record !== null} className="modal-overflow-visible" onHide={this.props.cancelCreateUser}>
@@ -55,7 +51,7 @@ export default connectContainer(class extends Component {
         </Modal.Header>
 
         <UserForm
-          customfields={script}
+          customFields={customFields}
           connections={connections.records} initialValues={record}
           createMemberships={accessLevel.createMemberships}
           memberships={accessLevel.memberships}

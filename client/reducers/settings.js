@@ -6,7 +6,7 @@ import createReducer from '../utils/createReducer';
 const initialState = {
   loading: false,
   error: null,
-  record: { settings: { dict: { title: '', memberships: '' }, css: '' } }
+  record: { settings: { dict: { title: '', memberships: '' }, customFields: [], css: '' } }
 };
 
 export const settings = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export

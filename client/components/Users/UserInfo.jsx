@@ -11,12 +11,14 @@ export default class UserInfo extends Component {
     error: PropTypes.string,
     loading: PropTypes.bool.isRequired,
     user: PropTypes.object.isRequired,
-    memberships: PropTypes.array
+    memberships: PropTypes.array,
+    customFields: PropTypes.array
   }
 
   shouldComponentUpdate(nextProps) {
     return nextProps.user !== this.props.user
       || nextProps.memberships !== this.props.memberships
+      || nextProps.customFields !== this.props.customFields
       || nextProps.loading !== this.props.loading
       || nextProps.error !== this.props.error;
   }
@@ -46,13 +48,26 @@ export default class UserInfo extends Component {
     );
   }
 
+  findprop(obj, path) {
+    var args = path.split('.'), i, l;
+
+    for (i=0, l=args.length; i<l; i++) {
+      if (!obj.hasOwnProperty(args[i]))
+        return;
+      obj = obj[args[i]];
+    }
+
+    return obj;
+  }
+
   render() {
     const { user, error, loading, memberships } = this.props;
+    const customFields = this.props.customFields ? _.filter(this.props.customFields, (field) => field.display) : [];
     const currentMemberships = this.getMemberships(memberships);
     const identity = this.getIdentities(user);
     const blocked = this.getBlocked(user);
     const defaultFields = [ 'user_id', 'name', 'username', 'email', 'identities', 'app_metadata', 'created_at', 'email_verified', 'picture', 'updated_at' ];
-    const customFields = _.keys(_.omit(user.toJS(), defaultFields));
+    const extraFields = _.keys(_.omit(user.toJS(), defaultFields));
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
         <Error message={error}>
@@ -69,9 +84,15 @@ export default class UserInfo extends Component {
             <UserInfoField title="Signed Up">{moment(user.get('created_at')).fromNow()}</UserInfoField>
             <UserInfoField title="Updated">{moment(user.get('updated_at')).fromNow()}</UserInfoField>
             <UserInfoField title="Last Login">{moment(user.get('last_login')).fromNow()}</UserInfoField>
-            {customFields.map((item) =>
+            {extraFields.map((item) =>
               <UserInfoField title={item}>{user.get(item)}</UserInfoField>
             )}
+            {customFields.map((item) => {
+              const fieldName = item.storageLocation || `app_metadata.${item.name}`;
+              const value = this.findprop(user.toJS(), fieldName);
+
+              return <UserInfoField title={item.name}>{value}</UserInfoField>;
+            })}
           </div>
         </Error>
       </LoadingPanel>

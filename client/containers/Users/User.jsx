@@ -19,7 +19,8 @@ export default connectContainer(class extends Component {
     databaseConnections: getUserDatabaseConnections(state),
     log: state.log,
     logs: state.user.get('logs'),
-    devices: state.user.get('devices')
+    devices: state.user.get('devices'),
+    settings: state.settings
   });
 
   static actionsToProps = {
@@ -45,6 +46,9 @@ export default connectContainer(class extends Component {
 
   render() {
     const { user, databaseConnections, log, logs, devices } = this.props;
+    const { settings } = this.props.settings.get('record').toJS();
+    const customFields = (settings && settings.customFields) || [];
+
     return (
       <div className="user">
         <TabsHeader role={this.props.accessLevel.role} />
@@ -79,7 +83,9 @@ export default connectContainer(class extends Component {
               <Tab eventKey={1} title="User Information">
                 <UserInfo
                   loading={user.get('loading')} user={user.get('record')}
-                  memberships={user.get('memberships') && user.get('memberships').toJSON()} error={user.get('error')}
+                  memberships={user.get('memberships') && user.get('memberships').toJSON()}
+                  customFields={customFields}
+                  error={user.get('error')}
                 />
               </Tab>
               <Tab eventKey={2} title="Devices">
