@@ -47,7 +47,7 @@ export default connectContainer(class extends Component {
   render() {
     const { user, databaseConnections, log, logs, devices } = this.props;
     const { settings } = this.props.settings.get('record').toJS();
-    const customFields = (settings && settings.customFields) || [];
+    const userInfoFields = (settings && settings.userInfoFields) || [];
 
     return (
       <div className="user">
@@ -84,7 +84,7 @@ export default connectContainer(class extends Component {
                 <UserInfo
                   loading={user.get('loading')} user={user.get('record')}
                   memberships={user.get('memberships') && user.get('memberships').toJSON()}
-                  customFields={customFields}
+                  userInfoFields={userInfoFields}
                   error={user.get('error')}
                 />
               </Tab>

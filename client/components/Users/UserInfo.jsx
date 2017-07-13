@@ -12,13 +12,13 @@ export default class UserInfo extends Component {
     loading: PropTypes.bool.isRequired,
     user: PropTypes.object.isRequired,
     memberships: PropTypes.array,
-    customFields: PropTypes.array
+    userInfoFields: PropTypes.array
   }
 
   shouldComponentUpdate(nextProps) {
     return nextProps.user !== this.props.user
       || nextProps.memberships !== this.props.memberships
-      || nextProps.customFields !== this.props.customFields
+      || nextProps.userInfoFields !== this.props.userInfoFields
       || nextProps.loading !== this.props.loading
       || nextProps.error !== this.props.error;
   }
@@ -38,16 +38,6 @@ export default class UserInfo extends Component {
     return user.get('blocked') ? 'Yes' : 'No';
   }
 
-  renderUsername(username) {
-    if (!username) {
-      return null;
-    }
-
-    return (
-      <UserInfoField title="Username">{username}</UserInfoField>
-    );
-  }
-
   findprop(obj, path) {
     var args = path.split('.'), i, l;
 
@@ -60,39 +50,63 @@ export default class UserInfo extends Component {
     return obj;
   }
 
+  getValue(user, field) {
+    if (user.size === 0) {
+      return null;
+    }
+
+    let value = this.findprop(user, field.property);
+    if (!value) return null;
+
+    if (field.type && field.type === 'elapsedTime') {
+      value = moment(value).fromNow();
+    }
+
+    return value;
+  }
+
   render() {
     const { user, error, loading, memberships } = this.props;
-    const customFields = this.props.customFields ? _.filter(this.props.customFields, (field) => field.display) : [];
-    const currentMemberships = this.getMemberships(memberships);
-    const identity = this.getIdentities(user);
-    const blocked = this.getBlocked(user);
-    const defaultFields = [ 'user_id', 'name', 'username', 'email', 'identities', 'app_metadata', 'created_at', 'email_verified', 'picture', 'updated_at' ];
-    const extraFields = _.keys(_.omit(user.toJS(), defaultFields));
+    const excludeCustomFields = ( this.props.userInfoFields && this.props.userInfoFields.excludeFields ) || [];
+    const extraDisplayFields = ( this.props.userInfoFields && this.props.userInfoFields.extraDisplayFields ) || [];
+    const userObject = user.toJS();
+    userObject.currentMemberships = this.getMemberships(memberships);
+    userObject.identity = this.getIdentities(user);
+    userObject.isBlocked = this.getBlocked(user);
+
+    const defaultFieldInfo = [
+      { title: 'User ID', property: 'user_id' },
+      { title: 'Name', property: 'name' },
+      { title: 'Username', property: 'username' },
+      { title: 'Email', property: 'email' },
+      { title: 'Identity', property: 'identity.connection' },
+      { title: 'Blocked', property: 'isBlocked' },
+      { title: 'Last IP', property: 'last_ip' },
+      { title: 'Logins Count', property: 'logins_count' },
+      { title: 'Memberships', property: 'currentMemberships' },
+      { title: 'Signed Up', property: 'created_at', type: 'elapsedTime'},
+      { title: 'Updated', property: 'updated_at', type: 'elapsedTime' },
+      { title: 'Last Login', property: 'last_login', type: 'elapsedTime' }
+    ];
+
+    const fieldInfo = _.concat(defaultFieldInfo, extraDisplayFields);
+
+    const fieldProperties = _.map(fieldInfo, 'property');
+    const excludeFields = _.concat(fieldProperties, [ 'identity', 'identities', 'app_metadata', 'picture' ], excludeCustomFields);
+    const extraFields = _.keys(_.omit(userObject, excludeFields));
+
+    const fields = _.concat(
+      _.filter(fieldInfo, (field) => excludeCustomFields.indexOf(field.property) < 0),
+      _.map(extraFields, (fieldName) => { return { title: fieldName, property: fieldName }}));
+
+    const fieldsAndValues = _.map(fields, (field) => { field.value = this.getValue(userObject, field); return field; });
+    const nonNullFields = _.filter(fieldsAndValues, field => field.value) || [];
+
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
         <Error message={error}>
           <div className="user-info">
-            <UserInfoField title="User ID">{user.get('user_id')}</UserInfoField>
-            <UserInfoField title="Name">{user.get('name')}</UserInfoField>
-            {this.renderUsername(user.get('username'))}
-            <UserInfoField title="Email">{user.get('email')}</UserInfoField>
-            <UserInfoField title="Identity">{identity.connection}</UserInfoField>
-            <UserInfoField title="Blocked">{blocked}</UserInfoField>
-            <UserInfoField title="Last IP">{user.get('last_ip')}</UserInfoField>
-            <UserInfoField title="Logins Count">{user.get('logins_count')}</UserInfoField>
-            <UserInfoField title="Memberships">{currentMemberships}</UserInfoField>
-            <UserInfoField title="Signed Up">{moment(user.get('created_at')).fromNow()}</UserInfoField>
-            <UserInfoField title="Updated">{moment(user.get('updated_at')).fromNow()}</UserInfoField>
-            <UserInfoField title="Last Login">{moment(user.get('last_login')).fromNow()}</UserInfoField>
-            {extraFields.map((item) =>
-              <UserInfoField title={item}>{user.get(item)}</UserInfoField>
-            )}
-            {customFields.map((item) => {
-              const fieldName = item.storageLocation || `app_metadata.${item.name}`;
-              const value = this.findprop(user.toJS(), fieldName);
-
-              return <UserInfoField title={item.name}>{value}</UserInfoField>;
-            })}
+            { nonNullFields.map((field, index) => <UserInfoField key={index} title={field.title}>{field.value}</UserInfoField>) }
           </div>
         </Error>
       </LoadingPanel>
