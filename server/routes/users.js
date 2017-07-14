@@ -14,11 +14,8 @@ export default (storage, scriptManager) => {
    * Create user.
    */
   api.post('/', (req, res, next) => {
-    if (!req.body.email || req.body.email.length === 0) {
-      return next(new ValidationError('The email address is required.'));
-    }
     if (req.body.password !== req.body.repeatPassword) {
-      return next(new ValidationError('The passwords do not match.'));
+      throw new ValidationError('The passwords do not match.');
     }
 
     const createContext = {
@@ -29,7 +26,16 @@ export default (storage, scriptManager) => {
     };
 
     return scriptManager.execute('create', createContext)
-      .then(result => req.auth0.users.create(result || createContext.defaultPayload))
+      .then((result) => {
+        const payload = result || createContext.defaultPayload;
+
+        if (!payload.email || payload.email.length === 0) {
+          throw new ValidationError('The email address is required.');
+        }
+
+        return payload;
+      })
+      .then(payload => req.auth0.users.create(payload))
       .then(() => res.status(201).send())
       .catch(next);
   });

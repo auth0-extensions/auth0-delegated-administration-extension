@@ -12,13 +12,13 @@ export default class UserInfo extends Component {
     loading: PropTypes.bool.isRequired,
     user: PropTypes.object.isRequired,
     memberships: PropTypes.array,
-    userInfoFields: PropTypes.array
+    userFields: PropTypes.array
   }
 
   shouldComponentUpdate(nextProps) {
     return nextProps.user !== this.props.user
       || nextProps.memberships !== this.props.memberships
-      || nextProps.userInfoFields !== this.props.userInfoFields
+      || nextProps.userFields !== this.props.userFields
       || nextProps.loading !== this.props.loading
       || nextProps.error !== this.props.error;
   }
@@ -56,19 +56,38 @@ export default class UserInfo extends Component {
     }
 
     let value = this.findprop(user, field.property);
-    if (!value) return null;
+    if (value === undefined) return null;
 
     if (field.type && field.type === 'elapsedTime') {
       value = moment(value).fromNow();
     }
+
+    if (typeof value === 'object') value = Object.toString(value);
 
     return value;
   }
 
   render() {
     const { user, error, loading, memberships } = this.props;
-    const excludeCustomFields = ( this.props.userInfoFields && this.props.userInfoFields.excludeFields ) || [];
-    const extraDisplayFields = ( this.props.userInfoFields && this.props.userInfoFields.extraDisplayFields ) || [];
+    const extraDisplayFields =
+      _(this.props.userFields || [])
+        .filter(field => field.display)
+        .map(field => { return {
+          title: field.label,
+          property: field.property,
+          displayFunction: field.displayFunction };
+        })
+        .value();
+
+    let nonDisplayFields =
+      _(this.props.userFields || [])
+        .filter(field => field.display === false)
+        .pick('property')
+        .value();
+
+    if (typeof nonDisplayFields !== 'array') nonDisplayFields = [];
+    console.log("Carlos, fieldInfo: ", extraDisplayFields, nonDisplayFields);
+
     const userObject = user.toJS();
     userObject.currentMemberships = this.getMemberships(memberships);
     userObject.identity = this.getIdentities(user);
@@ -89,18 +108,27 @@ export default class UserInfo extends Component {
       { title: 'Last Login', property: 'last_login', type: 'elapsedTime' }
     ];
 
-    const fieldInfo = _.concat(defaultFieldInfo, extraDisplayFields);
+    const fieldInfo = _(defaultFieldInfo).concat(extraDisplayFields).value();
 
     const fieldProperties = _.map(fieldInfo, 'property');
-    const excludeFields = _.concat(fieldProperties, [ 'identity', 'identities', 'app_metadata', 'picture' ], excludeCustomFields);
+    const excludeFields = _(fieldProperties)
+      .concat([ 'identity', 'identities', 'app_metadata', 'picture' ], nonDisplayFields)
+      .value();
     const extraFields = _.keys(_.omit(userObject, excludeFields));
 
-    const fields = _.concat(
-      _.filter(fieldInfo, (field) => excludeCustomFields.indexOf(field.property) < 0),
-      _.map(extraFields, (fieldName) => { return { title: fieldName, property: fieldName }}));
+    console.log("Carlos, extra fields: ", extraFields, excludeFields);
+
+    const nonExcludedFields = _.filter(fieldInfo, (field) => nonDisplayFields.indexOf(field.property) < 0);
+
+    console.log("Carlos, nonexcl fields:", nonExcludedFields);
+    const fields = _(nonExcludedFields)
+      .concat(_.map(extraFields, (fieldName) => { return { title: fieldName, property: fieldName }}))
+      .value();
 
     const fieldsAndValues = _.map(fields, (field) => { field.value = this.getValue(userObject, field); return field; });
     const nonNullFields = _.filter(fieldsAndValues, field => field.value) || [];
+
+    console.log("Carlos nonNullFields: ", nonNullFields);
 
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>

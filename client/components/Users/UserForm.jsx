@@ -103,7 +103,7 @@ class AddUserForm extends Component {
         <div>
           { _.map(customFields, (field) => ((
             <Field
-              name={field.name}
+              name={field.property}
               type={field.type}
               label={field.label}
               component={this.getFieldComponent(field.component)}

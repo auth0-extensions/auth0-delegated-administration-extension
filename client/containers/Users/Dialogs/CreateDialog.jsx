@@ -11,7 +11,6 @@ export default connectContainer(class extends Component {
     userCreate: state.userCreate,
     accessLevel: state.accessLevel,
     connections: state.connections,
-    settings: state.settings
   });
 
   static actionsToProps = {
@@ -26,11 +25,11 @@ export default connectContainer(class extends Component {
     createUser: PropTypes.func.isRequired,
     getDictValue: PropTypes.func.isRequired,
     cancelCreateUser: PropTypes.func.isRequired,
-    settings: PropTypes.object.isRequired
+    userFields: PropTypes.array.isRequired
   }
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.userCreate !== this.props.userCreate || nextProps.connections !== this.props.connections || nextProps.accessLevel !== this.props.accessLevel || nextProps.settings !== this.props.settings;
+    return nextProps.userCreate !== this.props.userCreate || nextProps.connections !== this.props.connections || nextProps.accessLevel !== this.props.accessLevel || nextProps.userFields !== this.props.userFields;
   }
 
   onSubmit = (user) => {
@@ -41,8 +40,7 @@ export default connectContainer(class extends Component {
     const { error, loading, record } = this.props.userCreate.toJS();
     const connections = this.props.connections.toJS();
     const accessLevel = this.props.accessLevel.get('record').toJS();
-    const { settings } = this.props.settings.get('record').toJS();
-    const customFields = (settings && settings.customFields) || [];
+    const customFields = this.props.userFields || [];
 
     return (
       <Modal show={record !== null} className="modal-overflow-visible" onHide={this.props.cancelCreateUser}>

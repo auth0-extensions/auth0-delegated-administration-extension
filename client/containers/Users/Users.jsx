@@ -26,7 +26,8 @@ class Users extends Component {
     getDictValue: PropTypes.func.isRequired,
     createUser: PropTypes.func.isRequired,
     fetchConnections: PropTypes.func.isRequired,
-    requestCreateUser: PropTypes.func.isRequired
+    requestCreateUser: PropTypes.func.isRequired,
+    settings: PropTypes.object.isRequired
   }
 
   constructor(props) {
@@ -60,7 +61,12 @@ class Users extends Component {
   }
 
   render() {
-    const { loading, error, users, total, connections, userCreateError, userCreateLoading, accessLevel, nextPage, pages } = this.props;
+    const { loading, error, users, total, connections,
+      userCreateError, userCreateLoading, accessLevel, nextPage, pages, settings } = this.props;
+
+    const userFields = (settings && settings.userFields) || [];
+    console.log("Carlos UserFields: ", userFields);
+
     return (
       <div className="users">
         <TabsHeader role={accessLevel.get('record').get('role')} />
@@ -75,7 +81,7 @@ class Users extends Component {
             : ''}
           </div>
         </div>
-        <dialogs.CreateDialog getDictValue={this.props.getDictValue} />
+        <dialogs.CreateDialog getDictValue={this.props.getDictValue} userFields={userFields} />
         <UserOverview
           onReset={this.onReset}
           onSearch={this.onSearch}
@@ -87,6 +93,7 @@ class Users extends Component {
           pages={pages}
           loading={loading}
           role={accessLevel.role}
+          userFields={userFields}
         />
         <div className="row">
           <div className="col-xs-12">
@@ -119,7 +126,8 @@ function mapStateToProps(state) {
     connections: state.connections.get('records').toJS(),
     total: state.users.get('total'),
     nextPage: state.users.get('nextPage'),
-    pages: state.users.get('pages')
+    pages: state.users.get('pages'),
+    settings: state.settings.get('record').toJS().settings
   };
 }
 
