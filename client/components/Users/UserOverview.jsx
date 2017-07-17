@@ -66,7 +66,7 @@ export default class UserOverview extends React.Component {
           { this.renderSearchBar(searchOptions) }
           <div className="row">
             <div className="col-xs-12">
-              <UsersTable loading={loading} users={users}/>
+              <UsersTable loading={loading} users={users} userFields={userFields} />
             </div>
           </div>
         </LoadingPanel>

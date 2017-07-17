@@ -5,6 +5,7 @@ import { Error, LoadingPanel } from 'auth0-extension-ui';
 
 import './UserInfo.css';
 import UserInfoField from './UserInfoField';
+import { getProperty } from '../../utils'
 
 export default class UserInfo extends Component {
   static propTypes = {
@@ -38,24 +39,12 @@ export default class UserInfo extends Component {
     return user.get('blocked') ? 'Yes' : 'No';
   }
 
-  findprop(obj, path) {
-    var args = path.split('.'), i, l;
-
-    for (i=0, l=args.length; i<l; i++) {
-      if (!obj.hasOwnProperty(args[i]))
-        return;
-      obj = obj[args[i]];
-    }
-
-    return obj;
-  }
-
   getValue(user, field) {
     if (user.size === 0) {
       return null;
     }
 
-    let value = this.findprop(user, field.property);
+    let value = getProperty(user, field.property);
     if (value === undefined) return null;
 
     if (field.type && field.type === 'elapsedTime') {

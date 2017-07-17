@@ -65,7 +65,6 @@ class Users extends Component {
       userCreateError, userCreateLoading, accessLevel, nextPage, pages, settings } = this.props;
 
     const userFields = (settings && settings.userFields) || [];
-    console.log("Carlos UserFields: ", userFields);
 
     return (
       <div className="users">

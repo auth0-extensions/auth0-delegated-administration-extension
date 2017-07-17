@@ -120,7 +120,9 @@ class AddUserForm extends Component {
 
   render() {
     const connections = this.props.connections;
-    const customFields = this.props.customFields;
+    const customFields = _(this.props.customFields)
+      .filter(field => field.type)
+      .value();
     const {
       handleSubmit,
       submitting,
