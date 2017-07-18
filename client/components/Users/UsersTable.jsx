@@ -25,17 +25,21 @@ export default class UsersTable extends Component {
   // }
 
   getValue(field, user, defaultValue) {
-    // First get the value
-    let value = undefined;
+      // First get the value
+    let value;
     if (typeof field.property === 'function') value = field.property(user);
     else if (field.property) value = getProperty(user, field.property);
 
     // Now get the display value
-    let display = undefined;
-    let displayFunction = undefined;
+    let display;
+    let displayFunction;
     if (typeof field.display === 'function') displayFunction = field.display;
     if (displayFunction) {
       display = displayFunction(user, value);
+    }
+
+    if (!display && typeof value === 'object') {
+      display = JSON.stringify(value);
     }
 
     return display || value || defaultValue;
@@ -43,7 +47,7 @@ export default class UsersTable extends Component {
 
   render() {
     const { users, userFields } = this.props;
-
+    
     const defaultListFields = [
       {
         searchListOrder: 0,
@@ -122,8 +126,7 @@ export default class UsersTable extends Component {
               {
                 listFields.map((field, index) => {
                   if (index === 0) {
-                    return <TableRouteCell
-                      route={`/users/${user.user_id}`}>{this.getValue(field, user, '(empty)')}</TableRouteCell>
+                    return <TableRouteCell route={`/users/${user.user_id}`}>{this.getValue(field, user, '(empty)')}</TableRouteCell>
                   }
 
                   return <TableTextCell>{this.getValue(field, user)}</TableTextCell>
