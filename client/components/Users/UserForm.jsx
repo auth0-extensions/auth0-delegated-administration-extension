@@ -4,6 +4,7 @@ import { InputText, InputCombo, Multiselect } from 'auth0-extension-ui';
 import { Button, Modal } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { reduxForm, Field, formValueSelector } from 'redux-form';
+import LabeledMultiSelect from '../Fields/LabeledMultiSelect';
 
 class AddUserForm extends Component {
   static propTypes = {
@@ -83,13 +84,37 @@ class AddUserForm extends Component {
     );
   }
 
-  getFieldComponent(componentName) {
+  getFieldComponent(field, component, additionalOptions) {
+    return (
+      <Field
+        name={field.property}
+        type={field.type}
+        label={field.label}
+        component={component}
+        {...additionalOptions}
+      />
+    );
+  }
+
+  getFieldByComponentName(field, componentName) {
     switch (componentName) {
       case 'InputText': {
-        return InputText;
+        const additionalOptions = {
+          options: field.options ? _.map(field.options, (i) => ({ value: i, text: i })) : null
+        };
+        return (this.getFieldComponent(field, InputText, additionalOptions));
       }
       case 'InputCombo': {
-        return InputCombo;
+        const additionalOptions = {
+          options: field.options ? _.map(field.options, (i) => ({ value: i, text: i })) : null
+        };
+        return (this.getFieldComponent(field, InputCombo, additionalOptions));
+      }
+      case 'Multiselect': {
+        const additionalOptions = {
+          loadOptions: (input, callback) => callback(null, { options: field.options ? _.map(field.options, (i) => ({ label: i, value: i })) : [], complete: true })
+        };
+        return (this.getFieldComponent(field, LabeledMultiSelect, additionalOptions));
       }
       default: {
         return InputText;
@@ -98,24 +123,7 @@ class AddUserForm extends Component {
   }
 
   renderCustomFields(customFields) {
-    if (customFields) {
-      return (
-        <div>
-          { _.map(customFields, (field) => ((
-            <Field
-              name={field.property}
-              type={field.type}
-              label={field.label}
-              component={this.getFieldComponent(field.component)}
-              options={field.options ? _.map(field.options, (i) => ({ value: i, text: i })) : null}
-            />
-          )
-          ))}
-        </div>
-      );
-    }
-
-    return null;
+    return _.map(customFields, field => ((this.getFieldByComponentName(field, field.component))));
   }
 
   render() {
