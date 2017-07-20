@@ -1,5 +1,6 @@
 import React from 'react';
 import { findDOMNode } from 'react-dom';
+import _ from 'lodash';
 
 import { LuceneSearchBar, UsersTable } from './';
 import { Error, LoadingPanel, TableTotals, SearchBar } from 'auth0-extension-ui';
@@ -15,58 +16,78 @@ export default class UserOverview extends React.Component {
     userFields: React.PropTypes.array.isRequired
   }
 
+  constructor(props) {
+    super(props);
+
+    const searchUserFields = _.filter(this.props.userFields, { search: true });
+    this.searchOptions = _.map(searchUserFields, (field, index) => {
+      return {
+        title: field.label,
+        value: field.property,
+        filterBy: field.property,
+        selected: index === 0
+      };
+    });
+
+    const selectedFilter = _.find(this.searchOptions, { selected: true });
+    this.state = { selectedFilter };
+
+    this.renderSearchBar.bind(this);
+    this.onKeyPress = this.onKeyPress.bind(this);
+    this.onReset = this.onReset.bind(this);
+    this.onHandleOptionChange = this.onHandleOptionChange.bind(this);
+  }
+
   onKeyPress = (e) => {
     if (e.key === 'Enter') {
-      this.props.onSearch(findDOMNode(this.refs.search).value);
+      e.preventDefault();
+      const query = `${this.state.selectedFilter.filterBy}:${e.target.value}*`;
+      this.props.onSearch(query);
     }
   }
 
-  constructor() {
-    super();
-    this.renderSearchBar.bind(this);
+  onReset() {
+    this.props.onReset();
   }
 
-  renderSearchBar(searchOptions) {
-    const loading = this.props.loading;
-    if (searchOptions && searchOptions.length > 0) {
-      const handleOptionChange = option => console.log("Carlos, option: ", option);
+  onHandleOptionChange(option) {
+    this.setState({
+      selectedFilter: option
+    });
+  }
 
+  renderSearchBar() {
+    const loading = this.props.loading;
+    if (this.searchOptions && this.searchOptions.length > 0) {
       return <SearchBar
+        placeholder="Search"
         onReset={this.props.onReset}
-        onSearch={this.props.onSearch}
         enabled={!loading}
-        handleOptionChange={handleOptionChange}
-        searchOptions={searchOptions}/>
+        handleKeyPress={this.onKeyPress}
+        handleReset={this.onReset}
+        handleOptionChange={this.onHandleOptionChange}
+        searchOptions={this.searchOptions} />
     }
 
     return <LuceneSearchBar
       onReset={this.props.onReset}
       onSearch={this.props.onSearch}
-      enabled={!loading}/>
+      enabled={!loading} />
   }
 
   render() {
-    const { loading, error, users, userFields } = this.props;
-
-    const searchOptions = _.map(userFields, (field) => {
-      return {
-        title: field.label,
-        value: field.attribute,
-        selected: field.searchBarOptionDefault };
-    } );
-
     return (
       <div>
-        <LoadingPanel show={loading}>
+        <LoadingPanel show={this.props.loading}>
           <div className="row">
             <div className="col-xs-12 wrapper">
-              <Error message={error}/>
+              <Error message={this.props.error}/>
             </div>
           </div>
-          { this.renderSearchBar(searchOptions) }
+          { this.renderSearchBar() }
           <div className="row">
             <div className="col-xs-12">
-              <UsersTable loading={loading} users={users} userFields={userFields} />
+              <UsersTable loading={this.props.loading} users={this.props.users} userFields={this.props.userFields} />
             </div>
           </div>
         </LoadingPanel>
