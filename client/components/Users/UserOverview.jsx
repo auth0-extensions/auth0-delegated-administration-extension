@@ -41,7 +41,7 @@ export default class UserOverview extends React.Component {
   onKeyPress = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      const query = `${this.state.selectedFilter.filterBy}:${e.target.value}`;
+      const query = `${this.state.selectedFilter.filterBy}:${e.target.value}*`;
       this.props.onSearch(query);
     }
   }
