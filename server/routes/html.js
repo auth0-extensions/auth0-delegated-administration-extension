@@ -31,8 +31,8 @@ export default () => {
     <% if (assets.vendors) { %><script type="text/javascript" src="/app/<%= assets.vendors %>"></script><% } %>
     <% if (assets.app) { %><script type="text/javascript" src="http://localhost:3001/app/<%= assets.app %>"></script><% } %>
     <% if (assets.version) { %>
-    <script type="text/javascript" src="//cdn.auth0.com/extensions/auth0-delegated-admin/assets/auth0-delegated-admin.ui.vendors.<%= assets.version %>.js"></script>
-    <script type="text/javascript" src="//cdn.auth0.com/extensions/auth0-delegated-admin/assets/auth0-delegated-admin.ui.<%= assets.version %>.js"></script>
+    <script type="text/javascript" src="<%= assets.cdnPath %>/auth0-delegated-admin.ui.vendors.<%= assets.version %>.js"></script>
+    <script type="text/javascript" src="<%= assets.cdnPath %>/auth0-delegated-admin.ui.<%= assets.version %>.js"></script>
     <% } %>
   </body>
   </html>
@@ -49,17 +49,19 @@ export default () => {
       BASE_URL: urlHelpers.getBaseUrl(req),
       BASE_PATH: urlHelpers.getBasePath(req),
       TITLE: config('TITLE'),
-      FEDERATED_LOGOUT: config('FEDERATED_LOGOUT') === 'true'
+      FEDERATED_LOGOUT: config('FEDERATED_LOGOUT') === 'true',
     };
 
     // Render from CDN.
-    const clientVersion = process.env.CLIENT_VERSION;
+    const clientVersion = config('CLIENT_VERSION');
     if (clientVersion) {
+      const cdnPath = config('CDN_PATH') || '//cdn.auth0.com/extensions/auth0-delegated-admin/assets';
       return res.send(ejs.render(template, {
         config: settings,
         assets: {
           customCss: config('CUSTOM_CSS'),
-          version: clientVersion
+          version: clientVersion,
+          cdnPath: cdnPath
         }
       }));
     }
