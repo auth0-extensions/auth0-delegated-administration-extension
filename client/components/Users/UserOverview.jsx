@@ -29,10 +29,12 @@ export default class UserOverview extends React.Component {
       };
     });
 
-    const selectedFilter = _.find(this.searchOptions, { selected: true });
-    this.state = { selectedFilter };
+    this.defaultFilter = _.find(this.searchOptions, { selected: true });
+    this.state = {
+      searchValue: '',
+      selectedFilter: this.defaultFilter
+    };
 
-    this.renderSearchBar.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
     this.onReset = this.onReset.bind(this);
     this.onHandleOptionChange = this.onHandleOptionChange.bind(this);
@@ -41,13 +43,16 @@ export default class UserOverview extends React.Component {
   onKeyPress = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      const query = `${this.state.selectedFilter.filterBy}:${e.target.value}*`;
-      this.props.onSearch(query);
+      const query = e.target.value;
+      this.props.onSearch(query, this.state.selectedFilter.filterBy);
     }
   }
 
   onReset() {
     this.props.onReset();
+    this.setState({
+      searchValue: ''
+    });
   }
 
   onHandleOptionChange(option) {
@@ -56,38 +61,38 @@ export default class UserOverview extends React.Component {
     });
   }
 
-  renderSearchBar() {
-    const loading = this.props.loading;
-    if (this.searchOptions && this.searchOptions.length > 0) {
-      return <SearchBar
-        placeholder="Search"
-        onReset={this.props.onReset}
-        enabled={!loading}
-        handleKeyPress={this.onKeyPress}
-        handleReset={this.onReset}
-        handleOptionChange={this.onHandleOptionChange}
-        searchOptions={this.searchOptions} />
-    }
-
-    return <LuceneSearchBar
-      onReset={this.props.onReset}
-      onSearch={this.props.onSearch}
-      enabled={!loading} />
-  }
-
   render() {
+    const loading = this.props.loading;
     return (
       <div>
-        <LoadingPanel show={this.props.loading}>
-          <div className="row">
-            <div className="col-xs-12 wrapper">
-              <Error message={this.props.error}/>
-            </div>
+        <div className="row">
+          <div className="col-xs-12 wrapper">
+            <Error message={this.props.error}/>
           </div>
-          { this.renderSearchBar() }
+        </div>  
+        <div className="row">
+          <div className="col-xs-12">
+            { (this.searchOptions && this.searchOptions.length > 0) ? (
+              <SearchBar
+                onReset={this.props.onReset}
+                enabled={!loading}
+                handleKeyPress={this.onKeyPress}
+                handleReset={this.onReset}
+                handleOptionChange={this.onHandleOptionChange}
+                searchOptions={this.searchOptions}
+                searchValue={this.state.searchValue} />
+            ) : (
+              <LuceneSearchBar
+                onReset={this.props.onReset}
+                onSearch={this.props.onSearch}
+                enabled={!loading} />
+            )}
+          </div>
+        </div>
+        <LoadingPanel show={loading}>
           <div className="row">
             <div className="col-xs-12">
-              <UsersTable loading={this.props.loading} users={this.props.users} userFields={this.props.userFields} />
+              <UsersTable loading={loading} users={this.props.users} userFields={this.props.userFields} />
             </div>
           </div>
         </LoadingPanel>

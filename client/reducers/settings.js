@@ -26,9 +26,14 @@ export const settings = createReducer(fromJS(initialState), { // eslint-disable-
       data.settings.userFields.forEach((field) => {
         if (field.display &&
           typeof field.display === 'string' &&
-          field.display.startsWith("function"))
-        // TODO: this is scary => what else can we do?
-          field.display = eval(`(${field.display})`);
+          field.display.startsWith('function')) {
+          try {
+            // TODO: this is scary => what else can we do?
+            field.display = eval(`(${field.display})`);
+          } catch (error) {
+            console.error(`The display function for field ${field.property} throws an error`, error);
+          }
+        }
       });
     }
     return state.merge({

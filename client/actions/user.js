@@ -9,7 +9,7 @@ import { getAccessLevel } from './auth';
 /*
  * Search for users.
  */
-export function fetchUsers(search = '', reset = false, page = 0) {
+export function fetchUsers(search = '', reset = false, page = 0, filterBy) {
   return (dispatch) => {
     dispatch({
       type: constants.FETCH_USERS,
@@ -17,7 +17,8 @@ export function fetchUsers(search = '', reset = false, page = 0) {
         promise: axios.get('/api/users', {
           params: {
             search,
-            page
+            page,
+            filterBy
           },
           responseType: 'json'
         })
