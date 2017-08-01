@@ -56,7 +56,7 @@ export default (storage, scriptManager) => {
 
     let searchQuery = req.query.search;
     if (req.query.filterBy && req.query.filterBy.length > 0) {
-      searchQuery = `${req.query.filterBy}:${req.query.search}`;
+      searchQuery = `${req.query.filterBy}:"${req.query.search}"`;
     }
 
     scriptManager.execute('filter', filterContext)

@@ -109,9 +109,6 @@ export default class UsersTable extends Component {
       }
     }
 
-    console.log('listFields', listFields);
-    console.log('users', users);
-
     return (
       <Table>
         <TableHeader>

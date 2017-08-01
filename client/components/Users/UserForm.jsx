@@ -112,7 +112,17 @@ class AddUserForm extends Component {
       }
       case 'Multiselect': {
         const additionalOptions = {
-          loadOptions: (input, callback) => callback(null, { options: field.options ? _.map(field.options, (i) => ({ label: i, value: i })) : [], complete: true })
+          loadOptions: (input, callback) => callback(null, { options: field.options ? _.map(field.options, (i) => ({ label: i, value: i })) : [], complete: true }),
+          name: field.property,
+          multi: true
+        };
+        return (this.getFieldComponent(field, LabeledMultiSelect, additionalOptions));
+      }
+      case 'Singleselect': {
+        const additionalOptions = {
+          loadOptions: (input, callback) => callback(null, { options: field.options ? _.map(field.options, option => ({ label: option, value: option })) : [], complete: true }),
+          multi: false,
+          name: field.property
         };
         return (this.getFieldComponent(field, LabeledMultiSelect, additionalOptions));
       }
