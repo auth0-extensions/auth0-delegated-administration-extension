@@ -53,7 +53,7 @@ export default () => {
     };
 
     // Render from CDN.
-    const clientVersion = config('CLIENT_VERSION');
+    const clientVersion = process.env.CLIENT_VERSION;
     if (clientVersion) {
       const cdnPath = config('CDN_PATH') || '//cdn.auth0.com/extensions/auth0-delegated-admin/assets';
       return res.send(ejs.render(template, {
