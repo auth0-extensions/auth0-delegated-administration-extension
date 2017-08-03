@@ -1,10 +1,9 @@
 import React, { PropTypes, Component } from 'react';
 import _ from 'lodash';
-import { InputText, InputCombo, Multiselect } from 'auth0-extension-ui';
+import { InputText, InputCombo, Multiselect, Select } from 'auth0-extension-ui';
 import { Button, Modal } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { reduxForm, Field, formValueSelector } from 'redux-form';
-import LabeledMultiSelect from '../Fields/LabeledMultiSelect';
 
 class AddUserForm extends Component {
   static propTypes = {
@@ -116,7 +115,7 @@ class AddUserForm extends Component {
           name: field.property,
           multi: true
         };
-        return (this.getFieldComponent(field, LabeledMultiSelect, additionalOptions));
+        return (this.getFieldComponent(field, Multiselect, additionalOptions));
       }
       case 'Singleselect': {
         const additionalOptions = {
@@ -124,7 +123,7 @@ class AddUserForm extends Component {
           multi: false,
           name: field.property
         };
-        return (this.getFieldComponent(field, LabeledMultiSelect, additionalOptions));
+        return (this.getFieldComponent(field, Select, additionalOptions));
       }
       default: {
         return InputText;
