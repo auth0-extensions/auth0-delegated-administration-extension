@@ -6,6 +6,7 @@ import { Tabs, Tab } from 'react-bootstrap';
 import { scriptActions } from '../../actions';
 
 import Editor from '../../components/Editor';
+import DaeExtendEditor from '../../components/DaeExtendEditor';
 import './Configuration.css';
 
 export default connectContainer(class extends Component {
@@ -58,6 +59,7 @@ export default connectContainer(class extends Component {
     this.props.fetchScript('create');
     this.props.fetchScript('memberships');
     this.props.fetchScript('settings');
+    this.props.fetchScript('update');
   };
 
   saveScript = (name) => () => {
@@ -176,6 +178,15 @@ export default connectContainer(class extends Component {
                       Save Settings Query
                     </button>
                   </div>
+                </LoadingPanel>
+              </Tab>
+              <Tab eventKey={6} title={code.update && code.update.length ? <span>Update Hook</span> : <i>Update Hook</i>}>
+                <LoadingPanel show={false} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
+                  <Error message={scripts.update && scripts.update.error} />
+                  <p>
+                    With the <strong>update hook</strong> you can control how fields are updated when using custom userFields that are set in settings.
+                  </p>
+                  { scripts.update && scripts.update.token ? <DaeExtendEditor token={scripts.update.token || ""} name={'update'} /> : null }
                 </LoadingPanel>
               </Tab>
             </Tabs>
