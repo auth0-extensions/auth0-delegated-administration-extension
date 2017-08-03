@@ -5,7 +5,7 @@ import * as constants from '../../../client/constants';
 const initialState = {
   loading: false,
   error: null,
-  record: { settings: { dict: { title: '', memberships: '' }, css: '' } }
+  record: { settings: { dict: { title: '', memberships: '' }, userFields: [], css: '' } }
 };
 
 describe('settings reducer', () => {
@@ -26,7 +26,7 @@ describe('settings reducer', () => {
       {
         loading: true,
         error: null,
-        record: { settings: { dict: { title: '', memberships: '' }, css: '' } }
+        record: { settings: { dict: { title: '', memberships: '' }, userFields: [], css: '' } }
       }
     );
   });
@@ -40,8 +40,8 @@ describe('settings reducer', () => {
     ).toEqual(
       {
         loading: false,
-        error: 'An error occured while loading the connections: ERROR',
-        record: { settings: { dict: { title: '', memberships: '' }, css: '' } }
+        error: 'An error occurred while loading the connections: ERROR',
+        record: { settings: { dict: { title: '', memberships: '' }, userFields: [], css: '' } }
       }
     );
   });
@@ -50,13 +50,13 @@ describe('settings reducer', () => {
     expect(
       settings(initialState, {
         type: constants.FETCH_SETTINGS_FULFILLED,
-        payload: { data: { settings: { dict: { title: 'test', memberships: 'test1, test2' }, css: 'style.css' } } }
+        payload: { data: { settings: { dict: { title: 'test', memberships: 'test1, test2' }, userFields: [], css: 'style.css' } } }
       }).toJSON()
     ).toEqual(
       {
         loading: false,
         error: null,
-        record: { settings: { dict: { title: 'test', memberships: 'test1, test2' }, css: 'style.css' } }
+        record: { settings: { dict: { title: 'test', memberships: 'test1, test2' }, userFields: [], css: 'style.css' } }
       }
     );
   });

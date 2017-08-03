@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 
 import {
   Table,
@@ -47,7 +48,7 @@ export default class UsersTable extends Component {
 
   render() {
     const { users, userFields } = this.props;
-    
+
     const defaultListFields = [
       {
         searchListOrder: 0,
@@ -67,13 +68,13 @@ export default class UsersTable extends Component {
         searchListOrder: 2,
         searchListSize: '15%',
         property: 'last_login_relative',
-        label: 'Latest Login',
+        label: 'Latest Login'
       },
       {
         searchListOrder: 3,
         searchListSize: '10%',
         property: 'logins_count',
-        label: 'Logins',
+        label: 'Logins'
       },
       {
         searchListOrder: 4,
@@ -113,23 +114,24 @@ export default class UsersTable extends Component {
         <TableHeader>
           <TableColumn width="6%" />
           {
-            listFields.map((field, index) => <TableColumn key={index} width={field.searchListSize}>{field.label}</TableColumn>)
+            listFields.map((field) => <TableColumn key={field.property} width={field.searchListSize}>{field.label}</TableColumn>)
           }
         </TableHeader>
         <TableBody>
-          {users.map((user, index) =>
-            <TableRow key={index}>
+          {users.map(user =>
+            <TableRow key={user.user_id}>
               <TableCell>
-                <img className="img-circle" src={user.picture} alt={name}
-                     width="32" />
+                <img className="img-circle" src={user.picture} alt={name} width="32" />
               </TableCell>
               {
                 listFields.map((field, index) => {
                   if (index === 0) {
-                    return <TableRouteCell route={`/users/${user.user_id}`}>{this.getValue(field, user, '(empty)')}</TableRouteCell>
+                    return <TableRouteCell key={`${user.user_id}_${field.property}`} route={`/users/${user.user_id}`}>
+                      { this.getValue(field, user, '(empty)') }
+                    </TableRouteCell>;
                   }
 
-                  return <TableTextCell>{this.getValue(field, user)}</TableTextCell>
+                  return <TableTextCell key={`${user.user_id}_${field.property}`} >{this.getValue(field, user)}</TableTextCell>;
                 })
               }
 

@@ -10,7 +10,7 @@ const initialState = {
   records: [],
   total: 0,
   currentPage: 1,
-  pages: 1 
+  pages: 1
 };
 
 export const users = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export

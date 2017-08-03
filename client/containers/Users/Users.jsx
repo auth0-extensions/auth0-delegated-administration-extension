@@ -46,8 +46,10 @@ class Users extends Component {
     this.props.fetchUsers('', false, page - 1);
   }
 
-  onSearch = (query) => {
-    this.props.fetchUsers(query);
+  onSearch = (query, filterBy) => {
+    if (query && query.length > 0) {
+      this.props.fetchUsers(query, false, 0, filterBy);
+    }
   }
 
   onReset = () => {

@@ -1,10 +1,9 @@
 import React, { PropTypes, Component } from 'react';
 import _ from 'lodash';
-import { InputText, InputCombo, Multiselect } from 'auth0-extension-ui';
+import { InputText, InputCombo, Multiselect, Select } from 'auth0-extension-ui';
 import { Button, Modal } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { reduxForm, Field, formValueSelector } from 'redux-form';
-import LabeledMultiSelect from '../Fields/LabeledMultiSelect';
 
 class AddUserForm extends Component {
   static propTypes = {
@@ -100,21 +99,32 @@ class AddUserForm extends Component {
     switch (componentName) {
       case 'InputText': {
         const additionalOptions = {
-          options: field.options ? _.map(field.options, (i) => ({ value: i, text: i })) : null
+          options: field.options ? _.map(field.options, option => ({ value: option, text: option })) : null,
+          disabled: field.disabled || false
         };
         return (this.getFieldComponent(field, InputText, additionalOptions));
       }
       case 'InputCombo': {
         const additionalOptions = {
-          options: field.options ? _.map(field.options, (i) => ({ value: i, text: i })) : null
+          options: field.options ? _.map(field.options, option => ({ value: option, text: option })) : null
         };
         return (this.getFieldComponent(field, InputCombo, additionalOptions));
       }
-      case 'Multiselect': {
+      case 'InputMultiCombo': {
         const additionalOptions = {
-          loadOptions: (input, callback) => callback(null, { options: field.options ? _.map(field.options, (i) => ({ label: i, value: i })) : [], complete: true })
+          loadOptions: (input, callback) => callback(null, { options: field.options ? _.map(field.options, option => ({ label: option, value: option })) : [], complete: true }),
+          name: field.property,
+          multi: true
         };
-        return (this.getFieldComponent(field, LabeledMultiSelect, additionalOptions));
+        return (this.getFieldComponent(field, Multiselect, additionalOptions));
+      }
+      case 'InputSelectCombo': {
+        const additionalOptions = {
+          loadOptions: (input, callback) => callback(null, { options: field.options ? _.map(field.options, option => ({ label: option, value: option })) : [], complete: true }),
+          multi: false,
+          name: field.property
+        };
+        return (this.getFieldComponent(field, Select, additionalOptions));
       }
       default: {
         return InputText;
