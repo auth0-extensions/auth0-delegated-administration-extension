@@ -48,6 +48,7 @@ export default () => {
     const settings = {
       AUTH0_DOMAIN: config('AUTH0_DOMAIN'),
       AUTH0_CLIENT_ID: config('EXTENSION_CLIENT_ID'),
+      EXTEND_URL: config('EXTEND_URL'),
       BASE_URL: urlHelpers.getBaseUrl(req),
       BASE_PATH: urlHelpers.getBasePath(req),
       TITLE: config('TITLE'),

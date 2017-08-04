@@ -15,7 +15,7 @@ export default class DaeExtendEditor extends Component {
       webtaskName: `auth0-delegated-admin-${this.name}`,
       token: this.token,
       webtaskContainer: window.config.AUTH0_DOMAIN.split('.')[0],
-      hostUrl: 'https://sandbox.it.auth0.com',
+      hostUrl: window.config.EXTEND_URL,
       theme: 'light',
       allowRenaming: false,
       allowCreating: false,
