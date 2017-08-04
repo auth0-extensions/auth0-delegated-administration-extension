@@ -1,12 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { Pagination, TableTotals } from 'auth0-extension-ui';
 
 import { connectionActions, userActions } from '../../actions';
 
 import * as dialogs from './Dialogs';
 import TabsHeader from '../../components/TabsHeader';
 import { UserOverview, UserForm } from '../../components/Users';
-import { Pagination, TableTotals } from '../../components/Dashboard';
 
 import './Users.css';
 
@@ -26,7 +26,8 @@ class Users extends Component {
     getDictValue: PropTypes.func.isRequired,
     createUser: PropTypes.func.isRequired,
     fetchConnections: PropTypes.func.isRequired,
-    requestCreateUser: PropTypes.func.isRequired
+    requestCreateUser: PropTypes.func.isRequired,
+    settings: PropTypes.object.isRequired
   }
 
   constructor(props) {
@@ -45,8 +46,10 @@ class Users extends Component {
     this.props.fetchUsers('', false, page - 1);
   }
 
-  onSearch = (query) => {
-    this.props.fetchUsers(query);
+  onSearch = (query, filterBy) => {
+    if (query && query.length > 0) {
+      this.props.fetchUsers(query, false, 0, filterBy);
+    }
   }
 
   onReset = () => {
@@ -60,7 +63,11 @@ class Users extends Component {
   }
 
   render() {
-    const { loading, error, users, total, connections, userCreateError, userCreateLoading, accessLevel, nextPage, pages } = this.props;
+    const { loading, error, users, total, connections,
+      userCreateError, userCreateLoading, accessLevel, nextPage, pages, settings } = this.props;
+
+    const userFields = (settings && settings.userFields) || [];
+
     return (
       <div className="users">
         <TabsHeader role={accessLevel.get('record').get('role')} />
@@ -75,7 +82,7 @@ class Users extends Component {
             : ''}
           </div>
         </div>
-        <dialogs.CreateDialog getDictValue={this.props.getDictValue} />
+        <dialogs.CreateDialog getDictValue={this.props.getDictValue} userFields={userFields} />
         <UserOverview
           onReset={this.onReset}
           onSearch={this.onSearch}
@@ -87,6 +94,7 @@ class Users extends Component {
           pages={pages}
           loading={loading}
           role={accessLevel.role}
+          userFields={userFields}
         />
         <div className="row">
           <div className="col-xs-12">
@@ -119,7 +127,8 @@ function mapStateToProps(state) {
     connections: state.connections.get('records').toJS(),
     total: state.users.get('total'),
     nextPage: state.users.get('nextPage'),
-    pages: state.users.get('pages')
+    pages: state.users.get('pages'),
+    settings: state.settings.get('record').toJS().settings
   };
 }
 

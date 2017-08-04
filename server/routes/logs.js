@@ -2,12 +2,12 @@ import Promise from 'bluebird';
 import { Router } from 'express';
 import { NotFoundError } from 'auth0-extension-tools';
 
-import { hasAccessLevel } from '../lib/middlewares';
+import { requireScope } from '../lib/middlewares';
 import * as constants from '../constants';
 
 export default (scriptManager) => {
   const api = Router();
-  api.get('/', hasAccessLevel(constants.ADMIN_ACCESS_LEVEL), (req, res, next) => {
+  api.get('/', requireScope(constants.ADMIN_PERMISSION), (req, res, next) => {
     req.auth0.logs
       .getAll({
         q: 'NOT type: sapi AND NOT type:fapi',
@@ -28,7 +28,7 @@ export default (scriptManager) => {
           return Promise.reject(new Error('Invalid log record.'));
         }
 
-        if (req.user.role === constants.ADMIN_ACCESS_LEVEL) {
+        if (req.user.scope.indexOf(constants.ADMIN_PERMISSION) >= 0) {
           return log;
         }
 

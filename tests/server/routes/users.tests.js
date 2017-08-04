@@ -8,7 +8,6 @@ import bodyParser from 'body-parser';
 import config from '../../../server/lib/config';
 import users from '../../../server/routes/users';
 import ScriptManager from '../../../server/lib/scriptmanager';
-import { getUserAccessLevel } from '../../../server/lib/middlewares';
 import { user, defaultUsers, defaultScripts, defaultConfig } from '../../utils/dummyData';
 
 describe('#users router', () => {
@@ -75,7 +74,7 @@ describe('#users router', () => {
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
-  app.use('/users', fakeApiClient, addUserToReq, getUserAccessLevel, users(storage, scriptManager));
+  app.use('/users', fakeApiClient, addUserToReq, users(storage, scriptManager));
 
   before(() => {
     const domain = new RegExp(config('AUTH0_DOMAIN'));

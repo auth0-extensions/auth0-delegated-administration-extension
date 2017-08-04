@@ -14,35 +14,28 @@ export default (storage, scriptManager) => {
    * Create user.
    */
   api.post('/', (req, res, next) => {
-    if (!req.body.email || req.body.email.length === 0) {
-      return next(new ValidationError('The email address is required.'));
-    }
     if (req.body.password !== req.body.repeatPassword) {
-      return next(new ValidationError('The passwords do not match.'));
+      throw new ValidationError('The passwords do not match.');
     }
 
     const createContext = {
       request: {
         user: req.user
       },
-      payload: {
-        email: req.body.email,
-        username: req.body.username,
-        connection: req.body.connection,
-        memberships: req.body.memberships,
-        password: req.body.password
-      },
-      defaultPayload: {
-        email: req.body.email,
-        username: req.body.username,
-        password: req.body.password,
-        connection: req.body.connection,
-        app_metadata: (req.body.memberships && req.body.memberships.length && { memberships: req.body.memberships }) || { }
-      }
+      payload: req.body
     };
 
     return scriptManager.execute('create', createContext)
-      .then(result => req.auth0.users.create(result || createContext.defaultPayload))
+      .then((result) => {
+        const payload = result || createContext.defaultPayload;
+
+        if (!payload.email || payload.email.length === 0) {
+          throw new ValidationError('The email address is required.');
+        }
+
+        return payload;
+      })
+      .then(payload => req.auth0.users.create(payload))
       .then(() => res.status(201).send())
       .catch(next);
   });
@@ -56,27 +49,36 @@ export default (storage, scriptManager) => {
         user: req.user
       },
       payload: {
-        search: req.query.search
+        search: req.query.search,
+        filterBy: req.query.filterBy
       }
     };
+
+    let searchQuery = req.query.search;
+    if (req.query.filterBy && req.query.filterBy.length > 0) {
+      searchQuery = `${req.query.filterBy}:"${req.query.search}"`;
+    }
 
     scriptManager.execute('filter', filterContext)
       .then((filter) => {
         const options = {
           sort: 'last_login:-1',
-          q: (req.query.search && filter) ? `(${req.query.search}) AND ${filter}` : req.query.search || filter,
+          q: (searchQuery && filter) ? `(${searchQuery}) AND ${filter}` : searchQuery || filter,
           per_page: req.query.per_page || 10,
           page: req.query.page || 0,
           include_totals: true,
-          fields: 'user_id,name,email,identities,picture,last_login,logins_count,multifactor,blocked,app_metadata',
+          fields: 'user_id,username,name,email,identities,picture,last_login,logins_count,multifactor,blocked,app_metadata',
           search_engine: 'v2'
         };
 
         return req.auth0.users.getAll(options);
       })
       .then(data =>
-        Promise.map(data.users, user =>
-          scriptManager.execute('access', { request: { user: req.user }, payload: { user, action: 'read:user' } }))
+        Promise.map(data.users, (user, index) =>
+          scriptManager.execute('access', { request: { user: req.user }, payload: { user, action: 'read:user' } })
+            .then((parsedUser) => {
+              data.users[index] = parsedUser || user;
+            }))
           .then(() => data))
       .then(users => res.json(users))
       .catch(next);
@@ -85,9 +87,14 @@ export default (storage, scriptManager) => {
   /*
    * Get a single user.
    */
-  api.get('/:id', verifyUserAccess('read:user', scriptManager), (req, res, next) => {
+  api.get('/:id', (req, res, next) => {
     req.auth0.users.get({ id: req.params.id })
       .then((user) => {
+        if (!user) {
+          res.status(404);
+          throw new Error('User not found');
+        }
+
         const membershipContext = {
           request: {
             user: req.user
@@ -119,6 +126,12 @@ export default (storage, scriptManager) => {
             };
           });
       })
+      .then(data =>
+        scriptManager.execute('access', { request: { user: req.user }, payload: { user: data.user, action: 'read:user' } })
+          .then((parsedUser) => {
+            data.user = parsedUser || data.user;
+            return data;
+          }))
       .then(data => res.json(data))
       .catch(next);
   });

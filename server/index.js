@@ -3,7 +3,7 @@ import morgan from 'morgan';
 import Express from 'express';
 import bodyParser from 'body-parser';
 import * as tools from 'auth0-extension-tools';
-import { middlewares } from 'auth0-extension-express-tools';
+import { middlewares, routes } from 'auth0-extension-express-tools';
 
 import api from './routes/api';
 import hooks from './routes/hooks';
@@ -34,6 +34,19 @@ module.exports = (cfg, storageProvider) => {
   app.use(bodyParser.urlencoded({ extended: false }));
 
   // Configure routes.
+  app.use(routes.dashboardAdmins({
+    secret: config('EXTENSION_SECRET'),
+    audience: 'urn:delegated-admin',
+    rta: config('AUTH0_RTA').replace('https://', ''),
+    domain: config('AUTH0_DOMAIN'),
+    baseUrl: config('PUBLIC_WT_URL'),
+    webtaskUrl: config('PUBLIC_WT_URL'),
+    clientName: 'Delegated Administration',
+    urlPrefix: '/admins',
+    sessionStorageKey: 'delegated-admin:apiToken',
+    scopes: 'read:clients delete:clients read:connections read:users update:users delete:users create:users read:logs read:device_credentials update:device_credentials delete:device_credentials'
+  }));
+
   app.use('/api', api(storage));
   app.use('/app', Express.static(path.join(__dirname, '../dist')));
   app.use('/meta', meta());

@@ -6,7 +6,6 @@ import bodyParser from 'body-parser';
 
 import logs from '../../../server/routes/logs';
 import ScriptManager from '../../../server/lib/scriptmanager';
-import { getUserAccessLevel } from '../../../server/lib/middlewares';
 import { user, defaultLogs, defaultUsers, defaultScripts } from '../../utils/dummyData';
 import * as constants from '../../../server/constants';
 
@@ -56,7 +55,7 @@ describe('#logs router', () => {
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
-  app.use('/logs', fakeApiClient, addUserToReq, getUserAccessLevel, logs(scriptManager));
+  app.use('/logs', fakeApiClient, addUserToReq, logs(scriptManager));
 
   describe('#List', () => {
     it('should return "access denied" error', (done) => {
@@ -71,10 +70,11 @@ describe('#logs router', () => {
     });
 
     it('should return list of logs', (done) => {
-      user.app_metadata.roles = constants.ADMIN_ROLE_NAME;
+      user.scope = constants.ADMIN_PERMISSION;
 
-      request(app)
-        .get('/logs')
+      const result = request(app)
+        .get('/logs');
+      result
         .expect('Content-Type', /json/)
         .expect(200)
         .end((err, res) => {
@@ -111,7 +111,7 @@ describe('#logs router', () => {
     });
 
     it('should return "access denied" error', (done) => {
-      user.app_metadata.roles = constants.USER_ROLE_NAME;
+      user.scope = constants.USER_PERMISSION;
 
       request(app)
         .get('/logs/2')
