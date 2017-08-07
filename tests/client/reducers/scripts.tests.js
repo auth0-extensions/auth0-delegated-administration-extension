@@ -14,7 +14,8 @@ describe('scripts reducer', () => {
         settings: {
           loading: true,
           error: null,
-          script: null
+          script: null,
+          token: null
         }
       }
     );
@@ -31,7 +32,7 @@ describe('scripts reducer', () => {
       {
         settings: {
           loading: false,
-          error: 'An error occured while loading the script: ERROR'
+          error: 'An error occurred while loading the script: ERROR'
         }
       }
     );
@@ -52,7 +53,8 @@ describe('scripts reducer', () => {
       {
         settings: {
           loading: false,
-          script: 'function () { return true; }'
+          script: 'function () { return true; }',
+          token: undefined
         }
       }
     );
@@ -88,7 +90,7 @@ describe('scripts reducer', () => {
       {
         settings: {
           loading: false,
-          error: 'An error occured while saving the script: ERROR'
+          error: 'An error occurred while saving the script: ERROR'
         }
       }
     );

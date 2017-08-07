@@ -99,20 +99,19 @@ class AddUserForm extends Component {
     switch (componentName) {
       case 'InputText': {
         const additionalOptions = {
-          options: field.options ? _.map(field.options, option => ({ value: option, text: option })) : null,
           disabled: field.disabled || false
         };
         return (this.getFieldComponent(field, InputText, additionalOptions));
       }
       case 'InputCombo': {
         const additionalOptions = {
-          options: field.options ? _.map(field.options, option => ({ value: option, text: option })) : null
+          options: field.options ? _.map(field.options, option => ({ value: option.value, text: option.label })) : null
         };
         return (this.getFieldComponent(field, InputCombo, additionalOptions));
       }
       case 'InputMultiCombo': {
         const additionalOptions = {
-          loadOptions: (input, callback) => callback(null, { options: field.options ? _.map(field.options, option => ({ label: option, value: option })) : [], complete: true }),
+          loadOptions: (input, callback) => callback(null, { options: field.options || [], complete: true }),
           name: field.property,
           multi: true
         };
@@ -120,7 +119,7 @@ class AddUserForm extends Component {
       }
       case 'InputSelectCombo': {
         const additionalOptions = {
-          loadOptions: (input, callback) => callback(null, { options: field.options ? _.map(field.options, option => ({ label: option, value: option })) : [], complete: true }),
+          loadOptions: (input, callback) => callback(null, { options: field.options || [], complete: true }),
           multi: false,
           name: field.property
         };
