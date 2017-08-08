@@ -97,12 +97,6 @@ class AddUserForm extends Component {
 
   getFieldByComponentName(field, componentName) {
     switch (componentName) {
-      case 'InputText': {
-        const additionalOptions = {
-          disabled: field.disabled || false
-        };
-        return (this.getFieldComponent(field, InputText, additionalOptions));
-      }
       case 'InputCombo': {
         const additionalOptions = {
           options: field.options ? _.map(field.options, option => ({ value: option.value, text: option.label })) : null
@@ -126,7 +120,10 @@ class AddUserForm extends Component {
         return (this.getFieldComponent(field, Select, additionalOptions));
       }
       default: {
-        return InputText;
+        const additionalOptions = {
+          disabled: field.disabled || false
+        };
+        return (this.getFieldComponent(field, InputText, additionalOptions));
       }
     }
   }
@@ -138,8 +135,23 @@ class AddUserForm extends Component {
   render() {
     const connections = this.props.connections;
     const customFields = _(this.props.customFields)
-      .filter(field => field.type)
+      .filter(field => _.isObject(field.create) || (_.isBoolean(field.create) && field.create === true))
+      .map((field) => {
+        if (_.isBoolean(field.create) && field.create === true) {
+          const defaultField = Object.assign({}, field, {
+            type: 'text',
+            component: 'InputText'
+          });
+          console.log('defaultField', defaultField);
+          return defaultField;
+        }
+
+        const customField = Object.assign({}, field, field.create);
+        console.log('customField', customField);
+        return customField;
+      })
       .value();
+
     const {
       handleSubmit,
       submitting,

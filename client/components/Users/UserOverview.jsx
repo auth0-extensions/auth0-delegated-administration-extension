@@ -19,15 +19,17 @@ export default class UserOverview extends React.Component {
   constructor(props) {
     super(props);
 
-    const searchUserFields = _.filter(this.props.userFields, { search: true });
-    this.searchOptions = _.map(searchUserFields, (field, index) => {
-      return {
-        title: field.label,
-        value: field.property,
-        filterBy: field.property,
-        selected: index === 0
-      };
-    });
+    this.searchOptions = _(this.props.userFields)
+      .filter(field => _.isObject(field.search) && field.search.filter && field.search.filter === true)
+      .map((field, index) => {
+        return {
+          title: field.label,
+          value: field.property,
+          filterBy: field.property,
+          selected: index === 0
+        };
+      })
+      .value();
 
     this.defaultFilter = _.find(this.searchOptions, { selected: true });
     this.state = {

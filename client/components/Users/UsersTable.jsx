@@ -32,9 +32,10 @@ export default class UsersTable extends Component {
     else if (field.property) value = getProperty(user, field.property);
 
     // Now get the display value
+    const displayProperty = field.search && field.search.display ? field.search.display : field.display;
     let display;
     let displayFunction;
-    if (typeof field.display === 'function') displayFunction = field.display;
+    if (typeof displayProperty === 'function') displayFunction = displayProperty;
     if (displayFunction) {
       display = displayFunction(user, value);
     }
@@ -51,34 +52,34 @@ export default class UsersTable extends Component {
 
     const defaultListFields = [
       {
-        searchListOrder: 0,
-        searchListSize: '25%',
+        listOrder: 0,
+        listSize: '25%',
         property: 'name',
         label: 'Name',
         display: (user, value) => (value || user.nickname || user.email || user.user_id)
       },
       {
-        searchListOrder: 1,
-        searchListSize: '29%',
+        listOrder: 1,
+        listSize: '29%',
         property: 'email',
         label: 'Email',
         display: (user, value) => value || 'N/A'
       },
       {
-        searchListOrder: 2,
-        searchListSize: '15%',
+        listOrder: 2,
+        listSize: '15%',
         property: 'last_login_relative',
         label: 'Latest Login'
       },
       {
-        searchListOrder: 3,
-        searchListSize: '10%',
+        listOrder: 3,
+        listSize: '10%',
         property: 'logins_count',
         label: 'Logins'
       },
       {
-        searchListOrder: 4,
-        searchListSize: '25%',
+        listOrder: 4,
+        listSize: '25%',
         property: 'identities',
         label: 'Connection',
         display: (user, value) => value[0].connection
@@ -91,20 +92,33 @@ export default class UsersTable extends Component {
     if (userFields.length > 0) {
       // Figure out if we have any user list fields
       const customListFields = _(userFields)
-        .filter(field => (field.searchListOrder || field.searchListOrder === 0) && field.searchListOrder >= 0)
+        .filter(field => _.isObject(field.search) || (_.isBoolean(field.search) && field.search === true))
+        .map((field) => {
+          if (_.isBoolean(field.search) && field.search === true) {
+            const defaultField = Object.assign({}, field, {
+              listOrder: 1000,
+              listSize: '25%'
+            });
+            return defaultField;
+          }
+
+          const customField = Object.assign({}, field, field.search);
+          return customField;
+        })
         .value();
 
       // If we do, allow the userFields to override the existing search fields
       if (Array.isArray(customListFields) && customListFields.length > 0) {
         // First filter out defaultListFields from userField entries
         const customFieldProperties = _(userFields)
-          .filter(field => field.searchListOrder !== undefined)
+          .filter(field => _.isObject(field.search) || (_.isBoolean(field.search) && field.search === true))
           .map('property')
           .value();
+
         listFields = _(defaultListFields)
           .filter(field => customFieldProperties.indexOf(field.property) < 0)
           .concat(customListFields)
-          .sortBy(field => field.searchListOrder)
+          .sortBy(field => field.listOrder)
           .value();
       }
     }
@@ -114,7 +128,7 @@ export default class UsersTable extends Component {
         <TableHeader>
           <TableColumn width="6%" />
           {
-            listFields.map((field) => <TableColumn key={field.property} width={field.searchListSize}>{field.label}</TableColumn>)
+            listFields.map(field => <TableColumn key={field.property} width={field.listSize}>{field.label}</TableColumn>)
           }
         </TableHeader>
         <TableBody>
@@ -125,16 +139,17 @@ export default class UsersTable extends Component {
               </TableCell>
               {
                 listFields.map((field, index) => {
+                  const key = `${user.user_id}_${field.property}`;
                   if (index === 0) {
-                    return <TableRouteCell key={`${user.user_id}_${field.property}`} route={`/users/${user.user_id}`}>
-                      { this.getValue(field, user, '(empty)') }
-                    </TableRouteCell>;
+                    return (
+                      <TableRouteCell key={key} route={`/users/${user.user_id}`}>
+                        { this.getValue(field, user, '(empty)') }
+                      </TableRouteCell>
+                    );
                   }
-
-                  return <TableTextCell key={`${user.user_id}_${field.property}`} >{this.getValue(field, user)}</TableTextCell>;
+                  return <TableTextCell key={key} >{this.getValue(field, user)}</TableTextCell>;
                 })
               }
-
             </TableRow>
           )}
         </TableBody>
