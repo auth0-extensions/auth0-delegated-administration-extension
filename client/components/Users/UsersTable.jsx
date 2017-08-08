@@ -75,14 +75,14 @@ export default class UsersTable extends Component {
       },
       {
         listOrder: 1,
-        listSize: '24%',
+        listSize: '29%',
         property: 'email',
         label: 'Email',
         display: (user, value) => value || 'N/A'
       },
       {
         listOrder: 2,
-        listSize: '20%',
+        listSize: '15%',
         property: 'last_login_relative',
         sortProperty: 'last_login',
         label: 'Latest Login',
