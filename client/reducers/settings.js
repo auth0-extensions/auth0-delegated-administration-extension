@@ -1,5 +1,5 @@
 import { fromJS } from 'immutable';
-
+import _ from 'lodash';
 import * as constants from '../constants';
 import createReducer from '../utils/createReducer';
 
@@ -33,6 +33,19 @@ export const settings = createReducer(fromJS(initialState), { // eslint-disable-
           } catch (error) {
             console.error(`The display function for field ${field.property} throws an error`, error);
           }
+        }
+
+        // Parse options
+        if (_.isArray(field.options)) {
+          field.options = field.options.map((option) => {
+            if (_.isString(option)) {
+              return { label: option, value: option };
+            } else if (_.isObject(option) && _.has(option, 'label') && _.has(option, 'value')) {
+              return option;
+            }
+
+            return { label: 'Error', value: '' };
+          });
         }
       });
     }
