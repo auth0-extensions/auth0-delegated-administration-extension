@@ -135,7 +135,6 @@ class AddUserForm extends Component {
 
   render() {
     const connections = this.props.connections;
-    console.log('Carlos, customFields: ', this.props.customFields);
     const customFields = _(this.props.customFields)
       .filter(field => _.isObject(this.props.customFieldGetter(field)) || (_.isBoolean(this.props.customFieldGetter(field)) && this.props.customFieldGetter(field) === true))
       .map((field) => {
@@ -149,7 +148,6 @@ class AddUserForm extends Component {
         }
 
         const customField = Object.assign({}, field, this.props.customFieldGetter(field));
-        console.log('customField in user form', customField);
         return customField;
       })
       .value();
