@@ -157,7 +157,6 @@ export default (storage, scriptManager) => {
     req.auth0.users.get({ id: req.params.id })
       .then((user) => {
 
-        console.log('Carlos in get user: ', req.params, user);
         if (!user) {
           res.status(404);
           throw new Error('User not found');

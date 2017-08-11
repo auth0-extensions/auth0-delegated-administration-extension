@@ -61,7 +61,7 @@ export default connectContainer(class extends Component {
                 userFields={userFields}
                 databaseConnections={databaseConnections}
                 deleteUser={this.props.requestDeleteUser}
-                editUser={this.props.requestEditUser}
+                changeFields={this.props.requestFieldsChange}
                 resetPassword={this.props.requestPasswordReset}
                 changePassword={this.props.requestPasswordChange}
                 removeMfa={this.props.requestRemoveMultiFactor}
@@ -114,7 +114,7 @@ export default connectContainer(class extends Component {
           </div>
         </div>
         <dialogs.DeleteDialog />
-        <dialogs.EditDialog getDictValue={this.props.getDictValue} userFields={userFields} />
+        <dialogs.FieldsChangeDialog getDictValue={this.props.getDictValue} userFields={userFields} />
         <dialogs.EmailChangeDialog />
         <dialogs.PasswordResetDialog />
         <dialogs.PasswordChangeDialog />

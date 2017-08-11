@@ -12,22 +12,22 @@ const initialState = {
   validationErrors: {}
 };
 
-export const userEdit = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
-  [constants.REQUEST_EDIT_USER]: (state, action) =>
+export const fieldsChange = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
+  [constants.REQUEST_FIELDS_CHANGE]: (state, action) =>
     state.merge({
       ...initialState,
       userId: action.payload.user.user_id,
       record: action.payload.user
     }),
-  [constants.CANCEL_EDIT_USER]: (state) =>
+  [constants.CANCEL_FIELDS_CHANGE]: (state) =>
     state.merge({
       ...initialState
     }),
-  [constants.EDIT_USER_PENDING]: (state) =>
+  [constants.FIELDS_CHANGE_PENDING]: (state) =>
     state.merge({
       loading: true
     }),
-  [constants.EDIT_USER_REJECTED]: (state, action) => {
+  [constants.FIELDS_CHANGE_REJECTED]: (state, action) => {
     const errorMessage = action.error ? action.errorMessage : null;
     return state.merge({
       loading: false,
@@ -35,7 +35,7 @@ export const userEdit = createReducer(fromJS(initialState), { // eslint-disable-
       error: `An error occurred while creating the user: ${errorMessage}`
     });
   },
-  [constants.EDIT_USER_FULFILLED]: (state) =>
+  [constants.FIELDS_CHANGE_FULFILLED]: (state) =>
     state.merge({
       ...initialState
     })

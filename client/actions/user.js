@@ -86,10 +86,10 @@ export function cancelCreateUser() {
 /*
  * Create a user.
  */
-export function editUser(userId, user, onSuccess) {
+export function changeFields(userId, user, onSuccess) {
   return (dispatch) => {
     dispatch({
-      type: constants.EDIT_USER,
+      type: constants.FIELDS_CHANGE,
       meta: {
         userId,
         user,
@@ -114,10 +114,10 @@ export function editUser(userId, user, onSuccess) {
 /*
  * Show dialog to create a user.
  */
-export function requestEditUser(user) {
+export function requestFieldsChange(user) {
   return (dispatch) => {
     dispatch({
-      type: constants.REQUEST_EDIT_USER,
+      type: constants.REQUEST_FIELDS_CHANGE,
       payload: {
         user
       }
@@ -128,9 +128,9 @@ export function requestEditUser(user) {
 /*
  * Cancel creating a user.
  */
-export function cancelEditUser() {
+export function cancelChangeFields() {
   return {
-    type: constants.CANCEL_EDIT_USER
+    type: constants.CANCEL_FIELDS_CHANGE
   };
 }
 
