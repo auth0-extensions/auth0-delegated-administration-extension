@@ -84,6 +84,57 @@ export function cancelCreateUser() {
 }
 
 /*
+ * Create a user.
+ */
+export function editUser(userId, user, onSuccess) {
+  return (dispatch) => {
+    dispatch({
+      type: constants.EDIT_USER,
+      meta: {
+        userId,
+        user,
+        onSuccess: () => {
+          if (onSuccess) {
+            onSuccess();
+          } else {
+            dispatch(fetchUser(userId));
+          }
+        }
+      },
+      payload: {
+        promise: axios.patch(`/api/users/${userId}`, user, {
+          responseType: 'json'
+        })
+      }
+    });
+  };
+}
+
+
+/*
+ * Show dialog to create a user.
+ */
+export function requestEditUser(user) {
+  return (dispatch) => {
+    dispatch({
+      type: constants.REQUEST_EDIT_USER,
+      payload: {
+        user
+      }
+    });
+  };
+}
+
+/*
+ * Cancel creating a user.
+ */
+export function cancelEditUser() {
+  return {
+    type: constants.CANCEL_EDIT_USER
+  };
+}
+
+/*
  * Fetch the user details.
  */
 export function fetchUserDetail(userId, onSuccess) {

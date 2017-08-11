@@ -8,9 +8,10 @@ import { UserForm } from '../../../components/Users';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
-    userCreate: state.userCreate,
+    userEdit: state.userEdit,
     accessLevel: state.accessLevel,
     connections: state.connections,
+    userId: state.userEdit.toJS().userId
   });
 
   static actionsToProps = {
@@ -21,43 +22,43 @@ export default connectContainer(class extends Component {
   static propTypes = {
     accessLevel: PropTypes.object.isRequired,
     connections: PropTypes.object.isRequired,
-    userCreate: PropTypes.object.isRequired,
-    createUser: PropTypes.func.isRequired,
+    userEdit: PropTypes.object.isRequired,
+    editUser: PropTypes.func.isRequired,
     getDictValue: PropTypes.func.isRequired,
-    cancelCreateUser: PropTypes.func.isRequired,
-    userFields: PropTypes.array.isRequired
+    cancelEditUser: PropTypes.func.isRequired,
+    userFields: PropTypes.array.isRequired,
+    userId: PropTypes.string.isRequired
   }
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.userCreate !== this.props.userCreate || nextProps.connections !== this.props.connections || nextProps.accessLevel !== this.props.accessLevel || nextProps.userFields !== this.props.userFields;
+    return nextProps.userEdit !== this.props.userEdit || nextProps.connections !== this.props.connections || nextProps.accessLevel !== this.props.accessLevel || nextProps.userFields !== this.props.userFields;
   }
 
   onSubmit = (user) => {
-    this.props.createUser(user);
+    this.props.editUser(this.props.userId, user);
   }
 
   render() {
-    const { error, loading, record } = this.props.userCreate.toJS();
+    const { error, loading, record } = this.props.userEdit.toJS();
     const connections = this.props.connections.toJS();
     const accessLevel = this.props.accessLevel.get('record').toJS();
 
-
-
     return (
-      <Modal show={record !== null} className="modal-overflow-visible" onHide={this.props.cancelCreateUser}>
+      <Modal show={record !== null} className="modal-overflow-visible" onHide={this.props.cancelEditUser}>
         <Modal.Header closeButton={loading} className="has-border">
-          <Modal.Title>Create User</Modal.Title>
+          <Modal.Title>Edit User</Modal.Title>
         </Modal.Header>
 
         <UserForm
           customFields={this.props.userFields || []}
-          customFieldGetter={field => field.create}
+          customFieldGetter={field => field.edit}
           connections={connections.records} initialValues={record}
           createMemberships={accessLevel.createMemberships}
           memberships={accessLevel.memberships}
           getDictValue={this.props.getDictValue}
-          onClose={this.props.cancelCreateUser}
+          onClose={this.props.cancelEditUser}
           onSubmit={this.onSubmit}
+          method="Update"
         >
           <Error message={error} />
         </UserForm>

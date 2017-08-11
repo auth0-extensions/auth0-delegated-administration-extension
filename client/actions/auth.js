@@ -79,7 +79,8 @@ export function loadCredentials() {
           payload: {
             token: apiToken,
             decodedToken,
-            user: decodedToken
+            user: decodedToken,
+            returnTo: hash.state
           }
         });
       }

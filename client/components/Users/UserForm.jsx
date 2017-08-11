@@ -17,7 +17,8 @@ class AddUserForm extends Component {
     onClose: React.PropTypes.func.isRequired,
     handleSubmit: React.PropTypes.func.isRequired,
     submitting: React.PropTypes.boolean,
-    customFields: React.PropTypes.string
+    customFields: React.PropTypes.string,
+    customFieldGetter: React.PropTypes.func.isRequired
   }
 
   renderUsername(connections, hasSelectedConnection) {
@@ -134,10 +135,11 @@ class AddUserForm extends Component {
 
   render() {
     const connections = this.props.connections;
+    console.log('Carlos, customFields: ', this.props.customFields);
     const customFields = _(this.props.customFields)
-      .filter(field => _.isObject(field.create) || (_.isBoolean(field.create) && field.create === true))
+      .filter(field => _.isObject(this.props.customFieldGetter(field)) || (_.isBoolean(this.props.customFieldGetter(field)) && this.props.customFieldGetter(field) === true))
       .map((field) => {
-        if (_.isBoolean(field.create) && field.create === true) {
+        if (_.isBoolean(this.props.customFieldGetter(field)) && this.props.customFieldGetter(field) === true) {
           const defaultField = Object.assign({}, field, {
             type: 'text',
             component: 'InputText'
@@ -146,8 +148,8 @@ class AddUserForm extends Component {
           return defaultField;
         }
 
-        const customField = Object.assign({}, field, field.create);
-        console.log('customField', customField);
+        const customField = Object.assign({}, field, this.props.customFieldGetter(field));
+        console.log('customField in user form', customField);
         return customField;
       })
       .value();
@@ -194,7 +196,7 @@ class AddUserForm extends Component {
             Cancel
           </Button>
           <Button bsSize="large" bsStyle="primary" disabled={submitting} onClick={handleSubmit}>
-            Create
+            {this.props.method || 'Create'}
           </Button>
         </Modal.Footer>
       </div>

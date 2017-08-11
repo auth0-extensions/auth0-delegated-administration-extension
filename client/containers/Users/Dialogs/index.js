@@ -1,6 +1,7 @@
 export BlockDialog from './BlockDialog';
 export CreateDialog from './CreateDialog';
 export DeleteDialog from './DeleteDialog';
+export EditDialog from './EditDialog';
 export EmailChangeDialog from './EmailChangeDialog';
 export PasswordChangeDialog from './PasswordChangeDialog';
 export PasswordResetDialog from './PasswordResetDialog';

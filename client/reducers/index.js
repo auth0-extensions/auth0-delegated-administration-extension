@@ -19,6 +19,7 @@ import { unblock } from './unblock';
 import { user } from './user';
 import { userCreate } from './userCreate';
 import { userDelete } from './userDelete';
+import { userEdit } from './userEdit';
 import { usernameChange } from './usernameChange';
 import { users } from './users';
 import { verificationEmail } from './verificationEmail';
@@ -46,6 +47,7 @@ export default combineReducers({
   user,
   userCreate,
   userDelete,
+  userEdit,
   usernameChange,
   users,
   verificationEmail,

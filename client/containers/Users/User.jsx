@@ -37,7 +37,8 @@ export default connectContainer(class extends Component {
     params: PropTypes.object,
     clearLog: React.PropTypes.func.isRequired,
     fetchLog: React.PropTypes.func.isRequired,
-    fetchUser: React.PropTypes.func.isRequired
+    fetchUser: React.PropTypes.func.isRequired,
+    getDictValue: React.PropTypes.func.isRequired
   }
 
   componentWillMount() {
@@ -47,7 +48,6 @@ export default connectContainer(class extends Component {
   render() {
     const { user, databaseConnections, log, logs, devices, settings } = this.props;
     const userFields = (settings && settings.userFields) || [];
-    console.log("Carlos userfields: ", userFields);
 
     return (
       <div className="user">
@@ -58,8 +58,10 @@ export default connectContainer(class extends Component {
             <div className="pull-right">
               <UserActions
                 user={user}
+                userFields={userFields}
                 databaseConnections={databaseConnections}
                 deleteUser={this.props.requestDeleteUser}
+                editUser={this.props.requestEditUser}
                 resetPassword={this.props.requestPasswordReset}
                 changePassword={this.props.requestPasswordChange}
                 removeMfa={this.props.requestRemoveMultiFactor}
@@ -112,6 +114,7 @@ export default connectContainer(class extends Component {
           </div>
         </div>
         <dialogs.DeleteDialog />
+        <dialogs.EditDialog getDictValue={this.props.getDictValue} userFields={userFields} />
         <dialogs.EmailChangeDialog />
         <dialogs.PasswordResetDialog />
         <dialogs.PasswordChangeDialog />

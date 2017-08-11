@@ -9,11 +9,13 @@ export default class UserActions extends Component {
     changeUsername: PropTypes.func.isRequired,
     databaseConnections: PropTypes.object.isRequired,
     deleteUser: PropTypes.func.isRequired,
+    editUser: PropTypes.func.isRequired,
     removeMfa: PropTypes.func.isRequired,
     resendVerificationEmail: PropTypes.func.isRequired,
     resetPassword: PropTypes.func.isRequired,
     unblockUser: PropTypes.func.isRequired,
-    user: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired,
+    userFields: PropTypes.array.isRequired
   }
 
   state = {
@@ -42,6 +44,22 @@ export default class UserActions extends Component {
       Delete User
     </MenuItem>
   )
+
+  getEditAction = (user, loading) => {
+    if (!this.props.userFields || !this.props.userFields.length) {
+      return null;
+    }
+
+    /* Only display this if there are editable fields */
+    const fieldsWithEdit = _.filter(this.props.userFields, field => field.edit);
+    if (fieldsWithEdit.length <= 0) return null;
+
+    return (
+      <MenuItem disabled={loading || false} onClick={this.editUser}>
+        Edit User
+      </MenuItem>
+    );
+  }
 
   getResetPasswordAction = (user, loading) => {
     if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
@@ -135,6 +153,10 @@ export default class UserActions extends Component {
     this.props.deleteUser(this.state.user);
   }
 
+  editUser = () => {
+    this.props.editUser(this.state.user);
+  }
+
   resetPassword = () => {
     this.props.resetPassword(this.state.user, this.state.databaseConnections[0]);
   }
@@ -179,6 +201,7 @@ export default class UserActions extends Component {
         {this.getResetPasswordAction(this.state.user, this.state.loading)}
         {this.getChangePasswordAction(this.state.user, this.state.loading)}
         {this.getDeleteAction(this.state.user, this.state.loading)}
+        {this.getEditAction(this.state.user, this.state.loading)}
         {this.getChangeUsernameAction(this.state.user, this.state.loading)}
         {this.getChangeEmailAction(this.state.user, this.state.loading)}
         {this.getResendEmailVerificationAction(this.state.user, this.state.loading)}

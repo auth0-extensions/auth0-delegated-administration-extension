@@ -75,7 +75,6 @@ export default class UserInfo extends Component {
         .value();
 
     if (typeof nonDisplayFields !== 'array') nonDisplayFields = [];
-    console.log("Carlos, fieldInfo: ", extraDisplayFields, nonDisplayFields);
 
     const userObject = user.toJS();
     userObject.currentMemberships = this.getMemberships(memberships);
@@ -105,19 +104,14 @@ export default class UserInfo extends Component {
       .value();
     const extraFields = _.keys(_.omit(userObject, excludeFields));
 
-    console.log("Carlos, extra fields: ", extraFields, excludeFields);
-
     const nonExcludedFields = _.filter(fieldInfo, (field) => nonDisplayFields.indexOf(field.property) < 0);
 
-    console.log("Carlos, nonexcl fields:", nonExcludedFields);
     const fields = _(nonExcludedFields)
       .concat(_.map(extraFields, (fieldName) => { return { title: fieldName, property: fieldName }}))
       .value();
 
     const fieldsAndValues = _.map(fields, (field) => { field.value = this.getValue(userObject, field); return field; });
     const nonNullFields = _.filter(fieldsAndValues, field => field.value) || [];
-
-    console.log("Carlos nonNullFields: ", nonNullFields);
 
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
