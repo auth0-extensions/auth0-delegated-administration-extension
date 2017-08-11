@@ -19,6 +19,7 @@ export default (storage, scriptManager) => {
     }
 
     const createContext = {
+      method: 'create',
       request: {
         user: req.user
       },
@@ -146,6 +147,42 @@ export default (storage, scriptManager) => {
 
     return req.auth0.users.delete({ id: req.params.id })
       .then(() => res.sendStatus(204))
+      .catch(next);
+  });
+
+  /*
+   * Patch a user.
+   */
+  api.patch('/:id', (req, res, next) => {
+    req.auth0.users.get({ id: req.params.id })
+      .then((user) => {
+
+        if (!user) {
+          res.status(404);
+          throw new Error('User not found');
+        }
+
+        if (req.body.password && req.body.password !== req.body.repeatPassword) {
+          throw new ValidationError('The passwords do not match.');
+        }
+
+        const context = {
+          method: 'update',
+          request: {
+            user: req.user,
+            originalUser: user
+          },
+          payload: req.body
+        };
+
+        return scriptManager.execute('create', context)
+          .then(result => {
+            const payload = result;
+            return req.auth0.users.update({ id: req.params.id }, payload)
+          })
+          .then(() => res.status(201).send())
+          .catch(next);
+      })
       .catch(next);
   });
 

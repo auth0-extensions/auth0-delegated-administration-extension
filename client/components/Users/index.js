@@ -1,4 +1,5 @@
 export UserActions from './UserActions';
+export UserFieldsChangeForm from './UserFieldsChangeForm';
 export UserDevices from './UserDevices';
 export UserForm from './UserForm';
 export UserHeader from './UserHeader';

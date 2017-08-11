@@ -40,7 +40,8 @@ export default connectContainer(class extends Component {
     const { error, loading, record } = this.props.userCreate.toJS();
     const connections = this.props.connections.toJS();
     const accessLevel = this.props.accessLevel.get('record').toJS();
-    const customFields = this.props.userFields || [];
+
+
 
     return (
       <Modal show={record !== null} className="modal-overflow-visible" onHide={this.props.cancelCreateUser}>
@@ -49,7 +50,8 @@ export default connectContainer(class extends Component {
         </Modal.Header>
 
         <UserForm
-          customFields={customFields}
+          customFields={this.props.userFields || []}
+          customFieldGetter={field => field.create}
           connections={connections.records} initialValues={record}
           createMemberships={accessLevel.createMemberships}
           memberships={accessLevel.memberships}

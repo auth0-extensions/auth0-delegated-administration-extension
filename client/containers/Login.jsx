@@ -15,7 +15,7 @@ class LoginContainer extends Component {
 
   componentWillMount() {
     if (this.props.auth.isAuthenticated) {
-      this.props.push('/users');
+      this.props.push(this.props.auth.returnTo || '/users');
     } else if (!this.props.auth.isAuthenticating) {
       this.props.login(this.props.location.query.returnUrl);
     }

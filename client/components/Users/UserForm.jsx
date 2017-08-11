@@ -4,6 +4,7 @@ import { InputText, InputCombo, Multiselect, Select } from 'auth0-extension-ui';
 import { Button, Modal } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { reduxForm, Field, formValueSelector } from 'redux-form';
+import UserCustomFormFields from './UserCustomFormFields';
 
 class AddUserForm extends Component {
   static propTypes = {
@@ -17,18 +18,19 @@ class AddUserForm extends Component {
     onClose: React.PropTypes.func.isRequired,
     handleSubmit: React.PropTypes.func.isRequired,
     submitting: React.PropTypes.boolean,
-    customFields: React.PropTypes.string
+    customFields: React.PropTypes.string,
+    customFieldGetter: React.PropTypes.func.isRequired
   }
 
   renderUsername(connections, hasSelectedConnection) {
     const selectedConnection = _.find(connections, (conn) => conn.name === hasSelectedConnection);
     const requireUsername = selectedConnection && selectedConnection.options ? selectedConnection.options.requires_username : false;
-    if (!requireUsername) {
+    if (!requireUsername && (!this.props.initialValues || !this.props.initialValues.username)) {
       return null;
     }
 
     return (
-      <Field label="Username" name="username" component={InputText} />
+      <Field label="Username" name="username" component={InputText}/>
     );
   }
 
@@ -83,77 +85,10 @@ class AddUserForm extends Component {
     );
   }
 
-  getFieldComponent(field, component, additionalOptions) {
-    return (
-      <Field
-        name={field.property}
-        type={field.type}
-        label={field.label}
-        component={component}
-        {...additionalOptions}
-      />
-    );
-  }
-
-  getFieldByComponentName(field, componentName) {
-    switch (componentName) {
-      case 'InputCombo': {
-        const additionalOptions = {
-          options: field.options ? _.map(field.options, option => ({ value: option.value, text: option.label })) : null
-        };
-        return (this.getFieldComponent(field, InputCombo, additionalOptions));
-      }
-      case 'InputMultiCombo': {
-        const additionalOptions = {
-          loadOptions: (input, callback) => callback(null, { options: field.options || [], complete: true }),
-          name: field.property,
-          multi: true
-        };
-        return (this.getFieldComponent(field, Multiselect, additionalOptions));
-      }
-      case 'InputSelectCombo': {
-        const additionalOptions = {
-          loadOptions: (input, callback) => callback(null, { options: field.options || [], complete: true }),
-          multi: false,
-          name: field.property
-        };
-        return (this.getFieldComponent(field, Select, additionalOptions));
-      }
-      default: {
-        const additionalOptions = {
-          disabled: field.disabled || false
-        };
-        return (this.getFieldComponent(field, InputText, additionalOptions));
-      }
-    }
-  }
-
-  renderCustomFields(customFields) {
-    return _.map(customFields, field => ((this.getFieldByComponentName(field, field.component))));
-  }
-
   render() {
     const connections = this.props.connections;
-    const customFields = _(this.props.customFields)
-      .filter(field => _.isObject(field.create) || (_.isBoolean(field.create) && field.create === true))
-      .map((field) => {
-        if (_.isBoolean(field.create) && field.create === true) {
-          const defaultField = Object.assign({}, field, {
-            type: 'text',
-            component: 'InputText'
-          });
-          console.log('defaultField', defaultField);
-          return defaultField;
-        }
-
-        const customField = Object.assign({}, field, field.create);
-        console.log('customField', customField);
-        return customField;
-      })
-      .value();
 
     const {
-      handleSubmit,
       submitting,
       memberships,
       createMemberships,
@@ -186,15 +121,15 @@ class AddUserForm extends Component {
               component={InputText}
             />
             {this.renderConnections(connections)}
-            {this.renderCustomFields(customFields)}
+            <UserCustomFormFields customFieldGetter={this.props.customFieldGetter} customFields={this.props.customFields}/>
           </div>
         </Modal.Body>
         <Modal.Footer>
           <Button bsSize="large" bsStyle="transparent" disabled={submitting} onClick={this.props.onClose}>
             Cancel
           </Button>
-          <Button bsSize="large" bsStyle="primary" disabled={submitting} onClick={handleSubmit}>
-            Create
+          <Button bsSize="large" bsStyle="primary" disabled={submitting} onClick={this.props.handleSubmit}>
+            {this.props.method || 'Create'}
           </Button>
         </Modal.Footer>
       </div>

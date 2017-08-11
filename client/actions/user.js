@@ -84,6 +84,57 @@ export function cancelCreateUser() {
 }
 
 /*
+ * Create a user.
+ */
+export function changeFields(userId, user, onSuccess) {
+  return (dispatch) => {
+    dispatch({
+      type: constants.FIELDS_CHANGE,
+      meta: {
+        userId,
+        user,
+        onSuccess: () => {
+          if (onSuccess) {
+            onSuccess();
+          } else {
+            dispatch(fetchUser(userId));
+          }
+        }
+      },
+      payload: {
+        promise: axios.patch(`/api/users/${userId}`, user, {
+          responseType: 'json'
+        })
+      }
+    });
+  };
+}
+
+
+/*
+ * Show dialog to create a user.
+ */
+export function requestFieldsChange(user) {
+  return (dispatch) => {
+    dispatch({
+      type: constants.REQUEST_FIELDS_CHANGE,
+      payload: {
+        user
+      }
+    });
+  };
+}
+
+/*
+ * Cancel creating a user.
+ */
+export function cancelChangeFields() {
+  return {
+    type: constants.CANCEL_FIELDS_CHANGE
+  };
+}
+
+/*
  * Fetch the user details.
  */
 export function fetchUserDetail(userId, onSuccess) {

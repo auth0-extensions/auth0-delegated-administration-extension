@@ -9,11 +9,13 @@ export default class UserActions extends Component {
     changeUsername: PropTypes.func.isRequired,
     databaseConnections: PropTypes.object.isRequired,
     deleteUser: PropTypes.func.isRequired,
+    changeFields: PropTypes.func.isRequired,
     removeMfa: PropTypes.func.isRequired,
     resendVerificationEmail: PropTypes.func.isRequired,
     resetPassword: PropTypes.func.isRequired,
     unblockUser: PropTypes.func.isRequired,
-    user: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired,
+    userFields: PropTypes.array.isRequired
   }
 
   state = {
@@ -42,6 +44,22 @@ export default class UserActions extends Component {
       Delete User
     </MenuItem>
   )
+
+  getChangeFieldsAction = (user, loading) => {
+    if (!this.props.userFields || !this.props.userFields.length) {
+      return null;
+    }
+
+    /* Only display this if there are editable fields */
+    const fieldsWithEdit = _.filter(this.props.userFields, field => field.edit);
+    if (fieldsWithEdit.length <= 0) return null;
+
+    return (
+      <MenuItem disabled={loading || false} onClick={this.changeFields}>
+        Change Profile
+      </MenuItem>
+    );
+  }
 
   getResetPasswordAction = (user, loading) => {
     if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
@@ -135,6 +153,10 @@ export default class UserActions extends Component {
     this.props.deleteUser(this.state.user);
   }
 
+  changeFields = () => {
+    this.props.changeFields(this.state.user);
+  }
+
   resetPassword = () => {
     this.props.resetPassword(this.state.user, this.state.databaseConnections[0]);
   }
@@ -177,11 +199,12 @@ export default class UserActions extends Component {
         {this.getMultifactorAction(this.state.user, this.state.loading)}
         {this.getBlockedAction(this.state.user, this.state.loading)}
         {this.getResetPasswordAction(this.state.user, this.state.loading)}
-        {this.getChangePasswordAction(this.state.user, this.state.loading)}
-        {this.getDeleteAction(this.state.user, this.state.loading)}
+        {this.getResendEmailVerificationAction(this.state.user, this.state.loading)}
         {this.getChangeUsernameAction(this.state.user, this.state.loading)}
         {this.getChangeEmailAction(this.state.user, this.state.loading)}
-        {this.getResendEmailVerificationAction(this.state.user, this.state.loading)}
+        {this.getChangePasswordAction(this.state.user, this.state.loading)}
+        {this.getChangeFieldsAction(this.state.user, this.state.loading)}
+        {this.getDeleteAction(this.state.user, this.state.loading)}
       </DropdownButton>
     );
   }
