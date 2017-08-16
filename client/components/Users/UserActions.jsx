@@ -90,6 +90,10 @@ export default class UserActions extends Component {
       return null;
     }
 
+    /* Check if settings are disabling the editing of username */
+    const falseUsernameEditFields = _.filter(this.props.userFields, field => field.property === 'username' && field.edit === false);
+    if (falseUsernameEditFields.length > 0) return null;
+
     return (
       <MenuItem disabled={loading || false} onClick={this.changeUsername}>
         Change Username
@@ -101,6 +105,10 @@ export default class UserActions extends Component {
     if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
       return null;
     }
+
+    /* Check if settings are disabling the editing of username */
+    const falseEmailEditFields = _.filter(this.props.userFields, field => field.property === 'email' && field.edit === false);
+    if (falseEmailEditFields.length > 0) return null;
 
     return (
       <MenuItem disabled={loading || false} onClick={this.changeEmail}>
@@ -165,12 +173,28 @@ export default class UserActions extends Component {
     this.props.changePassword(this.state.user, this.state.databaseConnections[0]);
   }
 
+  static getDisplayObject(user, fields) {
+    if (fields.length > 0) {
+      let displayFunction = undefined;
+      if (_.isFunction(fields[0].edit.display)) displayFunction = fields[0].edit.display;
+      else if (!fields[0].edit.display && fields[0].edit.display !== false && _.isFunction(fields[0].display)) displayFunction = fields[0].display;
+      if (displayFunction) return {
+        display: displayFunction,
+        user
+      };
+    }
+
+    return null;
+  }
+
   changeUsername = () => {
-    this.props.changeUsername(this.state.user, this.state.databaseConnections[0]);
+    const usernameEditFields = _.filter(this.props.userFields, field => field.property === 'username' && field.edit !== false && field.edit);
+    this.props.changeUsername(this.state.user, this.state.databaseConnections[0], UserActions.getDisplayObject(this.state.user, usernameEditFields));
   }
 
   changeEmail = () => {
-    this.props.changeEmail(this.state.user, this.state.databaseConnections[0]);
+    const emailEditFields = _.filter(this.props.userFields, field => field.property === 'email' && field.edit !== false && field.edit);
+    this.props.changeEmail(this.state.user, this.state.databaseConnections[0], UserActions.getDisplayObject(this.state.user, emailEditFields));
   }
 
   resendVerificationEmail = () => {
