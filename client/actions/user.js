@@ -436,11 +436,12 @@ export function changePassword(password, confirmPassword) {
 /*
  * Get confirmation to change a username.
  */
-export function requestUsernameChange(user, connection) {
+export function requestUsernameChange(user, connection, customField) {
   return {
     type: constants.REQUEST_USERNAME_CHANGE,
     user,
-    connection
+    connection,
+    customField
   };
 }
 
@@ -476,11 +477,12 @@ export function changeUsername(userId, data) {
 /*
  * Get confirmation to change a email.
  */
-export function requestEmailChange(user, connection) {
+export function requestEmailChange(user, connection, customField) {
   return {
     type: constants.REQUEST_EMAIL_CHANGE,
     user,
-    connection
+    connection,
+    customField
   };
 }
 

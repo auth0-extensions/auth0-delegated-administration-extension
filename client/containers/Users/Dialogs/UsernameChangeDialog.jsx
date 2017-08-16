@@ -29,11 +29,13 @@ export default connectContainer(class extends Component {
 
   render() {
     const { cancelUsernameChange } = this.props;
-    const { userId, connection, userNameToChange, userName, error, requesting, loading } = this.props.usernameChange.toJS();
+    const { userId, connection, customField, userNameToChange, userName, error, requesting, loading } = this.props.usernameChange.toJS();
 
     if (!requesting) {
       return null;
     }
+
+    const defaultUsernameValue = customField ? customField.display(customField.user) : userNameToChange;
 
     return (
       <Confirm title="Change Username?" show={requesting} loading={loading} onCancel={cancelUsernameChange} onConfirm={this.onConfirm}>
@@ -52,7 +54,7 @@ export default connectContainer(class extends Component {
             <div className="form-group">
               <label className="col-xs-2 control-label">Username</label>
               <div className="col-xs-9">
-                <input ref="username" type="text" className="form-control" defaultValue={userNameToChange} />
+                <input ref="username" type="text" className="form-control" defaultValue={defaultUsernameValue} />
               </div>
             </div>
             <input ref="user" type="hidden" readOnly="readonly" className="form-control" value={userId} />

@@ -29,7 +29,9 @@ export default connectContainer(class extends Component {
 
   render() {
     const { cancelEmailChange } = this.props;
-    const { userId, connection, userEmail, userName, error, requesting, loading } = this.props.emailChange.toJS();
+    const { userId, customField, connection, userName, userEmail, error, requesting, loading } = this.props.emailChange.toJS();
+
+    const defaultEmailValue = customField ? customField.display(customField.user) : userEmail;
 
     return (
       <Confirm
@@ -51,7 +53,7 @@ export default connectContainer(class extends Component {
             <div className="form-group">
               <label className="col-xs-2 control-label">Email</label>
               <div className="col-xs-9">
-                <input ref="email" type="email" className="form-control" defaultValue={userEmail} />
+                <input ref="email" type="email" className="form-control" defaultValue={defaultEmailValue} />
               </div>
             </div>
             <input ref="user" type="hidden" readOnly="readonly" className="form-control" value={userId} />

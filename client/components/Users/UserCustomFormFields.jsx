@@ -67,7 +67,6 @@ export default class UserCustomFormFields extends Component {
             type: 'text',
             component: 'InputText'
           });
-          console.log('defaultField', defaultField);
           return defaultField;
         }
 

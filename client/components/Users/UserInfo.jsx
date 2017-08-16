@@ -44,6 +44,16 @@ export default class UserInfo extends Component {
       return null;
     }
 
+    if (_.isFunction(field.display)) {
+      try {
+        return field.display(user);
+      } catch (e) {
+        /* Swallow eval errors */
+        console.log(`Could not display ${field.property} because: ${e.message}`);
+        return null;
+      }
+    }
+
     let value = getProperty(user, field.property);
     if (value === undefined) return null;
 
@@ -51,35 +61,39 @@ export default class UserInfo extends Component {
       value = moment(value).fromNow();
     }
 
-    if (typeof value === 'object') value = Object.toString(value);
+    if (_.isObject(value)) {
+      value = JSON.stringify(value);
+    }
+
+    if (_.isBoolean(value)) {
+      value = value ? 'TRUE' : 'FALSE';
+    }
 
     return value;
   }
 
   render() {
     const { user, error, loading, memberships } = this.props;
-    const extraDisplayFields =
+
+    /* First let's grab the custom fields */
+    const customDisplayFields =
       _(this.props.userFields || [])
         .filter(field => field.display)
         .map(field => { return {
-          title: field.label,
+          title: field.label || field.property,
           property: field.property,
-          displayFunction: field.displayFunction };
+          display: field.display };
         })
         .value();
 
-    let nonDisplayFields =
+    /* We will need to know which fields are explicitly rejected for display */
+    let nonDisplayFieldProperties =
       _(this.props.userFields || [])
         .filter(field => field.display === false)
-        .pick('property')
+        .groupBy(field => field.property)
         .value();
 
-    if (typeof nonDisplayFields !== 'array') nonDisplayFields = [];
-
-    const userObject = user.toJS();
-    userObject.currentMemberships = this.getMemberships(memberships);
-    userObject.identity = this.getIdentities(user);
-    userObject.isBlocked = this.getBlocked(user);
+    let customDisplayFieldProperties = _(customDisplayFields).groupBy(field => field.property).value();
 
     const defaultFieldInfo = [
       { title: 'User ID', property: 'user_id' },
@@ -96,18 +110,36 @@ export default class UserInfo extends Component {
       { title: 'Last Login', property: 'last_login', type: 'elapsedTime' }
     ];
 
-    const fieldInfo = _(defaultFieldInfo).concat(extraDisplayFields).value();
+    const standardFields = _(defaultFieldInfo).reject(field => field.property in customDisplayFieldProperties || field.property in nonDisplayFieldProperties).value();
+    const standardFieldProperties = _(standardFields).groupBy(field => field.property).value();
 
-    const fieldProperties = _.map(fieldInfo, 'property');
-    const excludeFields = _(fieldProperties)
-      .concat([ 'identity', 'identities', 'app_metadata', 'picture' ], nonDisplayFields)
+    /* Now allow for the extra fields that show up from identities */
+    const excludeProperties = _(customDisplayFieldProperties) // ignore the custom fields
+      .keys()
+      .concat(Object.keys(standardFieldProperties)) // ignore the standard fields
+      .concat(Object.keys(nonDisplayFieldProperties)) // ignore fields that have explicitly been rejected
+      .concat([ 'identity', 'identities', 'app_metadata', 'picture', 'user_metadata' ]) // always ignore these
       .value();
-    const extraFields = _.keys(_.omit(userObject, excludeFields));
 
-    const nonExcludedFields = _.filter(fieldInfo, (field) => nonDisplayFields.indexOf(field.property) < 0);
+    /* Prepare the user object */
+    const userObject = user.toJS();
+    if (!userObject || Object.keys(userObject).length === 0) return null;
 
-    const fields = _(nonExcludedFields)
-      .concat(_.map(extraFields, (fieldName) => { return { title: fieldName, property: fieldName }}))
+    userObject.currentMemberships = this.getMemberships(memberships);
+    userObject.identity = this.getIdentities(user);
+    userObject.isBlocked = this.getBlocked(user);
+
+    /* Grab all user properties that haven't been rejected or already used */
+    const extraFieldProperties = _.keys(_.omit(userObject, excludeProperties));
+
+    /* Turn those properties into new field display objects */
+    const extraFields = _.map(extraFieldProperties, property => ({ title: property, property }));
+
+    /* Now put all fields together */
+    const fields = _(customDisplayFields)
+      .concat(standardFields)
+      .concat(extraFields)
+      .sortBy(field=>field.title)
       .value();
 
     const fieldsAndValues = _.map(fields, (field) => { field.value = this.getValue(userObject, field); return field; });
