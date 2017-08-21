@@ -144,6 +144,9 @@ class AddUserForm extends Component {
       customFields
     } = this.props;
 
+    const connectionUserField = _.find(this.props.customFields, { property: 'connection' });
+    const displayConnectionUserField = connectionUserField && !!connectionUserField.display;
+
     return (
       <div>
         <Modal.Body>
