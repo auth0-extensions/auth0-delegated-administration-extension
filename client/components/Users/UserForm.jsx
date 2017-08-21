@@ -96,6 +96,9 @@ class AddUserForm extends Component {
       hasMembership
     } = this.props;
 
+    const connectionUserField = _.find(this.props.customFields, { property: 'connection' });
+    const displayConnectionUserField = connectionUserField && !!connectionUserField.display;
+
     return (
       <div>
         <Modal.Body>
@@ -120,7 +123,7 @@ class AddUserForm extends Component {
               type="password"
               component={InputText}
             />
-            {this.renderConnections(connections)}
+            { displayConnectionUserField && this.renderConnections(connections) }
             <UserCustomFormFields customFieldGetter={this.props.customFieldGetter} customFields={this.props.customFields}/>
           </div>
         </Modal.Body>

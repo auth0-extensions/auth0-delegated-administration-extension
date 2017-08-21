@@ -10,6 +10,7 @@ const initialState = {
   userName: null,
   userEmail: null,
   userNameToChange: null,
+  customField: null,
   connection: null
 };
 
@@ -32,7 +33,8 @@ describe('User Name Change reducer', () => {
           username: 'user_name',
           email: 'test@mail.ru'
         },
-        connection: 'connection'
+        connection: 'connection',
+        customField: { property: 'prop' }
       }).toJSON()
     ).toEqual(
       {
@@ -43,7 +45,8 @@ describe('User Name Change reducer', () => {
         userName: 'test',
         userEmail: 'test@mail.ru',
         userNameToChange: 'user_name',
-        connection: 'connection'
+        connection: 'connection',
+        customField: { property: 'prop' }
       }
     );
   });
@@ -68,7 +71,8 @@ describe('User Name Change reducer', () => {
         userName: 'user_name',
         userEmail: 'test@mail.ru',
         userNameToChange: 'user_name',
-        connection: 'connection'
+        connection: 'connection',
+        customField: undefined
       }
     );
   });
@@ -92,7 +96,8 @@ describe('User Name Change reducer', () => {
         userName: 'test@mail.ru',
         userEmail: 'test@mail.ru',
         userNameToChange: undefined,
-        connection: 'connection'
+        connection: 'connection',
+        customField: undefined
       }
     );
   });
@@ -121,7 +126,8 @@ describe('User Name Change reducer', () => {
         userName: null,
         userEmail: null,
         userNameToChange: null,
-        connection: null
+        connection: null,
+        customField: null
       }
     );
   });
@@ -141,7 +147,8 @@ describe('User Name Change reducer', () => {
         userName: null,
         userEmail: null,
         userNameToChange: null,
-        connection: null
+        connection: null,
+        customField: null
       }
     );
   });
