@@ -26,8 +26,8 @@ export default () => {
 <body>
   <div id="app"></div>
   <script type="text/javascript" src="//cdn.auth0.com/w2/auth0-7.6.1.min.js"></script>
-  <script src="https://cdn.auth0.com/auth0-extend/1/extend-editor.js"></script>
-  <script src="https://cdn.auth0.com/webtask-editor/editors/1/function-editor.js"></script>
+  <!-- script src="https://cdn.auth0.com/auth0-extend/1/extend-editor.js"></script>
+  <script src="https://cdn.auth0.com/webtask-editor/editors/1/function-editor.js"></script -->
   <script type="text/javascript" src="//cdn.auth0.com/manage/v0.3.1672/js/bundle.js"></script>
   <script type="text/javascript">window.config = <%- JSON.stringify(config) %>;</script>
   <% if (assets.vendors) { %><script type="text/javascript" src="/app/<%= assets.vendors %>"></script><% } %>
