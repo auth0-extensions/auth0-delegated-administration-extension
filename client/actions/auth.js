@@ -13,7 +13,7 @@ const auth0 = new Auth0({ // eslint-disable-line no-undef
 export function login(returnUrl) {
   auth0.login({
     state: returnUrl,
-    scope: 'openid name email nickname groups roles app_metadata authorization'
+    scope: 'openid name email nickname roles app_metadata authorization'
   });
 
   return {
