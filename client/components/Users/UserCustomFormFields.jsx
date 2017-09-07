@@ -55,7 +55,10 @@ export default class UserCustomFormFields extends Component {
   }
 
   renderCustomFields(customFields) {
-    return _.map(customFields, field => ((this.getFieldByComponentName(field, field.component))));
+    const ignoreFields = [ 'connection', 'password', 'email' ];
+    const filteredCustomFields = _.filter(customFields, field => !_.includes(ignoreFields, field.property));
+
+    return _.map(filteredCustomFields, field => ((this.getFieldByComponentName(field, field.component))));
   }
 
   render() {
