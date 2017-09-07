@@ -1,3 +1,9 @@
+## [2.4.6] - 2017-09-07
+
+### Changes
+
+ - Removed `group` scope when authenticating
+
 ## [2.4.4] - 2017-06-15
 
 ### Changes
