@@ -12,13 +12,17 @@ import {
   TableRow
 } from 'auth0-extension-ui';
 
+import './UserTable.css';
 import { getProperty } from '../../utils';
 
 export default class UsersTable extends Component {
   static propTypes = {
     users: React.PropTypes.array.isRequired,
     loading: React.PropTypes.bool.isRequired,
-    userFields: React.PropTypes.array.isRequired
+    userFields: React.PropTypes.array.isRequired,
+    onColumnSort: React.PropTypes.func.isRequired,
+    sortOrder: React.PropTypes.number.isRequired,
+    sortProperty: React.PropTypes.string.isRequired,
   }
 
   // shouldComponentUpdate(nextProps) {
@@ -47,44 +51,66 @@ export default class UsersTable extends Component {
     return display || value || defaultValue;
   }
 
+  onColumnSort(property, sortOrder) {
+    const sort = {
+      property,
+      order: sortOrder === -1 ? 1 : -1
+    };
+    this.props.onColumnSort(sort);
+  }
+
   render() {
-    const { users, userFields } = this.props;
+    const { users, userFields, sortProperty, sortOrder } = this.props;
 
     const defaultListFields = [
       {
         listOrder: 0,
-        listSize: '25%',
+        listSize: '20%',
         property: 'name',
         label: 'Name',
-        display: (user, value) => (value || user.nickname || user.email || user.user_id)
+        display: (user, value) => (value || user.nickname || user.email || user.user_id),
+        search: {
+          sort: true
+        }
       },
       {
         listOrder: 1,
-        listSize: '29%',
+        listSize: '24%',
         property: 'email',
         label: 'Email',
         display: (user, value) => value || 'N/A'
       },
       {
         listOrder: 2,
-        listSize: '15%',
+        listSize: '20%',
         property: 'last_login_relative',
-        label: 'Latest Login'
+        sortProperty: 'last_login',
+        label: 'Latest Login',
+        search: {
+          sort: true
+        }
       },
       {
         listOrder: 3,
-        listSize: '10%',
+        listSize: '15%',
         property: 'logins_count',
-        label: 'Logins'
-      },
-      {
+        label: 'Logins',
+        search: {
+          sort: true
+        }
+      }
+    ];
+
+    const connectionField = _.find(userFields, { property: 'connection' });
+    if (connectionField && (_.isFunction(connectionField.display) || (_.isBoolean(connectionField.display) && connectionField.display === true))) {
+      defaultListFields.push({
         listOrder: 4,
         listSize: '25%',
         property: 'identities',
         label: 'Connection',
-        display: (user, value) => value[0].connection
-      }
-    ];
+        display: (user, value) => (_.isFunction(connectionField.display) ? connectionField.display(user, value) : value[0].connection)
+      });
+    }
 
     let listFields = defaultListFields;
 
@@ -128,7 +154,27 @@ export default class UsersTable extends Component {
         <TableHeader>
           <TableColumn width="6%" />
           {
-            listFields.map(field => <TableColumn key={field.property} width={field.listSize}>{field.label}</TableColumn>)
+            listFields.map((field) => {
+              const sort = _.isObject(field.search)
+                && (_.isBoolean(field.search.sort) && field.search.sort === true);
+
+              if (sort) {
+                return (
+                  <TableColumn key={field.property} width={field.listSize} >
+                    <div className="table-column-div" onClick={this.onColumnSort.bind(this, field.sortProperty || field.property, sortOrder)}>
+                      {field.label}
+                      { ((field.sortProperty || field.property) === sortProperty) && <i className={sortOrder === -1 ? 'icon-budicon-462 icon' : 'icon-budicon-460 icon'} aria-hidden="true" /> }
+                    </div>
+                  </TableColumn>
+                );
+              }
+
+              return (
+                <TableColumn key={field.property} width={field.listSize}>
+                  {field.label}
+                </TableColumn>
+              );
+            })
           }
         </TableHeader>
         <TableBody>

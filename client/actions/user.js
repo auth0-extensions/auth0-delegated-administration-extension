@@ -9,23 +9,33 @@ import { getAccessLevel } from './auth';
 /*
  * Search for users.
  */
-export function fetchUsers(search = '', reset = false, page = 0, filterBy) {
-  return (dispatch) => {
+export function fetchUsers(search, reset = false, page = 0, filterBy, sort) {
+
+  return (dispatch, getState) => {
+    const { sortProperty, sortOrder, searchValue } = getState().users.toJS();
+    const meta = { page, sortProperty, sortOrder, searchValue };
+
+    meta.searchValue = reset ? '' : search || searchValue;
+    if (sort) {
+      meta.sortProperty = sort.property;
+      meta.sortOrder = sort.order;
+    }
+
     dispatch({
       type: constants.FETCH_USERS,
       payload: {
         promise: axios.get('/api/users', {
           params: {
-            search,
+            search: meta.searchValue,
             page,
-            filterBy
+            filterBy,
+            sortOrder: meta.sortOrder,
+            sortProperty: meta.sortProperty
           },
           responseType: 'json'
         })
       },
-      meta: {
-        page
-      }
+      meta
     });
   };
 }

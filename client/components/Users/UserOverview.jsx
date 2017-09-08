@@ -13,7 +13,10 @@ export default class UserOverview extends React.Component {
     error: React.PropTypes.object,
     users: React.PropTypes.array.isRequired,
     loading: React.PropTypes.bool.isRequired,
-    userFields: React.PropTypes.array.isRequired
+    userFields: React.PropTypes.array.isRequired,
+    onColumnSort: React.PropTypes.func.isRequired,
+    sortOrder: React.PropTypes.number.isRequired,
+    sortProperty: React.PropTypes.string.isRequired
   }
 
   constructor(props) {
@@ -64,7 +67,7 @@ export default class UserOverview extends React.Component {
   }
 
   render() {
-    const loading = this.props.loading;
+    const { loading, sortProperty, sortOrder } = this.props;
     return (
       <div>
         <div className="row">
@@ -94,7 +97,7 @@ export default class UserOverview extends React.Component {
         <LoadingPanel show={loading}>
           <div className="row">
             <div className="col-xs-12">
-              <UsersTable loading={loading} users={this.props.users} userFields={this.props.userFields} />
+              <UsersTable loading={loading} users={this.props.users} userFields={this.props.userFields} onColumnSort={this.props.onColumnSort} sortOrder={sortOrder} sortProperty={sortProperty} />
             </div>
           </div>
         </LoadingPanel>
