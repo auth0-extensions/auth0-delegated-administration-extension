@@ -59,11 +59,14 @@ export default (storage, scriptManager) => {
     if (req.query.filterBy && req.query.filterBy.length > 0) {
       searchQuery = `${req.query.filterBy}:"${req.query.search}"`;
     }
+    const sort = req.query.sortProperty && req.query.sortOrder
+      ? `${req.query.sortProperty}:${req.query.sortOrder}`
+      : 'last_login:-1';
 
     scriptManager.execute('filter', filterContext)
       .then((filter) => {
         const options = {
-          sort: 'last_login:-1',
+          sort,
           q: (searchQuery && filter) ? `(${searchQuery}) AND ${filter}` : searchQuery || filter,
           per_page: req.query.per_page || 10,
           page: req.query.page || 0,

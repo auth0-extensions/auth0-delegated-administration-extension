@@ -7,10 +7,13 @@ import * as constants from '../../../client/constants';
 const initialState = {
   loading: false,
   error: null,
+  records: [],
+  total: 0,
   currentPage: 1,
   pages: 1,
-  records: [],
-  total: 0
+  searchValue: '',
+  sortProperty: 'last_login',
+  sortOrder: -1
 };
 
 describe('users reducer', () => {
@@ -37,7 +40,10 @@ describe('users reducer', () => {
         records: [],
         currentPage: 1,
         pages: 1,
-        total: 0
+        total: 0,
+        searchValue: undefined,
+        sortProperty: undefined,
+        sortOrder: undefined
       }
     );
   });
@@ -52,7 +58,10 @@ describe('users reducer', () => {
       }, {
         type: constants.FETCH_USERS_PENDING,
         meta: {
-          page: 1
+          page: 1,
+          searchValue: 'value',
+          sortProperty: 'email',
+          sortOrder: 1
         }
       }).toJSON()
     ).toEqual(
@@ -62,7 +71,10 @@ describe('users reducer', () => {
         records: [ 'test' ],
         total: 0,
         currentPage: 1,
-        pages: 1
+        pages: 1,
+        searchValue: 'value',
+        sortProperty: 'email',
+        sortOrder: 1
       }
     );
   });
@@ -80,7 +92,10 @@ describe('users reducer', () => {
         records: [],
         total: 0,
         currentPage: 1,
-        pages: 1
+        pages: 1,
+        searchValue: '',
+        sortProperty: 'last_login',
+        sortOrder: -1
       }
     );
   });
@@ -141,7 +156,10 @@ describe('users reducer', () => {
         total: 2,
         nextPage: 2,
         currentPage: 1,
-        pages: 1
+        pages: 1,
+        searchValue: '',
+        sortProperty: 'last_login',
+        sortOrder: -1
       }
     );
   });

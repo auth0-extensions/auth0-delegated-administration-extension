@@ -27,7 +27,9 @@ class Users extends Component {
     createUser: PropTypes.func.isRequired,
     fetchConnections: PropTypes.func.isRequired,
     requestCreateUser: PropTypes.func.isRequired,
-    settings: PropTypes.object.isRequired
+    settings: PropTypes.object.isRequired,
+    sortOrder: React.PropTypes.number.isRequired,
+    sortProperty: React.PropTypes.string.isRequired
   }
 
   constructor(props) {
@@ -62,9 +64,26 @@ class Users extends Component {
     );
   }
 
+  onColumnSort = (sort) => {
+    this.props.fetchUsers('', false, 0, null, sort);
+  }
+
   render() {
-    const { loading, error, users, total, connections,
-      userCreateError, userCreateLoading, accessLevel, nextPage, pages, settings } = this.props;
+    const {
+      loading,
+      error,
+      users,
+      total,
+      connections,
+      userCreateError,
+      userCreateLoading,
+      accessLevel,
+      nextPage,
+      pages,
+      settings,
+      sortProperty,
+      sortOrder
+    } = this.props;
 
     const userFields = (settings && settings.userFields) || [];
 
@@ -95,6 +114,9 @@ class Users extends Component {
           loading={loading}
           role={accessLevel.role}
           userFields={userFields}
+          sortProperty={sortProperty}
+          sortOrder={sortOrder}
+          onColumnSort={this.onColumnSort}
         />
         <div className="row">
           <div className="col-xs-12">
@@ -106,8 +128,7 @@ class Users extends Component {
                 currentPage={nextPage}
               /> :
               <TableTotals currentCount={users.length} totalCount={total} />
-            }
-            
+            }            
           </div>
         </div>
       </div>
@@ -128,6 +149,8 @@ function mapStateToProps(state) {
     total: state.users.get('total'),
     nextPage: state.users.get('nextPage'),
     pages: state.users.get('pages'),
+    sortProperty: state.users.get('sortProperty'),
+    sortOrder: state.users.get('sortOrder'),
     settings: state.settings.get('record').toJS().settings
   };
 }
