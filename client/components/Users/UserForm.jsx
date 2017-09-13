@@ -18,7 +18,7 @@ class AddUserForm extends Component {
     onClose: React.PropTypes.func.isRequired,
     handleSubmit: React.PropTypes.func.isRequired,
     submitting: React.PropTypes.boolean,
-    customFields: React.PropTypes.string,
+    customFields: React.PropTypes.array,
     customFieldGetter: React.PropTypes.func.isRequired
   }
 
@@ -30,7 +30,7 @@ class AddUserForm extends Component {
     }
 
     return (
-      <Field label="Username" name="username" component={InputText}/>
+      <Field label="Username" name="username" component={InputText} />
     );
   }
 
@@ -66,23 +66,70 @@ class AddUserForm extends Component {
     );
   }
 
-  renderConnections(connections) {
+  renderConnections(connections, customFields) {
     if (!connections || connections.length <= 1) {
       return null;
     }
 
-    const options = connections.map(conn => ({ value: conn.name, text: conn.name }));
+    const connectionUserField = _.find(customFields, { property: 'connection' });
+    const displayConnectionUserField = connectionUserField && !!connectionUserField.create;
 
-    return (
-      <Field
-        label="Connection"
-        name="connection"
-        id="connection"
-        component={InputCombo}
-        options={options}
-        onChange={this.onConnectionChange}
-      />
-    );
+    if (displayConnectionUserField) {
+      const options = connections.map(conn => ({ value: conn.name, text: conn.name }));
+      return (
+        <Field
+          label="Connection"
+          name="connection"
+          id="connection"
+          component={InputCombo}
+          options={options}
+          onChange={this.onConnectionChange}
+        />
+      );
+    }
+
+    return null;
+  }
+
+  renderPassword(customFields) {
+    const passwordField = _.find(customFields, { property: 'password' });
+    const displayField = passwordField && !!passwordField.create;
+
+    if (displayField) {
+      return (
+        <div>
+          <Field
+            label="Password"
+            name="password"
+            type="password"
+            component={InputText}
+          />
+          <Field
+            label="Repeat Password"
+            name="repeatPassword"
+            type="password"
+            component={InputText}
+          />
+        </div>
+      );
+    }
+    return null;
+  }
+
+  renderEmail(customFields) {
+    const emailField = _.find(customFields, { property: 'email' });
+    const displayField = emailField && !!emailField.create;
+
+    if (displayField) {
+      return (
+        <Field
+          label="Email"
+          name="email"
+          component={InputText}
+        />
+      );
+    }
+    return null;
   }
 
   render() {
@@ -93,7 +140,8 @@ class AddUserForm extends Component {
       memberships,
       createMemberships,
       hasSelectedConnection,
-      hasMembership
+      hasMembership,
+      customFields
     } = this.props;
 
     return (
@@ -102,26 +150,11 @@ class AddUserForm extends Component {
           {this.props.children}
           <div className="form-horizontal">
             {this.renderMemberships(hasMembership, memberships, createMemberships)}
-            <Field
-              label="Email"
-              name="email"
-              component={InputText}
-            />
+            {this.renderEmail(customFields)}
             {this.renderUsername(connections, hasSelectedConnection)}
-            <Field
-              label="Password"
-              name="password"
-              type="password"
-              component={InputText}
-            />
-            <Field
-              label="Repeat Password"
-              name="repeatPassword"
-              type="password"
-              component={InputText}
-            />
-            {this.renderConnections(connections)}
-            <UserCustomFormFields customFieldGetter={this.props.customFieldGetter} customFields={this.props.customFields}/>
+            {this.renderPassword(customFields)}
+            {this.renderConnections(connections, customFields) }
+            <UserCustomFormFields customFieldGetter={this.props.customFieldGetter} customFields={customFields} />
           </div>
         </Modal.Body>
         <Modal.Footer>

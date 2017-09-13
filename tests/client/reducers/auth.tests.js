@@ -86,7 +86,8 @@ describe('auth reducer', () => {
           token: 'test token',
           decodedToken: {
             iss: 'https://roman-test.eu.auth0.com/'
-          }
+          },
+          returnTo: 'return-to'
         }
       }).toJSON()
     ).toEqual(
@@ -99,7 +100,8 @@ describe('auth reducer', () => {
         decodedToken: {
           iss: 'https://roman-test.eu.auth0.com/'
         },
-        user: { name: 'test' }
+        user: { name: 'test' },
+        returnTo: 'return-to'
       }
     );
   });
