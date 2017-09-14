@@ -15,6 +15,5 @@ export const VALID_SCRIPTS = [
   'filter',
   'create',
   'memberships',
-  'settings',
-  'update'
+  'settings'
 ];

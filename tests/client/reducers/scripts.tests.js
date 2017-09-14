@@ -53,8 +53,7 @@ describe('scripts reducer', () => {
       {
         settings: {
           loading: false,
-          script: 'function () { return true; }',
-          token: undefined
+          script: 'function () { return true; }'
         }
       }
     );
