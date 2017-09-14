@@ -7,6 +7,29 @@ import { managementApi, ArgumentError, ValidationError } from 'auth0-extension-t
 import config from '../lib/config';
 import { verifyUserAccess } from '../lib/middlewares';
 
+
+function executeWriteHook(req, res, scriptManager, userFields) {
+  return req.auth0.users.get({ id: req.params.id })
+    .then((user) => {
+      if (!user) {
+        res.status(404);
+        throw new Error('User not found');
+      }
+      const context = {
+        method: 'update',
+        request: {
+          user: req.user,
+          originalUser: user
+        },
+        payload: req.body,
+        userFields
+      };
+      return context;
+    })
+    .then(context => scriptManager.execute('create', context));
+}
+
+
 export default (storage, scriptManager) => {
   const api = Router();
 
@@ -157,35 +180,16 @@ export default (storage, scriptManager) => {
    * Patch a user.
    */
   api.patch('/:id', (req, res, next) => {
-    req.auth0.users.get({ id: req.params.id })
-      .then((user) => {
+    const settingsContext = {
+      request: {
+        user: req.user
+      }
+    };
 
-        if (!user) {
-          res.status(404);
-          throw new Error('User not found');
-        }
-
-        if (req.body.password && req.body.password !== req.body.repeatPassword) {
-          throw new ValidationError('The passwords do not match.');
-        }
-
-        const context = {
-          method: 'update',
-          request: {
-            user: req.user,
-            originalUser: user
-          },
-          payload: req.body
-        };
-
-        return scriptManager.execute('create', context)
-          .then(result => {
-            const payload = result;
-            return req.auth0.users.update({ id: req.params.id }, payload)
-          })
-          .then(() => res.status(201).send())
-          .catch(next);
-      })
+    scriptManager.execute('settings', settingsContext)
+      .then(settings => executeWriteHook(req, res, scriptManager, settings.userFields))
+      .then(payload => req.auth0.users.update({ id: req.params.id }, payload))
+      .then(() => res.status(201).send())
       .catch(next);
   });
 
@@ -222,22 +226,72 @@ export default (storage, scriptManager) => {
       .catch(next);
   });
 
-
   /*
    * Change the username of a user.
    */
-  api.put('/:id/change-username', verifyUserAccess('change:username', scriptManager), (req, res, next) =>
-    req.auth0.users.update({ id: req.params.id }, { username: req.body.username })
-      .then(() => res.sendStatus(204))
-      .catch(next));
+  api.put('/:id/change-username', verifyUserAccess('change:username', scriptManager), (req, res, next) => {
+    const settingsContext = {
+      request: {
+        user: req.user
+      }
+    };
+
+    scriptManager.execute('settings', settingsContext)
+      .then((settings) => {
+        // If userFields is specified in the settings hook, then call the write hook and pass the userFields.
+        if (settings && settings.userFields) {
+          executeWriteHook(req, res, scriptManager, settings.userFields)
+            .then((payload) => {
+              if (!payload.username) {
+                throw new ValidationError('The username is required.');
+              }
+
+              return req.auth0.users.update({ id: req.params.id }, payload);
+            })
+            .then(() => res.status(204).send())
+            .catch(next);
+        } else {
+          req.auth0.users.update({ id: req.params.id }, { username: req.body.username })
+            .then(() => res.sendStatus(204))
+            .catch(next);
+        }
+      })
+      .catch(next);
+  });
+
 
   /*
    * Change the email of a user.
    */
-  api.put('/:id/change-email', verifyUserAccess('change:email', scriptManager), (req, res, next) =>
-    req.auth0.users.update({ id: req.params.id }, { email: req.body.email })
-      .then(() => res.sendStatus(204))
-      .catch(next));
+  api.put('/:id/change-email', verifyUserAccess('change:email', scriptManager), (req, res, next) => {
+    const settingsContext = {
+      request: {
+        user: req.user
+      }
+    };
+
+    scriptManager.execute('settings', settingsContext)
+      .then((settings) => {
+        // If userFields is specified in the settings hook, then call the write hook and pass the userFields.
+        if (settings && settings.userFields) {
+          executeWriteHook(req, res, scriptManager, settings.userFields)
+            .then((payload) => {
+              if (!payload.email) {
+                throw new ValidationError('The email is required.');
+              }
+
+              return req.auth0.users.update({ id: req.params.id }, payload);
+            })
+            .then(() => res.status(204).send())
+            .catch(next);
+        } else {
+          req.auth0.users.update({ id: req.params.id }, { email: req.body.email })
+            .then(() => res.sendStatus(204))
+            .catch(next);
+        }
+      })
+      .catch(next);
+  });
 
   /*
    * Get all devices for the user.
