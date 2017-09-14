@@ -2,7 +2,6 @@ import { Router } from 'express';
 import { ValidationError } from 'auth0-extension-tools';
 
 import * as constants from '../constants';
-import config from '../lib/config';
 
 export default (storage, scriptManager) => {
   const api = Router();
@@ -12,7 +11,7 @@ export default (storage, scriptManager) => {
     }
 
     return scriptManager.get(req.params.name)
-      .then(data => res.json({ script: data, token: config('EXTEND_TOKEN') }))
+      .then(data => res.json({ script: data }))
       .catch(next);
   });
 

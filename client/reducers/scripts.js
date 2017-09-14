@@ -12,7 +12,7 @@ export const scripts = createReducer(fromJS({ }), { // eslint-disable-line impor
       .setIn([ action.meta.name ], fromJS({ loading: false, error: `An error occurred while loading the script: ${action.errorMessage}` })),
   [constants.FETCH_SCRIPT_FULFILLED]: (state, action) =>
     state
-      .setIn([ action.meta.name ], fromJS({ loading: false, script: action.payload.data.script, token: action.payload.data.token })),
+      .setIn([ action.meta.name ], fromJS({ loading: false, script: action.payload.data.script })),
   [constants.UPDATE_SCRIPT_PENDING]: (state, action) =>
     state
       .setIn([ action.meta.name, 'loading' ], true)
