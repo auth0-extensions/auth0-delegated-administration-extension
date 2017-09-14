@@ -6562,6 +6562,14 @@ superagent@1.2.0:
     readable-stream "1.0.27-1"
     reduce-component "1.0.1"
 
+stylus-loader@^2.3.1:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/stylus-loader/-/stylus-loader-2.5.1.tgz#d5ad8a7e0958adc12b8581e7bb169b9a61d54216"
+  dependencies:
+    loader-utils "^0.2.9"
+    lodash.clonedeep "^4.5.0"
+    when "~3.6.x"
+
 superagent@^1.4.0, superagent@^1.7.2, superagent@^1.8.3:
   version "1.8.5"
   resolved "https://registry.yarnpkg.com/superagent/-/superagent-1.8.5.tgz#1c0ddc3af30e80eb84ebc05cb2122da8fe940b55"
