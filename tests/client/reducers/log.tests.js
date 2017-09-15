@@ -89,7 +89,7 @@ describe('log reducer', () => {
         logId: 'test_2',
         record: {
           _id: 'test_2',
-          type: 'Unknown Error'
+          type: 'Unknown Log Type: custom_type'
         }
       }
     );
