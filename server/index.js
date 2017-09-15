@@ -38,7 +38,7 @@ module.exports = (cfg, storageProvider) => {
     secret: config('EXTENSION_SECRET'),
     audience: 'urn:delegated-admin',
     rta: config('AUTH0_RTA').replace('https://', ''),
-    domain: config('AUTH0_DOMAIN'),
+    domain: config('AUTH0_ISSUER_DOMAIN'),
     baseUrl: config('PUBLIC_WT_URL'),
     webtaskUrl: config('PUBLIC_WT_URL'),
     clientName: 'Delegated Administration',

@@ -198,7 +198,7 @@ export default (storage, scriptManager) => {
    */
   api.post('/:id/password-reset', verifyUserAccess('reset:password', scriptManager), (req, res, next) => {
     const client = new auth0.AuthenticationClient({
-      domain: config('AUTH0_DOMAIN'),
+      domain: config('AUTH0_ISSUER_DOMAIN'),
       clientId: config('AUTH0_CLIENT_ID')
     });
 
@@ -306,10 +306,10 @@ export default (storage, scriptManager) => {
    * Get all logs for a user.
    */
   api.get('/:id/logs', verifyUserAccess('read:logs', scriptManager), (req, res, next) => {
-    managementApi.getAccessTokenCached(config('AUTH0_DOMAIN'), config('AUTH0_CLIENT_ID'), config('AUTH0_CLIENT_SECRET'))
+    managementApi.getAccessTokenCached(config('AUTH0_ISSUER_DOMAIN'), config('AUTH0_CLIENT_ID'), config('AUTH0_CLIENT_SECRET'))
       .then((accessToken) => {
         const options = {
-          uri: `https://${config('AUTH0_DOMAIN')}/api/v2/users/${encodeURIComponent(req.params.id)}/logs`,
+          uri: `https://${config('AUTH0_ISSUER_DOMAIN')}/api/v2/users/${encodeURIComponent(req.params.id)}/logs`,
           qs: {
             include_totals: true
           },

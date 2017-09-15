@@ -55,6 +55,7 @@ store.subscribe(() => {
       break;
   }
 });
+
 store.dispatch(loadCredentials());
 
 // Render application.

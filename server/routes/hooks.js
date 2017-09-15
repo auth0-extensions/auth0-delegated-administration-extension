@@ -7,12 +7,12 @@ import logger from '../lib/logger';
 
 export default () => {
   const hookValidator = middlewares
-    .validateHookToken(config('AUTH0_DOMAIN'), config('WT_URL'), config('EXTENSION_SECRET'));
+    .validateHookToken(config('AUTH0_ISSUER_DOMAIN'), config('WT_URL'), config('EXTENSION_SECRET'));
 
   const hooks = router();
   hooks.use('/on-uninstall', hookValidator('/.extensions/on-uninstall'));
   hooks.use(middlewares.managementApiClient({
-    domain: config('AUTH0_DOMAIN'),
+    domain: config('AUTH0_ISSUER_DOMAIN'),
     clientId: config('AUTH0_CLIENT_ID'),
     clientSecret: config('AUTH0_CLIENT_SECRET')
   }));
