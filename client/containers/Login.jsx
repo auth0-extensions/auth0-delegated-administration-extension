@@ -37,11 +37,11 @@ class LoginContainer extends Component {
             title="Login Error"
             show={this.props.auth.error}
             onConfirm={this.login.bind(this)}
-            >
+          >
             <Error show={true} message={this.props.auth.error}/>
           </Confirm>
         </div>
-    );
+      );
     }
 
     if (!this.props.auth.isAuthenticating) {
@@ -55,13 +55,13 @@ class LoginContainer extends Component {
         </div>
       </div>
     );
-    }
-    }
+  }
+}
 
-    function mapStateToProps(state) {
-      return {
-      auth: state.auth.toJS()
-    };
-    }
+function mapStateToProps(state) {
+  return {
+    auth: state.auth.toJS()
+  };
+}
 
-    export default connect(mapStateToProps, { login, push })(LoginContainer);
+export default connect(mapStateToProps, { login, push })(LoginContainer);
