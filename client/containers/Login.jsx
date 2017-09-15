@@ -55,13 +55,13 @@ class LoginContainer extends Component {
         </div>
       </div>
     );
-  }
-}
+    }
+    }
 
-function mapStateToProps(state) {
-  return {
-    auth: state.auth.toJS()
-  };
-}
+    function mapStateToProps(state) {
+      return {
+      auth: state.auth.toJS()
+    };
+    }
 
-export default connect(mapStateToProps, { login, push })(LoginContainer);
+    export default connect(mapStateToProps, { login, push })(LoginContainer);
