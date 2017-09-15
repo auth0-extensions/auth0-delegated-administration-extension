@@ -1,3 +1,11 @@
+## [2.4.7] - 2017-09-07
+
+### Changes
+
+ - Added new audit log types
+ - Fixed unknown logtype message
+
+
 ## [2.4.6] - 2017-09-07
 
 ### Changes
