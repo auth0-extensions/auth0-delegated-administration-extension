@@ -1,18 +1,26 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
+import { push } from 'react-router-redux';
 
 import * as constants from '../constants';
 
-const auth0 = new Auth0({ // eslint-disable-line no-undef
+const issuer = window.config.AUTH0_TOKEN_ISSUER || `https://${window.config.AUTH0_DOMAIN}/`;
+
+const webAuth = new auth0.WebAuth({ // eslint-disable-line no-undef
   domain: window.config.AUTH0_DOMAIN,
   clientID: window.config.AUTH0_CLIENT_ID,
-  callbackURL: `${window.config.BASE_URL}/login`,
-  callbackOnLocationHash: true
+  overrides: {
+    __tenant: issuer.substr(8).split('.')[0],
+    __token_issuer: issuer
+  }
 });
 
 export function login(returnUrl) {
-  auth0.login({
-    state: returnUrl,
+  sessionStorage.setItem('delegated-admin:returnTo', returnUrl);
+
+  webAuth.authorize({
+    responseType: 'id_token',
+    redirectUri: `${window.config.BASE_URL}/login`,
     scope: 'openid name email nickname groups roles app_metadata authorization'
   });
 
@@ -48,42 +56,73 @@ export function logout() {
   };
 }
 
+const processTokens = (dispatch, apiToken, returnToFromState) => {
+  const decodedToken = jwtDecode(apiToken);
+  if (isExpired(decodedToken)) {
+    return;
+  }
+
+  axios.defaults.headers.common.Authorization = `Bearer ${apiToken}`;
+
+  sessionStorage.setItem('delegated-admin:apiToken', apiToken);
+
+  dispatch({
+    type: constants.LOADED_TOKEN,
+    payload: {
+      token: apiToken
+    }
+  });
+
+  const returnTo = returnToFromState || '/users';
+
+  dispatch({
+    type: constants.LOGIN_SUCCESS,
+    payload: {
+      token: apiToken,
+      decodedToken,
+      user: decodedToken,
+      returnTo
+    }
+  });
+
+  if (returnTo) {
+    dispatch(push(returnTo));
+  }
+};
+
 export function loadCredentials() {
   return (dispatch) => {
     const token = sessionStorage.getItem('delegated-admin:apiToken');
     if (token || window.location.hash) {
+
       let apiToken = token;
 
-      const hash = auth0.parseHash(window.location.hash);
-      if (hash && hash.idToken) {
-        apiToken = hash.idToken;
-      }
-
-      if (apiToken) {
-        const decodedToken = jwtDecode(apiToken);
-        if (isExpired(decodedToken)) {
-          return;
-        }
-
-        axios.defaults.headers.common.Authorization = `Bearer ${apiToken}`;
-
+      if (window.location.hash) {
         dispatch({
-          type: constants.LOADED_TOKEN,
-          payload: {
-            token: apiToken
-          }
+          type: constants.LOGIN_PENDING
         });
 
-        dispatch({
-          type: constants.LOGIN_SUCCESS,
-          payload: {
-            token: apiToken,
-            decodedToken,
-            user: decodedToken,
-            returnTo: hash.state
+        return webAuth.parseHash({
+          hash: window.location.hash
+        }, (err, hash) => {
+          if (err || !hash || !hash.idToken) {
+            /* Must have had hash, but didn't get an idToken in the hash */
+            console.error('login error: ', err);;
+            return dispatch({
+              type: constants.LOGIN_FAILED,
+              payload: {
+                error: err && err.error ? `${err.error}: ${err.errorDescription}` : 'UnknownError: Unknown Error'
+              }
+            });
           }
+
+          const returnTo = sessionStorage.getItem('delegated-admin:returnTo');
+          sessionStorage.removeItem('delegated-admin:returnTo');
+          return processTokens(dispatch, hash.idToken, returnTo);
         });
       }
+
+      return processTokens(dispatch, apiToken);
     }
   };
 }

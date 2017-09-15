@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
 import { login } from '../actions/auth';
-import { LoadingPanel } from 'auth0-extension-ui';
+import { LoadingPanel, Confirm, Error } from 'auth0-extension-ui';
 
 class LoginContainer extends Component {
   static propTypes = {
@@ -16,12 +16,34 @@ class LoginContainer extends Component {
   componentWillMount() {
     if (this.props.auth.isAuthenticated) {
       this.props.push(this.props.auth.returnTo || '/users');
-    } else if (!this.props.auth.isAuthenticating) {
+    } else if (!this.props.auth.isAuthenticating && !this.props.auth.error) {
       this.props.login(this.props.location.query.returnUrl);
     }
   }
 
+  login() {
+    this.props.login(this.props.location.query.returnUrl);
+  }
+
   render() {
+
+    if (this.props.auth.error) {
+      return (
+        <div className="row">
+          <Confirm
+            dialogClassName="login-error"
+            confirmMessage="Login"
+            loading={false}
+            title="Login Error"
+            show={this.props.auth.error}
+            onConfirm={this.login.bind(this)}
+            >
+            <Error show={true} message={this.props.auth.error}/>
+          </Confirm>
+        </div>
+    );
+    }
+
     if (!this.props.auth.isAuthenticating) {
       return <div></div>;
     }
@@ -33,13 +55,13 @@ class LoginContainer extends Component {
         </div>
       </div>
     );
-  }
-}
+    }
+    }
 
-function mapStateToProps(state) {
-  return {
-    auth: state.auth.toJS()
-  };
-}
+    function mapStateToProps(state) {
+      return {
+      auth: state.auth.toJS()
+    };
+    }
 
-export default connect(mapStateToProps, { login, push })(LoginContainer);
+    export default connect(mapStateToProps, { login, push })(LoginContainer);

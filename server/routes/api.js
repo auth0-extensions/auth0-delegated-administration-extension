@@ -18,7 +18,7 @@ import users from './users';
 export default (storage) => {
   const scriptManager = new ScriptManager(storage);
   const managementApiClient = middlewares.managementApiClient({
-    domain: config('AUTH0_DOMAIN'),
+    domain: config('AUTH0_ISSUER_DOMAIN'),
     clientId: config('AUTH0_CLIENT_ID'),
     clientSecret: config('AUTH0_CLIENT_SECRET')
   });
@@ -28,7 +28,7 @@ export default (storage) => {
 
   // Allow end users to authenticate.
   api.use(middlewares.authenticateUsers.optional({
-    domain: config('AUTH0_DOMAIN'),
+    domain: config('AUTH0_ISSUER_DOMAIN'),
     audience: config('EXTENSION_CLIENT_ID'),
     credentialsRequired: false,
     onLoginSuccess: (req, res, next) => {
