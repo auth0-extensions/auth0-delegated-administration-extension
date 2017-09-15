@@ -95,8 +95,6 @@ export function loadCredentials() {
     const token = sessionStorage.getItem('delegated-admin:apiToken');
     if (token || window.location.hash) {
 
-      let apiToken = token;
-
       if (window.location.hash) {
         dispatch({
           type: constants.LOGIN_PENDING
@@ -122,7 +120,8 @@ export function loadCredentials() {
         });
       }
 
-      return processTokens(dispatch, apiToken);
+      /* There was no hash, so use the token from storage */
+      return processTokens(dispatch, token);
     }
   };
 }
