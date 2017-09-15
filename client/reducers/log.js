@@ -36,7 +36,7 @@ export const log = createReducer(fromJS(initialState), { // eslint-disable-line 
     let logType = logTypes[data.log.type];
     if (!logType) {
       logType = {
-        event: 'Unknown Error',
+        event: `Unknown Log Type: ${data.log.type}`,
         icon: {
           name: '354',
           color: '#FFA500'

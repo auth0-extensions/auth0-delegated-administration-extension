@@ -276,6 +276,55 @@ export default {
       name: '311',
       color: '#A93F3F'
     }
+  },
+  seccft: {
+    event: 'Success Exchange (Client Credentials)',
+    icon: {
+      name: '546',
+      color: 'green'
+    }
+  },
+  feccft: {
+    event: 'Failed Exchange (Client Credentials)',
+    icon: {
+      name: '311',
+      color: '#A93F3F'
+    }
+  },
+  limit_mu: {
+    event: 'Blocked IP Address',
+    icon: {
+      name: '311',
+      color: '#A93F3F'
+    }
+  },
+  slo: {
+    event: 'Success Logout',
+    icon: {
+      name: '546',
+      color: 'green'
+    }
+  },
+  flo: {
+    event: 'Failed Logout',
+    icon: {
+      name: '311',
+      color: '#A93F3F'
+    }
+  },
+  sd: {
+    event: 'Success Delegation',
+    icon: {
+      name: '546',
+      color: 'green'
+    }
+  },
+  fd: {
+    event: 'Failed Delegation',
+    icon: {
+      name: '311',
+      color: '#A93F3F'
+    }
   }
 }
 ;
