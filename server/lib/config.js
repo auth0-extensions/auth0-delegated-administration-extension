@@ -8,6 +8,14 @@ const daeConfig = function(key) {
   return config(key);
 };
 
+daeConfig.getValue = function(key) {
+  return config.getValue(key);
+}
+
+daeConfig.setValue = function(key, value) {
+  return config.setValue(key, value);
+}
+
 daeConfig.setProvider = function(provider) {
   return config.setProvider(provider);
 }

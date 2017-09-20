@@ -28,6 +28,8 @@ nconf
     TITLE: 'User Management'
   });
 
+console.log('carlos: ',nconf.get('CDN_PATH'));
+
 // Start the server.
 const app = require('./server')((key) => nconf.get(key), null);
 
