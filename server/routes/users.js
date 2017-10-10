@@ -7,6 +7,7 @@ import { managementApi, ArgumentError, ValidationError } from 'auth0-extension-t
 
 import config from '../lib/config';
 import { verifyUserAccess } from '../lib/middlewares';
+import removeGuardian from '../lib/removeGuardian';
 
 
 function executeWriteHook(req, res, scriptManager, userFields) {
@@ -365,7 +366,13 @@ export default (storage, scriptManager) => {
    * Remove MFA for the user.
    */
   api.delete('/:id/multifactor/:provider', verifyUserAccess('remove:multifactor-provider', scriptManager), (req, res, next) => {
-    req.auth0.users.deleteMultifactorProvider({ id: req.params.id, provider: req.params.provider })
+    if (req.params.provider !== 'guardian') {
+      return req.auth0.users.deleteMultifactorProvider({ id: req.params.id, provider: req.params.provider })
+        .then(() => res.sendStatus(204))
+        .catch(next);
+    }
+
+    return removeGuardian(req.user.access_token, req.params.id)
       .then(() => res.sendStatus(204))
       .catch(next);
   });
