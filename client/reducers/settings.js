@@ -10,7 +10,7 @@ const initialState = {
 };
 
 const parseDisplay = (property, displayAttribute, display) => {
-  if (display &&
+  if (display !== undefined &&
     _.isString(display) &&
     display.startsWith('function')) {
     try {
@@ -41,9 +41,11 @@ const parseOptions = (options) => {
   return options;
 };
 
-const parseFieldSection = (property, sectionInfo, sectionName) => {
+const parseFieldSection = (property, sectionInfo, sectionName, inheritedDisplay) => {
   if (sectionInfo && _.isObject(sectionInfo)) {
-    if (sectionInfo.display) sectionInfo.display = parseDisplay(property, `${sectionName}.display`, sectionInfo.display);
+    const sectionDisplay = parseDisplay(property, `${sectionName}.display`, sectionInfo.display);
+    const display = sectionDisplay !== undefined ? sectionDisplay : inheritedDisplay;
+    if (display !== undefined) sectionInfo.display = display;
     if (sectionInfo.options) sectionInfo.options = parseOptions(sectionInfo.options);
   }
 };
@@ -64,9 +66,9 @@ export const settings = createReducer(fromJS(initialState), { // eslint-disable-
     if (data.settings.userFields) {
       data.settings.userFields.forEach((field) => {
         parseFieldSection(field.property, field, 'userField');
-        parseFieldSection(field.property, field.edit, 'userField.edit');
-        parseFieldSection(field.property, field.create, 'userField.create');
-        parseFieldSection(field.property, field.search, 'userField.search');
+        parseFieldSection(field.property, field.edit, 'userField.edit', field.display);
+        parseFieldSection(field.property, field.create, 'userField.create', field.display);
+        parseFieldSection(field.property, field.search, 'userField.search', field.display);
       });
     }
     return state.merge({
