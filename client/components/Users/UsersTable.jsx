@@ -145,8 +145,21 @@ export default class UsersTable extends Component {
           .filter(field => customFieldProperties.indexOf(field.property) < 0)
           .concat(customListFields)
           .sortBy(field => field.listOrder)
+          .filter(field => field.display !== false) // Remove any fields that have display set to false
           .value();
       }
+
+      /* Now filter out any fields that are set to search === false, this should kill custom fields that are
+       * overriding default fields
+       */
+      const falseSearchFields = _(userFields)
+        .filter(field => field.search === false)
+        .map('property')
+        .value();
+
+      listFields = _(listFields)
+        .filter(field => falseSearchFields.indexOf(field.property) < 0)
+        .value();
     }
 
     return (
