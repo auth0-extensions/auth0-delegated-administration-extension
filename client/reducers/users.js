@@ -22,6 +22,7 @@ export const users = createReducer(fromJS(initialState), { // eslint-disable-lin
       ...initialState,
       loading: true,
       records: action.meta.page === 0 ? [] : state.get('records'),
+      pages: action.meta.page === 0 ? 1 : state.get('pages'),
       searchValue: action.meta.searchValue,
       sortProperty: action.meta.sortProperty,
       sortOrder: action.meta.sortOrder
