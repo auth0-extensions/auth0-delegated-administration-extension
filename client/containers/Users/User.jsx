@@ -76,7 +76,7 @@ export default connectContainer(class extends Component {
         </div>
         <div className="row">
           <div className="col-xs-12">
-            <UserHeader loading={user.get('loading')} user={user.get('record')} error={user.get('error')} />
+            <UserHeader loading={user.get('loading')} user={user.get('record')} error={user.get('error')} userFields={userFields} />
           </div>
         </div>
         <div className="row user-tabs">
