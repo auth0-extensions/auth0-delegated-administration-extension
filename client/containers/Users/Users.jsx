@@ -125,7 +125,6 @@ class Users extends Component {
                 totalItems={total}
                 handlePageChange={this.onPageChange}
                 perPage={10}
-                currentPage={nextPage}
               /> :
               <TableTotals currentCount={users.length} totalCount={total} />
             }            
