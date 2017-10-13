@@ -45,9 +45,21 @@ export default connectContainer(class extends Component {
     this.props.fetchUser(this.props.params.id);
   }
 
+  renderProfile(suppressRawData, user) {
+    if (suppressRawData) return null;
+
+    return (
+      <Tab eventKey={4} title="Profile">
+        <UserProfile loading={user.get('loading')} user={user.get('record')} error={user.get('error')} />
+      </Tab>
+    );
+
+  }
+
   render() {
     const { user, databaseConnections, log, logs, devices, settings } = this.props;
     const userFields = (settings && settings.userFields) || [];
+    const suppressRawData = settings && settings.suppressRawData === true;
 
     return (
       <div className="user">
@@ -107,9 +119,7 @@ export default connectContainer(class extends Component {
                   error={logs.get('error')}
                 />
               </Tab>
-              <Tab eventKey={4} title="Profile">
-                <UserProfile loading={user.get('loading')} user={user.get('record')} error={user.get('error')} />
-              </Tab>
+              { this.renderProfile(suppressRawData, user) }
             </Tabs>
           </div>
         </div>
