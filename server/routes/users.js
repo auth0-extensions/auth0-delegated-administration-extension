@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import auth0 from 'auth0';
 import request from 'request';
 import Promise from 'bluebird';
@@ -217,12 +218,36 @@ export default (storage, scriptManager) => {
       return next(new ArgumentError('Passwords don\'t match'));
     }
 
-    return req.auth0.users.update({ id: req.params.id }, {
-      password: req.body.password,
-      connection: req.body.connection,
-      verify_password: false
-    })
-      .then(() => res.sendStatus(204))
+    const settingsContext = {
+      request: {
+        user: req.user
+      }
+    };
+
+    scriptManager.execute('settings', settingsContext)
+      .then((settings) => {
+        // If userFields is specified in the settings hook, then call the write hook and pass the userFields.
+        if (settings && settings.userFields) {
+          return executeWriteHook(req, res, scriptManager, settings.userFields)
+            .then((payload) => {
+              const payloadFinal = _.defaults(payload, {
+                connection: req.body.connection,
+                verify_password: false
+              });
+              return req.auth0.users.update({ id: req.params.id }, payloadFinal)
+                .then(() => res.sendStatus(204))
+                .catch(next);
+            });
+        }
+
+        return req.auth0.users.update({ id: req.params.id }, {
+          password: req.body.password,
+          connection: req.body.connection,
+          verify_password: false
+        })
+          .then(() => res.sendStatus(204))
+          .catch(next);
+      })
       .catch(next);
   });
 
