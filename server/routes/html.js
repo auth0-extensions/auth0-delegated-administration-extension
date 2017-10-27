@@ -25,7 +25,7 @@ export default () => {
     </head>
     <body>
       <div id="app"></div>
-      <script src="http://cdn.auth0.com/js/auth0/8.9.3/auth0.min.js"></script>
+      <script src="https://cdn.auth0.com/js/auth0/8.10.1/auth0.min.js"></script>
       <script type="text/javascript" src="//cdn.auth0.com/manage/v0.3.1672/js/bundle.js"></script>
       <script type="text/javascript">window.config = <%- JSON.stringify(config) %>;</script>
       <% if (assets.vendors) { %><script type="text/javascript" src="/app/<%= assets.vendors %>"></script><% } %>
