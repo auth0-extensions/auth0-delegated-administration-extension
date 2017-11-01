@@ -1,5 +1,8 @@
 import { Router } from 'express';
+import _ from 'lodash';
+import moment from 'moment';
 import { middlewares } from 'auth0-extension-express-tools';
+import tools from 'auth0-extension-tools';
 
 import { requireScope } from '../lib/middlewares';
 import config from '../lib/config';
@@ -23,8 +26,45 @@ export default (storage) => {
     clientSecret: config('AUTH0_CLIENT_SECRET')
   });
 
-
   const api = Router();
+
+  const getToken = req => _.get(req, 'headers.authorization', '').split(' ')[1];
+
+  const addExtraUserInfo = (token, user) => {
+    global.daeUser = global.daeUser || {};
+    global.daeUser[user.sub] = global.daeUser[user.sub] || { exp: 0, token: '' };
+
+    if (_.isFunction(global.daeUser[user.sub].then)) {
+      return global.daeUser[user.sub];
+    }
+
+    if (global.daeUser[user.sub].exp > moment().unix() && token &&
+      global.daeUser[user.sub].token === token) {
+      _.assign(user, global.daeUser[user.sub]);
+      return Promise.resolve(user);
+    }
+
+    if (!token) console.error('no token found');
+
+    const promise = tools.managementApi.getClient({
+      domain: config('AUTH0_ISSUER_DOMAIN'),
+      clientId: config('AUTH0_CLIENT_ID'),
+      clientSecret: config('AUTH0_CLIENT_SECRET')
+    })
+      .then(auth0 =>
+        auth0.users.get({ id: user.sub })
+          .then(userData => {
+            _.assign(user, userData);
+            user.token = token;
+            global.daeUser[user.sub] = user;
+            return user;
+          })
+      );
+
+    global.daeUser[user.sub] = promise;
+
+    return global.daeUser[user.sub];
+  };
 
   // Allow end users to authenticate.
   api.use(middlewares.authenticateUsers.optional({
@@ -33,8 +73,14 @@ export default (storage) => {
     credentialsRequired: false,
     onLoginSuccess: (req, res, next) => {
       const currentRequest = req;
-      currentRequest.user.scope = getScopes(req.user);
-      next();
+      return addExtraUserInfo(getToken(req), req.user)
+        .then((user) => {
+          currentRequest.user = user;
+          currentRequest.user.scope = getScopes(req.user);
+          return next();
+        })
+        .catch(next);
+
     }
   }));
 
@@ -46,8 +92,13 @@ export default (storage) => {
     baseUrl: config('PUBLIC_WT_URL'),
     onLoginSuccess: (req, res, next) => {
       const currentRequest = req;
-      currentRequest.user.scope = [ constants.USER_PERMISSION, constants.ADMIN_PERMISSION ];
-      next();
+      return addExtraUserInfo(getToken(req), req.user)
+        .then((user) => {
+          currentRequest.user = user;
+          currentRequest.user.scope = [constants.USER_PERMISSION, constants.ADMIN_PERMISSION];
+          return next();
+        })
+        .catch(next);
     }
   }));
 
@@ -71,4 +122,5 @@ export default (storage) => {
   });
 
   return api;
-};
+}
+;
