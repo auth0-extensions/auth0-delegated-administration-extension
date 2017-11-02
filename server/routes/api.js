@@ -42,7 +42,7 @@ export default (storage) => {
     credentialsRequired: false,
     secret: config('EXTENSION_SECRET'),
     audience: 'urn:delegated-admin',
-    baseUrl: config('PUBLIC_WT_URL'),
+    baseUrl: config('PUBLIC_WT_URL') || config('WT_URL'),
     onLoginSuccess: (req, res, next) => {
       const currentRequest = req;
       currentRequest.user.scope = [ constants.USER_PERMISSION, constants.ADMIN_PERMISSION ];
