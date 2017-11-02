@@ -9,7 +9,6 @@ import config from '../lib/config';
 import { verifyUserAccess } from '../lib/middlewares';
 import removeGuardian from '../lib/removeGuardian';
 
-
 function executeWriteHook(req, res, scriptManager, userFields) {
   return req.auth0.users.get({ id: req.params.id })
     .then((user) => {
@@ -30,7 +29,6 @@ function executeWriteHook(req, res, scriptManager, userFields) {
     })
     .then(context => scriptManager.execute('create', context));
 }
-
 
 export default (storage, scriptManager) => {
   const api = Router();
