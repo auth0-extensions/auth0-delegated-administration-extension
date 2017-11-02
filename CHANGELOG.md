@@ -1,3 +1,9 @@
+## [2.5.0] - 2017-10-25
+
+### Changes
+
+- Add ability to remove Multifacto for Guardian
+
 ## [2.4.7] - 2017-09-07
 
 ### Changes
