@@ -47,7 +47,8 @@ class App extends Component {
           user={this.props.user}
           issuer={this.props.issuer}
           getDictValue={this.getDictValue}
-          onLogout={this.props.logout} accessLevel={this.props.accessLevel.toJSON()}
+          onLogout={this.props.logout}
+          accessLevel={this.props.accessLevel.toJSON()}
         />
         <div className="container">
           <div className="row">
