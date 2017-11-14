@@ -66,8 +66,6 @@ ReactDOM.render(
   document.getElementById('app')
 );
 
-// store.dispatch(push('/users'));
-
 // Show the developer tools.
 if (process.env.NODE_ENV !== 'production') {
   const showDevTools = require('./showDevTools'); // eslint-disable-line global-require

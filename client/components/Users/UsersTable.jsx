@@ -23,45 +23,10 @@ export default class UsersTable extends Component {
     onColumnSort: React.PropTypes.func.isRequired,
     sortOrder: React.PropTypes.number.isRequired,
     sortProperty: React.PropTypes.string.isRequired,
-  }
+  };
 
-  // shouldComponentUpdate(nextProps) {
-  //   return nextProps.users !== this.props.users;
-  // }
-
-  getValue(field, user, defaultValue) {
-      // First get the value
-    let value;
-    if (typeof field.property === 'function') value = field.property(user);
-    else if (field.property) value = getProperty(user, field.property);
-
-    // Now get the display value
-    const displayProperty = field.search && field.search.display ? field.search.display : field.display;
-    let display;
-    let displayFunction;
-    if (typeof displayProperty === 'function') displayFunction = displayProperty;
-    if (displayFunction) {
-      display = displayFunction(user, value);
-    }
-
-    if (!display && typeof value === 'object') {
-      display = JSON.stringify(value);
-    }
-
-    return display || value || defaultValue;
-  }
-
-  onColumnSort(property, sortOrder) {
-    const sort = {
-      property,
-      order: sortOrder === -1 ? 1 : -1
-    };
-    this.props.onColumnSort(sort);
-  }
-
-  render() {
-    const { users, userFields, sortProperty, sortOrder } = this.props;
-
+  getListFields(props) {
+    const { userFields } = props;
     const defaultListFields = [
       {
         listOrder: 0,
@@ -162,10 +127,70 @@ export default class UsersTable extends Component {
         .value();
     }
 
+    return listFields;
+  }
+
+  constructor(props) {
+    super(props);
+
+    const listFields = this.getListFields(props);
+
+    this.state = {
+      listFields
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!_.isEqual(this.props.userFields, nextProps.userFields)) {
+      const listFields = this.getListFields(nextProps);
+      
+      this.setState({
+        listFields
+      });
+    }
+  }
+
+  getValue(field, user, defaultValue) {
+    // First get the value
+    let value;
+    if (typeof field.property === 'function') value = field.property(user);
+    else if (field.property) value = getProperty(user, field.property);
+
+    // Now get the display value
+    const displayProperty = field.search && field.search.display ? field.search.display : field.display;
+    let display;
+    let displayFunction;
+    if (typeof displayProperty === 'function') displayFunction = displayProperty;
+    if (displayFunction) {
+      display = displayFunction(user, value);
+    }
+
+    if (!display && typeof value === 'object') {
+      display = JSON.stringify(value);
+    }
+
+    return display || value || defaultValue;
+  }
+
+  onColumnSort(property, sortOrder) {
+    const sort = {
+      property,
+      order: sortOrder === -1 ? 1 : -1
+    };
+    this.props.onColumnSort(sort);
+  }
+
+  render() {
+    const { users, sortProperty, sortOrder } = this.props;
+
+    const listFields = this.state.listFields;
+
+    console.log('carlos, render');
+
     return (
       <Table>
         <TableHeader>
-          <TableColumn width="6%" />
+          <TableColumn width="6%"/>
           {
             listFields.map((field) => {
               const sort = _.isObject(field.search)
@@ -173,10 +198,13 @@ export default class UsersTable extends Component {
 
               if (sort) {
                 return (
-                  <TableColumn key={field.property} width={field.listSize} >
-                    <div className="table-column-div" onClick={this.onColumnSort.bind(this, field.sortProperty || field.property, sortOrder)}>
+                  <TableColumn key={field.property} width={field.listSize}>
+                    <div className="table-column-div"
+                         onClick={this.onColumnSort.bind(this, field.sortProperty || field.property, sortOrder)}>
                       {field.label}
-                      { ((field.sortProperty || field.property) === sortProperty) && <i className={sortOrder === -1 ? 'icon-budicon-462 icon' : 'icon-budicon-460 icon'} aria-hidden="true" /> }
+                      {((field.sortProperty || field.property) === sortProperty) &&
+                      <i className={sortOrder === -1 ? 'icon-budicon-462 icon' : 'icon-budicon-460 icon'}
+                         aria-hidden="true"/>}
                     </div>
                   </TableColumn>
                 );
@@ -194,7 +222,7 @@ export default class UsersTable extends Component {
           {users.map(user =>
             <TableRow key={user.user_id}>
               <TableCell>
-                <img className="img-circle" src={user.picture} alt={name} width="32" />
+                <img className="img-circle" src={user.picture} alt={name} width="32"/>
               </TableCell>
               {
                 listFields.map((field, index) => {
@@ -202,11 +230,11 @@ export default class UsersTable extends Component {
                   if (index === 0) {
                     return (
                       <TableRouteCell key={key} route={`/users/${user.user_id}`}>
-                        { this.getValue(field, user, '(empty)') }
+                        {this.getValue(field, user, '(empty)')}
                       </TableRouteCell>
                     );
                   }
-                  return <TableTextCell key={key} >{this.getValue(field, user)}</TableTextCell>;
+                  return <TableTextCell key={key}>{this.getValue(field, user)}</TableTextCell>;
                 })
               }
             </TableRow>

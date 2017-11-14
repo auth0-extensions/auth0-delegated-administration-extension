@@ -41,27 +41,38 @@ export default (storage, scriptManager) => {
       throw new ValidationError('The passwords do not match.');
     }
 
-    const createContext = {
-      method: 'create',
+    const settingsContext = {
       request: {
         user: req.user
-      },
-      payload: req.body
+      }
     };
 
-    return scriptManager.execute('create', createContext)
-      .then((result) => {
-        const payload = result || createContext.defaultPayload;
+    scriptManager.execute('settings', settingsContext)
+      .then((settings) => {
 
-        if (!payload.email || payload.email.length === 0) {
-          throw new ValidationError('The email address is required.');
-        }
+        const createContext = {
+          method: 'create',
+          request: {
+            user: req.user
+          },
+          payload: req.body,
+          userFields: settings && settings.userFields
+        };
 
-        return payload;
-      })
-      .then(payload => req.auth0.users.create(payload))
-      .then(() => res.status(201).send())
-      .catch(next);
+        return scriptManager.execute('create', createContext)
+          .then((result) => {
+            const payload = result || createContext.defaultPayload;
+
+            if (!payload.email || payload.email.length === 0) {
+              throw new ValidationError('The email address is required.');
+            }
+
+            return payload;
+          })
+          .then(payload => req.auth0.users.create(payload))
+          .then(() => res.status(201).send())
+          .catch(next);
+      });
   });
 
   /*
@@ -114,7 +125,7 @@ export default (storage, scriptManager) => {
   /*
    * Get a single user.
    */
-  api.get('/:id', (req, res, next) => {
+  api.get('/:id', verifyUserAccess('read:user', scriptManager), (req, res, next) => {
     req.auth0.users.get({ id: req.params.id })
       .then((user) => {
         if (!user) {
@@ -149,12 +160,15 @@ export default (storage, scriptManager) => {
 
             return {
               user,
-              memberships: [ ]
+              memberships: []
             };
           });
       })
       .then(data =>
-        scriptManager.execute('access', { request: { user: req.user }, payload: { user: data.user, action: 'read:user' } })
+        scriptManager.execute('access', {
+          request: { user: req.user },
+          payload: { user: data.user, action: 'read:user' }
+        })
           .then((parsedUser) => {
             data.user = parsedUser || data.user;
             return data;
@@ -282,7 +296,6 @@ export default (storage, scriptManager) => {
       })
       .catch(next);
   });
-
 
   /*
    * Change the email of a user.

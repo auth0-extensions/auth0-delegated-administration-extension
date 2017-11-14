@@ -93,7 +93,7 @@ class AddUserForm extends Component {
 
   renderPassword(customFields) {
     const passwordField = _.find(customFields, { property: 'password' });
-    const displayField = passwordField && !!passwordField.create;
+    const displayField = !passwordField || !!passwordField.create;
 
     if (displayField) {
       return (
