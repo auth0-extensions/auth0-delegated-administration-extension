@@ -112,7 +112,6 @@
     "redux-promise-middleware": "^4.1.0",
     "redux-thunk": "2.2.0",
     "request": "^2.34.0",
-    "require-like": "^0.1.2",
     "reselect": "^2.5.4",
     "safe-eval": "^0.3.0",
     "semver": "^5.1.0",
