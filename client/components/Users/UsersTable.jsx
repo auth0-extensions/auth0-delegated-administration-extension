@@ -185,8 +185,6 @@ export default class UsersTable extends Component {
 
     const listFields = this.state.listFields;
 
-    console.log('carlos, render');
-
     return (
       <Table>
         <TableHeader>
