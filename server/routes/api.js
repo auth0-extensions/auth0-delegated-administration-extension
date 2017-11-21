@@ -102,6 +102,14 @@ export default (storage) => {
     }
   }));
 
+  /* Fight caching attempts by IE */
+  api.use((req, res, next) => {
+    res.setHeader('Cache-control', 'no-cache, no-store');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    next();
+  });
+
   api.use(requireScope(constants.USER_PERMISSION));
   api.use('/applications', managementApiClient, applications());
   api.use('/connections', managementApiClient, connections(scriptManager));

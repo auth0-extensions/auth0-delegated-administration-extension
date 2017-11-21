@@ -65,16 +65,6 @@ const processTokens = (dispatch, apiToken, returnToFromState) => {
 
   axios.defaults.headers.common.Authorization = `Bearer ${apiToken}`;
 
-  /* For IE 11, add an interceptor to add a uuid to each call to ensure it isn't cached */
-  axios.interceptors.request.use(function (config) {
-    if (config.url.indexOf('?') > 0 || config.url.indexOf('#') > 0) {
-      config.url += '&' + uuid.v4();
-    } else {
-      config.url += '?' + uuid.v4();
-    }
-    return config;
-  });
-
   sessionStorage.setItem('delegated-admin:apiToken', apiToken);
 
   dispatch({
