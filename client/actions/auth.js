@@ -57,7 +57,7 @@ export function logout() {
   };
 }
 
-const processTokens = (dispatch, apiToken, returnToFromState) => {
+const processTokens = (dispatch, apiToken, returnTo) => {
   const decodedToken = jwtDecode(apiToken);
   if (isExpired(decodedToken)) {
     return;
@@ -73,8 +73,6 @@ const processTokens = (dispatch, apiToken, returnToFromState) => {
       token: apiToken
     }
   });
-
-  const returnTo = returnToFromState || '/users';
 
   dispatch({
     type: constants.LOGIN_SUCCESS,
