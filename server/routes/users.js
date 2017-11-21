@@ -6,6 +6,7 @@ import { Router } from 'express';
 import { managementApi, ArgumentError, ValidationError } from 'auth0-extension-tools';
 
 import config from '../lib/config';
+import logger from '../lib/logger';
 import { verifyUserAccess } from '../lib/middlewares';
 import removeGuardian from '../lib/removeGuardian';
 
@@ -105,7 +106,7 @@ export default (storage, scriptManager) => {
           per_page: req.query.per_page || 10,
           page: req.query.page || 0,
           include_totals: true,
-          fields: 'user_id,username,name,email,identities,picture,last_login,logins_count,multifactor,blocked,app_metadata',
+          fields: 'user_id,username,name,email,identities,picture,last_login,logins_count,multifactor,blocked,app_metadata,user_metadata',
           search_engine: 'v2'
         };
 
@@ -174,7 +175,10 @@ export default (storage, scriptManager) => {
             return data;
           }))
       .then(data => res.json(data))
-      .catch(next);
+      .catch((err) => {
+        logger.error('Failed to get user because: ', err);
+        next(err);
+      });
   });
 
   /*
@@ -362,6 +366,7 @@ export default (storage, scriptManager) => {
           }
 
           if (response.statusCode < 200 || response.statusCode >= 300) {
+            logger.error('Log response failed: ', response.headers);
             return next(new Error((body && (body.error || body.message || body.code)) || `Request Error: ${response.statusCode}`));
           }
 
