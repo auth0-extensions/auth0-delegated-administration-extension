@@ -162,7 +162,12 @@ export default class UsersTable extends Component {
     let displayFunction;
     if (typeof displayProperty === 'function') displayFunction = displayProperty;
     if (displayFunction) {
-      display = displayFunction(user, value);
+      try {
+        display = displayFunction(user, value);
+      } catch(e) {
+        display = 'error';
+        console.error(`Error fetching value for ${user.user_id}'s ${field.label}: `, e.message);
+      }
     }
 
     if (!display && typeof value === 'object') {
