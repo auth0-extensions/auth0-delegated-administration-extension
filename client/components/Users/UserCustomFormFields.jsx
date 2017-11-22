@@ -5,7 +5,7 @@ import { Field } from 'redux-form';
 
 export default class UserCustomFormFields extends Component {
   static propTypes = {
-    customFields: React.PropTypes.string,
+    customFields: React.PropTypes.array,
     customFieldGetter: React.PropTypes.func.isRequired
   };
 

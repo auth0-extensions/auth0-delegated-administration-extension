@@ -54,6 +54,7 @@ export default connectContainer(class extends Component {
           initialValues={record}
           onClose={this.props.cancelChangeFields}
           onSubmit={this.onSubmit}
+          submitting={loading}
           method="Update"
         >
           <Error message={error} />

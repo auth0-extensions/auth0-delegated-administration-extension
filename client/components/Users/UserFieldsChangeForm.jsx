@@ -7,14 +7,14 @@ import UserCustomFormFields from './UserCustomFormFields';
 class UserFieldsChangeForm extends Component {
   static propTypes = {
     initialValues: PropTypes.object,
-    getDictValue: React.PropTypes.func,
-    onClose: React.PropTypes.func.isRequired,
-    handleSubmit: React.PropTypes.func.isRequired,
-    submitting: React.PropTypes.boolean,
-    customFields: React.PropTypes.string,
-    customFieldGetter: React.PropTypes.func.isRequired,
-    method: React.PropTypes.string.isRequired
-  }
+    getDictValue: PropTypes.func,
+    onClose: PropTypes.func.isRequired,
+    handleSubmit: PropTypes.func.isRequired,
+    submitting: PropTypes.bool,
+    customFields: PropTypes.array,
+    customFieldGetter: PropTypes.func.isRequired,
+    method: PropTypes.string.isRequired
+  };
 
   render() {
 
