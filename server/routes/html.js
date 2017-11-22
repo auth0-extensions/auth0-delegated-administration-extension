@@ -29,7 +29,7 @@ export default () => {
       <script type="text/javascript" src="//cdn.auth0.com/manage/v0.3.1672/js/bundle.js"></script>
       <script type="text/javascript">window.config = <%- JSON.stringify(config) %>;</script>
       <% if (assets.vendors) { %><script type="text/javascript" src="/app/<%= assets.vendors %>"></script><% } %>
-      <% if (assets.app) { %><script type="text/javascript" src="http://localhost:3001/app/<%= assets.app %>"></script><% } %>
+      <% if (assets.app) { %><script type="text/javascript" src="/app/<%= assets.app %>"></script><% } %>
       <% if (assets.version) { %>
       <script type="text/javascript" src="<%= assets.cdnPath %>/auth0-delegated-admin.ui.vendors.<%= assets.version %>.js"></script>
       <script type="text/javascript" src="<%= assets.cdnPath %>/auth0-delegated-admin.ui.<%= assets.version %>.js"></script>
