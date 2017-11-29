@@ -247,6 +247,10 @@ export default (storage, scriptManager) => {
         if (settings && settings.userFields) {
           return executeWriteHook(req, res, scriptManager, settings.userFields)
             .then((payload) => {
+              if (!payload.password) {
+                throw new ValidationError('The password is required.');
+              }
+
               const payloadFinal = _.defaults(payload, {
                 connection: req.body.connection,
                 verify_password: false
@@ -360,7 +364,7 @@ export default (storage, scriptManager) => {
           json: true
         };
 
-        request.get(options, (err, response, body) => {
+        return request.get(options, (err, response, body) => {
           if (err) {
             return next(err);
           }
@@ -372,8 +376,6 @@ export default (storage, scriptManager) => {
 
           return res.json(body);
         });
-
-        return request.get(options);
       })
       .catch(next);
   });
@@ -388,7 +390,8 @@ export default (storage, scriptManager) => {
         .catch(next);
     }
 
-    return removeGuardian(req.user.access_token, req.params.id)
+    managementApi.getAccessTokenCached(config('AUTH0_ISSUER_DOMAIN'), config('AUTH0_CLIENT_ID'), config('AUTH0_CLIENT_SECRET'))
+      .then((accessToken) => removeGuardian(accessToken, req.params.id))
       .then(() => res.sendStatus(204))
       .catch(next);
   });

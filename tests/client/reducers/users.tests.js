@@ -48,11 +48,12 @@ describe('users reducer', () => {
     );
   });
 
-  it('should handle FETCH_USERS_PENDING', () => {
+  it('should handle FETCH_USERS_PENDING a second time', () => {
     expect(
       users({
         loading: false,
         error: null,
+        pages: 2,
         records: [ 'test' ],
         total: 0
       }, {
@@ -71,7 +72,7 @@ describe('users reducer', () => {
         records: [ 'test' ],
         total: 0,
         currentPage: 1,
-        pages: 1,
+        pages: 2,
         searchValue: 'value',
         sortProperty: 'email',
         sortOrder: 1
