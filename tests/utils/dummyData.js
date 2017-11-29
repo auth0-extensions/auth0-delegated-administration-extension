@@ -33,7 +33,7 @@ export const defaultScripts = {
   memberships: "function (ctx, callback) { var parsedData = []; if (ctx.request.user.app_metadata && ctx.request.user.app_metadata && ctx.request.user.app_metadata.department) { var data = ctx.request.user.app_metadata.department; parsedData = (Array.isArray(data)) ? data : data.replace(', ', ',', 'g').split(','); } callback(null, parsedData); }",
   settings: "function (ctx, callback) { var result = { connections: ['conn-a', 'conn-b'], dict: { title: ctx.request.user.email + ' dashboard', memberships: 'Groups' }, css: 'http://localhost:3001/app/default.css' }; callback(null, result);}",
   settings_no_connections: "function (ctx, callback) { var result = { dict: { title: ctx.request.user.email + ' dashboard', memberships: 'Groups' }, css: 'http://localhost:3001/app/default.css' }; callback(null, result);}",
-  settings_invalid_connection: "function (ctx, callback) { var result = { connections: ['conn-x'], dict: { title: ctx.request.user.email + ' dashboard', memberships: 'Groups' }, css: 'http://localhost:3001/app/default.css' }; callback(null, result);}",
+  settings_invalid_connection: "function (ctx, callback) { var result = { connections: ['conn-x'], dict: { title: ctx.request.user.email + ' dashboard', memberships: 'Groups' }, css: 'http://localhost:3001/app/default.css' }; callback(null, result);}"
 };
 
 export const defaultConfig = {
