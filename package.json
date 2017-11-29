@@ -13,8 +13,8 @@
     "extension:build": "a0-ext build:server ./webtask.js ./dist && cp ./dist/auth0-delegated-admin.extension.$npm_package_version.js ./build/bundle.js",
     "serve:dev": "cross-env NODE_ENV=development nodemon -e js --ignore assets/app/ --ignore build/webpack/ --ignore client/ --ignore server/data.json --ignore node_modules/ ./build/webpack/server.js",
     "serve:prod": "cross-env NODE_ENV=production node index.js",
-    "test": "cross-env NODE_ENV=test nyc mocha tests/mocha.js ./tests/**/*.tests.js",
-    "test:watch": "cross-env NODE_ENV=test mocha tests/mocha.js ./tests/**/*.tests.js --watch",
+    "test": "cross-env NODE_ENV=test nyc mocha tests/mocha.js './tests/**/*.tests.js'",
+    "test:watch": "cross-env NODE_ENV=test mocha tests/mocha.js './tests/**/*.tests.js' --watch",
     "test:pre": "npm run test:clean && npm run lint:js",
     "test:clean": "rimraf ./coverage && rimraf ./.nyc_output",
     "extension:size": "cross-env NODE_ENV=production webpack -p --config ./build/extension/webpack.config.js --json > ./build/extension/bundle-size.json && node ./build/extension/bundle-size.js"
@@ -176,5 +176,16 @@
     "webpack-sources": "0.2.3",
     "webpack-stats-plugin": "0.1.5",
     "webtask-bundle": "3.0.1"
+  },
+  "nyc": {
+    "include": [
+      "client/**/*.js",
+      "server/**/*.js"
+    ],
+    "require": [
+      "babel-register"
+    ],
+    "sourceMap": true,
+    "instrument": true
   }
 }

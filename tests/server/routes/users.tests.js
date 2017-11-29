@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import nock from 'nock';
 import expect from 'expect';
 import Promise from 'bluebird';
@@ -37,7 +38,9 @@ describe('#users router', () => {
           if (data.blocked !== undefined) defaultUsers[id].blocked = data.blocked;
           return Promise.resolve();
         },
-        deleteMultifactorProvider: () => Promise.resolve()
+        deleteMultifactorProvider: (options) => options.provider !== 'badProvider' ?
+          Promise.resolve() :
+          Promise.reject(new Error('bad provider'))
       },
       deviceCredentials: {
         getAll: () => Promise.resolve([])
@@ -55,47 +58,55 @@ describe('#users router', () => {
     next();
   };
 
-  const storage = {
-    read: () => Promise.resolve(storage.data),
-    data: {
-      scripts: {
-        access: defaultScripts.access,
-        filter: defaultScripts.filter,
-        create: defaultScripts.create,
-        memberships: defaultScripts.memberships,
-        settings: defaultScripts.settings
-      }
+  const defaultScriptData = {
+    scripts: {
+      access: defaultScripts.access,
+      filter: defaultScripts.filter,
+      create: defaultScripts.create,
+      memberships: defaultScripts.memberships,
+      settings: defaultScripts.settings
     }
   };
 
+  const storage = {
+    read: () => Promise.resolve(storage.data),
+  };
+
   const scriptManager = new ScriptManager(storage);
+  const oldGetCached = scriptManager.getCached;
+  const skipCache = name => scriptManager.get(name);
+  const settingsWithUserFields = ((ctx, callback) => {
+    var result = {
+      connections: ['conn-a', 'conn-b'],
+      dict: {
+        title: ctx.request.user.email + ' dashboard',
+        memberships: 'Groups'
+      },
+      css: 'http://localhost:3001/app/default.css',
+      userFields: [
+        {
+          property: "email",
+          label: "Email"
+        }
+      ]
+    };
+    callback(null, result);
+  }).toString();
 
   const app = express();
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use('/users', fakeApiClient, addUserToReq, users(storage, scriptManager));
+  const domain = new RegExp(config('AUTH0_DOMAIN'));
 
   before(() => {
-    const domain = new RegExp(config('AUTH0_DOMAIN'));
-
-    nock(domain)
-      .post('/dbconnections/change_password')
-      .reply(204);
-
-    nock(domain)
-      .get(/logs/)
-      .times(2)
-      .reply(200, []);
-
-    nock(domain)
-      .get(/logs/)
-      .times(2)
-      .reply(400, []);
-
     nock(domain)
       .post('/oauth/token')
       .reply(200, { ok: true, access_token: 'access_token' });
+
+    storage.data = _.cloneDeep(defaultScriptData);
+    scriptManager.getCached = oldGetCached;
   });
 
   describe('#List', () => {
@@ -137,7 +148,7 @@ describe('#users router', () => {
         .expect(200)
         .end((err, res) => {
           if (err) throw err;
-          expect(res.body.memberships).toEqual([ 'deptA' ]);
+          expect(res.body.memberships).toEqual(['deptA']);
           expect(res.body.user.user_id).toEqual(1);
           done();
         });
@@ -170,7 +181,7 @@ describe('#users router', () => {
     it('should create new user', (done) => {
       const newUser = {
         email: 'user6@example.com',
-        memberships: [ 'deptA' ]
+        memberships: ['deptA']
       };
 
       request(app)
@@ -188,7 +199,7 @@ describe('#users router', () => {
     it('should return "The email address is required" error', (done) => {
       const newUser = {
         email: '',
-        memberships: [ 'deptA' ]
+        memberships: ['deptA']
       };
 
       request(app)
@@ -207,7 +218,7 @@ describe('#users router', () => {
         email: 'user7@example.com',
         password: 'password',
         repeatPassword: 'repeatPassword',
-        memberships: [ 'deptA' ]
+        memberships: ['deptA']
       };
 
       request(app)
@@ -224,7 +235,7 @@ describe('#users router', () => {
     it('should return "access denied" error', (done) => {
       const newUser = {
         email: 'user7@example.com',
-        memberships: [ 'deptB' ]
+        memberships: ['deptB']
       };
 
       request(app)
@@ -274,6 +285,10 @@ describe('#users router', () => {
 
   describe('#Change Password', () => {
     it('should change user`s password', (done) => {
+      nock(domain)
+        .post('/dbconnections/change_password')
+        .reply(204);
+
       request(app)
         .put('/users/1/change-password')
         .send({ password: 'password', confirmPassword: 'password' })
@@ -310,6 +325,7 @@ describe('#users router', () => {
 
   describe('#Change Username', () => {
     it('should change user`s name', (done) => {
+      storage.data = _.cloneDeep(defaultScriptData);
       request(app)
         .put('/users/1/change-username')
         .send({ username: 'name' })
@@ -334,7 +350,7 @@ describe('#users router', () => {
   });
 
   describe('#Change Email', () => {
-    it('should change user`s email', (done) => {
+    it('should change users email', (done) => {
       request(app)
         .put('/users/1/change-email')
         .send({ email: 'new-user1@example.com' })
@@ -345,6 +361,7 @@ describe('#users router', () => {
           done();
         });
     });
+
 
     it('should return "access denied" error', (done) => {
       request(app)
@@ -497,6 +514,10 @@ describe('#users router', () => {
 
   describe('#Logs for user', () => {
     it('should return list of logs', (done) => {
+      nock(domain)
+        .get(/logs/)
+        .reply(200, []);
+
       request(app)
         .get('/users/1/logs')
         .expect(200)
@@ -507,7 +528,25 @@ describe('#users router', () => {
         });
     });
 
+    it('should return list of logs 2', (done) => {
+      nock(domain)
+        .get(/logs/)
+        .replyWithError('something bad happened');
+
+      request(app)
+        .get('/users/1/logs')
+        .expect(500)
+        .end((err, res) => {
+          expect(res.text).toMatch(/something bad happened/);
+          done();
+        });
+    });
+
     it('should return "bad request" error', (done) => {
+      nock(domain)
+        .get(/logs/)
+        .reply(400, []);
+
       request(app)
         .get('/users/1/logs')
         .expect(500)
@@ -524,6 +563,168 @@ describe('#users router', () => {
         .expect(400)
         .end((err) => {
           if (err) throw err;
+          done();
+        });
+    });
+  });
+
+  describe('#Remove Multifactor guardian', () => {
+    it('delete guardian', (done) => {
+      nock(domain)
+        .get(/enrollments/)
+        .reply(200, [{ id: 1 }]);
+
+      nock(domain)
+        .delete(/enrollments/)
+        .reply(204);
+
+      request(app)
+        .del('/users/1/multifactor/guardian')
+        .expect(204)
+        .end((err) => {
+          if (err) throw err;
+          done();
+        });
+    });
+
+    it('delete guardian attempt when enrollment already gone', (done) => {
+      nock(domain)
+        .get(/enrollments/)
+        .reply(200, []);
+
+      request(app)
+        .del('/users/1/multifactor/guardian')
+        .expect(204)
+        .end((err) => {
+          if (err) throw err;
+          done();
+        });
+    });
+
+    it('bad request on guardian delete', (done) => {
+      nock(domain)
+        .get(/enrollments/)
+        .reply(200, [{ id: 1 }]);
+
+      request(app)
+        .del('/users/1/multifactor/guardian')
+        .expect(404)
+        .end((err) => {
+          if (err) throw err;
+          done();
+        });
+    });
+
+    it('bad request on guardian get', (done) => {
+      request(app)
+        .del('/users/1/multifactor/guardian')
+        .expect(404)
+        .end((err) => {
+          if (err) throw err;
+          done();
+        });
+    });
+
+    it('should return "bad request" error bad provider', (done) => {
+      request(app)
+        .del('/users/1/multifactor/badProvider')
+        .expect(500)
+        .end((err) => {
+          if (err) throw err;
+          done();
+        });
+    });
+  });
+
+  describe('#userFields should call write hook', () => {
+    before(() => {
+      scriptManager.getCached = skipCache;
+      storage.data.scripts.settings = settingsWithUserFields;
+
+      storage.data.scripts.create = ((ctx, callback) => {
+        if (!ctx.userFields) throw Error('write hook should get userFields');
+
+        callback(null, { email: ctx.payload.email, password: ctx.payload.password, username: ctx.payload.username });
+      }).toString();
+    });
+
+    it('change-password', (done) => {
+      request(app)
+        .put('/users/1/change-password')
+        .send({ password: 'pwd1', confirmPassword: 'pwd1' })
+        .expect(204)
+        .end((err) => {
+          if (err) throw err;
+          expect(defaultUsers[0].password).toEqual('pwd1');
+          done();
+        });
+    });
+
+    it('change-email', (done) => {
+      request(app)
+        .put('/users/1/change-email')
+        .send({ email: 'new-user2@example.com' })
+        .expect(204)
+        .end((err) => {
+          if (err) throw err;
+          expect(defaultUsers[0].email).toEqual('new-user2@example.com');
+          done();
+        });
+    });
+
+    it('change-username', (done) => {
+      request(app)
+        .put('/users/1/change-username')
+        .send({ username: 'name2' })
+        .expect(204)
+        .end((err) => {
+          if (err) throw err;
+          expect(defaultUsers[0].username).toEqual('name2');
+          done();
+        });
+    });
+
+  });
+
+  describe('#userFields defined validation errors', () => {
+    before(() => {
+      scriptManager.getCached = skipCache;
+      storage.data.scripts.settings = settingsWithUserFields;
+
+      storage.data.scripts.create = ((ctx, callback) => {
+        callback(null, {});
+      }).toString();
+    });
+
+    it('change-password', (done) => {
+      request(app)
+        .put('/users/1/change-password')
+        .send({ password: 'pwd12', confirmPassword: 'pwd12' })
+        .expect(500)
+        .end((err, res) => {
+          expect(res.error).toMatch(/ValidationError: The password is required/);
+          done();
+        });
+    });
+
+    it('change-email', (done) => {
+      request(app)
+        .put('/users/1/change-email')
+        .send({ email: 'new-user3@example.com' })
+        .expect(500)
+        .end((err, res) => {
+          expect(res.error).toMatch(/ValidationError: The email is required/);
+          done();
+        });
+    });
+
+    it('change-username', (done) => {
+      request(app)
+        .put('/users/1/change-username')
+        .send({ username: 'name3' })
+        .expect(500)
+        .end((err, res) => {
+          expect(res.error).toMatch(/ValidationError: The username is required/);
           done();
         });
     });

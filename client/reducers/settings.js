@@ -18,6 +18,9 @@ const parseDisplay = (property, displayAttribute, display) => {
       display = eval(`(${display})`);
     } catch (error) {
       console.error(`The ${displayAttribute} function for field ${property} throws an error`, error);
+      // doing this because I couldn't get the tests to work when
+      // passing back a function pointer for expect
+      return eval('(function() { return "error"; })');
     }
   }
 

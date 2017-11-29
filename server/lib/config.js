@@ -9,7 +9,7 @@ const daeConfig = function(key) {
 };
 
 daeConfig.getValue = function(key) {
-  return config.getValue(key);
+  return config(key);
 }
 
 daeConfig.setValue = function(key, value) {
