@@ -39,10 +39,8 @@ export default (scriptManager) => {
 
         return res.json(me);
       })
-      .catch((err) => {
-        if (err) {
-          logger.error(err.message);
-        }
+      .catch(err => {
+        logger.error(err.message);
         res.json(me);
       });
   });

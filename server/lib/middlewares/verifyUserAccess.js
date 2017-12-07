@@ -19,7 +19,11 @@ module.exports = (action, scriptManager) => (req, res, next) =>
         }
       };
 
-      return scriptManager.execute('access', accessContext);
+      return scriptManager.execute('access', accessContext)
+        .then(() => {
+          // cache the target user so we don't have to get it again if it is needed
+          req.targetUser = user;
+        });
     })
     .then(() => next())
     .catch(next);
