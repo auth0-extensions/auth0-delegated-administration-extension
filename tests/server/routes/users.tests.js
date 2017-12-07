@@ -17,34 +17,55 @@ describe('#users router', () => {
   const fakeApiClient = (req, res, next) => {
     req.auth0 = {
       users: {
-        getAll: () => Promise.resolve({ users: defaultUsers }),
-        get: (options) => {
-          const id = parseInt(options.id, 10) - 1;
-          return Promise.resolve(defaultUsers[id]);
+        getAll: (options) => {
+          if (options.q && options.q.startsWith('(user_id:"1")')) {
+            return Promise.resolve({
+              users: _.filter(defaultUsers, user => user.user_id === 1)
+            });
+          }
+          if (options.sort) {
+            const sortParts = options.sort.split(':');
+            const order = sortParts[1] < 0 ? 'desc' : 'asc';
+            return Promise.resolve({
+              users: _.sortByOrder(defaultUsers, [sortParts[0]], [order])
+            });
+          }
+          return Promise.resolve({ users: defaultUsers })
         },
-        create: (data) => {
-          defaultUsers.push(data);
-          return Promise.resolve();
-        },
-        delete: () => {
-          defaultUsers.pop();
-          return Promise.resolve();
-        },
-        update: (options, data) => {
-          const id = parseInt(options.id, 10) - 1;
-          if (data.email) defaultUsers[id].email = data.email;
-          if (data.username) defaultUsers[id].username = data.username;
-          if (data.password) defaultUsers[id].password = data.password;
-          if (data.blocked !== undefined) defaultUsers[id].blocked = data.blocked;
-          return Promise.resolve();
-        },
-        deleteMultifactorProvider: (options) => options.provider !== 'badProvider' ?
-          Promise.resolve() :
-          Promise.reject(new Error('bad provider'))
+        get:
+          (options) => {
+            const id = parseInt(options.id, 10) - 1;
+            return Promise.resolve(defaultUsers[id]);
+          },
+        create:
+          (data) => {
+            defaultUsers.push(data);
+            return Promise.resolve();
+          },
+        delete:
+          () => {
+            defaultUsers.pop();
+            return Promise.resolve();
+          },
+        update:
+          (options, data) => {
+            const id = parseInt(options.id, 10) - 1;
+            if (data.email) defaultUsers[id].email = data.email;
+            if (data.username) defaultUsers[id].username = data.username;
+            if (data.password) defaultUsers[id].password = data.password;
+            if (data.blocked !== undefined) defaultUsers[id].blocked = data.blocked;
+            if (data.app_metadata) _.assign(defaultUsers[id].app_metadata, data.app_metadata);
+            return Promise.resolve();
+          },
+        deleteMultifactorProvider:
+          (options) => options.provider !== 'badProvider' ?
+            Promise.resolve() :
+            Promise.reject(new Error('bad provider'))
       },
       deviceCredentials: {
         getAll: () => Promise.resolve([])
-      },
+      }
+      ,
       jobs: {
         verifyEmail: () => Promise.resolve([])
       }
@@ -126,15 +147,28 @@ describe('#users router', () => {
       const userFour = defaultUsers.pop();
 
       request(app)
-        .get('/users')
+        .get('/users?sortProperty=user_id&sortOrder=-1')
         .expect('Content-Type', /json/)
         .expect(200)
         .end((err, res) => {
           if (err) throw err;
-          expect(res.body).toEqual({ users: defaultUsers });
-
+          const targetUsers = _.sortByOrder(_.cloneDeep(defaultUsers), ['user_id'],['desc']);
           defaultUsers.push(userFour);
           defaultUsers.push(userFive);
+          expect(res.body).toEqual({ users: targetUsers });
+
+          done();
+        });
+    });
+
+    it('should attempt to filter users by user_id', (done) => {
+      request(app)
+        .get('/users?filterBy=user_id&search=1')
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end((err, res) => {
+          if (err) throw err;
+          expect(res.body).toEqual({ users: [defaultUsers[0]] });
           done();
         });
     });
@@ -150,6 +184,32 @@ describe('#users router', () => {
           if (err) throw err;
           expect(res.body.memberships).toEqual(['deptA']);
           expect(res.body.user.user_id).toEqual(1);
+          done();
+        });
+    });
+
+    it('should return user`s record 2', (done) => {
+      request(app)
+        .get('/users/2')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end((err, res) => {
+          if (err) throw err;
+          expect(res.body.memberships).toEqual(['deptA']);
+          expect(res.body.user.user_id).toEqual(2);
+          done();
+        });
+    });
+
+    it('should return user`s record 3', (done) => {
+      request(app)
+        .get('/users/3')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end((err, res) => {
+          if (err) throw err;
+          expect(res.body.memberships).toEqual([]);
+          expect(res.body.user.user_id).toEqual(3);
           done();
         });
     });
@@ -362,7 +422,6 @@ describe('#users router', () => {
         });
     });
 
-
     it('should return "access denied" error', (done) => {
       request(app)
         .put('/users/5/change-email')
@@ -571,11 +630,11 @@ describe('#users router', () => {
   describe('#Remove Multifactor guardian', () => {
     it('delete guardian', (done) => {
       nock(domain)
-        .get(/enrollments/)
+        .get(/1\/enrollments/)
         .reply(200, [{ id: 1 }]);
 
       nock(domain)
-        .delete(/enrollments/)
+        .delete(/enrollments\/1/)
         .reply(204);
 
       request(app)
@@ -589,11 +648,11 @@ describe('#users router', () => {
 
     it('delete guardian attempt when enrollment already gone', (done) => {
       nock(domain)
-        .get(/enrollments/)
+        .get(/2\/enrollments/)
         .reply(200, []);
 
       request(app)
-        .del('/users/1/multifactor/guardian')
+        .del('/users/2/multifactor/guardian')
         .expect(204)
         .end((err) => {
           if (err) throw err;
@@ -603,11 +662,11 @@ describe('#users router', () => {
 
     it('bad request on guardian delete', (done) => {
       nock(domain)
-        .get(/enrollments/)
+        .get(/3\/enrollments/)
         .reply(200, [{ id: 1 }]);
 
       request(app)
-        .del('/users/1/multifactor/guardian')
+        .del('/users/3/multifactor/guardian')
         .expect(404)
         .end((err) => {
           if (err) throw err;
@@ -634,6 +693,55 @@ describe('#users router', () => {
           done();
         });
     });
+  });
+
+  describe('#User patch', () => {
+    it('patch user successfully', (done) => {
+      request(app)
+        .patch('/users/1')
+        .send({
+          app_metadata: {
+            someNewKey: 'someNewValue'
+          }
+        })
+        .expect(204)
+        .end((err) => {
+          if (err) throw err;
+          expect(defaultUsers[0].app_metadata.someNewKey).toEqual('someNewValue');
+          done();
+        });
+    });
+
+    it('should return "access denied" error', (done) => {
+      request(app)
+        .patch('/users/5')
+        .expect(400)
+        .end((err) => {
+          if (err) throw err;
+          done();
+        });
+    });
+
+    it('should return "not found" error', (done) => {
+      request(app)
+        .patch('/users/6')
+        .expect(404)
+        .end((err) => {
+          if (err) throw err;
+          done();
+        });
+    });
+
+    it('should return "access denied" error', (done) => {
+      request(app)
+        .patch('/users/2')
+        .expect(400)
+        .end((err) => {
+          if (err) throw err;
+          done();
+        });
+    });
+
   });
 
   describe('#userFields should call write hook', () => {
@@ -725,6 +833,25 @@ describe('#users router', () => {
         .expect(500)
         .end((err, res) => {
           expect(res.error).toMatch(/ValidationError: The username is required/);
+          done();
+        });
+    });
+  });
+
+  describe('#extra errors', () => {
+    before(() => {
+      scriptManager.getCached = skipCache;
+      storage.data.scripts.memberships = ((ctx, callback) => {
+        callback(new Error('intentional error'));
+      }).toString();
+    });
+
+    it('get-by-id', (done) => {
+      request(app)
+        .get('/users/1')
+        .expect(400)
+        .end((err, res) => {
+          expect(res.error).toMatch(/Error: intentional error/);
           done();
         });
     });

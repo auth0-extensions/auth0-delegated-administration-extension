@@ -13,7 +13,7 @@ const requestClearGuardian = (token, enrollmentId) =>
       .del('https://' + config('AUTH0_DOMAIN') + '/api/v2/guardian/enrollments/' + enrollmentId)
       .set('Authorization', 'Bearer ' + token)
       .set('Content-Type', 'application/json')
-      .end((err) => {
+      .end((err, res) => {
         if (err) {
           return reject(err);
         }

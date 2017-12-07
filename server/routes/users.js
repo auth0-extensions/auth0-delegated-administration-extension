@@ -10,25 +10,21 @@ import logger from '../lib/logger';
 import { verifyUserAccess } from '../lib/middlewares';
 import removeGuardian from '../lib/removeGuardian';
 
-function executeWriteHook(req, res, scriptManager, userFields) {
-  return req.auth0.users.get({ id: req.params.id })
-    .then((user) => {
-      if (!user) {
-        res.status(404);
-        throw new Error('User not found');
-      }
-      const context = {
-        method: 'update',
-        request: {
-          user: req.user,
-          originalUser: user
-        },
-        payload: req.body,
-        userFields
-      };
-      return context;
-    })
-    .then(context => scriptManager.execute('create', context));
+function executeWriteHook(req, scriptManager, userFields) {
+  const user = req.targetUser;
+  const context = {
+    method: 'update',
+    request: {
+      user: req.user,
+      originalUser: user
+    },
+    payload: req.body,
+    userFields
+  };
+  return scriptManager.execute('create', context)
+    .then(data => {
+      return data;
+    });
 }
 
 export default (storage, scriptManager) => {
@@ -61,9 +57,7 @@ export default (storage, scriptManager) => {
         };
 
         return scriptManager.execute('create', createContext)
-          .then((result) => {
-            const payload = result || createContext.defaultPayload;
-
+          .then((payload) => {
             if (!payload.email || payload.email.length === 0) {
               throw new ValidationError('The email address is required.');
             }
@@ -120,60 +114,44 @@ export default (storage, scriptManager) => {
             }))
           .then(() => data))
       .then(users => res.json(users))
-      .catch(next);
+      .catch(err => next(err));
   });
 
   /*
    * Get a single user.
    */
   api.get('/:id', verifyUserAccess('read:user', scriptManager), (req, res, next) => {
-    req.auth0.users.get({ id: req.params.id })
-      .then((user) => {
-        if (!user) {
-          res.status(404);
-          throw new Error('User not found');
+    const user = req.targetUser;
+    const membershipContext = {
+      request: {
+        user: req.user
+      },
+      payload: {
+        user
+      }
+    };
+
+    return scriptManager.execute('memberships', membershipContext)
+      .then((result) => {
+        if (result && Array.isArray(result)) {
+          return {
+            user,
+            memberships: result
+          };
         }
 
-        const membershipContext = {
-          request: {
-            user: req.user
-          },
-          payload: {
-            user
-          }
+        if (result && result.memberships) {
+          return {
+            user,
+            memberships: result.memberships
+          };
+        }
+
+        return {
+          user,
+          memberships: []
         };
-
-        return scriptManager.execute('memberships', membershipContext)
-          .then((result) => {
-            if (result && Array.isArray(result)) {
-              return {
-                user,
-                memberships: result
-              };
-            }
-
-            if (result && result.memberships) {
-              return {
-                user,
-                memberships: result.memberships
-              };
-            }
-
-            return {
-              user,
-              memberships: []
-            };
-          });
       })
-      .then(data =>
-        scriptManager.execute('access', {
-          request: { user: req.user },
-          payload: { user: data.user, action: 'read:user' }
-        })
-          .then((parsedUser) => {
-            data.user = parsedUser || data.user;
-            return data;
-          }))
       .then(data => res.json(data))
       .catch((err) => {
         logger.error('Failed to get user because: ', err);
@@ -197,7 +175,7 @@ export default (storage, scriptManager) => {
   /*
    * Patch a user.
    */
-  api.patch('/:id', (req, res, next) => {
+  api.patch('/:id', verifyUserAccess('change:profile', scriptManager), (req, res, next) => {
     const settingsContext = {
       request: {
         user: req.user
@@ -205,9 +183,11 @@ export default (storage, scriptManager) => {
     };
 
     scriptManager.execute('settings', settingsContext)
-      .then(settings => executeWriteHook(req, res, scriptManager, settings.userFields))
-      .then(payload => req.auth0.users.update({ id: req.params.id }, payload))
-      .then(() => res.status(201).send())
+      .then(settings => executeWriteHook(req, scriptManager, settings.userFields))
+      .then(payload => {
+        return req.auth0.users.update({ id: req.params.id }, payload)
+      })
+      .then(() => res.status(204).send())
       .catch(next);
   });
 
@@ -220,9 +200,9 @@ export default (storage, scriptManager) => {
       clientId: config('AUTH0_CLIENT_ID')
     });
 
-    req.auth0.users.get({ id: req.params.id, fields: 'email' })
-      .then(user => ({ email: user.email, connection: req.body.connection, client_id: req.body.clientId }))
-      .then(data => client.requestChangePasswordEmail(data))
+    const user = req.targetUser;
+    const data = { email: user.email, connection: req.body.connection, client_id: req.body.clientId };
+    return client.requestChangePasswordEmail(data)
       .then(() => res.sendStatus(204))
       .catch(next);
   });
@@ -245,7 +225,7 @@ export default (storage, scriptManager) => {
       .then((settings) => {
         // If userFields is specified in the settings hook, then call the write hook and pass the userFields.
         if (settings && settings.userFields) {
-          return executeWriteHook(req, res, scriptManager, settings.userFields)
+          return executeWriteHook(req, scriptManager, settings.userFields)
             .then((payload) => {
               if (!payload.password) {
                 throw new ValidationError('The password is required.');
@@ -286,7 +266,7 @@ export default (storage, scriptManager) => {
       .then((settings) => {
         // If userFields is specified in the settings hook, then call the write hook and pass the userFields.
         if (settings && settings.userFields) {
-          executeWriteHook(req, res, scriptManager, settings.userFields)
+          executeWriteHook(req, scriptManager, settings.userFields)
             .then((payload) => {
               if (!payload.username) {
                 throw new ValidationError('The username is required.');
@@ -319,7 +299,7 @@ export default (storage, scriptManager) => {
       .then((settings) => {
         // If userFields is specified in the settings hook, then call the write hook and pass the userFields.
         if (settings && settings.userFields) {
-          executeWriteHook(req, res, scriptManager, settings.userFields)
+          executeWriteHook(req, scriptManager, settings.userFields)
             .then((payload) => {
               if (!payload.email) {
                 throw new ValidationError('The email is required.');

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import expect from 'expect';
 import Promise from 'bluebird';
 import request from 'supertest';
@@ -6,8 +7,10 @@ import express from 'express';
 import me from '../../../server/routes/me';
 import ScriptManager from '../../../server/lib/scriptmanager';
 import { user } from '../../utils/dummyData';
+import * as constants from '../../../server/constants';
 
-function initServer(script) {
+
+function initServer(script, newUser) {
   const storage = {
     read: () => Promise.resolve(storage.data),
     data: {
@@ -18,7 +21,8 @@ function initServer(script) {
   };
 
   const app = express();
-  app.use('/me', (req, res, next) => { req.user = user; next(); }, me(new ScriptManager(storage)));
+  const theUser = newUser || user;
+  app.use('/me', (req, res, next) => { req.user = theUser; next(); }, me(new ScriptManager(storage)));
   return app;
 }
 
@@ -113,6 +117,23 @@ describe('# /me', () => {
         expect(res.body.memberships.length).toEqual(2);
         expect(res.body.memberships[1]).toEqual('Finance');
         expect(res.body.role).toEqual(1);
+        return done();
+      });
+  });
+
+  it('check role 2', (done) => {
+    const newUser = _.cloneDeep(user);
+    newUser.scope += ` ${constants.ADMIN_PERMISSION}`;
+    const app = initServer(undefined, newUser);
+    request(app)
+      .get('/me')
+      .expect(200)
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+
+        expect(res.body.role).toEqual(2);
         return done();
       });
   });
