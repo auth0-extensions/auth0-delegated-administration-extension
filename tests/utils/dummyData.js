@@ -27,11 +27,84 @@ export const defaultConnections = [
 ];
 
 export const defaultScripts = {
-  access: "function(ctx, callback) { var hasAccess = (ctx.request.user.app_metadata && ctx.payload.user.app_metadata && ctx.payload.user.app_metadata.department && ctx.request.user.app_metadata.department === ctx.payload.user.app_metadata.department); if (!hasAccess) { return callback(new Error('No access.')); } return callback();}",
-  filter: "function(ctx, callback) { var department = (ctx.request.user && ctx.request.user.app_metadata.department) ? ctx.request.user.app_metadata.department : null; if (!department || !department.length) { return callback(new Error('The current user is not part of any department.')); } return callback(null, 'app_metadata.delegated-admin.department:\"' + department + '\"');}",
-  create: "function(ctx, callback) { if (!ctx.payload.memberships || ctx.payload.memberships.length === 0) { return callback(new Error('The user must be created within a department.')); } var currentDepartment = ctx.request.user.app_metadata.department; if (!currentDepartment || !currentDepartment.length) { return callback(new Error('The current user is not part of any department.')); } if (ctx.payload.memberships[0] !== currentDepartment) { return callback(new Error('You can only create users within your own department.'));}return callback(null, {email: ctx.payload.email, password: ctx.payload.password, connection: ctx.payload.connection, app_metadata: { department: ctx.payload.memberships[0] } });}",
-  memberships: "function (ctx, callback) { var parsedData = []; if (ctx.request.user.app_metadata && ctx.request.user.app_metadata && ctx.request.user.app_metadata.department) { var data = ctx.request.user.app_metadata.department; parsedData = (Array.isArray(data)) ? data : data.replace(', ', ',', 'g').split(','); } callback(null, parsedData); }",
-  settings: "function (ctx, callback) { var result = { connections: ['conn-a', 'conn-b'], dict: { title: ctx.request.user.email + ' dashboard', memberships: 'Groups' }, css: 'http://localhost:3001/app/default.css' }; callback(null, result);}",
+  access: (
+    function(ctx, callback) {
+      var hasAccess = (ctx.request.user.app_metadata &&
+        ctx.payload.user.app_metadata &&
+        ctx.payload.user.app_metadata.department &&
+        ctx.request.user.app_metadata.department === ctx.payload.user.app_metadata.department);
+      if (!hasAccess) {
+        return callback(new Error('No access.'));
+      }
+      if (ctx.payload.user.user_id === 2 && ctx.payload.action === 'change:profile')
+        return callback(new Error('Not allowed to change:profile'));
+      return callback();
+    }).toString(),
+  filter: (
+    function(ctx, callback) {
+      var department = (ctx.request.user &&
+        ctx.request.user.app_metadata.department) ?
+        ctx.request.user.app_metadata.department : null;
+      if (!department || !department.length) {
+        return callback(new Error('The current user is not part of any department.'));
+      }
+      return callback(null, 'app_metadata.delegated-admin.department:\"' +
+        department + '\"');
+    }).toString(),
+  create: (
+    function(ctx, callback) {
+      if (ctx.method === 'create') {
+        if (!ctx.payload.memberships || ctx.payload.memberships.length === 0) {
+          return callback(new Error('The user must be created within a department!'));
+        }
+        var currentDepartment = ctx.request.user.app_metadata.department;
+        if (!currentDepartment || !currentDepartment.length) {
+          return callback(new Error('The current user is not part of any department.'));
+        }
+        if (ctx.payload.memberships[0] !== currentDepartment) {
+          return callback(new Error('You can only create users within your own department.'));
+        }
+        return callback(null, {
+          email: ctx.payload.email,
+          password: ctx.payload.password,
+          connection: ctx.payload.connection,
+          app_metadata: {
+            department: ctx.payload.memberships[0]
+          }
+        });
+      }
+
+      if (ctx.method !== 'update') {
+        return callback(new Error('unknown method: ' + ctx.method));
+      }
+
+      return callback(null, ctx.payload);
+    }).toString(),
+  memberships: (
+    function (ctx, callback) {
+      var parsedData = [];
+      if (ctx.request.user.app_metadata &&
+        ctx.request.user.app_metadata &&
+        ctx.request.user.app_metadata.department) {
+        var data = ctx.request.user.app_metadata.department;
+        parsedData = (Array.isArray(data)) ?
+          data : data.replace(', ', ',', 'g').split(',');
+      }
+
+      if (ctx.payload.user.user_id === 2) return callback(null, { memberships: parsedData });
+      if (ctx.payload.user.user_id === 3) return callback();
+
+      callback(null, parsedData);
+    }).toString(),
+  settings: (
+    function(ctx, callback) {
+      var result = {
+        connections: ['conn-a', 'conn-b'],
+        dict: { title: ctx.request.user.email + ' dashboard', memberships: 'Groups' },
+        css: 'http://localhost:3001/app/default.css'
+      };
+      callback(null, result);
+    }).toString(),
   settings_no_connections: "function (ctx, callback) { var result = { dict: { title: ctx.request.user.email + ' dashboard', memberships: 'Groups' }, css: 'http://localhost:3001/app/default.css' }; callback(null, result);}",
   settings_invalid_connection: "function (ctx, callback) { var result = { connections: ['conn-x'], dict: { title: ctx.request.user.email + ' dashboard', memberships: 'Groups' }, css: 'http://localhost:3001/app/default.css' }; callback(null, result);}"
 };

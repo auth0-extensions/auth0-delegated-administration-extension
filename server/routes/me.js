@@ -1,13 +1,22 @@
 import express from 'express';
 import logger from '../lib/logger';
+import * as constants from '../constants';
 
 export default (scriptManager) => {
   const api = express.Router();
   api.get('/', (req, res) => {
+    let role = 0;
+
+    if (req.user.scope.indexOf(constants.ADMIN_PERMISSION) >= 0) {
+      role = 2;
+    } else if (req.user.scope.indexOf(constants.USER_PERMISSION) >= 0) {
+      role = 1;
+    }
+
     const me = {
       createMemberships: false,
       memberships: [],
-      role: req.user.role || 0
+      role
     };
 
     const membershipContext = {
@@ -30,10 +39,8 @@ export default (scriptManager) => {
 
         return res.json(me);
       })
-      .catch((err) => {
-        if (err) {
-          logger.error(err.message);
-        }
+      .catch(err => {
+        logger.error(err.message);
         res.json(me);
       });
   });

@@ -9,11 +9,13 @@ export default class UserActions extends Component {
     changeUsername: PropTypes.func.isRequired,
     databaseConnections: PropTypes.object.isRequired,
     deleteUser: PropTypes.func.isRequired,
+    changeFields: PropTypes.func.isRequired,
     removeMfa: PropTypes.func.isRequired,
     resendVerificationEmail: PropTypes.func.isRequired,
     resetPassword: PropTypes.func.isRequired,
     unblockUser: PropTypes.func.isRequired,
-    user: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired,
+    userFields: PropTypes.array.isRequired
   }
 
   state = {
@@ -42,6 +44,22 @@ export default class UserActions extends Component {
       Delete User
     </MenuItem>
   )
+
+  getChangeFieldsAction = (user, loading) => {
+    if (!this.props.userFields || !this.props.userFields.length) {
+      return null;
+    }
+
+    /* Only display this if there are editable fields */
+    const fieldsWithEdit = _.filter(this.props.userFields, field => field.edit);
+    if (fieldsWithEdit.length <= 0) return null;
+
+    return (
+      <MenuItem disabled={loading || false} onClick={this.changeFields}>
+        Change Profile
+      </MenuItem>
+    );
+  }
 
   getResetPasswordAction = (user, loading) => {
     if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
@@ -72,6 +90,10 @@ export default class UserActions extends Component {
       return null;
     }
 
+    /* Check if settings are disabling the editing of username */
+    const falseUsernameEditFields = _.filter(this.props.userFields, field => field.property === 'username' && field.edit === false);
+    if (falseUsernameEditFields.length > 0) return null;
+
     return (
       <MenuItem disabled={loading || false} onClick={this.changeUsername}>
         Change Username
@@ -83,6 +105,10 @@ export default class UserActions extends Component {
     if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
       return null;
     }
+
+    /* Check if settings are disabling the editing of username */
+    const falseEmailEditFields = _.filter(this.props.userFields, field => field.property === 'email' && field.edit === false);
+    if (falseEmailEditFields.length > 0) return null;
 
     return (
       <MenuItem disabled={loading || false} onClick={this.changeEmail}>
@@ -135,6 +161,10 @@ export default class UserActions extends Component {
     this.props.deleteUser(this.state.user);
   }
 
+  changeFields = () => {
+    this.props.changeFields(this.state.user);
+  }
+
   resetPassword = () => {
     this.props.resetPassword(this.state.user, this.state.databaseConnections[0]);
   }
@@ -143,12 +173,28 @@ export default class UserActions extends Component {
     this.props.changePassword(this.state.user, this.state.databaseConnections[0]);
   }
 
+  static getDisplayObject(user, fields) {
+    if (fields.length > 0) {
+      let displayFunction = undefined;
+      if (_.isFunction(fields[0].edit.display)) displayFunction = fields[0].edit.display;
+      else if (!fields[0].edit.display && fields[0].edit.display !== false && _.isFunction(fields[0].display)) displayFunction = fields[0].display;
+      if (displayFunction) return {
+        display: displayFunction,
+        user
+      };
+    }
+
+    return null;
+  }
+
   changeUsername = () => {
-    this.props.changeUsername(this.state.user, this.state.databaseConnections[0]);
+    const usernameEditFields = _.filter(this.props.userFields, field => field.property === 'username' && field.edit !== false && field.edit);
+    this.props.changeUsername(this.state.user, this.state.databaseConnections[0], UserActions.getDisplayObject(this.state.user, usernameEditFields));
   }
 
   changeEmail = () => {
-    this.props.changeEmail(this.state.user, this.state.databaseConnections[0]);
+    const emailEditFields = _.filter(this.props.userFields, field => field.property === 'email' && field.edit !== false && field.edit);
+    this.props.changeEmail(this.state.user, this.state.databaseConnections[0], UserActions.getDisplayObject(this.state.user, emailEditFields));
   }
 
   resendVerificationEmail = () => {
@@ -177,11 +223,12 @@ export default class UserActions extends Component {
         {this.getMultifactorAction(this.state.user, this.state.loading)}
         {this.getBlockedAction(this.state.user, this.state.loading)}
         {this.getResetPasswordAction(this.state.user, this.state.loading)}
-        {this.getChangePasswordAction(this.state.user, this.state.loading)}
-        {this.getDeleteAction(this.state.user, this.state.loading)}
+        {this.getResendEmailVerificationAction(this.state.user, this.state.loading)}
         {this.getChangeUsernameAction(this.state.user, this.state.loading)}
         {this.getChangeEmailAction(this.state.user, this.state.loading)}
-        {this.getResendEmailVerificationAction(this.state.user, this.state.loading)}
+        {this.getChangePasswordAction(this.state.user, this.state.loading)}
+        {this.getChangeFieldsAction(this.state.user, this.state.loading)}
+        {this.getDeleteAction(this.state.user, this.state.loading)}
       </DropdownButton>
     );
   }

@@ -1,3 +1,13 @@
+## [3.0.0] - 2017-11-??
+
+### Changes
+
+- MAJOR UPDATE: Add ability to set custom user fields
+  - This allows you to suppress fields that exist or add new fields
+  - This pushes all updates through the write hook if you are making updates
+- Update to latest version of auth0.js for login
+- Uses a get on the user instead of the ID token for getting app_metadata
+
 ## [2.5.0] - 2017-10-25
 
 ### Changes

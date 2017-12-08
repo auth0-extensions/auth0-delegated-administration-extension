@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import auth0 from 'auth0';
 import request from 'request';
 import Promise from 'bluebird';
@@ -5,8 +6,26 @@ import { Router } from 'express';
 import { managementApi, ArgumentError, ValidationError } from 'auth0-extension-tools';
 
 import config from '../lib/config';
+import logger from '../lib/logger';
 import { verifyUserAccess } from '../lib/middlewares';
 import removeGuardian from '../lib/removeGuardian';
+
+function executeWriteHook(req, scriptManager, userFields) {
+  const user = req.targetUser;
+  const context = {
+    method: 'update',
+    request: {
+      user: req.user,
+      originalUser: user
+    },
+    payload: req.body,
+    userFields
+  };
+  return scriptManager.execute('create', context)
+    .then(data => {
+      return data;
+    });
+}
 
 export default (storage, scriptManager) => {
   const api = Router();
@@ -15,37 +34,40 @@ export default (storage, scriptManager) => {
    * Create user.
    */
   api.post('/', (req, res, next) => {
-    if (!req.body.email || req.body.email.length === 0) {
-      return next(new ValidationError('The email address is required.'));
-    }
     if (req.body.password !== req.body.repeatPassword) {
-      return next(new ValidationError('The passwords do not match.'));
+      throw new ValidationError('The passwords do not match.');
     }
 
-    const createContext = {
+    const settingsContext = {
       request: {
         user: req.user
-      },
-      payload: {
-        email: req.body.email,
-        username: req.body.username,
-        connection: req.body.connection,
-        memberships: req.body.memberships,
-        password: req.body.password
-      },
-      defaultPayload: {
-        email: req.body.email,
-        username: req.body.username,
-        password: req.body.password,
-        connection: req.body.connection,
-        app_metadata: (req.body.memberships && req.body.memberships.length && { memberships: req.body.memberships }) || { }
       }
     };
 
-    return scriptManager.execute('create', createContext)
-      .then(result => req.auth0.users.create(result || createContext.defaultPayload))
-      .then(() => res.status(201).send())
-      .catch(next);
+    scriptManager.execute('settings', settingsContext)
+      .then((settings) => {
+
+        const createContext = {
+          method: 'create',
+          request: {
+            user: req.user
+          },
+          payload: req.body,
+          userFields: settings && settings.userFields
+        };
+
+        return scriptManager.execute('create', createContext)
+          .then((payload) => {
+            if (!payload.email || payload.email.length === 0) {
+              throw new ValidationError('The email address is required.');
+            }
+
+            return payload;
+          })
+          .then(payload => req.auth0.users.create(payload))
+          .then(() => res.status(201).send())
+          .catch(next);
+      });
   });
 
   /*
@@ -57,71 +79,84 @@ export default (storage, scriptManager) => {
         user: req.user
       },
       payload: {
-        search: req.query.search
+        search: req.query.search,
+        filterBy: req.query.filterBy
       }
     };
+
+    let searchQuery = req.query.search;
+    if (req.query.filterBy && req.query.filterBy.length > 0) {
+      searchQuery = `${req.query.filterBy}:"${req.query.search}"`;
+    }
+    const sort = req.query.sortProperty && req.query.sortOrder
+      ? `${req.query.sortProperty}:${req.query.sortOrder}`
+      : 'last_login:-1';
 
     scriptManager.execute('filter', filterContext)
       .then((filter) => {
         const options = {
-          sort: 'last_login:-1',
-          q: (req.query.search && filter) ? `(${req.query.search}) AND ${filter}` : req.query.search || filter,
+          sort,
+          q: (searchQuery && filter) ? `(${searchQuery}) AND ${filter}` : searchQuery || filter,
           per_page: req.query.per_page || 10,
           page: req.query.page || 0,
           include_totals: true,
-          fields: 'user_id,name,email,identities,picture,last_login,logins_count,multifactor,blocked,app_metadata',
+          fields: 'user_id,username,name,email,identities,picture,last_login,logins_count,multifactor,blocked,app_metadata,user_metadata',
           search_engine: 'v2'
         };
 
         return req.auth0.users.getAll(options);
       })
       .then(data =>
-        Promise.map(data.users, user =>
-          scriptManager.execute('access', { request: { user: req.user }, payload: { user, action: 'read:user' } }))
+        Promise.map(data.users, (user, index) =>
+          scriptManager.execute('access', { request: { user: req.user }, payload: { user, action: 'read:user' } })
+            .then((parsedUser) => {
+              data.users[index] = parsedUser || user;
+            }))
           .then(() => data))
       .then(users => res.json(users))
-      .catch(next);
+      .catch(err => next(err));
   });
 
   /*
    * Get a single user.
    */
   api.get('/:id', verifyUserAccess('read:user', scriptManager), (req, res, next) => {
-    req.auth0.users.get({ id: req.params.id })
-      .then((user) => {
-        const membershipContext = {
-          request: {
-            user: req.user
-          },
-          payload: {
-            user
-          }
+    const user = req.targetUser;
+    const membershipContext = {
+      request: {
+        user: req.user
+      },
+      payload: {
+        user
+      }
+    };
+
+    return scriptManager.execute('memberships', membershipContext)
+      .then((result) => {
+        if (result && Array.isArray(result)) {
+          return {
+            user,
+            memberships: result
+          };
+        }
+
+        if (result && result.memberships) {
+          return {
+            user,
+            memberships: result.memberships
+          };
+        }
+
+        return {
+          user,
+          memberships: []
         };
-
-        return scriptManager.execute('memberships', membershipContext)
-          .then((result) => {
-            if (result && Array.isArray(result)) {
-              return {
-                user,
-                memberships: result
-              };
-            }
-
-            if (result && result.memberships) {
-              return {
-                user,
-                memberships: result.memberships
-              };
-            }
-
-            return {
-              user,
-              memberships: [ ]
-            };
-          });
       })
       .then(data => res.json(data))
-      .catch(next);
+      .catch((err) => {
+        logger.error('Failed to get user because: ', err);
+        next(err);
+      });
   });
 
   /*
@@ -138,17 +173,36 @@ export default (storage, scriptManager) => {
   });
 
   /*
+   * Patch a user.
+   */
+  api.patch('/:id', verifyUserAccess('change:profile', scriptManager), (req, res, next) => {
+    const settingsContext = {
+      request: {
+        user: req.user
+      }
+    };
+
+    scriptManager.execute('settings', settingsContext)
+      .then(settings => executeWriteHook(req, scriptManager, settings.userFields))
+      .then(payload => {
+        return req.auth0.users.update({ id: req.params.id }, payload)
+      })
+      .then(() => res.status(204).send())
+      .catch(next);
+  });
+
+  /*
    * Trigger a password reset for the user.
    */
   api.post('/:id/password-reset', verifyUserAccess('reset:password', scriptManager), (req, res, next) => {
     const client = new auth0.AuthenticationClient({
-      domain: config('AUTH0_DOMAIN'),
+      domain: config('AUTH0_ISSUER_DOMAIN'),
       clientId: config('AUTH0_CLIENT_ID')
     });
 
-    req.auth0.users.get({ id: req.params.id, fields: 'email' })
-      .then(user => ({ email: user.email, connection: req.body.connection, client_id: req.body.clientId }))
-      .then(data => client.requestChangePasswordEmail(data))
+    const user = req.targetUser;
+    const data = { email: user.email, connection: req.body.connection, client_id: req.body.clientId };
+    return client.requestChangePasswordEmail(data)
       .then(() => res.sendStatus(204))
       .catch(next);
   });
@@ -161,31 +215,108 @@ export default (storage, scriptManager) => {
       return next(new ArgumentError('Passwords don\'t match'));
     }
 
-    return req.auth0.users.update({ id: req.params.id }, {
-      password: req.body.password,
-      connection: req.body.connection,
-      verify_password: false
-    })
-      .then(() => res.sendStatus(204))
+    const settingsContext = {
+      request: {
+        user: req.user
+      }
+    };
+
+    scriptManager.execute('settings', settingsContext)
+      .then((settings) => {
+        // If userFields is specified in the settings hook, then call the write hook and pass the userFields.
+        if (settings && settings.userFields) {
+          return executeWriteHook(req, scriptManager, settings.userFields)
+            .then((payload) => {
+              if (!payload.password) {
+                throw new ValidationError('The password is required.');
+              }
+
+              const payloadFinal = _.defaults(payload, {
+                connection: req.body.connection,
+                verify_password: false
+              });
+              return req.auth0.users.update({ id: req.params.id }, payloadFinal)
+                .then(() => res.sendStatus(204))
+                .catch(next);
+            });
+        }
+
+        return req.auth0.users.update({ id: req.params.id }, {
+          password: req.body.password,
+          connection: req.body.connection,
+          verify_password: false
+        })
+          .then(() => res.sendStatus(204))
+          .catch(next);
+      })
       .catch(next);
   });
-
 
   /*
    * Change the username of a user.
    */
-  api.put('/:id/change-username', verifyUserAccess('change:username', scriptManager), (req, res, next) =>
-    req.auth0.users.update({ id: req.params.id }, { username: req.body.username })
-      .then(() => res.sendStatus(204))
-      .catch(next));
+  api.put('/:id/change-username', verifyUserAccess('change:username', scriptManager), (req, res, next) => {
+    const settingsContext = {
+      request: {
+        user: req.user
+      }
+    };
+
+    scriptManager.execute('settings', settingsContext)
+      .then((settings) => {
+        // If userFields is specified in the settings hook, then call the write hook and pass the userFields.
+        if (settings && settings.userFields) {
+          executeWriteHook(req, scriptManager, settings.userFields)
+            .then((payload) => {
+              if (!payload.username) {
+                throw new ValidationError('The username is required.');
+              }
+
+              return req.auth0.users.update({ id: req.params.id }, payload);
+            })
+            .then(() => res.status(204).send())
+            .catch(next);
+        } else {
+          req.auth0.users.update({ id: req.params.id }, { username: req.body.username })
+            .then(() => res.sendStatus(204))
+            .catch(next);
+        }
+      })
+      .catch(next);
+  });
 
   /*
    * Change the email of a user.
    */
-  api.put('/:id/change-email', verifyUserAccess('change:email', scriptManager), (req, res, next) =>
-    req.auth0.users.update({ id: req.params.id }, { email: req.body.email })
-      .then(() => res.sendStatus(204))
-      .catch(next));
+  api.put('/:id/change-email', verifyUserAccess('change:email', scriptManager), (req, res, next) => {
+    const settingsContext = {
+      request: {
+        user: req.user
+      }
+    };
+
+    scriptManager.execute('settings', settingsContext)
+      .then((settings) => {
+        // If userFields is specified in the settings hook, then call the write hook and pass the userFields.
+        if (settings && settings.userFields) {
+          executeWriteHook(req, scriptManager, settings.userFields)
+            .then((payload) => {
+              if (!payload.email) {
+                throw new ValidationError('The email is required.');
+              }
+
+              return req.auth0.users.update({ id: req.params.id }, payload);
+            })
+            .then(() => res.status(204).send())
+            .catch(next);
+        } else {
+          req.auth0.users.update({ id: req.params.id }, { email: req.body.email })
+            .then(() => res.sendStatus(204))
+            .catch(next);
+        }
+      })
+      .catch(next);
+  });
 
   /*
    * Get all devices for the user.
@@ -200,10 +331,10 @@ export default (storage, scriptManager) => {
    * Get all logs for a user.
    */
   api.get('/:id/logs', verifyUserAccess('read:logs', scriptManager), (req, res, next) => {
-    managementApi.getAccessTokenCached(config('AUTH0_DOMAIN'), config('AUTH0_CLIENT_ID'), config('AUTH0_CLIENT_SECRET'))
+    managementApi.getAccessTokenCached(config('AUTH0_ISSUER_DOMAIN'), config('AUTH0_CLIENT_ID'), config('AUTH0_CLIENT_SECRET'))
       .then((accessToken) => {
         const options = {
-          uri: `https://${config('AUTH0_DOMAIN')}/api/v2/users/${encodeURIComponent(req.params.id)}/logs`,
+          uri: `https://${config('AUTH0_ISSUER_DOMAIN')}/api/v2/users/${encodeURIComponent(req.params.id)}/logs`,
           qs: {
             include_totals: true
           },
@@ -213,19 +344,18 @@ export default (storage, scriptManager) => {
           json: true
         };
 
-        request.get(options, (err, response, body) => {
+        return request.get(options, (err, response, body) => {
           if (err) {
             return next(err);
           }
 
           if (response.statusCode < 200 || response.statusCode >= 300) {
+            logger.error('Log response failed: ', response.headers);
             return next(new Error((body && (body.error || body.message || body.code)) || `Request Error: ${response.statusCode}`));
           }
 
           return res.json(body);
         });
-
-        return request.get(options);
       })
       .catch(next);
   });
@@ -240,7 +370,8 @@ export default (storage, scriptManager) => {
         .catch(next);
     }
 
-    return removeGuardian(req.user.access_token, req.params.id)
+    managementApi.getAccessTokenCached(config('AUTH0_ISSUER_DOMAIN'), config('AUTH0_CLIENT_ID'), config('AUTH0_CLIENT_SECRET'))
+      .then((accessToken) => removeGuardian(accessToken, req.params.id))
       .then(() => res.sendStatus(204))
       .catch(next);
   });

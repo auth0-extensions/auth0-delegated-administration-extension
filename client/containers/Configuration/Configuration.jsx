@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { LoadingPanel, Error } from '../../components/Dashboard';
+import { LoadingPanel, Error, Json } from 'auth0-extension-ui';
 
 import connectContainer from 'redux-static';
 import { Tabs, Tab } from 'react-bootstrap';
@@ -124,11 +124,11 @@ export default connectContainer(class extends Component {
                   </div>
                 </LoadingPanel>
               </Tab>
-              <Tab eventKey={3} title={code.create && code.create.length ? <span>Create Hook</span> : <i>Create Hook</i>}>
+              <Tab eventKey={3} title={code.create && code.create.length ? <span>Write Hook</span> : <i>Write Hook</i>}>
                 <LoadingPanel show={scripts.create && scripts.create.loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
                   <Error message={scripts.create && scripts.create.error} />
                   <p>
-                    The <strong>create hook</strong> will run every time a new user is created. This hook will allow
+                    The <strong>write hook</strong> will run every time a new user is created. This hook will allow
                     you to shape the user object before it's sent to Auth0. The context object contains the request (with the current user) and the payload sent by the end user.
                   </p>
                   <Editor
@@ -137,7 +137,7 @@ export default connectContainer(class extends Component {
                   />
                   <div className="save-config">
                     <button onClick={this.saveScript('create')} className="btn btn-success">
-                      Save Create Hook
+                      Save Write Hook
                     </button>
                   </div>
                 </LoadingPanel>

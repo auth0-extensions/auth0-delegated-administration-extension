@@ -13,6 +13,8 @@ export default class Header extends Component {
   };
 
   getName(iss, user) {
+    let thisMenuName = this.props.getDictValue('menuName') || iss;
+
     if (user && user.get('name')) {
       return user.get('name');
     }
@@ -25,7 +27,8 @@ export default class Header extends Component {
       return user.get('email');
     }
 
-    return iss;
+    return thisMenuName.length >= 18 ? thisMenuName.substr(0,18)+'...' : thisMenuName;
+    ;
   }
 
   getPicture(iss, user) {

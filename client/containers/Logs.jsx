@@ -5,7 +5,7 @@ import { Button, ButtonToolbar } from 'react-bootstrap';
 import * as actions from '../actions/log';
 import LogDialog from '../components/Logs/LogDialog';
 import LogsTable from '../components/Logs/LogsTable';
-import { Error, LoadingPanel, TableTotals } from '../components/Dashboard';
+import { Error, LoadingPanel, TableTotals } from 'auth0-extension-ui';
 import TabsHeader from '../components/TabsHeader';
 
 class LogsContainer extends Component {

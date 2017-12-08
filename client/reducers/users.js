@@ -10,7 +10,10 @@ const initialState = {
   records: [],
   total: 0,
   currentPage: 1,
-  pages: 1 
+  pages: 1,
+  searchValue: '',
+  sortProperty: 'last_login',
+  sortOrder: -1
 };
 
 export const users = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
@@ -18,7 +21,11 @@ export const users = createReducer(fromJS(initialState), { // eslint-disable-lin
     state.merge({
       ...initialState,
       loading: true,
-      records: action.meta.page === 0 ? [] : state.get('records')
+      records: action.meta.page === 0 ? [] : state.get('records'),
+      pages: action.meta.page === 0 ? 1 : state.get('pages'),
+      searchValue: action.meta.searchValue,
+      sortProperty: action.meta.sortProperty,
+      sortOrder: action.meta.sortOrder
     }),
   [constants.FETCH_USERS_REJECTED]: (state, action) =>
     state.merge({

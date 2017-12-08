@@ -1,4 +1,3 @@
-import requireLike from 'require-like';
 import Promise from 'bluebird';
 import safeEval from 'safe-eval';
 import memoizer from 'lru-memoizer';
@@ -13,7 +12,6 @@ export default class ScriptManager {
       throw new ArgumentError('Must provide a storage object.');
     }
 
-    this.hookRequire = requireLike('hooks');
     this.log = logger.debug.bind(logger);
     this.cache = { };
     this.storage = storage;
@@ -82,6 +80,16 @@ export default class ScriptManager {
     };
   }
 
+  dynamicRequire(module) {
+    try {
+      return __non_webpack_require__(module);
+    } catch(e) {
+      // silently ignore and then try require
+    }
+
+    return require(module);
+  }
+
   execute(name, ctx) {
     return this.getCached(name)
       .then((script) => {
@@ -92,7 +100,7 @@ export default class ScriptManager {
         logger.debug(`Executing Delegated Admin hook: ${name}`);
         return new Promise((resolve, reject) => {
           try {
-            const func = safeEval(script, { require: this.hookRequire });
+            const func = safeEval(script, { require: this.dynamicRequire });
             func(this.createContext(ctx), (err, res) => {
               if (err) {
                 logger.error(`Failed to execute Delegated Admin hook (${name}): "${err}"`);

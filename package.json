@@ -1,6 +1,6 @@
 {
   "name": "auth0-delegated-admin",
-  "version": "2.5.0",
+  "version": "3.0.0",
   "description": "Delegated Administration Dashboard",
   "engines": {
     "node": "6.2.0"
@@ -13,8 +13,8 @@
     "extension:build": "a0-ext build:server ./webtask.js ./dist && cp ./dist/auth0-delegated-admin.extension.$npm_package_version.js ./build/bundle.js",
     "serve:dev": "cross-env NODE_ENV=development nodemon -e js --ignore assets/app/ --ignore build/webpack/ --ignore client/ --ignore server/data.json --ignore node_modules/ ./build/webpack/server.js",
     "serve:prod": "cross-env NODE_ENV=production node index.js",
-    "test": "cross-env NODE_ENV=test nyc mocha tests/mocha.js ./tests/**/*.tests.js",
-    "test:watch": "cross-env NODE_ENV=test mocha tests/mocha.js ./tests/**/*.tests.js --watch",
+    "test": "cross-env NODE_ENV=test nyc mocha tests/mocha.js './tests/**/*.tests.js'",
+    "test:watch": "cross-env NODE_ENV=test mocha tests/mocha.js './tests/**/*.tests.js' --watch",
     "test:pre": "npm run test:clean && npm run lint:js",
     "test:clean": "rimraf ./coverage && rimraf ./.nyc_output",
     "extension:size": "cross-env NODE_ENV=production webpack -p --config ./build/extension/webpack.config.js --json > ./build/extension/bundle-size.json && node ./build/extension/bundle-size.js"
@@ -43,12 +43,14 @@
       "jwks-rsa@1.1.1",
       "lodash@3.10.1",
       "lru-memoizer@1.10.0",
+      "moment@2.11.2",
       "morgan@1.5.3",
       "node-uuid@1.4.3",
       "mime-db@1.10.0",
       "request@2.67.0",
       "superagent@1.2.0",
       "tough-cookie@2.2.2",
+      "uuid@2.0.1",
       "webtask-tools",
       "winston@1.0.0"
     ],
@@ -66,6 +68,8 @@
     "auth0": "^2.1.0",
     "auth0-extension-express-tools": "1.1.0",
     "auth0-extension-tools": "1.2.1",
+    "auth0-extension-ui": "^1.1.2",
+    "auth0-js": "^8.9.3",
     "axios": "^0.14.0",
     "babel": "6.23.0",
     "babel-core": "6.24.1",
@@ -97,24 +101,24 @@
     "morgan": "^1.7.0",
     "ms": "^0.7.1",
     "nconf": "^0.8.4",
-    "react": "^0.14.8",
+    "react": "15.6.1",
     "react-codemirror": "^0.2.6",
-    "react-dom": "^0.14.8",
+    "react-dom": "15.6.1",
     "react-redux": "^4.4.5",
     "react-router": "^2.8.1",
     "react-router-redux": "^4.0.6",
     "redux": "^3.5.2",
-    "redux-form": "^4.2.2",
+    "redux-form": "^6.0.5",
     "redux-logger": "^2.7.0",
     "redux-promise-middleware": "^4.1.0",
     "redux-thunk": "2.2.0",
     "request": "^2.34.0",
-    "require-like": "^0.1.2",
     "reselect": "^2.5.4",
     "safe-eval": "^0.3.0",
     "semver": "^5.1.0",
     "string.prototype.endswith": "^0.2.0",
     "superagent": "1.2.0",
+    "uuid": "2.0.1",
     "webtask-tools": "^3.1.0",
     "winston": "^2.2.0"
   },
@@ -172,5 +176,16 @@
     "webpack-sources": "0.2.3",
     "webpack-stats-plugin": "0.1.5",
     "webtask-bundle": "3.0.1"
+  },
+  "nyc": {
+    "include": [
+      "client/**/*.js",
+      "server/**/*.js"
+    ],
+    "require": [
+      "babel-register"
+    ],
+    "sourceMap": true,
+    "instrument": true
   }
 }

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { logout } from '../actions/auth';
 import { applicationActions, connectionActions, authActions } from '../actions';
-import { LoadingPanel } from '../components/Dashboard';
+import { LoadingPanel } from 'auth0-extension-ui';
 
 import Header from '../components/Header';
 
@@ -47,7 +47,8 @@ class App extends Component {
           user={this.props.user}
           issuer={this.props.issuer}
           getDictValue={this.getDictValue}
-          onLogout={this.props.logout} accessLevel={this.props.accessLevel.toJSON()}
+          onLogout={this.props.logout}
+          accessLevel={this.props.accessLevel.toJSON()}
         />
         <div className="container">
           <div className="row">

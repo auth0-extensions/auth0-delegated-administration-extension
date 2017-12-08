@@ -10,6 +10,7 @@ const initialState = {
   userId: null,
   userName: null,
   userEmail: null,
+  customField: null,
   connection: null
 };
 
@@ -21,6 +22,7 @@ export const emailChange = createReducer(fromJS(initialState), { // eslint-disab
       userName: action.user.name || action.user.user_name || action.user.email,
       userEmail: action.user.email,
       connection: action.connection,
+      customField: action.customField,
       requesting: true
     }),
   [constants.CANCEL_EMAIL_CHANGE]: (state) =>

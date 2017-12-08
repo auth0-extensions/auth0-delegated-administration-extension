@@ -55,6 +55,7 @@ store.subscribe(() => {
       break;
   }
 });
+
 store.dispatch(loadCredentials());
 
 // Render application.
@@ -64,8 +65,6 @@ ReactDOM.render(
   </Provider>,
   document.getElementById('app')
 );
-
-store.dispatch(push('/users'));
 
 // Show the developer tools.
 if (process.env.NODE_ENV !== 'production') {

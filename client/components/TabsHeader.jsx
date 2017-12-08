@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { NavigationLink } from '../components/Dashboard';
+import { TabPane } from 'auth0-extension-ui';
 
 export default class TabsHeader extends Component {
   static propTypes = {
@@ -11,8 +11,8 @@ export default class TabsHeader extends Component {
     return (
       <div className="widget-title title-with-nav-bars">
         <ul className="nav nav-tabs">
-          <NavigationLink title="Users" route="/users" icon="" />
-          {isRoot ? <NavigationLink title="Logs" route="/logs" icon="" /> : null}
+          <TabPane title="Users" route="users" />
+          {isRoot ? <TabPane title="Logs" route="logs" /> : null}
         </ul>
       </div>
     );

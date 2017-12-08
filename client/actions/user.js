@@ -9,22 +9,33 @@ import { getAccessLevel } from './auth';
 /*
  * Search for users.
  */
-export function fetchUsers(search = '', reset = false, page = 0) {
-  return (dispatch) => {
+export function fetchUsers(search, reset = false, page = 0, filterBy, sort) {
+
+  return (dispatch, getState) => {
+    const { sortProperty, sortOrder, searchValue } = getState().users.toJS();
+    const meta = { page, sortProperty, sortOrder, searchValue };
+
+    meta.searchValue = reset ? '' : search || searchValue;
+    if (sort) {
+      meta.sortProperty = sort.property;
+      meta.sortOrder = sort.order;
+    }
+
     dispatch({
       type: constants.FETCH_USERS,
       payload: {
         promise: axios.get('/api/users', {
           params: {
-            search,
-            page
+            search: meta.searchValue,
+            page,
+            filterBy,
+            sortOrder: meta.sortOrder,
+            sortProperty: meta.sortProperty
           },
           responseType: 'json'
         })
       },
-      meta: {
-        page
-      }
+      meta
     });
   };
 }
@@ -79,6 +90,57 @@ export function requestCreateUser(memberships) {
 export function cancelCreateUser() {
   return {
     type: constants.CANCEL_CREATE_USER
+  };
+}
+
+/*
+ * Create a user.
+ */
+export function changeFields(userId, user, onSuccess) {
+  return (dispatch) => {
+    dispatch({
+      type: constants.FIELDS_CHANGE,
+      meta: {
+        userId,
+        user,
+        onSuccess: () => {
+          if (onSuccess) {
+            onSuccess();
+          } else {
+            dispatch(fetchUser(userId));
+          }
+        }
+      },
+      payload: {
+        promise: axios.patch(`/api/users/${userId}`, user, {
+          responseType: 'json'
+        })
+      }
+    });
+  };
+}
+
+
+/*
+ * Show dialog to create a user.
+ */
+export function requestFieldsChange(user) {
+  return (dispatch) => {
+    dispatch({
+      type: constants.REQUEST_FIELDS_CHANGE,
+      payload: {
+        user
+      }
+    });
+  };
+}
+
+/*
+ * Cancel creating a user.
+ */
+export function cancelChangeFields() {
+  return {
+    type: constants.CANCEL_FIELDS_CHANGE
   };
 }
 
@@ -384,11 +446,12 @@ export function changePassword(password, confirmPassword) {
 /*
  * Get confirmation to change a username.
  */
-export function requestUsernameChange(user, connection) {
+export function requestUsernameChange(user, connection, customField) {
   return {
     type: constants.REQUEST_USERNAME_CHANGE,
     user,
-    connection
+    connection,
+    customField
   };
 }
 
@@ -424,11 +487,12 @@ export function changeUsername(userId, data) {
 /*
  * Get confirmation to change a email.
  */
-export function requestEmailChange(user, connection) {
+export function requestEmailChange(user, connection, customField) {
   return {
     type: constants.REQUEST_EMAIL_CHANGE,
     user,
-    connection
+    connection,
+    customField
   };
 }
 

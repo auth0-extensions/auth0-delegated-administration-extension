@@ -9,6 +9,7 @@ const initialState = {
   userId: null,
   userName: null,
   userEmail: null,
+  customField: null,
   connection: null
 };
 
@@ -29,7 +30,8 @@ describe('email change reducer', () => {
           user_id: 'user_id_1',
           email: 'test@mail.ru'
         },
-        connection: 'connections'
+        connection: 'connections',
+        customField: { property: 'test' }
       }).toJSON()
     ).toEqual(
       {
@@ -39,7 +41,8 @@ describe('email change reducer', () => {
         userId: 'user_id_1',
         userName: 'test@mail.ru',
         userEmail: 'test@mail.ru',
-        connection: 'connections'
+        connection: 'connections',
+        customField: { property: 'test' }
       }
     );
   });
@@ -63,7 +66,8 @@ describe('email change reducer', () => {
         userId: 'user_id_1',
         userName: 'test',
         userEmail: 'test@mail.ru',
-        connection: 'connections'
+        connection: 'connections',
+        customField: undefined
       }
     );
   });
@@ -87,7 +91,8 @@ describe('email change reducer', () => {
         userId: 'user_id_1',
         userName: 'test',
         userEmail: 'test@mail.ru',
-        connection: 'connections'
+        connection: 'connections',
+        customField: undefined
       }
     );
   });
@@ -115,7 +120,8 @@ describe('email change reducer', () => {
         userId: null,
         userName: null,
         userEmail: null,
-        connection: null
+        connection: null,
+        customField: null
       }
     );
   });
@@ -134,7 +140,8 @@ describe('email change reducer', () => {
         userId: null,
         userName: null,
         userEmail: null,
-        connection: null
+        connection: null,
+        customField: null
       }
     );
   });

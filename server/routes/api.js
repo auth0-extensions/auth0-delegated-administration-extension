@@ -1,11 +1,15 @@
 import { Router } from 'express';
+import _ from 'lodash';
+import moment from 'moment';
 import { middlewares } from 'auth0-extension-express-tools';
+import tools from 'auth0-extension-tools';
 
-import { getUserAccessLevel, hasAccessLevel } from '../lib/middlewares';
+import { requireScope } from '../lib/middlewares';
 import config from '../lib/config';
-import * as constants from '../constants';
 
 import ScriptManager from '../lib/scriptmanager';
+import getScopes from '../lib/getScopes';
+import * as constants from '../constants';
 
 import applications from './applications';
 import connections from './connections';
@@ -17,24 +21,99 @@ import users from './users';
 export default (storage) => {
   const scriptManager = new ScriptManager(storage);
   const managementApiClient = middlewares.managementApiClient({
-    domain: config('AUTH0_DOMAIN'),
+    domain: config('AUTH0_ISSUER_DOMAIN'),
     clientId: config('AUTH0_CLIENT_ID'),
     clientSecret: config('AUTH0_CLIENT_SECRET')
   });
 
-
   const api = Router();
 
+  const getToken = req => _.get(req, 'headers.authorization', '').split(' ')[1];
+
+  const addExtraUserInfo = (token, user) => {
+    global.daeUser = global.daeUser || {};
+    global.daeUser[user.sub] = global.daeUser[user.sub] || { exp: 0, token: '' };
+
+    if (_.isFunction(global.daeUser[user.sub].then)) {
+      return global.daeUser[user.sub];
+    }
+
+    if (global.daeUser[user.sub].exp > moment().unix() && token &&
+      global.daeUser[user.sub].token === token) {
+      _.assign(user, global.daeUser[user.sub]);
+      return Promise.resolve(user);
+    }
+
+    if (!token) console.error('no token found');
+
+    const promise = tools.managementApi.getClient({
+      domain: config('AUTH0_ISSUER_DOMAIN'),
+      clientId: config('AUTH0_CLIENT_ID'),
+      clientSecret: config('AUTH0_CLIENT_SECRET')
+    })
+      .then(auth0 =>
+        auth0.users.get({ id: user.sub })
+          .then(userData => {
+            _.assign(user, userData);
+            user.token = token;
+            global.daeUser[user.sub] = user;
+            return user;
+          })
+      );
+
+    global.daeUser[user.sub] = promise;
+
+    return global.daeUser[user.sub];
+  };
+
+  // Allow end users to authenticate.
   api.use(middlewares.authenticateUsers.optional({
-    domain: config('AUTH0_DOMAIN'),
+    domain: config('AUTH0_ISSUER_DOMAIN'),
     audience: config('EXTENSION_CLIENT_ID'),
-    credentialsRequired: true
+    credentialsRequired: false,
+    onLoginSuccess: (req, res, next) => {
+      const currentRequest = req;
+      return addExtraUserInfo(getToken(req), req.user)
+        .then((user) => {
+          currentRequest.user = user;
+          currentRequest.user.scope = getScopes(req.user);
+          return next();
+        })
+        .catch(next);
+
+    }
   }));
-  api.use(getUserAccessLevel);
-  api.use(hasAccessLevel(constants.USER_ACCESS_LEVEL));
+
+  // Allow dashboard admins to authenticate.
+  api.use(middlewares.authenticateAdmins.optional({
+    credentialsRequired: false,
+    secret: config('EXTENSION_SECRET'),
+    audience: 'urn:delegated-admin',
+    baseUrl: config('PUBLIC_WT_URL'),
+    onLoginSuccess: (req, res, next) => {
+      const currentRequest = req;
+      return addExtraUserInfo(getToken(req), req.user)
+        .then((user) => {
+          currentRequest.user = user;
+          currentRequest.user.scope = [constants.USER_PERMISSION, constants.ADMIN_PERMISSION];
+          return next();
+        })
+        .catch(next);
+    }
+  }));
+
+  /* Fight caching attempts by IE */
+  api.use((req, res, next) => {
+    res.setHeader('Cache-control', 'no-cache, no-store');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    next();
+  });
+
+  api.use(requireScope(constants.USER_PERMISSION));
   api.use('/applications', managementApiClient, applications());
   api.use('/connections', managementApiClient, connections(scriptManager));
-  api.use('/scripts', hasAccessLevel(constants.ADMIN_ACCESS_LEVEL), scripts(storage, scriptManager));
+  api.use('/scripts', requireScope(constants.ADMIN_PERMISSION), scripts(storage, scriptManager));
   api.use('/users', managementApiClient, users(storage, scriptManager));
   api.use('/logs', managementApiClient, logs(scriptManager));
   api.use('/me', me(scriptManager));
@@ -51,4 +130,5 @@ export default (storage) => {
   });
 
   return api;
-};
+}
+;
