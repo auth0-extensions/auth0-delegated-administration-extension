@@ -70,7 +70,7 @@ describe('logs reducer', () => {
     ).toEqual(
       {
         loading: false,
-        error: 'An error occured while loading the logs: ERROR',
+        error: 'An error occurred while loading the logs: ERROR',
         records: [],
         currentRecord: null
       }
@@ -126,7 +126,6 @@ describe('logs reducer', () => {
               }
             },
             user_name: 'test@mail.com',
-            time_ago: moment('2016-09-26T13:03:50.703Z').fromNow()
           },
           {
             _id: '49559553682563810286559514516535449676088458549131214850',
@@ -141,7 +140,6 @@ describe('logs reducer', () => {
               }
             },
             user_name: 'test@mail.com',
-            time_ago: moment('2016-09-26T13:03:36.005Z').fromNow()
           }
         ],
         currentRecord: null,

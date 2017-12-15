@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { TabPane } from 'auth0-extension-ui';
 
 export default class TabsHeader extends Component {
   static propTypes = {
-    role: React.PropTypes.number
+    role: PropTypes.number
   }
 
   render() {

@@ -24,7 +24,7 @@ export default class UserPaginator extends React.Component {
   }
 
   render() {
-    const { onPageChange, nextPage, pages } = this.props;
+    const { nextPage, pages } = this.props;
 
     return (
       <nav className="pull-right">

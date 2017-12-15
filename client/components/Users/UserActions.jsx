@@ -1,5 +1,7 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { MenuItem, DropdownButton } from 'react-bootstrap';
+import _ from 'lodash';
 
 export default class UserActions extends Component {
   static propTypes = {
@@ -15,13 +17,31 @@ export default class UserActions extends Component {
     resetPassword: PropTypes.func.isRequired,
     unblockUser: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
-    userFields: PropTypes.array.isRequired
+    userFields: PropTypes.array.isRequired,
+    languageDictionary: PropTypes.object
   }
 
-  state = {
-    user: null,
-    loading: false
-  };
+  constructor(props) {
+    super(props);
+
+    if (props.user) {
+      this.state = {
+        user: props.user.toJS(),
+        loading: props.loading
+      };
+
+      if (props.databaseConnections) {
+        this.state.databaseConnections = props.databaseConnections.toJS();
+      }
+    } else {
+      this.state = {
+        user: null,
+        loading: false
+      };
+    }
+
+    this.state.languageDictionary = props.languageDictionary || {};
+  }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.user) {
@@ -37,11 +57,17 @@ export default class UserActions extends Component {
         databaseConnections: nextProps.databaseConnections.toJS()
       });
     }
+
+    if (nextProps.languageDictionary) {
+      this.setState({
+        languageDictionary: nextProps.languageDictionary
+      });
+    }
   }
 
   getDeleteAction = (user, loading) => (
     <MenuItem disabled={loading || false} onClick={this.deleteUser}>
-      Delete User
+      {this.state.languageDictionary.deleteUserMenuItemText || 'Delete User'}
     </MenuItem>
   )
 
@@ -56,7 +82,7 @@ export default class UserActions extends Component {
 
     return (
       <MenuItem disabled={loading || false} onClick={this.changeFields}>
-        Change Profile
+        {this.state.languageDictionary.changeFieldsMenuItemText || 'Change Profile'}
       </MenuItem>
     );
   }
@@ -68,7 +94,7 @@ export default class UserActions extends Component {
 
     return (
       <MenuItem disabled={loading || false} onClick={this.resetPassword}>
-        Reset Password
+        {this.state.languageDictionary.resetPasswordMenuItemText || 'Reset Password'}
       </MenuItem>
     );
   }
@@ -80,7 +106,7 @@ export default class UserActions extends Component {
 
     return (
       <MenuItem disabled={loading || false} onClick={this.changePassword}>
-        Change Password
+        {this.state.languageDictionary.changePasswordMenuItemText || 'Change Password'}
       </MenuItem>
     );
   }
@@ -96,7 +122,7 @@ export default class UserActions extends Component {
 
     return (
       <MenuItem disabled={loading || false} onClick={this.changeUsername}>
-        Change Username
+        {this.state.languageDictionary.changeUsernameMenuItemText || 'Change Username'}
       </MenuItem>
     );
   }
@@ -112,7 +138,7 @@ export default class UserActions extends Component {
 
     return (
       <MenuItem disabled={loading || false} onClick={this.changeEmail}>
-        Change Email
+        {this.state.languageDictionary.changeEmailMenuItemText || 'Change Email'}
       </MenuItem>
     );
   }
@@ -124,7 +150,7 @@ export default class UserActions extends Component {
 
     return (
       <MenuItem disabled={loading || false} onClick={this.resendVerificationEmail}>
-        Resend Verification Email
+        {this.state.languageDictionary.resendVerificationEmailMenuItemText || "Resend Verification Email"}
       </MenuItem>
     );
   }
@@ -136,7 +162,7 @@ export default class UserActions extends Component {
 
     return (
       <MenuItem disabled={loading || false} onClick={this.removeMfa}>
-        Remove MFA ({user.multifactor[0]})
+        {this.state.languageDictionary.removeMfaMenuItemText || "Remove MFA"} ({user.multifactor[0]})
       </MenuItem>
     );
   }
@@ -145,14 +171,14 @@ export default class UserActions extends Component {
     if (user.blocked) {
       return (
         <MenuItem disabled={loading || false} onClick={this.unblockUser}>
-          Unblock User
+          {this.state.languageDictionary.unblockUserMenuItemText || "Unblock User"}
         </MenuItem>
       );
     }
 
     return (
       <MenuItem disabled={loading || false} onClick={this.blockUser}>
-        Block User
+        {this.state.languageDictionary.blockUserMenuItemText || "Block User"}
       </MenuItem>
     );
   }

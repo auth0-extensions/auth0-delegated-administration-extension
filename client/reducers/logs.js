@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { fromJS } from 'immutable';
 import * as constants from '../constants';
 import logTypes from '../utils/logTypes';
@@ -21,7 +20,7 @@ export const logs = createReducer(fromJS(initialState), { // eslint-disable-line
   [constants.FETCH_LOGS_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occured while loading the logs: ${action.errorMessage}`
+      error: `An error occurred while loading the logs: ${action.errorMessage}`
     }),
   [constants.FETCH_LOGS_FULFILLED]: (state, action) => {
     const { data } = action.payload;
@@ -30,7 +29,6 @@ export const logs = createReducer(fromJS(initialState), { // eslint-disable-line
       total: data.total,
       nextPage: action.meta.page + 1,
       records: state.get('records').concat(fromJS(data.logs.map(log => {
-        log.time_ago = moment(log.date).fromNow();
         log.type = logTypes[log.type];
         if (!log.type) {
           log.type = {

@@ -1,0 +1,30 @@
+{
+  "loginsCountLabel": "Logins Count:",
+
+  "searchBarPlaceholder": "Search for users using the Lucene syntax",
+
+  "deviceNameColumnHeader": "Device",
+  "deviceNumberTokensColumnHeader": "# of Tokens/Public Keys",
+  "noDevicesMessage": "This user does not have any registered devices.",
+
+  "logEventColumnHeader": "Event",
+  "logDescriptionColumnHeader": "Description",
+  "logDateColumnHeader": "Date",
+  "logConnectionColumnHeader": "Connection",
+  "logApplicationColumnHeader": "Application",
+
+  "cancelButtonText": "CancelButton",
+  "updateButtonText": "UpdateButton",
+  "createButtonText": "UpdateButton",
+
+  "blockUserMenuItemText": "Block User",
+  "changeEmailMenuItemText": "Change Email",
+  "changePasswordMenuItemText": "Change Password",
+  "deleteUserMenuItemText": "Delete User",
+  "changeFieldsMenuItemText": "Change Fields",
+  "removeMfaMenuItemText": "Remove MFA",
+  "resendVerificationEmailMenuItemText": "Resend Verification Email",
+  "resetPasswordMenuItemText": "Reset Password",
+  "changeUsernameMenuItemText": "Change Username",
+  "unblockUserMenuItemText": "Unblock User"
+}

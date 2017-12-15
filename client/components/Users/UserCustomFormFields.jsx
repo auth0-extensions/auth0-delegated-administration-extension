@@ -1,4 +1,5 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+
 import _ from 'lodash';
 import { InputText, InputCombo, Multiselect, Select } from 'auth0-extension-ui';
 import { Field } from 'redux-form';

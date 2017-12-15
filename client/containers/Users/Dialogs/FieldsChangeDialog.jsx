@@ -55,7 +55,6 @@ export default connectContainer(class extends Component {
           onClose={this.props.cancelChangeFields}
           onSubmit={this.onSubmit}
           submitting={loading}
-          method="Update"
         >
           <Error message={error} />
         </UserFieldsChangeForm>

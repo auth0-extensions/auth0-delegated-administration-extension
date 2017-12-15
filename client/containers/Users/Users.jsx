@@ -1,4 +1,6 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import { connect } from 'react-redux';
 import { Pagination, TableTotals } from 'auth0-extension-ui';
 
@@ -6,7 +8,7 @@ import { connectionActions, userActions } from '../../actions';
 
 import * as dialogs from './Dialogs';
 import TabsHeader from '../../components/TabsHeader';
-import { UserOverview, UserForm } from '../../components/Users';
+import { UserOverview } from '../../components/Users';
 
 import './Users.css';
 
@@ -75,8 +77,6 @@ class Users extends Component {
       users,
       total,
       connections,
-      userCreateError,
-      userCreateLoading,
       accessLevel,
       nextPage,
       pages,
@@ -154,4 +154,6 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { ...connectionActions, ...userActions })(Users);
+const UsersContainer = connect(mapStateToProps, { ...connectionActions, ...userActions })(Users);
+
+export default UsersContainer;

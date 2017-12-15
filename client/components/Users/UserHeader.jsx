@@ -1,11 +1,15 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
+import _ from 'lodash';
 
 export default class UserHeader extends Component {
   static propTypes = {
     error: PropTypes.string,
     loading: PropTypes.bool.isRequired,
     user: PropTypes.object.isRequired,
-    userFields: React.PropTypes.array.isRequired
+    userFields: React.PropTypes.array.isRequired,
+    languageDictionary: React.PropTypes.object
   }
 
   shouldComponentUpdate(nextProps) {
@@ -51,6 +55,7 @@ export default class UserHeader extends Component {
 
     const user = this.props.user.toJS();
     const userFields = this.props.userFields || [];
+    const languageDictionary = this.props.languageDictionary || {};
 
     return (
       <div className="user-header">
@@ -59,7 +64,7 @@ export default class UserHeader extends Component {
           <img role="presentation" className="user-bg" src={user.picture} />
           <div className="box-content">
             <div className="login-count">
-              <span className="lined-text">Logins Count:</span>
+              <span className="lined-text">{ languageDictionary.loginsCountLabel || 'Logins Count:' }</span>
               <strong>{user.logins_count || 0}</strong>
             </div>
             <div className="username-area">

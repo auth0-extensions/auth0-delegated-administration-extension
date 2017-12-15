@@ -1,4 +1,5 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { InputText, InputCombo, Multiselect, Select } from 'auth0-extension-ui';
 import { Button, Modal } from 'react-bootstrap';
@@ -11,27 +12,35 @@ class AddUserForm extends Component {
     initialValues: PropTypes.object,
     connections: PropTypes.array.isRequired,
     memberships: PropTypes.array.isRequired,
-    createMemberships: PropTypes.boolean,
-    getDictValue: React.PropTypes.func,
+    createMemberships: PropTypes.bool,
+    getDictValue: PropTypes.func,
     hasSelectedConnection: PropTypes.string,
     hasMembership: PropTypes.array,
-    onClose: React.PropTypes.func.isRequired,
-    handleSubmit: React.PropTypes.func.isRequired,
-    submitting: React.PropTypes.boolean,
-    customFields: React.PropTypes.array,
-    customFieldGetter: React.PropTypes.func.isRequired
+    onClose: PropTypes.func.isRequired,
+    handleSubmit: PropTypes.func.isRequired,
+    submitting: PropTypes.bool,
+    customFields: PropTypes.array,
+    customFieldGetter: PropTypes.func.isRequired,
+    languageDictionary: PropTypes.object,
   }
 
-  renderUsername(connections, hasSelectedConnection) {
-    const selectedConnection = _.find(connections, (conn) => conn.name === hasSelectedConnection);
-    const requireUsername = selectedConnection && selectedConnection.options ? selectedConnection.options.requires_username : false;
-    if (!requireUsername && (!this.props.initialValues || !this.props.initialValues.username)) {
-      return null;
+  renderUsername(connections, hasSelectedConnection, customFields) {
+    const usernameField = _.find(customFields, { property: 'username' });
+    const displayField = !usernameField || usernameField.create;
+
+    if (displayField) {
+      const selectedConnection = _.find(connections, (conn) => conn.name === hasSelectedConnection);
+      const requireUsername = selectedConnection && selectedConnection.options ? selectedConnection.options.requires_username : false;
+      if (!requireUsername && (!this.props.initialValues || !this.props.initialValues.username)) {
+        return null;
+      }
+
+      return (
+        <Field label={usernameField && usernameField.label || "Username"} name="username" component={InputText}/>
+      );
     }
 
-    return (
-      <Field label="Username" name="username" component={InputText} />
-    );
+    return null;
   }
 
   renderMemberships(hasMembership, memberships, createMemberships) {
@@ -45,24 +54,18 @@ class AddUserForm extends Component {
     }
 
     return (
-      <div>
-        <label className="control-label col-xs-3" htmlFor="memberships">
-          {this.props.getDictValue('memberships', 'Memberships')}
-        </label>
-        <div className="col-xs-9" style={{ padding: '0 0 15px 7px' }}>
-          <Field
-            name="memberships"
-            id="memberships"
-            component={Multiselect}
-            loadOptions={(input, callback) => {
-              callback(null, {
-                options: allMemberships.map(m => ({ value: m, label: m })),
-                complete: true
-              });
-            }}
-          />
-        </div>
-      </div>
+      <Field
+        name="memberships"
+        id="memberships"
+        label={this.props.getDictValue('memberships', 'Memberships')}
+        component={Multiselect}
+        loadOptions={(input, callback) => {
+          callback(null, {
+            options: allMemberships.map(m => ({ value: m, label: m })),
+            complete: true
+          });
+        }}
+      />
     );
   }
 
@@ -72,13 +75,13 @@ class AddUserForm extends Component {
     }
 
     const connectionUserField = _.find(customFields, { property: 'connection' });
-    const displayConnectionUserField = connectionUserField && !!connectionUserField.create;
+    const displayConnectionUserField = !connectionUserField || connectionUserField.create;
 
     if (displayConnectionUserField) {
       const options = connections.map(conn => ({ value: conn.name, text: conn.name }));
       return (
         <Field
-          label="Connection"
+          label={connectionUserField && connectionUserField.label || "Connection"}
           name="connection"
           id="connection"
           component={InputCombo}
@@ -93,19 +96,20 @@ class AddUserForm extends Component {
 
   renderPassword(customFields) {
     const passwordField = _.find(customFields, { property: 'password' });
-    const displayField = !passwordField || !!passwordField.create;
+    const repeatPasswordField = _.find(customFields, { property: 'repeatPassword' });
+    const displayField = !passwordField || passwordField.create;
 
     if (displayField) {
       return (
         <div>
           <Field
-            label="Password"
+            label={passwordField && passwordField.label || "Password"}
             name="password"
             type="password"
             component={InputText}
           />
           <Field
-            label="Repeat Password"
+            label={repeatPasswordField && repeatPasswordField.label || "Repeat Password"}
             name="repeatPassword"
             type="password"
             component={InputText}
@@ -118,12 +122,12 @@ class AddUserForm extends Component {
 
   renderEmail(customFields) {
     const emailField = _.find(customFields, { property: 'email' });
-    const displayField = emailField && !!emailField.create;
+    const displayField = !emailField || emailField.create;
 
     if (displayField) {
       return (
         <Field
-          label="Email"
+          label={ emailField && emailField.label || "Email"}
           name="email"
           component={InputText}
         />
@@ -144,8 +148,7 @@ class AddUserForm extends Component {
       customFields
     } = this.props;
 
-    const connectionUserField = _.find(this.props.customFields, { property: 'connection' });
-    const displayConnectionUserField = connectionUserField && !!connectionUserField.display;
+    const languageDictionary = this.props.languageDictionary || {};
 
     return (
       <div>
@@ -154,18 +157,18 @@ class AddUserForm extends Component {
           <div className="form-horizontal">
             {this.renderMemberships(hasMembership, memberships, createMemberships)}
             {this.renderEmail(customFields)}
-            {this.renderUsername(connections, hasSelectedConnection)}
+            {this.renderUsername(connections, hasSelectedConnection, customFields)}
             {this.renderPassword(customFields)}
-            {this.renderConnections(connections, customFields) }
-            <UserCustomFormFields customFieldGetter={this.props.customFieldGetter} customFields={customFields} />
+            {this.renderConnections(connections, customFields)}
+            <UserCustomFormFields customFieldGetter={this.props.customFieldGetter} customFields={customFields}/>
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button bsSize="large" bsStyle="transparent" disabled={submitting} onClick={this.props.onClose}>
-            Cancel
+          <Button bsSize="large" bsStyle="default" disabled={submitting} onClick={this.props.onClose}>
+            {languageDictionary.cancelButtonText || 'Cancel'}
           </Button>
           <Button bsSize="large" bsStyle="primary" disabled={submitting} onClick={this.props.handleSubmit}>
-            {this.props.method || 'Create'}
+            {languageDictionary.createButtonText || 'Create'}
           </Button>
         </Modal.Footer>
       </div>
