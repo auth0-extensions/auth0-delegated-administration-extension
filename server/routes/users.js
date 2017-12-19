@@ -9,6 +9,7 @@ import config from '../lib/config';
 import logger from '../lib/logger';
 import { verifyUserAccess } from '../lib/middlewares';
 import removeGuardian from '../lib/removeGuardian';
+import { getUserBlocks, removeUserBlocks } from '../lib/userBlocks';
 
 function executeWriteHook(req, scriptManager, userFields) {
   const user = req.targetUser;
@@ -152,7 +153,14 @@ export default (storage, scriptManager) => {
           memberships: []
         };
       })
-      .then(data => res.json(data))
+      .then((data) => {
+        managementApi.getAccessTokenCached(config('AUTH0_ISSUER_DOMAIN'), config('AUTH0_CLIENT_ID'), config('AUTH0_CLIENT_SECRET'))
+          .then(token => getUserBlocks(token, req.params.id))
+          .then((blocked) => {
+            data.user.blocked = (data.user.blocked || blocked);
+            return res.json(data);
+          });
+      })
       .catch((err) => {
         logger.error('Failed to get user because: ', err);
         next(err);
@@ -390,6 +398,8 @@ export default (storage, scriptManager) => {
    */
   api.put('/:id/unblock', verifyUserAccess('unblock:user', scriptManager), (req, res, next) => {
     req.auth0.users.update({ id: req.params.id }, { blocked: false })
+      .then(() => managementApi.getAccessTokenCached(config('AUTH0_ISSUER_DOMAIN'), config('AUTH0_CLIENT_ID'), config('AUTH0_CLIENT_SECRET')))
+      .then(token => removeUserBlocks(token, req.params.id))
       .then(() => res.sendStatus(204))
       .catch(next);
   });
