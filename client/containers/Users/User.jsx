@@ -9,7 +9,8 @@ import './User.css';
 import * as dialogs from './Dialogs';
 import TabsHeader from '../../components/TabsHeader';
 import LogDialog from '../../components/Logs/LogDialog';
-import { UserActions, UserDevices, UserHeader, UserProfile, UserLogs, UserInfo } from '../../components/Users';
+import LogsTable from '../../components/Logs/LogsTable';
+import { UserActions, UserDevices, UserHeader, UserProfile, UserInfo } from '../../components/Users';
 
 import getUserDatabaseConnections from '../../selectors/getUserDatabaseConnections';
 
@@ -113,9 +114,9 @@ export default connectContainer(class extends Component {
                   loading={log.get('loading')} log={log.get('record')}
                   logId={log.get('logId')}
                 />
-                <UserLogs
+                <LogsTable
                   onOpen={this.props.fetchLog} loading={logs.get('loading')}
-                  logs={logs.get('records')} user={user.get('record')}
+                  logs={logs.get('records')}
                   error={logs.get('error')}
                 />
               </Tab>

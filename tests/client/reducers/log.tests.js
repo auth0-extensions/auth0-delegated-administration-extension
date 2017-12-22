@@ -89,7 +89,8 @@ describe('log reducer', () => {
         logId: 'test_2',
         record: {
           _id: 'test_2',
-          type: 'Unknown Log Type: custom_type'
+          type: 'Unknown Log Type: custom_type',
+          shortType: 'custom_type'
         }
       }
     );
@@ -120,7 +121,8 @@ describe('log reducer', () => {
         logId: 'test_2',
         record: {
           _id: 'test_2',
-          type: 'Success Exchange'
+          type: 'Success Exchange',
+          shortType: 'seacft'
         }
       }
     );
@@ -151,7 +153,8 @@ describe('log reducer', () => {
         logId: 'test_2',
         record: {
           _id: 'test_2',
-          type: 'Success Exchange'
+          type: 'Success Exchange',
+          shortType: 'seacft'
         }
       }
     );

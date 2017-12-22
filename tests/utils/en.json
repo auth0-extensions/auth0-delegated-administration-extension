@@ -13,9 +13,10 @@
   "logConnectionColumnHeader": "Connection",
   "logApplicationColumnHeader": "Application",
 
-  "cancelButtonText": "CancelButton",
-  "updateButtonText": "UpdateButton",
-  "createButtonText": "UpdateButton",
+  "cancelButtonText": "Cancel",
+  "updateButtonText": "Update",
+  "createButtonText": "Create",
+  "closeButtonText": "Close",
 
   "blockUserMenuItemText": "Block User",
   "changeEmailMenuItemText": "Change Email",
@@ -26,5 +27,8 @@
   "resendVerificationEmailMenuItemText": "Resend Verification Email",
   "resetPasswordMenuItemText": "Reset Password",
   "changeUsernameMenuItemText": "Change Username",
-  "unblockUserMenuItemText": "Unblock User"
+  "unblockUserMenuItemText": "Unblock User",
+
+  "blockDialogMessage": "Do you really want to block {username}? After doing so the user will not be able to log in anymore.",
+  "blockDialogTitle": "Block User?"
 }

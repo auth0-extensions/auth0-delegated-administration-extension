@@ -5,10 +5,10 @@ import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import { fromJS } from 'immutable';
 
-import UserLogs from '../../../../client/components/Users/UserLogs';
+import LogsTable from '../../../../client/components/Logs/LogsTable';
 import { TableRow, TableIconCell, TableTextCell, TableHeader, TableColumn } from 'auth0-extension-ui';
 
-describe('#Client-Components-UserLogs', () => {
+describe('#Client-Components-Logs-LogsTable', () => {
   const aDayAgo = moment().add(-1, 'days');
 
   const success = {
@@ -28,7 +28,7 @@ describe('#Client-Components-UserLogs', () => {
 
   const renderComponent = (logs, languageDictionary) => {
     return shallow(
-      <UserLogs
+      <LogsTable
         loading={false}
         error={null}
         onOpen={() => 'onOpen'}
@@ -133,4 +133,19 @@ describe('#Client-Components-UserLogs', () => {
       text: ['fapi', 'some description', 'il y a un jour', 'Not Applicable', 'Not Applicable']
     });
   });
+
+  it('should render with no logs', () => {
+    const component = renderComponent([]);
+
+    expect(component.length).to.be.greaterThan(0);
+    expect(component.childAt(0).text()).to.equal('No logs found');
+  });
+
+  it('should render with no logs languageDictionary', () => {
+    const component = renderComponent([], { noLogsMessage: 'some no logs message' });
+
+    expect(component.length).to.be.greaterThan(0);
+    expect(component.childAt(0).text()).to.equal('some no logs message');
+  });
+
 });

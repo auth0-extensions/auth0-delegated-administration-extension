@@ -3,7 +3,6 @@ import Adapter from 'enzyme-adapter-react-15';
 import { JSDOM } from 'jsdom';
 import auth0 from 'auth0-js';
 
-
 const jsdom = new JSDOM('<!doctype html><html><body></body></html>');
 const { window } = jsdom;
 

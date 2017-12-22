@@ -3,7 +3,6 @@ export UserFieldsChangeForm from './UserFieldsChangeForm';
 export UserDevices from './UserDevices';
 export UserForm from './UserForm';
 export UserHeader from './UserHeader';
-export UserLogs from './UserLogs';
 export UserOverview from './UserOverview';
 export UserProfile from './UserProfile';
 export UserInfo from './UserInfo';

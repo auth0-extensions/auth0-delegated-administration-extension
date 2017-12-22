@@ -44,6 +44,7 @@ export const log = createReducer(fromJS(initialState), { // eslint-disable-line 
       };
     }
 
+    data.log.shortType = data.log.type;
     data.log.type = logType.event;
 
     return state.merge({
