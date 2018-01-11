@@ -12,6 +12,7 @@ export default connectContainer(class extends Component {
     userCreate: state.userCreate,
     accessLevel: state.accessLevel,
     connections: state.connections,
+    languageDictionary: state.languageDictionary
   });
 
   static actionsToProps = {
@@ -31,7 +32,11 @@ export default connectContainer(class extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.userCreate !== this.props.userCreate || nextProps.connections !== this.props.connections || nextProps.accessLevel !== this.props.accessLevel || nextProps.userFields !== this.props.userFields;
+    return nextProps.userCreate !== this.props.userCreate ||
+      nextProps.languageDictionary !== this.props.languageDictionary ||
+      nextProps.connections !== this.props.connections ||
+      nextProps.accessLevel !== this.props.accessLevel ||
+      nextProps.userFields !== this.props.userFields;
   }
 
   onSubmit = (user) => {
@@ -43,7 +48,7 @@ export default connectContainer(class extends Component {
     const connections = this.props.connections.toJS();
     const accessLevel = this.props.accessLevel.get('record').toJS();
 
-    const languageDictionary = this.props.languageDictionary || {};
+    const languageDictionary = this.props.languageDictionary.get('record').toJS();
 
     return (
       <Modal show={record !== null} className="modal-overflow-visible" onHide={this.props.cancelCreateUser}>

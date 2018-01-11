@@ -9,18 +9,18 @@ import { Confirm } from 'auth0-extension-ui';
 
 import fakeStore from '../../../../utils/fakeStore';
 
-import EmailChangeDialog from '../../../../../client/containers/Users/Dialogs/EmailChangeDialog';
+import UsernameChangeDialog from '../../../../../client/containers/Users/Dialogs/UsernameChangeDialog';
 
 let wrapper = undefined;
 
 const wrapperMount = (...args) => (wrapper = mount(...args));
 
-describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
+describe('#Client-Containers-Users-Dialogs-UsernameChangeDialog', () => {
 
   const renderComponent = (options, languageDictionary) => {
     options = options || {};
     const initialState = {
-      emailChange: fromJS({
+      usernameChange: fromJS({
         userName: options.username,
         error: null,
         requesting: true,
@@ -33,9 +33,9 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
     };
     return wrapperMount(
       <Provider store={fakeStore(initialState)}>
-        <EmailChangeDialog
-          cancelEmailChange={() => null}
-          changeEmail={() => null}
+        <UsernameChangeDialog
+          cancelUsernameChange={() => null}
+          usernameChange={() => null}
         />
       </Provider>
     );
@@ -57,16 +57,16 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
 
   const checkConnectionLabel = (component, connectionLabel) => {
     if (connectionLabel) {
-      expect(document.querySelector('#email-change-connection-label')
+      expect(document.querySelector('#username-change-connection-label')
         .textContent).to.equal(connectionLabel);
     } else {
-      expect(document.querySelector('#email-change-connection-label')).to.be.null;
+      expect(document.querySelector('#username-change-connection-label')).to.be.null;
     }
   };
 
-  const checkEmailLabel = (component, emailLabel) => {
-    expect(document.querySelector('#email-change-email-label')
-      .textContent).to.equal(emailLabel);
+  const checkUsernameLabel = (component, usernameLabel) => {
+    expect(document.querySelector('#username-change-username-label')
+      .textContent).to.equal(usernameLabel);
   };
 
   const checkConfirm = (component, title, languageDictionary) => {
@@ -79,34 +79,34 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
   it('should render', () => {
     const component = renderComponent({username:'bill'});
 
-    checkText(component, 'Do you really want to change the email for ', 'bill', '?');
+    checkText(component, 'Do you really want to change the username for ', 'bill', '?');
     checkConnectionLabel(component, 'Connection');
-    checkEmailLabel(component, 'Email');
-    checkConfirm(component, 'Change Email?');
+    checkUsernameLabel(component, 'Username');
+    checkConfirm(component, 'Change Username?', {});
   });
 
   it('should render not applicable language dictionary', () => {
     const component = renderComponent({username:'bill'}, { someKey: 'someValue' });
 
-    checkText(component, 'Do you really want to change the email for ', 'bill', '?');
+    checkText(component, 'Do you really want to change the username for ', 'bill', '?');
     checkConnectionLabel(component, 'Connection');
-    checkEmailLabel(component, 'Email');
-    checkConfirm(component, 'Change Email?');
+    checkUsernameLabel(component, 'Username');
+    checkConfirm(component, 'Change Username?', { someKey: 'someValue' });
   });
 
   it('should render not applicable language dictionary', () => {
     const component = renderComponent({username:'bill'}, { someKey: 'someValue' });
 
-    checkText(component, 'Do you really want to change the email for ', 'bill', '?');
+    checkText(component, 'Do you really want to change the username for ', 'bill', '?');
     checkConnectionLabel(component, 'Connection');
-    checkEmailLabel(component, 'Email');
-    checkConfirm(component, 'Change Email?');
+    checkUsernameLabel(component, 'Username');
+    checkConfirm(component, 'Change Username?', { someKey: 'someValue' });
   });
 
   it('should render applicable language dictionary', () => {
     const languageDictionary = {
-      changeEmailMessage: 'Some pre message {username} ignore second {username}',
-      changeEmailTitle: 'Change Email Title'
+      changeUsernameMessage: 'Some pre message {username} ignore second {username}',
+      changeUsernameTitle: 'Change Username Title'
     };
     const component = renderComponent({username:'bob'}, languageDictionary);
 
@@ -115,7 +115,7 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
 
   it('should render applicable language dictionary spaces in username', () => {
     const languageDictionary = {
-      changeEmailMessage: 'Some other message {   username    }something else'
+      changeUsernameMessage: 'Some other message {   username    }something else'
     };
     const component = renderComponent({username:'sally'}, languageDictionary);
 
@@ -124,7 +124,7 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
 
   it('should render applicable language dictionary no username', () => {
     const languageDictionary = {
-      changeEmailMessage: 'no username included: '
+      changeUsernameMessage: 'no username included: '
     };
     const component = renderComponent({username:'john'}, languageDictionary);
 
@@ -137,8 +137,8 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
         settings: {
           userFields: [
             {
-              property: 'email',
-              label: 'EmailLabel',
+              property: 'username',
+              label: 'UsernameLabel',
               edit: {}
             },
             {
@@ -161,8 +161,8 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
         settings: {
           userFields: [
             {
-              property: 'email',
-              label: 'EmailLabel',
+              property: 'username',
+              label: 'UsernameLabel',
               edit: {}
             },
             {
@@ -185,8 +185,8 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
         settings: {
           userFields: [
             {
-              property: 'email',
-              label: 'EmailLabel',
+              property: 'username',
+              label: 'UsernameLabel',
               edit: {}
             },
             {

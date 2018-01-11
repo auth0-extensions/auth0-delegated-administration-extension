@@ -43,7 +43,7 @@ export default class LogDialog extends Component {
         </Modal.Body>
         <Modal.Footer>
           <Button disabled={loading} onClick={onClose}>
-            <i className="icon icon-budicon-501"></i> {languageDictionary.closeButtonLabel || 'Close'}
+            <i className="icon icon-budicon-501"></i> {languageDictionary.closeButtonText || 'Close'}
           </Button>
         </Modal.Footer>
       </Modal>

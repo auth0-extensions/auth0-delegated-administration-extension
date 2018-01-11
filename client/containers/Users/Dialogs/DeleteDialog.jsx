@@ -8,7 +8,8 @@ import getDialogMessage from './getDialogMessage';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
-    userDelete: state.userDelete
+    userDelete: state.userDelete,
+    languageDictionary: state.languageDictionary
   });
 
   static actionsToProps = {
@@ -23,7 +24,8 @@ export default connectContainer(class extends Component {
   };
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.userDelete !== this.props.userDelete;
+    return nextProps.userDelete !== this.props.userDelete ||
+      nextProps.languageDictionary !== this.props.languageDictionary;
   }
 
   onConfirm = () => {
@@ -34,7 +36,7 @@ export default connectContainer(class extends Component {
     const { cancelDeleteUser } = this.props;
     const { userName, error, requesting, loading } = this.props.userDelete.toJS();
 
-    const languageDictionary = this.props.languageDictionary || {};
+    const languageDictionary = this.props.languageDictionary.get('record').toJS();
     const { preText, postText } = getDialogMessage(
       languageDictionary.deleteDialogMessage, 'username',
       {

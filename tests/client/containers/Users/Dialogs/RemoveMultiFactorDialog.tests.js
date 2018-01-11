@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { mount } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import { fromJS } from 'immutable';
@@ -10,17 +10,17 @@ import { Confirm } from 'auth0-extension-ui';
 
 import fakeStore from '../../../../utils/fakeStore';
 
-import DeleteDialog from '../../../../../client/containers/Users/Dialogs/DeleteDialog';
+import RemoveMultiFactorDialog from '../../../../../client/containers/Users/Dialogs/RemoveMultiFactorDialog';
 
 let wrapper = undefined;
 
-const wrapperMount = (...args) => (wrapper = mount(...args));
+const wrapperMount = (...args) => (wrapper = mount(...args))
 
-describe('#Client-Containers-Users-Dialogs-DeleteDialog', () => {
+describe('#Client-Containers-Users-Dialogs-RemoveMultiFactorDialog', () => {
 
   const renderComponent = (username, languageDictionary) => {
     const initialState = {
-      userDelete: fromJS({
+      mfa: fromJS({
         userName: username,
         error: null,
         requesting: true,
@@ -32,9 +32,8 @@ describe('#Client-Containers-Users-Dialogs-DeleteDialog', () => {
     };
     return wrapperMount(
       <Provider store={fakeStore(initialState)}>
-        <DeleteDialog
-          cancelDeleteUser={() => 'cancelDeleteUser'}
-          deleteUser={() => 'deleteUser'}
+        <RemoveMultiFactorDialog
+          cancelRemoveMultiFactor={() => null}
         />
       </Provider>
     );
@@ -64,18 +63,21 @@ describe('#Client-Containers-Users-Dialogs-DeleteDialog', () => {
   it('should render', () => {
     const component = renderComponent('bill');
 
-    checkText(component, 'Do you really want to delete ', 'bill', '? This will completely remove the user and cannot be undone.');
+    checkText(component, 
+      'Do you really want to remove the multi factor authentication settings for ', 
+      'bill', 
+      '? This will allow the user to authenticate and reconfigure a new device.');
   });
 
   it('should render not applicable language dictionary', () => {
     const component = renderComponent('bill', { someKey: 'someValue' });
 
-    checkText(component, 'Do you really want to delete ', 'bill', '? This will completely remove the user and cannot be undone.');
+    checkText(component, 'Do you really want to remove the multi factor authentication settings for ', 'bill', '? This will allow the user to authenticate and reconfigure a new device.');
   });
 
   it('should render applicable language dictionary', () => {
     const languageDictionary = {
-      deleteDialogMessage: 'Some pre message {username} ignore second {username}'
+      removeMultiFactorMessage: 'Some pre message {username} ignore second {username}'
     };
     const component = renderComponent('bob', languageDictionary);
 
@@ -84,7 +86,7 @@ describe('#Client-Containers-Users-Dialogs-DeleteDialog', () => {
 
   it('should render applicable language dictionary spaces in username', () => {
     const languageDictionary = {
-      deleteDialogMessage: 'Some other message {   username    }something else'
+      removeMultiFactorMessage: 'Some other message {   username    }something else'
     };
     const component = renderComponent('sally', languageDictionary);
 
@@ -93,10 +95,22 @@ describe('#Client-Containers-Users-Dialogs-DeleteDialog', () => {
 
   it('should render applicable language dictionary no username', () => {
     const languageDictionary = {
-      deleteDialogMessage: 'no username included: '
+      removeMultiFactorMessage: 'no username included: '
     };
     const component = renderComponent('john', languageDictionary);
 
     checkText(component, 'no username included: ', 'john', '');
+  });
+
+  it('should render confirm gets languageDictionary', () => {
+    const languageDictionary = { someKey: 'someValue',
+      removeMultiFactorTitle: 'Remove Multifactor Alternate Title' };
+    const component = renderComponent('june', languageDictionary);
+    checkConfirm(component, 'Remove Multifactor Alternate Title', languageDictionary);
+  });
+
+  it('should render confirm gets null languageDictionary', () => {
+    const component = renderComponent('jackie');
+    checkConfirm(component, 'Remove Multi Factor Authentication?', {});
   });
 });

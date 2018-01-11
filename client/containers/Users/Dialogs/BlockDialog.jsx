@@ -8,7 +8,8 @@ import getDialogMessage from './getDialogMessage';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
-    block: state.block
+    block: state.block,
+    languageDictionary: state.languageDictionary
   });
 
   static actionsToProps = {
@@ -23,7 +24,8 @@ export default connectContainer(class extends Component {
   };
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.block !== this.props.block;
+    return nextProps.block !== this.props.block ||
+      nextProps.languageDictionary !== this.props.languageDictionary;
   }
 
   onConfirm = () => {
@@ -34,7 +36,7 @@ export default connectContainer(class extends Component {
     const { cancelBlockUser } = this.props;
     const { userName, error, requesting, loading } = this.props.block.toJS();
 
-    const languageDictionary = this.props.languageDictionary || {};
+    const languageDictionary = this.props.languageDictionary.get('record').toJS();
 
     const { preText, postText } = getDialogMessage(
       languageDictionary.blockDialogMessage, 'username',

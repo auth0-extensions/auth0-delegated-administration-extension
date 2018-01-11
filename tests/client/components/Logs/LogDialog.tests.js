@@ -110,7 +110,7 @@ describe('#Client-Components-Logs-LogDialog', () => {
 
   it('should render language dictionary seccft', () => {
     const languageDictionary = {
-      closeButtonLabel: 'Close Me',
+      closeButtonText: 'Close Me',
       logDialogTitleText: 'LogTextz',
       logTypes: {
         'seccft': {
@@ -129,7 +129,7 @@ describe('#Client-Components-Logs-LogDialog', () => {
 
   it('should render language dictionary customLogRecord', () => {
     const languageDictionary = {
-      closeButtonLabel: 'Close Me',
+      closeButtonText: 'Close Me',
       logDialogTitleText: 'LogTextz',
       logDialogDefaultLogRecordText: 'Log Record Text',
       logTypes: {

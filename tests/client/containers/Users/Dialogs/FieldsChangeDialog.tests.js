@@ -4,42 +4,35 @@ import { mount } from 'enzyme';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import { fromJS } from 'immutable';
-import { Modal } from 'react-bootstrap';
-
-import { Confirm } from 'auth0-extension-ui';
 
 import fakeStore from '../../../../utils/fakeStore';
 
-import CreateDialog from '../../../../../client/containers/Users/Dialogs/CreateDialog';
+import FieldsChangeDialog from '../../../../../client/containers/Users/Dialogs/FieldsChangeDialog';
 
 let wrapper = undefined;
 
 const wrapperMount = (...args) => (wrapper = mount(...args))
 
-describe('#Client-Containers-Users-Dialogs-CreateDialog', () => {
+describe('#Client-Containers-Users-Dialogs-FieldsChangeDialog', () => {
 
   const renderComponent = (languageDictionary) => {
     const initialState = {
-      userCreate: fromJS({
+      fieldsChange: fromJS({
+        userId: 1,
+        record: {},
         error: null,
-        record: { name: 'bill' },
+        requesting: true,
         loading: false
       }),
       languageDictionary: fromJS({
         record: languageDictionary || {}
-      }),
-      accessLevel: fromJS({
-        record: {}
-      }),
-      connections: fromJS({ records: [{ name: 'connA' }] })
+      })
     };
     return wrapperMount(
       <Provider store={fakeStore(initialState)}>
-        <CreateDialog
-          createUser={() => null}
-          getDictValue={() => null}
-          cancelCreateUser={() => null}
-          userFields={[]}
+        <FieldsChangeDialog
+          cancelChangeFields={() => null}
+          changeFields={() => null}
         />
       </Provider>
     );
@@ -62,15 +55,15 @@ describe('#Client-Containers-Users-Dialogs-CreateDialog', () => {
   it('should render', () => {
     const component = renderComponent();
 
-    checkTitle(component, 'Create User')
+    checkTitle(component, 'Change Profile')
   });
 
   it('should render using language dictionary', () => {
     const languageDictionary = {
-      createDialogTitle: 'Create Dialog Title'
+      changeProfileDialogTitle: 'Change Profile Title'
     };
     const component = renderComponent(languageDictionary);
 
-    checkTitle(component, 'Create Dialog Title', languageDictionary)
+    checkTitle(component, 'Change Profile Title', languageDictionary)
   });
 });

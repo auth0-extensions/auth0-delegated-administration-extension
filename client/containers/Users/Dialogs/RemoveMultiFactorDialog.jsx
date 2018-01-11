@@ -3,11 +3,13 @@ import connectContainer from 'redux-static';
 
 import { userActions } from '../../../actions';
 import { Error, Confirm } from 'auth0-extension-ui';
+import getDialogMessage from './getDialogMessage';
 
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
-    mfa: state.mfa
+    mfa: state.mfa,
+    languageDictionary: state.languageDictionary
   });
 
   static actionsToProps = {
@@ -21,7 +23,8 @@ export default connectContainer(class extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.mfa !== this.props.mfa;
+    return nextProps.mfa !== this.props.mfa ||
+      nextProps.languageDictionary !== this.props.languageDictionary;
   }
 
   onConfirm = () => {
@@ -32,12 +35,26 @@ export default connectContainer(class extends Component {
     const { cancelRemoveMultiFactor } = this.props;
     const { userName, error, requesting, loading } = this.props.mfa.toJS();
 
+    const languageDictionary = this.props.languageDictionary.get('record').toJS();
+    const { preText, postText } = getDialogMessage(
+      languageDictionary.removeMultiFactorMessage, 'username',
+      {
+        preText: 'Do you really want to remove the multi factor authentication settings for ',
+        postText: '? This will allow the user to authenticate and reconfigure a new device.'
+      }
+    );
+
     return (
-      <Confirm title="Remove Multi Factor Authentication?" show={requesting} loading={loading} onCancel={cancelRemoveMultiFactor} onConfirm={this.onConfirm}>
+      <Confirm
+        title={languageDictionary.removeMultiFactorTitle || "Remove Multi Factor Authentication?" }
+        show={requesting}
+        loading={loading}
+        onCancel={cancelRemoveMultiFactor}
+        languageDictionary={languageDictionary}
+        onConfirm={this.onConfirm}>
         <Error message={error} />
         <p>
-          Do you really want to remove the multi factor authentication settings for <strong>{userName}</strong>?
-          This will allow the user to authenticate and reconfigure a new device.
+          {preText}<strong>{userName}</strong>{postText}
         </p>
       </Confirm>
     );

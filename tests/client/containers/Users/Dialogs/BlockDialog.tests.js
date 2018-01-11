@@ -15,7 +15,6 @@ import BlockDialog from '../../../../../client/containers/Users/Dialogs/BlockDia
 let wrapper = undefined;
 
 const wrapperMount = (...args) => (wrapper = mount(...args))
-const wrapperShallow = (...args) => (wrapper = shallow(...args))
 
 describe('#Client-Containers-Users-Dialogs-BlockDialog', () => {
 
@@ -26,6 +25,9 @@ describe('#Client-Containers-Users-Dialogs-BlockDialog', () => {
         error: null,
         requesting: true,
         loading: false
+      }),
+      languageDictionary: fromJS({
+        record: languageDictionary || {}
       })
     };
     return wrapperMount(
@@ -33,7 +35,6 @@ describe('#Client-Containers-Users-Dialogs-BlockDialog', () => {
         <BlockDialog
           cancelBlockUser={() => 'cancelBlockUser'}
           blockUser={() => 'blockUser'}
-          languageDictionary={languageDictionary}
         />
       </Provider>
     );
@@ -49,11 +50,6 @@ describe('#Client-Containers-Users-Dialogs-BlockDialog', () => {
   });
 
   const checkText = (component, preText, username, postText) => {
-    const confirm = component.find(Confirm);
-    const kids = confirm.children();
-    const modal = component.find(Modal);
-    const modalBody = component.find(Modal.Body);
-
     expect(document.querySelector('p')
       .textContent).to.equal(`${preText}${username}${postText}`);
   };

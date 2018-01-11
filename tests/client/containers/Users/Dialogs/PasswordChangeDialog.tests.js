@@ -9,18 +9,18 @@ import { Confirm } from 'auth0-extension-ui';
 
 import fakeStore from '../../../../utils/fakeStore';
 
-import EmailChangeDialog from '../../../../../client/containers/Users/Dialogs/EmailChangeDialog';
+import PasswordChangeDialog from '../../../../../client/containers/Users/Dialogs/PasswordChangeDialog';
 
 let wrapper = undefined;
 
 const wrapperMount = (...args) => (wrapper = mount(...args));
 
-describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
+describe('#Client-Containers-Users-Dialogs-PasswordChangeDialog', () => {
 
   const renderComponent = (options, languageDictionary) => {
     options = options || {};
     const initialState = {
-      emailChange: fromJS({
+      passwordChange: fromJS({
         userName: options.username,
         error: null,
         requesting: true,
@@ -33,9 +33,9 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
     };
     return wrapperMount(
       <Provider store={fakeStore(initialState)}>
-        <EmailChangeDialog
-          cancelEmailChange={() => null}
-          changeEmail={() => null}
+        <PasswordChangeDialog
+          cancelPasswordChange={() => null}
+          changePassword={() => null}
         />
       </Provider>
     );
@@ -57,16 +57,27 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
 
   const checkConnectionLabel = (component, connectionLabel) => {
     if (connectionLabel) {
-      expect(document.querySelector('#email-change-connection-label')
-        .textContent).to.equal(connectionLabel);
+      const label = document.querySelector('#password-change-connection-label');
+      expect(label).to.not.be.null;
+      expect(label.textContent).to.equal(connectionLabel);
     } else {
-      expect(document.querySelector('#email-change-connection-label')).to.be.null;
+      expect(document.querySelector('#password-change-connection-label')).to.be.null;
     }
   };
 
   const checkEmailLabel = (component, emailLabel) => {
-    expect(document.querySelector('#email-change-email-label')
+    expect(document.querySelector('#password-change-email-label')
       .textContent).to.equal(emailLabel);
+  };
+
+  const checkPasswordLabel = (component, passwordLabel) => {
+    expect(document.querySelector('#password-change-password-label')
+      .textContent).to.equal(passwordLabel);
+  };
+
+  const checkRepeatPasswordLabel = (component, passwordLabel) => {
+    expect(document.querySelector('#password-change-repeat-password-label')
+      .textContent).to.equal(passwordLabel);
   };
 
   const checkConfirm = (component, title, languageDictionary) => {
@@ -74,48 +85,46 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
     expect(confirm.length).to.equal(1);
     expect(confirm.prop('languageDictionary')).to.deep.equal(languageDictionary);
     expect(confirm.prop('title')).to.deep.equal(title);
-  }
+  };
 
   it('should render', () => {
     const component = renderComponent({username:'bill'});
 
-    checkText(component, 'Do you really want to change the email for ', 'bill', '?');
+    checkText(component, 'Do you really want to reset the password for ', 'bill', '? You\'ll need a safe way to communicate the new password to your user, never send the user this new password in clear text.');
     checkConnectionLabel(component, 'Connection');
     checkEmailLabel(component, 'Email');
-    checkConfirm(component, 'Change Email?');
+    checkPasswordLabel(component, 'Password');
+    checkRepeatPasswordLabel(component, 'Repeat Password');
+    checkConfirm(component, 'Change Password?', {});
   });
 
   it('should render not applicable language dictionary', () => {
-    const component = renderComponent({username:'bill'}, { someKey: 'someValue' });
+    const languageDictionary = { someKey: 'someValue' };
+    const component = renderComponent({username:'bill'}, languageDictionary);
 
-    checkText(component, 'Do you really want to change the email for ', 'bill', '?');
+    checkText(component, 'Do you really want to reset the password for ', 'bill', '? You\'ll need a safe way to' +
+      ' communicate the new password to your user, never send the user this new password in clear text.');
     checkConnectionLabel(component, 'Connection');
     checkEmailLabel(component, 'Email');
-    checkConfirm(component, 'Change Email?');
-  });
-
-  it('should render not applicable language dictionary', () => {
-    const component = renderComponent({username:'bill'}, { someKey: 'someValue' });
-
-    checkText(component, 'Do you really want to change the email for ', 'bill', '?');
-    checkConnectionLabel(component, 'Connection');
-    checkEmailLabel(component, 'Email');
-    checkConfirm(component, 'Change Email?');
+    checkPasswordLabel(component, 'Password');
+    checkRepeatPasswordLabel(component, 'Repeat Password');
+    checkConfirm(component, 'Change Password?', languageDictionary);
   });
 
   it('should render applicable language dictionary', () => {
     const languageDictionary = {
-      changeEmailMessage: 'Some pre message {username} ignore second {username}',
-      changeEmailTitle: 'Change Email Title'
+      changePasswordMessage: 'Some pre message {username} ignore second {username}',
+      changePasswordTitle: 'Change Password Title'
     };
     const component = renderComponent({username:'bob'}, languageDictionary);
 
     checkText(component, 'Some pre message ', 'bob', ' ignore second {username}');
+    checkConfirm(component, 'Change Password Title', languageDictionary);
   });
 
   it('should render applicable language dictionary spaces in username', () => {
     const languageDictionary = {
-      changeEmailMessage: 'Some other message {   username    }something else'
+      changePasswordMessage: 'Some other message {   username    }something else'
     };
     const component = renderComponent({username:'sally'}, languageDictionary);
 
@@ -124,7 +133,7 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
 
   it('should render applicable language dictionary no username', () => {
     const languageDictionary = {
-      changeEmailMessage: 'no username included: '
+      changePasswordMessage: 'no username included: '
     };
     const component = renderComponent({username:'john'}, languageDictionary);
 
@@ -137,11 +146,6 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
         settings: {
           userFields: [
             {
-              property: 'email',
-              label: 'EmailLabel',
-              edit: {}
-            },
-            {
               property: 'connection',
               label: 'ConnectionLabel',
               edit: false
@@ -152,7 +156,6 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
     };
     const component = renderComponent({username:'john', settings});
     checkConnectionLabel(component);
-
   });
 
   it('should use userFields for label names', () => {
@@ -166,6 +169,16 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
               edit: {}
             },
             {
+              property: 'repeatPassword',
+              label: 'Repeat PasswordLabel',
+              edit: {}
+            },
+            {
+              property: 'password',
+              label: 'PasswordLabel',
+              edit: {}
+            },
+            {
               property: 'connection',
               label: 'ConnectionLabel',
               edit: {}
@@ -176,7 +189,9 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
     };
     const component = renderComponent({username:'john', settings});
     checkConnectionLabel(component, 'ConnectionLabel');
-
+    checkEmailLabel(component, 'EmailLabel');
+    checkPasswordLabel(component, 'PasswordLabel');
+    checkRepeatPasswordLabel(component, 'Repeat PasswordLabel');
   });
 
   it('should handle null label name in user fields', () => {
@@ -185,8 +200,15 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
         settings: {
           userFields: [
             {
+              property: 'password',
+              edit: {}
+            },
+            {
+              property: 'repeatPassword',
+              edit: {}
+            },
+            {
               property: 'email',
-              label: 'EmailLabel',
               edit: {}
             },
             {
@@ -199,6 +221,8 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
     };
     const component = renderComponent({username:'john', settings});
     checkConnectionLabel(component, 'Connection');
-
+    checkEmailLabel(component, 'Email');
+    checkPasswordLabel(component, 'Password');
+    checkRepeatPasswordLabel(component, 'Repeat Password');
   });
 });

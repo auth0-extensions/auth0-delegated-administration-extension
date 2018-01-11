@@ -10,7 +10,8 @@ import getDialogMessage from './getDialogMessage';
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     emailChange: state.emailChange,
-    settings: state.settings
+    settings: state.settings,
+    languageDictionary: state.languageDictionary
   });
 
   static actionsToProps = {
@@ -24,7 +25,8 @@ export default connectContainer(class extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.emailChange !== this.props.emailChange;
+    return nextProps.languageDictionary !== this.props.languageDictionary ||
+      nextProps.emailChange !== this.props.emailChange;
   }
 
   onConfirm = () => {
@@ -53,7 +55,7 @@ export default connectContainer(class extends Component {
 
     const userFields = _.get(this.props.settings.toJS(), 'record.settings.userFields', []);
 
-    const languageDictionary = this.props.languageDictionary || {};
+    const languageDictionary = this.props.languageDictionary.get('record').toJS();
     const { preText, postText } = getDialogMessage(
       languageDictionary.changeEmailMessage, 'username',
       {
