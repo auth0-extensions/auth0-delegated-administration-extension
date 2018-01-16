@@ -115,7 +115,7 @@ describe('#Client-Containers-Users-Users', () => {
 
   it('should render applicable language dictionary', () => {
     const languageDictionary = {
-      createUsersButtonText: 'Create User Text',
+      createUserButtonText: 'Create User Text',
       usersTitle: 'Users Title'
     };
     const component = renderComponent(languageDictionary);

@@ -99,7 +99,7 @@ class Users extends Component {
             {(connections.length) ?
               <button id="create-user-button" className="btn btn-success pull-right new" onClick={this.createUser}>
                 <i className="icon-budicon-473"></i>
-                {languageDictionary.createUsersButtonText || 'Create User'}
+                {languageDictionary.createUserButtonText || 'Create User'}
               </button>
               : ''}
           </div>
