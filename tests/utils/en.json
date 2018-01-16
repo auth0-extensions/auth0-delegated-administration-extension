@@ -11,6 +11,9 @@
   "configurationMenuItemText": "Configuration",
   "logoutMenuItemText": "Logout",
 
+  "userUsersTabTitle": "Users",
+  "userLogsTabTitle": "Logs",
+
   "logEventColumnHeader": "Event",
   "logDescriptionColumnHeader": "Description",
   "logDateColumnHeader": "Date",
@@ -67,6 +70,21 @@
   "unblockDialogTitle": "Unblock User?",
 
   "changeUsernameMessage": "Do you really want to change the username for {username}?",
-  "changeUsernameTitle": "Change Username?"
+  "changeUsernameTitle": "Change Username?",
+
+  "userUserInfoTabTitle": "User Info",
+  "userDevicesTabTitle": "Devices",
+  "userLogsTabTitle": "Logs",
+  "userProfileTabTitle": "Profile",
+  "userTitle": "User Details",
+
+  "createUsersButtonText": "Create User",
+  "usersTitle": "Users",
+
+  "loginErrorTitle": "Login Error",
+  "loginErrorButtonText": "Login",
+  
+  "logsRefreshButtonText": "Refresh",
+  "logsLoadMoreButtonText": "Load More"
 
 }

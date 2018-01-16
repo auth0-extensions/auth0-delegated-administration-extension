@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
@@ -10,8 +11,9 @@ class LoginContainer extends Component {
     login: PropTypes.func.isRequired,
     push: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired
-  }
+    location: PropTypes.object.isRequired,
+    languageDictionary: PropTypes.object.isRequired
+  };
 
   componentWillMount() {
     if (this.props.auth.isAuthenticated) {
@@ -26,15 +28,16 @@ class LoginContainer extends Component {
   }
 
   render() {
+    const { auth, languageDictionary } = this.props;
 
-    if (this.props.auth.error) {
+    if (auth.error) {
       return (
         <div className="row">
           <Confirm
             dialogClassName="login-error"
-            confirmMessage="Login"
+            confirmMessage={languageDictionary.loginErrorButtonText || "Login"}
             loading={false}
-            title="Login Error"
+            title={languageDictionary.loginErrorTitle || "Login Error"}
             show={this.props.auth.error}
             onConfirm={this.login.bind(this)}
           >
@@ -44,24 +47,25 @@ class LoginContainer extends Component {
       );
     }
 
-    if (!this.props.auth.isAuthenticating) {
+    if (!auth.isAuthenticating) {
       return <div></div>;
     }
 
     return (
       <div className="row">
         <div className="col-xs-12 wrapper">
-          <LoadingPanel />
+          <LoadingPanel/>
         </div>
       </div>
     );
-    }
-    }
+  }
+}
 
-    function mapStateToProps(state) {
-      return {
-      auth: state.auth.toJS()
-    };
-    }
+function mapStateToProps(state) {
+  return {
+    auth: state.auth.toJS(),
+    languageDictionary: state.languageDictionary.get('record').toJS()
+  };
+}
 
-    export default connect(mapStateToProps, { login, push })(LoginContainer);
+export default connect(mapStateToProps, { login, push })(LoginContainer);

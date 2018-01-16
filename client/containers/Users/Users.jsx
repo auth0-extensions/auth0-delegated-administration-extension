@@ -8,9 +8,9 @@ import { connectionActions, userActions } from '../../actions';
 
 import * as dialogs from './Dialogs';
 import TabsHeader from '../../components/TabsHeader';
-import { UserOverview } from '../../components/Users';
+import UserOverview from '../../components/Users/UserOverview';
 
-import './Users.css';
+import './Users.styles.css';
 
 class Users extends Component {
   static propTypes = {
@@ -22,7 +22,6 @@ class Users extends Component {
     userCreateLoading: PropTypes.bool,
     validationErrors: PropTypes.object,
     accessLevel: PropTypes.object,
-    appSettings: PropTypes.object,
     total: PropTypes.number,
     fetchUsers: PropTypes.func.isRequired,
     getDictValue: PropTypes.func.isRequired,
@@ -30,9 +29,10 @@ class Users extends Component {
     fetchConnections: PropTypes.func.isRequired,
     requestCreateUser: PropTypes.func.isRequired,
     settings: PropTypes.object.isRequired,
-    sortOrder: React.PropTypes.number.isRequired,
-    sortProperty: React.PropTypes.string.isRequired
-  }
+    sortOrder: PropTypes.number.isRequired,
+    sortProperty: PropTypes.string.isRequired,
+    languageDictionary: PropTypes.object.isRequired
+  };
 
   constructor(props) {
     super(props);
@@ -48,27 +48,27 @@ class Users extends Component {
 
   onPageChange = (page) => {
     this.props.fetchUsers('', false, page - 1);
-  }
+  };
 
   onSearch = (query, filterBy) => {
     if (query && query.length > 0) {
       this.props.fetchUsers(query, false, 0, filterBy);
     }
-  }
+  };
 
   onReset = () => {
     this.props.fetchUsers('', true);
-  }
+  };
 
   createUser = () => {
     this.props.requestCreateUser(
       this.props.accessLevel.get('record').get('memberships') && this.props.accessLevel.get('record').get('memberships').toJS()
     );
-  }
+  };
 
   onColumnSort = (sort) => {
     this.props.fetchUsers('', false, 0, null, sort);
-  }
+  };
 
   render() {
     const {
@@ -82,23 +82,26 @@ class Users extends Component {
       pages,
       settings,
       sortProperty,
-      sortOrder
+      sortOrder,
+      languageDictionary
     } = this.props;
 
     const userFields = (settings && settings.userFields) || [];
 
     return (
       <div className="users">
-        <TabsHeader role={accessLevel.get('record').get('role')} />
+        <TabsHeader
+          languageDictionary={languageDictionary}
+          role={accessLevel.get('record').get('role')} />
         <div className="row content-header">
           <div className="col-xs-12 user-table-content">
-            <h1>Users</h1>
+            <h1>{languageDictionary.usersTitle || 'Users'}</h1>
             {(connections.length) ?
-              <button className="btn btn-success pull-right new" onClick={this.createUser}>
+              <button id="create-user-button" className="btn btn-success pull-right new" onClick={this.createUser}>
                 <i className="icon-budicon-473"></i>
-                Create User
+                {languageDictionary.createUsersButtonText || 'Create User'}
               </button>
-            : ''}
+              : ''}
           </div>
         </div>
         <dialogs.CreateDialog getDictValue={this.props.getDictValue} userFields={userFields} />
@@ -117,6 +120,7 @@ class Users extends Component {
           sortProperty={sortProperty}
           sortOrder={sortOrder}
           onColumnSort={this.onColumnSort}
+          languageDictionary={languageDictionary}
         />
         <div className="row">
           <div className="col-xs-12">
@@ -127,7 +131,7 @@ class Users extends Component {
                 perPage={10}
               /> :
               <TableTotals currentCount={users.length} totalCount={total} />
-            }            
+            }
           </div>
         </div>
       </div>
@@ -150,7 +154,8 @@ function mapStateToProps(state) {
     pages: state.users.get('pages'),
     sortProperty: state.users.get('sortProperty'),
     sortOrder: state.users.get('sortOrder'),
-    settings: state.settings.get('record').toJS().settings
+    settings: state.settings.get('record').toJS().settings,
+    languageDictionary: state.languageDictionary.get('record').toJS()
   };
 }
 

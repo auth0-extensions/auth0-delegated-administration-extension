@@ -5,61 +5,67 @@ import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import { fromJS } from 'immutable';
 import { Router, Route, createMemoryHistory } from 'react-router';
+import { Button } from 'react-bootstrap';
+import moment from 'moment';
 
-import fakeStore from '../../../utils/fakeStore';
+import fakeStore from '../../utils/fakeStore';
 
-import Users from '../../../../client/containers/Users/Users';
-import TabsHeader from '../../../../client/components/TabsHeader';
-import UserOverview from '../../../../client/components/Users/UserOverview';
+import Logs from '../../../client/containers/Logs';
+import TabsHeader from '../../../client/components/TabsHeader';
+import LogsTable from '../../../client/components/Logs/LogsTable';
+import LogDialog from '../../../client/components/Logs/LogDialog';
 
-// import { Pagination, TableTotals } from 'auth0-extension-ui';
-
-const memoryHistory = createMemoryHistory({});
 let wrapper = undefined;
 const wrapperMount = (...args) => (wrapper = mount(...args));
+const memoryHistory = createMemoryHistory({});
 
-class UsersWrapper extends Component {
+class LogsWrapper extends Component {
   render() {
-    return <Users
-    />
+    return <Logs accessLevel={{ role: 1 }}/>;
   }
 }
 
-describe('#Client-Containers-Users-Users', () => {
+describe('#Client-Containers-Logs', () => {
+  const aDayAgo = moment().add(-1, 'days');
+
+  const success = {
+    event: 'sapi',
+    icon: { name: 'success', color: 'green' }
+  };
+
+  const fail = {
+    event: 'fapi',
+    icon: { name: 'failure', color: 'red' }
+  };
+
+  const dummyLogs = [
+    { type: success, user_name: 'bill', date: aDayAgo, connection: 'connA', client_name: 'client' },
+    { type: fail, description: 'some description', date: aDayAgo }
+  ];
 
   const renderComponent = (languageDictionary) => {
     const initialState = {
-      connections: fromJS({ records: [{name: 'connA'}]}),
-      accessLevel: fromJS({ record: { role: 1 } }),
-      users: fromJS({
-        loading: false,
+      logs: fromJS({
         error: null,
-        total: 1,
-        nextPage: 1,
-        pages: 3,
-        sortProperty: 'name',
-        sortOrder: 1,
-        records: [{
-          identities: [{
-            provider: 'auth0',
-            connection: 'connA'
-          }]
-        }]
+        loading: false,
+        records: dummyLogs,
+        total: 2
       }),
-      userCreate: fromJS({
+      log: fromJS({
         error: null,
         loading: false,
-        validationErrors: []
+        id: 1,
+        record: {}
       }),
       languageDictionary: fromJS({
         record: languageDictionary || {}
       }),
-      settings: fromJS({ record: { settings: {} } })
+      settings: fromJS({ loading: false, record: { settings: {} } })
     };
     return wrapperMount(
       <Provider store={fakeStore(initialState)}>
         <Router history={memoryHistory}>
-          <Route path="/" component={UsersWrapper}/>
+          <Route path="/" component={LogsWrapper}/>
         </Router>
       </Provider>
     );
@@ -81,47 +87,41 @@ describe('#Client-Containers-Users-Users', () => {
   };
 
   const checkAllComponentsForLanguageDictionary = (component, languageDictionary) => {
-    checkForLanguageDictionary(component, UserOverview, languageDictionary);
+    checkForLanguageDictionary(component, LogDialog, languageDictionary);
+    checkForLanguageDictionary(component, LogsTable, languageDictionary);
     checkForLanguageDictionary(component, TabsHeader, languageDictionary);
   };
 
-  const checkTitle = (component, title) => {
-    const titleObject = component.find('h1');
-    expect(titleObject.length).to.equal(1);
-    expect(titleObject.text()).to.equal(title);
-  };
-
-  const checkCreateButtonText = (component, createButtonText) => {
-    const buttonObject = component.find('#create-user-button');
-    expect(buttonObject.length).to.equal(1);
-    expect(buttonObject.text()).to.equal(createButtonText);
+  const checkButtons = (component, refreshText, loadMoreText) => {
+    const buttons = component.find(Button);
+    expect(buttons.length).to.equal(2);
+    expect(buttons.at(0).text()).to.equal(' '+refreshText);
+    expect(buttons.at(1).text()).to.equal(' '+loadMoreText);
   };
 
   it('should render', () => {
     const component = renderComponent();
 
     checkAllComponentsForLanguageDictionary(component, {});
-    checkCreateButtonText(component, 'Create User');
-    checkTitle(component, 'Users');
+    checkButtons(component, 'Refresh', 'Load More');
   });
 
   it('should render not applicable language dictionary', () => {
     const component = renderComponent({ someKey: 'someValue' });
 
     checkAllComponentsForLanguageDictionary(component, { someKey: 'someValue' });
-    checkCreateButtonText(component, 'Create User');
-    checkTitle(component, 'Users');
+    checkButtons(component, 'Refresh', 'Load More');
   });
 
   it('should render applicable language dictionary', () => {
     const languageDictionary = {
-      createUsersButtonText: 'Create User Text',
-      usersTitle: 'Users Title'
+      logsRefreshButtonText: 'Refresh Text',
+      logsLoadMoreButtonText: 'Load More Text'
     };
+
     const component = renderComponent(languageDictionary);
 
     checkAllComponentsForLanguageDictionary(component, languageDictionary);
-    checkCreateButtonText(component, 'Create User Text');
-    checkTitle(component, 'Users Title');
+    checkButtons(component, 'Refresh Text', 'Load More Text');
   });
 });

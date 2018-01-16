@@ -9,7 +9,7 @@ import { Link } from 'react-router';
 
 import Header from '../../../client/components/Header';
 
-describe('#Client-Header', () => {
+describe('#Client-Components-Header', () => {
   const logout = () => 'onLogout';
   const defaultGetDictValue = (key, defaultValue) => defaultValue;
   const dummyUser = {
