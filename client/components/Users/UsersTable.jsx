@@ -12,7 +12,7 @@ import {
   TableRow
 } from 'auth0-extension-ui';
 
-import './UserTable.css';
+import './UserTable.styles.css';
 import { getProperty } from '../../utils';
 
 export default class UsersTable extends Component {

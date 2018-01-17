@@ -1,34 +1,28 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 
-import './Header.css';
+import './Header.styles.css';
 
 export default class Header extends Component {
   static propTypes = {
-    user: React.PropTypes.object,
-    getDictValue: React.PropTypes.func,
-    accessLevel: React.PropTypes.object,
-    issuer: React.PropTypes.string,
-    onLogout: React.PropTypes.func.isRequired
+    user: PropTypes.object,
+    getDictValue: PropTypes.func,
+    accessLevel: PropTypes.object,
+    issuer: PropTypes.string,
+    onLogout: PropTypes.func.isRequired,
+    languageDictionary: PropTypes.object
   };
 
   getName(iss, user) {
-    let thisMenuName = this.props.getDictValue('menuName') || iss;
+    let thisMenuName = this.props.getDictValue('menuName');
 
-    if (user && user.get('name')) {
-      return user.get('name');
-    }
+    thisMenuName = thisMenuName || (user && user.get('name'));
+    thisMenuName = thisMenuName || (user && user.get('nickname'));
+    thisMenuName = thisMenuName || (user && user.get('email'));
+    thisMenuName = thisMenuName || iss;
 
-    if (user && user.get('nickname')) {
-      return user.get('nickname');
-    }
-
-    if (user && user.get('email')) {
-      return user.get('email');
-    }
-
-    return thisMenuName.length >= 18 ? thisMenuName.substr(0,18)+'...' : thisMenuName;
-    ;
+    return thisMenuName.length >= 21 ? thisMenuName.substr(0,18)+'...' : thisMenuName;
   }
 
   getPicture(iss, user) {
@@ -43,13 +37,13 @@ export default class Header extends Component {
     return `https://cdn.auth0.com/avatars/${iss.slice(0, 2).toLowerCase()}.png`;
   }
 
-  getMenu(isAdmin) {
+  getMenu(isAdmin, languageDictionary) {
     if (!isAdmin) {
       return (
         <ul role="menu" className="dropdown-menu">
           <li role="presentation">
-            <a href="#" role="menuitem" tabIndex="-1" onClick={this.props.onLogout}>
-              Logout
+            <a role="menuitem" tabIndex="-1" onClick={this.props.onLogout}>
+              {languageDictionary.logoutMenuItemText || 'Logout'}
             </a>
           </li>
         </ul>
@@ -60,17 +54,17 @@ export default class Header extends Component {
       <ul role="menu" className="dropdown-menu">
         <li role="presentation">
           <Link to="/users">
-            Users & Logs
+            {languageDictionary.usersAndLogsMenuItemText || 'Users & Logs'}
           </Link>
         </li>
         <li role="presentation">
           <Link to="/configuration">
-            Configuration
+            {languageDictionary.configurationMenuItemText || 'Configuration'}
           </Link>
         </li>
         <li role="presentation">
-          <a href="#" role="menuitem" tabIndex="-1" onClick={this.props.onLogout}>
-            Logout
+          <a role="menuitem" tabIndex="-1" onClick={this.props.onLogout}>
+            {languageDictionary.logoutMenuItemText || 'Logout'}
           </a>
         </li>
       </ul>
@@ -79,6 +73,7 @@ export default class Header extends Component {
 
   render() {
     const { user, issuer, accessLevel } = this.props;
+    const languageDictionary = this.props.languageDictionary || {};
     const showMenu = accessLevel.role === 2;
     return (
       <header className="dashboard-header">
@@ -97,7 +92,7 @@ export default class Header extends Component {
                     </span>
                     <i className="icon-budicon-460"></i>
                   </span>
-                  {this.getMenu(showMenu)}
+                  {this.getMenu(showMenu, languageDictionary)}
                 </li>
               </ul>
             </div>

@@ -1,4 +1,6 @@
-import React, { PropTypes, Component } from 'react';
+import _ from 'lodash';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Button, Modal } from 'react-bootstrap';
 import { Error, Json, LoadingPanel } from 'auth0-extension-ui';
 
@@ -8,7 +10,8 @@ export default class LogDialog extends Component {
     log: PropTypes.object.isRequired,
     error: PropTypes.string,
     loading: PropTypes.bool.isRequired,
-    logId: PropTypes.string
+    logId: PropTypes.string,
+    languageDictionary: PropTypes.object
   }
 
   render() {
@@ -17,11 +20,16 @@ export default class LogDialog extends Component {
       return <div></div>;
     }
 
+    const languageDictionary = this.props.languageDictionary || {};
+
     const log = this.props.log.toJS();
+
+    const logType = _.get(languageDictionary, `logTypes.${log.shortType}.event`, log.type);
+
     return (
       <Modal show={logId !== null} onHide={onClose}>
         <Modal.Header closeButton={!loading}>
-          <Modal.Title>Log - <span>{log.type || 'Log Record'}</span></Modal.Title>
+          <Modal.Title>{languageDictionary.logDialogTitleText || 'Log'} - <span>{logType || languageDictionary.logDialogDefaultLogRecordText || 'Log Record'}</span></Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <LoadingPanel
@@ -35,7 +43,7 @@ export default class LogDialog extends Component {
         </Modal.Body>
         <Modal.Footer>
           <Button disabled={loading} onClick={onClose}>
-            <i className="icon icon-budicon-501"></i> Close
+            <i className="icon icon-budicon-501"></i> {languageDictionary.closeButtonText || 'Close'}
           </Button>
         </Modal.Footer>
       </Modal>

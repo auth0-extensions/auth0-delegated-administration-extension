@@ -1,4 +1,4 @@
-## [3.0.0] - 2017-11-??
+## [3.0.0] - 2017-12-??
 
 ### Changes
 
@@ -7,12 +7,14 @@
   - This pushes all updates through the write hook if you are making updates
 - Update to latest version of auth0.js for login
 - Uses a get on the user instead of the ID token for getting app_metadata
+- Adds localization support
+- Fixes require bug so that any require available to rules is available to the hooks
 
 ## [2.5.0] - 2017-10-25
 
 ### Changes
 
-- Add ability to remove Multifacto for Guardian
+- Add ability to remove Multifactor for Guardian
 
 ## [2.4.7] - 2017-09-07
 

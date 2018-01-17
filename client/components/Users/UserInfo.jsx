@@ -1,9 +1,10 @@
 import _ from 'lodash';
 import moment from 'moment';
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Error, LoadingPanel } from 'auth0-extension-ui';
 
-import './UserInfo.css';
+import './UserInfo.styles.css';
 import UserInfoField from './UserInfoField';
 import { getProperty } from '../../utils'
 
@@ -13,8 +14,9 @@ export default class UserInfo extends Component {
     loading: PropTypes.bool.isRequired,
     user: PropTypes.object.isRequired,
     memberships: PropTypes.array,
-    userFields: PropTypes.array
-  }
+    userFields: PropTypes.array,
+    languageDictionary: PropTypes.object
+  };
 
   shouldComponentUpdate(nextProps) {
     return nextProps.user !== this.props.user
@@ -34,12 +36,12 @@ export default class UserInfo extends Component {
     return user.get('identities').toJSON()[0];
   }
 
-  getBlocked = (user) => {
+  getBlocked = (user, languageDictionary) => {
     if (user.size === 0) return '';
-    return user.get('blocked') ? 'Yes' : 'No';
+    return user.get('blocked') ? (languageDictionary.yesLabel || 'Yes') : (languageDictionary.noLabel || 'No');
   }
 
-  getValue(user, field) {
+  getValue(user, field, languageDictionary) {
     if (user.size === 0) {
       return null;
     }
@@ -58,7 +60,7 @@ export default class UserInfo extends Component {
     if (value === undefined) return null;
 
     if (field.type && field.type === 'elapsedTime') {
-      value = moment(value).fromNow();
+      value = moment(value).locale(languageDictionary.momentLocale || 'en').fromNow();
     }
 
     if (_.isObject(value)) {
@@ -66,7 +68,7 @@ export default class UserInfo extends Component {
     }
 
     if (_.isBoolean(value)) {
-      value = value ? 'TRUE' : 'FALSE';
+      value = value ? (languageDictionary.trueLabel || 'TRUE') : (languageDictionary.falseLabel || 'FALSE');
     }
 
     return value;
@@ -74,15 +76,18 @@ export default class UserInfo extends Component {
 
   render() {
     const { user, error, loading, memberships } = this.props;
+    const languageDictionary = this.props.languageDictionary || {};
 
     /* First let's grab the custom fields */
     const customDisplayFields =
       _(this.props.userFields || [])
         .filter(field => field.display)
-        .map(field => { return {
-          title: field.label || field.property,
-          property: field.property,
-          display: field.display };
+        .map(field => {
+          return {
+            title: field.label || field.property,
+            property: field.property,
+            display: field.display
+          };
         })
         .value();
 
@@ -105,7 +110,7 @@ export default class UserInfo extends Component {
       { title: 'Last IP', property: 'last_ip' },
       { title: 'Logins Count', property: 'logins_count' },
       { title: 'Memberships', property: 'currentMemberships' },
-      { title: 'Signed Up', property: 'created_at', type: 'elapsedTime'},
+      { title: 'Signed Up', property: 'created_at', type: 'elapsedTime' },
       { title: 'Updated', property: 'updated_at', type: 'elapsedTime' },
       { title: 'Last Login', property: 'last_login', type: 'elapsedTime' }
     ];
@@ -118,7 +123,7 @@ export default class UserInfo extends Component {
       .keys()
       .concat(Object.keys(standardFieldProperties)) // ignore the standard fields
       .concat(Object.keys(nonDisplayFieldProperties)) // ignore fields that have explicitly been rejected
-      .concat([ 'identity', 'identities', 'app_metadata', 'picture', 'user_metadata' ]) // always ignore these
+      .concat(['identity', 'identities', 'app_metadata', 'picture', 'user_metadata']) // always ignore these
       .value();
 
     /* Prepare the user object */
@@ -127,7 +132,7 @@ export default class UserInfo extends Component {
 
     userObject.currentMemberships = this.getMemberships(memberships);
     userObject.identity = this.getIdentities(user);
-    userObject.isBlocked = this.getBlocked(user);
+    userObject.isBlocked = this.getBlocked(user, languageDictionary);
 
     /* Grab all user properties that haven't been rejected or already used */
     const extraFieldProperties = _.keys(_.omit(userObject, excludeProperties));
@@ -139,19 +144,22 @@ export default class UserInfo extends Component {
     const fields = _(customDisplayFields)
       .concat(standardFields)
       .concat(extraFields)
-      .sortBy(field=>field.title)
+      .sortBy(field => field.title)
       .value();
 
-    const fieldsAndValues = _.map(fields, (field) => { field.value = this.getValue(userObject, field); return field; });
+    const fieldsAndValues = _.map(fields, (field) => {
+      field.value = this.getValue(userObject, field, languageDictionary);
+      return field;
+    });
     const nonNullFields = _.filter(fieldsAndValues, field => field.value) || [];
 
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
-        <Error message={error}>
-          <div className="user-info">
-            { nonNullFields.map((field, index) => <UserInfoField key={index} title={field.title}>{field.value}</UserInfoField>) }
-          </div>
-        </Error>
+        <Error message={error}></Error>
+        <div className="user-info">
+          {nonNullFields.map((field, index) => <UserInfoField key={index}
+                                                              title={field.title}>{field.value}</UserInfoField>)}
+        </div>
       </LoadingPanel>
     );
   }

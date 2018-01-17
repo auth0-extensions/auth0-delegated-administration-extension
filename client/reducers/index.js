@@ -8,6 +8,7 @@ import { auth } from './auth';
 import { block } from './block';
 import { connections } from './connections';
 import { emailChange } from './emailChange';
+import { languageDictionary } from './languageDictionary';
 import { log } from './log';
 import { logs } from './logs';
 import { mfa } from './mfa';
@@ -36,6 +37,7 @@ export default combineReducers({
   block,
   connections,
   emailChange,
+  languageDictionary,
   log,
   logs,
   mfa,

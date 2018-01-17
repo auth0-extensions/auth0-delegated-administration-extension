@@ -1,0 +1,90 @@
+{
+  "loginsCountLabel": "Logins Count:",
+
+  "searchBarPlaceholder": "Search for users using the Lucene syntax",
+
+  "deviceNameColumnHeader": "Device",
+  "deviceNumberTokensColumnHeader": "# of Tokens/Public Keys",
+  "noDevicesMessage": "This user does not have any registered devices.",
+  
+  "usersAndLogsMenuItemText": "Users & Logs",
+  "configurationMenuItemText": "Configuration",
+  "logoutMenuItemText": "Logout",
+
+  "userUsersTabTitle": "Users",
+  "userLogsTabTitle": "Logs",
+
+  "logEventColumnHeader": "Event",
+  "logDescriptionColumnHeader": "Description",
+  "logDateColumnHeader": "Date",
+  "logConnectionColumnHeader": "Connection",
+  "logApplicationColumnHeader": "Application",
+
+  "logDialogTitleText": "Log",
+  "logDialogDefaultLogRecordText": "Log Record",
+
+  "cancelButtonText": "Cancel",
+  "updateButtonText": "Update",
+  "createButtonText": "Create",
+  "closeButtonText": "Close",
+  "momentLocale": "en",
+  "notApplicableLabel": "Not Applicable",
+
+  "blockUserMenuItemText": "Block User",
+  "changeEmailMenuItemText": "Change Email",
+  "changePasswordMenuItemText": "Change Password",
+  "deleteUserMenuItemText": "Delete User",
+  "changeFieldsMenuItemText": "Change Fields",
+  "removeMfaMenuItemText": "Remove MFA",
+  "resendVerificationEmailMenuItemText": "Resend Verification Email",
+  "resetPasswordMenuItemText": "Reset Password",
+  "changeUsernameMenuItemText": "Change Username",
+  "unblockUserMenuItemText": "Unblock User",
+
+  "blockDialogMessage": "Do you really want to block {username}? After doing so the user will not be able to log in anymore.",
+  "blockDialogTitle": "Block User?",
+
+  "createDialogTitle": "Create User",
+
+  "deleteDialogMessage": "Do you really want to delete {username}? This will completely remove the user and cannot be undone.",
+  "deleteDialogTitle": "Delete User?",
+
+  "changeEmailMessage": "Do you really want to change the email for {username}?",
+  "changeEmailTitle": "Change Email?",
+
+  "changeProfileDialogTitle": "Change Profile",
+
+  "changePasswordMessage": "Do you really want to change the password for {username}?  You'll need a safe way to communicate the new password to your user, never send the user this new password in clear text.",
+  "changePasswordTitle": "Change Password?",
+
+  "resetPasswordMessage": "Do you really want to reset the password for {username}?  This will send an email to the user allowing them to choose a new password.",
+  "resetPasswordTitle": "Reset Password?",
+
+  "removeMultiFactorMessage": "Do you really want to remove the multi factor authentication settings for {username}?  This will allow the user to authenticate and reconfigure a new device.",
+  "removeMultiFactorTitle": "Remove Multi Factor Authentication?",
+
+  "resendVerificationEmailMessage": "Do you really want to resend verification email to {username}?",
+  "resendVerificationEmailTitle": "Resend Verification Email?",
+
+  "unblockDialogMessage": "Do you really want to unblock {username}? After doing so the user will be able to sign in again.",
+  "unblockDialogTitle": "Unblock User?",
+
+  "changeUsernameMessage": "Do you really want to change the username for {username}?",
+  "changeUsernameTitle": "Change Username?",
+
+  "userUserInfoTabTitle": "User Info",
+  "userDevicesTabTitle": "Devices",
+  "userLogsTabTitle": "Logs",
+  "userProfileTabTitle": "Profile",
+  "userTitle": "User Details",
+
+  "createUserButtonText": "Create User",
+  "usersTitle": "Users",
+
+  "loginErrorTitle": "Login Error",
+  "loginErrorButtonText": "Login",
+  
+  "logsRefreshButtonText": "Refresh",
+  "logsLoadMoreButtonText": "Load More"
+
+}

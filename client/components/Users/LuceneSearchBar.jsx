@@ -1,11 +1,13 @@
 import { findDOMNode } from 'react-dom';
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 export default class SearchBar extends Component {
   static propTypes = {
     enabled: PropTypes.bool.isRequired,
     onReset: PropTypes.func.isRequired,
-    onSearch: PropTypes.func.isRequired
+    onSearch: PropTypes.func.isRequired,
+    languageDictionary: PropTypes.object
   }
 
   onKeyPress = (e) => {
@@ -20,6 +22,7 @@ export default class SearchBar extends Component {
   }
 
   render() {
+    const languageDictionary = this.props.languageDictionary || {};
     return (
       <div className="row">
         <div className="col-xs-12">
@@ -27,7 +30,8 @@ export default class SearchBar extends Component {
             <span className="search-area">
               <i className="icon-budicon-489"></i>
               <input
-                className="user-input" type="text" ref="search" placeholder="Search for users using the Lucene syntax"
+                className="user-input" type="text" ref="search"
+                placeholder={ languageDictionary.searchBarPlaceholder || 'Search for users using the Lucene syntax' }
                 spellCheck="false" style={{ marginLeft: '10px' }} onKeyPress={this.onKeyPress}
               />
             </span>

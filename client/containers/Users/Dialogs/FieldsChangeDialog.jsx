@@ -9,7 +9,8 @@ import { UserFieldsChangeForm } from '../../../components/Users';
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     fieldsChange: state.fieldsChange,
-    userId: state.fieldsChange.toJS().userId
+    userId: state.fieldsChange.toJS().userId,
+    languageDictionary: state.languageDictionary
   });
 
   static actionsToProps = {
@@ -22,11 +23,14 @@ export default connectContainer(class extends Component {
     changeFields: PropTypes.func.isRequired,
     cancelChangeFields: PropTypes.func.isRequired,
     userFields: PropTypes.array.isRequired,
-    userId: PropTypes.string.isRequired
+    userId: PropTypes.string.isRequired,
+    languageDictionary: PropTypes.object
   };
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.fieldsChange !== this.props.fieldsChange || nextProps.userFields !== this.props.userFields;
+    return nextProps.fieldsChange !== this.props.fieldsChange ||
+      nextProps.userFields !== this.props.userFields ||
+      nextProps.languageDictionary !== this.props.languageDictionary;
   }
 
   onSubmit = (user) => {
@@ -42,10 +46,12 @@ export default connectContainer(class extends Component {
   render() {
     const { error, loading, record } = this.props.fieldsChange.toJS();
 
+    const languageDictionary = this.props.languageDictionary.get('record').toJS();
+
     return (
       <Modal show={record !== null} className="modal-overflow-visible" onHide={this.props.cancelChangeFields}>
         <Modal.Header closeButton={loading} className="has-border">
-          <Modal.Title>Change Profile</Modal.Title>
+          <Modal.Title>{languageDictionary.changeProfileDialogTitle || 'Change Profile'}</Modal.Title>
         </Modal.Header>
 
         <UserFieldsChangeForm
@@ -55,7 +61,7 @@ export default connectContainer(class extends Component {
           onClose={this.props.cancelChangeFields}
           onSubmit={this.onSubmit}
           submitting={loading}
-          method="Update"
+          languageDictionary={languageDictionary}
         >
           <Error message={error} />
         </UserFieldsChangeForm>

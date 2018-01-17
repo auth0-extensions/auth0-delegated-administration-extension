@@ -104,7 +104,7 @@ export function loadCredentials() {
         }, (err, hash) => {
           if (err || !hash || !hash.idToken) {
             /* Must have had hash, but didn't get an idToken in the hash */
-            console.error('login error: ', err);;
+            console.error('login error: ', err);
             return dispatch({
               type: constants.LOGIN_FAILED,
               payload: {
@@ -142,15 +142,40 @@ export function getAccessLevel(onSuccess) {
 }
 
 export function getAppSettings(onSuccess) {
-  return {
+  return (dispatch) => dispatch({
     type: constants.FETCH_SETTINGS,
     meta: {
-      onSuccess
+      onSuccess: (response) => {
+        return dispatch(getLanguageDictionary(response, onSuccess));
+      }
     },
     payload: {
-      promise: axios.get('/api/settings', {
+      promise: axios('/api/settings', {
         responseType: 'json'
       })
     }
+  });
+}
+
+function getLanguageDictionary(response, onSuccess) {
+  const settings = _.get(response, 'data.settings', {});
+  let promise = Promise.resolve({ data: {} });
+  if (settings.languageDictionary) {
+    if (_.isObject(settings.languageDictionary)) {
+      promise = Promise.resolve({ data: settings.languageDictionary });
+    } else if (_.isString(settings.languageDictionary) && settings.languageDictionary.startsWith('http')) {
+      promise = axios.get(settings.languageDictionary, { headers: {}, responseType: 'json' });
+    } // ignore else, bad languageDictionary
+  }
+
+  return {
+    type: constants.FETCH_LANGUAGE_DICTIONARY,
+    meta: {
+      onSuccess: () => onSuccess && onSuccess(response)
+    },
+    payload: {
+      promise
+    }
   };
 }
+

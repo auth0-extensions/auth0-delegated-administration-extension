@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { logout } from '../actions/auth';
@@ -17,8 +18,9 @@ class App extends Component {
     fetchApplications: PropTypes.func.isRequired,
     fetchConnections: PropTypes.func.isRequired,
     getAccessLevel: PropTypes.func.isRequired,
-    getAppSettings: PropTypes.func.isRequired
-  }
+    getAppSettings: PropTypes.func.isRequired,
+    languageDictionary: PropTypes.object.isRequired
+  };
 
   componentWillMount() {
     this.props.getAppSettings();
@@ -34,10 +36,10 @@ class App extends Component {
       val = appSettings.get('settings').get('dict').get(index);
     }
     return val || defaultValue;
-  }
+  };
 
   render() {
-    const { settingsLoading } = this.props;
+    const { settingsLoading, languageDictionary } = this.props;
     if (settingsLoading) {
       return <LoadingPanel show={settingsLoading} />;
     }
@@ -49,6 +51,7 @@ class App extends Component {
           getDictValue={this.getDictValue}
           onLogout={this.props.logout}
           accessLevel={this.props.accessLevel.toJSON()}
+          languageDictionary={languageDictionary}
         />
         <div className="container">
           <div className="row">
@@ -74,10 +77,10 @@ function select(state) {
   return {
     issuer: state.auth.get('issuer'),
     user: state.auth.get('user'),
-    ruleStatus: state.ruleStatus,
     accessLevel: state.accessLevel.get('record'),
     settings: state.settings.get('record'),
-    settingsLoading: state.settings.get('loading')
+    settingsLoading: state.settings.get('loading'),
+    languageDictionary: state.languageDictionary.get('record').toJS()
   };
 }
 
