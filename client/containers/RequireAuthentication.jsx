@@ -38,5 +38,5 @@ export default function RequireAuthentication(InnerComponent) {
     }
   }
 
-  return connect((state) => ({ auth: state.auth.toJS() }))(RequireAuthenticationContainer);
+  return connect((state) => ({ auth: state.auth.toJS() }), { push })(RequireAuthenticationContainer);
 }
