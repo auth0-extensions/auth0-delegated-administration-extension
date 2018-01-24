@@ -5,13 +5,14 @@ import createReducer from '../utils/createReducer';
 const initialState = {
   loading: false,
   error: null,
-  record: {}
+  record: { }
 };
 
 export const languageDictionary = createReducer(fromJS(initialState), { // eslint-disable-line
 // import/prefer-default-export
   [constants.FETCH_LANGUAGE_DICTIONARY_PENDING]: (state) =>
     state.merge({
+      ...initialState,
       loading: true,
       error: null
     }),

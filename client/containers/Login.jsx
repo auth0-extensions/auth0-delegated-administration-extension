@@ -19,12 +19,12 @@ class LoginContainer extends Component {
     if (this.props.auth.isAuthenticated) {
       this.props.push(this.props.auth.returnTo || '/users');
     } else if (!this.props.auth.isAuthenticating && !this.props.auth.error) {
-      this.props.login(this.props.location.query.returnUrl);
+      this.props.login(this.props.location.query.returnUrl, this.props.location.query.ui_locales);
     }
   }
 
   login() {
-    this.props.login(this.props.location.query.returnUrl);
+    this.props.login(this.props.location.query.returnUrl, this.props.location.query.ui_locales);
   }
 
   render() {

@@ -8,7 +8,7 @@ import { Provider } from 'react-redux';
 
 import { useRouterHistory } from 'react-router';
 import { createHistory } from 'history';
-import { push, routerMiddleware, syncHistoryWithStore } from 'react-router-redux';
+import { routerMiddleware, syncHistoryWithStore } from 'react-router-redux';
 
 import { loadCredentials } from './actions/auth';
 import routes from './routes';

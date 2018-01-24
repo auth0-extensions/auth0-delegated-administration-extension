@@ -16,13 +16,14 @@ const webAuth = new auth0.WebAuth({ // eslint-disable-line no-undef
   }
 });
 
-export function login(returnUrl) {
+export function login(returnUrl, uiLocales) {
   sessionStorage.setItem('delegated-admin:returnTo', returnUrl);
 
   webAuth.authorize({
     responseType: 'id_token',
     redirectUri: `${window.config.BASE_URL}/login`,
-    scope: 'openid roles'
+    scope: 'openid roles',
+    ui_locales: uiLocales
   });
 
   return {
@@ -164,7 +165,13 @@ function getLanguageDictionary(response, onSuccess) {
     if (_.isObject(settings.languageDictionary)) {
       promise = Promise.resolve({ data: settings.languageDictionary });
     } else if (_.isString(settings.languageDictionary) && settings.languageDictionary.startsWith('http')) {
-      promise = axios.get(settings.languageDictionary, { headers: {}, responseType: 'json' });
+      // Setting Authorization to None because we don't want to ship the token to some undeclared endpoint,
+      // especially if not enforcing https
+      promise = axios.get(settings.languageDictionary, { headers: { 'Authorization': 'None' }, responseType: 'json' })
+        .then((response) => {
+          if (response.data) return response;
+          return Promise.reject(new Error(`Language Dictionary endpoint: ${settings.languageDictionary} returned no data`));
+        });
     } // ignore else, bad languageDictionary
   }
 
