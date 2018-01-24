@@ -16,14 +16,14 @@ const webAuth = new auth0.WebAuth({ // eslint-disable-line no-undef
   }
 });
 
-export function login(returnUrl, uiLocales) {
-  sessionStorage.setItem('delegated-admin:returnTo', returnUrl);
+export function login(returnUrl, locale) {
+  sessionStorage.setItem('delegated-admin:returnTo', returnUrl || '/users');
 
   webAuth.authorize({
     responseType: 'id_token',
     redirectUri: `${window.config.BASE_URL}/login`,
     scope: 'openid roles',
-    ui_locales: uiLocales
+    ui_locales: locale
   });
 
   return {
