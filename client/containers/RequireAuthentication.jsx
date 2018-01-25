@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
@@ -8,7 +9,7 @@ export default function RequireAuthentication(InnerComponent) {
       push: PropTypes.func.isRequired,
       auth: PropTypes.object.isRequired,
       location: PropTypes.object.isRequired
-    }
+    };
 
     componentWillMount() {
       this.requireAuthentication();
@@ -23,7 +24,7 @@ export default function RequireAuthentication(InnerComponent) {
         if (!this.props.location) {
           this.props.push('/login');
         } else {
-          this.props.push(`/login?returnUrl=${this.props.location.pathname}`);
+          this.props.push(`/login?returnUrl=${this.props.location.pathname}${this.props.location.search ? this.props.location.search : ''}`);
         }
       }
     }

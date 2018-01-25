@@ -67,7 +67,15 @@ export default class UsersTable extends Component {
     ];
 
     const connectionField = _.find(userFields, { property: 'connection' });
-    if (connectionField && (_.isFunction(connectionField.display) || (_.isBoolean(connectionField.display) && connectionField.display === true))) {
+    if (!connectionField) {
+      defaultListFields.push({
+        listOrder: 4,
+        listSize: '25%',
+        property: 'identities',
+        label: 'Connection',
+        display: (user, value) => value[0].connection
+      });
+    } else if (_.isFunction(connectionField.display) || (_.isBoolean(connectionField.display) && connectionField.display === true)) {
       defaultListFields.push({
         listOrder: 4,
         listSize: '25%',

@@ -39,7 +39,8 @@ class App extends Component {
   };
 
   render() {
-    const { settingsLoading, languageDictionary } = this.props;
+    const { settingsLoading } = this.props;
+    const languageDictionary = this.props.languageDictionary ? this.props.languageDictionary.toJS() : {};
     if (settingsLoading) {
       return <LoadingPanel show={settingsLoading} />;
     }
@@ -80,7 +81,7 @@ function select(state) {
     accessLevel: state.accessLevel.get('record'),
     settings: state.settings.get('record'),
     settingsLoading: state.settings.get('loading'),
-    languageDictionary: state.languageDictionary.get('record').toJS()
+    languageDictionary: state.languageDictionary.get('record')
   };
 }
 
