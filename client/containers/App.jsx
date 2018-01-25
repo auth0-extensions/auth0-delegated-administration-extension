@@ -40,7 +40,7 @@ class App extends Component {
 
   render() {
     const { settingsLoading } = this.props;
-    const languageDictionary = this.props.languageDictionary && this.props.languageDictionary.toJS() || {};
+    const languageDictionary = this.props.languageDictionary ? this.props.languageDictionary.toJS() : {};
     if (settingsLoading) {
       return <LoadingPanel show={settingsLoading} />;
     }
