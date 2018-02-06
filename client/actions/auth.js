@@ -167,11 +167,17 @@ function getLanguageDictionary(response, onSuccess) {
     } else if (_.isString(settings.languageDictionary) && settings.languageDictionary.startsWith('http')) {
       // Setting Authorization to None because we don't want to ship the token to some undeclared endpoint,
       // especially if not enforcing https
-      promise = axios.get(settings.languageDictionary, { headers: { 'Authorization': 'None' }, responseType: 'json' })
+      const oldHeader = axios.defaults.headers.common["Authorization"];
+      delete axios.defaults.headers.common["Authorization"]; // and create your own headers
+
+      promise = axios.get(settings.languageDictionary, { responseType: 'json' })
         .then((response) => {
           if (response.data) return response;
           return Promise.reject(new Error(`Language Dictionary endpoint: ${settings.languageDictionary} returned no data`));
         });
+
+      // TODO: Race condition?  I hope not!
+      axios.defaults.headers.common["Authorization"] = oldHeader;
     } // ignore else, bad languageDictionary
   }
 

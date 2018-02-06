@@ -7,6 +7,28 @@ import { Error, Confirm } from 'auth0-extension-ui';
 import { userActions } from '../../../actions';
 import getDialogMessage from './getDialogMessage';
 
+class EmailChangeForm extends Component {
+
+  render() {
+
+    return (
+      <div className="row">
+        {this.renderConnection(connection, userFields)}
+        <div className="form-group">
+          <label id="email-change-email-label" className="col-xs-2 control-label">{emailLabel}</label>
+          <div className="col-xs-9">
+            <input id="email-change-email-input" ref="email" type="email" className="form-control"
+                   defaultValue={defaultEmailValue}/>
+          </div>
+        </div>
+        <input ref="user" type="hidden" readOnly="readonly" className="form-control" value={userId}/>
+      </div>
+    );
+  }
+};
+
+//EmailChangeForm = reduxForm({ form: 'test' })(EmailChangeForm);
+
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     emailChange: state.emailChange,
@@ -42,7 +64,8 @@ export default connectContainer(class extends Component {
     return displayConnection ? <div className="form-group">
       <label id="email-change-connection-label" className="col-xs-2 control-label">{label}</label>
       <div className="col-xs-9">
-        <input id="email-change-connection-input" type="text" readOnly="readonly" className="form-control" value={connection} />
+        <input id="email-change-connection-input" type="text" readOnly="readonly" className="form-control"
+               value={connection}/>
       </div>
     </div> : <div></div>;
   }
@@ -74,22 +97,10 @@ export default connectContainer(class extends Component {
         show={requesting} loading={loading} onCancel={cancelEmailChange}
         onConfirm={this.onConfirm}
       >
-        <Error message={error} />
+        <Error message={error}/>
         <p>
           {preText}<strong>{userName}</strong>{postText}
         </p>
-        <div className="row">
-          <form className="form-horizontal col-xs-12" style={{ marginTop: '40px' }}>
-            { this.renderConnection(connection, userFields) }
-            <div className="form-group">
-              <label id="email-change-email-label" className="col-xs-2 control-label">{emailLabel}</label>
-              <div className="col-xs-9">
-                <input id="email-change-email-input" ref="email" type="email" className="form-control" defaultValue={defaultEmailValue} />
-              </div>
-            </div>
-            <input ref="user" type="hidden" readOnly="readonly" className="form-control" value={userId} />
-          </form>
-        </div>
       </Confirm>
     );
   }
