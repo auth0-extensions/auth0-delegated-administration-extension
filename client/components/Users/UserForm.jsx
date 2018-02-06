@@ -22,145 +22,150 @@ class AddUserForm extends Component {
     customFields: PropTypes.array,
     customFieldGetter: PropTypes.func.isRequired,
     languageDictionary: PropTypes.object,
-  }
+  };
 
-  renderUsername(connections, hasSelectedConnection, customFields) {
-    const usernameField = _.find(customFields, { property: 'username' });
-    const displayField = !usernameField || usernameField.create;
+  addUsernameField(fields) {
+    const {
+      connections,
+      hasSelectedConnection,
+      initialValues
+    } = this.props;
 
-    if (displayField) {
-      const selectedConnection = _.find(connections, (conn) => conn.name === hasSelectedConnection);
-      const requireUsername = selectedConnection && selectedConnection.options ? selectedConnection.options.requires_username : false;
-      if (!requireUsername && (!this.props.initialValues || !this.props.initialValues.username)) {
-        return null;
-      }
-
-      return (
-        <Field label={usernameField && usernameField.label || "Username"} name="username" component={InputText}/>
-      );
+    const selectedConnection = _.find(connections, (conn) => conn.name === hasSelectedConnection);
+    const requireUsername = selectedConnection && selectedConnection.options ? selectedConnection.options.requires_username : false;
+    if (!requireUsername && (!initialValues || !initialValues.username)) {
+        return _.remove(fields, { property: 'username' });
     }
 
-    return null;
+    const defaults = {
+      property: 'username',
+      label: 'Username',
+      create: true
+    };
+
+    const usernameField = _.find(fields, { property: 'username' });
+    if (usernameField) return _.defaults(usernameField, defaults);
+    return fields.unshift(defaults);
   }
 
-  renderMemberships(hasMembership, memberships, createMemberships) {
+  addMembershipsField(fields) {
+    const {
+      hasMembership,
+      memberships,
+      createMemberships,
+    } = this.props;
+
     const allMemberships = _(memberships || [])
       .concat(hasMembership)
       .uniq()
       .sort()
       .value();
+
     if (allMemberships.length <= 1 && !createMemberships) {
-      return null;
+      return _.remove(fields, { property: 'memberships' });
     }
 
-    return (
-      <Field
-        name="memberships"
-        id="memberships"
-        label={this.props.getDictValue('memberships', 'Memberships')}
-        component={Multiselect}
-        loadOptions={(input, callback) => {
-          callback(null, {
-            options: allMemberships.map(m => ({ value: m, label: m })),
-            complete: true
-          });
-        }}
-      />
-    );
+    const defaults = {
+      property: 'memberships',
+      label: this.props.getDictValue('memberships', 'Memberships'),
+      create: {
+        type: 'select',
+        component: 'InputMultiCombo',
+        options: allMemberships.map(m => ({ value: m, label: m }))
+      }
+    };
+
+    const index = _.findIndex(fields, 'property', 'memberships');
+    if (index >= 0) return _.defaults(fields[index], defaults);
+
+    fields.unshift(defaults);
   }
 
-  renderConnections(connections, customFields) {
+  addConnectionsField(fields) {
+    const connections = this.props.connections;
     if (!connections || connections.length <= 1) {
-      return null;
+      return _.remove(fields, (field) => field.property === 'connection');
     }
 
-    const connectionUserField = _.find(customFields, { property: 'connection' });
-    const displayConnectionUserField = !connectionUserField || connectionUserField.create;
+    const defaults = {
+      property: 'connection',
+      label: 'Connection',
+      create: {
+        type: 'select',
+        component: 'InputCombo',
+        options: connections.map(conn => ({ value: conn.name, text: conn.name })),
+        onChange: this.onConnectionChange
+      }
+    };
 
-    if (displayConnectionUserField) {
-      const options = connections.map(conn => ({ value: conn.name, text: conn.name }));
-      return (
-        <Field
-          label={connectionUserField && connectionUserField.label || "Connection"}
-          name="connection"
-          id="connection"
-          component={InputCombo}
-          options={options}
-          onChange={this.onConnectionChange}
-        />
-      );
-    }
-
-    return null;
+    const field = _.find(fields, { property: 'connection' });
+    if (field) return _.defaults(field, defaults);
+    fields.unshift(defaults);
   }
 
-  renderPassword(customFields) {
-    const passwordField = _.find(customFields, { property: 'password' });
-    const repeatPasswordField = _.find(customFields, { property: 'repeatPassword' });
-    const displayField = !passwordField || passwordField.create;
+  addPasswordFields(fields) {
+    const defaults = {
+      create: {
+        type: 'password',
+        component: 'InputText'
+      }
+    };
 
-    if (displayField) {
-      return (
-        <div>
-          <Field
-            label={passwordField && passwordField.label || "Password"}
-            name="password"
-            type="password"
-            component={InputText}
-          />
-          <Field
-            label={repeatPasswordField && repeatPasswordField.label || "Repeat Password"}
-            name="repeatPassword"
-            type="password"
-            component={InputText}
-          />
-        </div>
-      );
+    const repeatPasswordField = _.find(fields, { property: 'repeatPassword' });
+    const repeatDefaults = _.assign({}, defaults, { validationFunction: (value, values) => (value !== values.password ? 'passwords must match' : false ) });
+    if (repeatPasswordField) {
+      _.defaults(repeatPasswordField, { property: 'repeatPassword', label: 'Repeat Password' }, repeatDefaults);
+    } else {
+      fields.unshift(_.assign({}, { property: 'repeatPassword', label: 'Repeat Password' }, repeatDefaults));
     }
-    return null;
+
+    const passwordField = _.find(fields, { property: 'password' });
+    if (passwordField) {
+      _.defaults(passwordField, { property: 'password', label: 'Password' }, defaults);
+    } else {
+      fields.unshift(_.assign({}, { property: 'password', label: 'Password' }, defaults));
+    }
   }
 
-  renderEmail(customFields) {
-    const emailField = _.find(customFields, { property: 'email' });
-    const displayField = !emailField || emailField.create;
+  addEmailField(fields) {
+    const defaults = {
+      property: 'email',
+      label: 'Email',
+      create: {
+        type: 'text',
+        component: InputText,
+        required: true
+      }
+    };
 
-    if (displayField) {
-      return (
-        <Field
-          label={ emailField && emailField.label || "Email"}
-          name="email"
-          component={InputText}
-        />
-      );
-    }
-    return null;
+    const field = _.find(fields, { property: 'email' });
+    if (field) return _.defaults(field, defaults);
+    fields.unshift(defaults);
   }
 
   render() {
-    const connections = this.props.connections;
 
     const {
       submitting,
-      memberships,
-      createMemberships,
-      hasSelectedConnection,
-      hasMembership,
       customFields
     } = this.props;
 
     const languageDictionary = this.props.languageDictionary || {};
+
+    /* First let's add field to the top if not in the list of fields */
+    const fields = _.cloneDeep(customFields) || [];
+    this.addConnectionsField(fields);
+    this.addPasswordFields(fields);
+    this.addUsernameField(fields);
+    this.addEmailField(fields);
+    this.addMembershipsField(fields);
 
     return (
       <div>
         <Modal.Body>
           {this.props.children}
           <div className="form-horizontal">
-            {this.renderMemberships(hasMembership, memberships, createMemberships)}
-            {this.renderEmail(customFields)}
-            {this.renderUsername(connections, hasSelectedConnection, customFields)}
-            {this.renderPassword(customFields)}
-            {this.renderConnections(connections, customFields)}
-            <UserCustomFormFields customFieldGetter={this.props.customFieldGetter} customFields={customFields}/>
+            <UserCustomFormFields isEditForm={false} fields={fields} languageDictionary={languageDictionary}/>
           </div>
         </Modal.Body>
         <Modal.Footer>

@@ -77,7 +77,7 @@ describe('#Client-Components-UserForm', () => {
       connection: 'Connection',
       password: 'Password',
       repeatPassword: 'Repeat Password',
-      email: 'Email'
+      email: 'Email (required)'
     };
 
     const component = renderComponent(everythingOptions);
@@ -158,6 +158,10 @@ describe('#Client-Components-UserForm', () => {
         },
         {
           property: 'password',
+          create: false
+        },
+        {
+          property: 'repeatPassword',
           create: false
         },
         {

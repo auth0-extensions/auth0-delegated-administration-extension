@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Modal } from 'react-bootstrap';
@@ -13,19 +14,28 @@ class UserFieldsChangeForm extends Component {
     handleSubmit: PropTypes.func.isRequired,
     submitting: PropTypes.bool,
     customFields: PropTypes.array,
-    customFieldGetter: PropTypes.func.isRequired,
     languageDictionary: PropTypes.object
   };
 
   render() {
+    const fields = this.props.customFields || [];
+
+    if (fields.length === 0) return null;
+
     const languageDictionary = this.props.languageDictionary || {};
+
+    const ignoreFields = [ 'username', 'memberships', 'connection', 'password', 'email', 'repeatPassword' ];
+    const filteredCustomFields = _.filter(fields, field => !_.includes(ignoreFields, field.property) && field.edit);
+
+    if (filteredCustomFields.length === 0) return null;
+
     return (
       <div>
         <Modal.Body>
           {this.props.children}
           <div className="form-horizontal">
-            <UserCustomFormFields customFieldGetter={this.props.customFieldGetter}
-                                  customFields={this.props.customFields}/>
+            <UserCustomFormFields isEditForm={true}
+                                  fields={filteredCustomFields}/>
           </div>
         </Modal.Body>
         <Modal.Footer>

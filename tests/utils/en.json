@@ -85,6 +85,9 @@
   "loginErrorButtonText": "Login",
   
   "logsRefreshButtonText": "Refresh",
-  "logsLoadMoreButtonText": "Load More"
+  "logsLoadMoreButtonText": "Load More",
+
+  "requiredFieldLabel": "(required)",
+  "requiredErrorText": "required"
 
 }

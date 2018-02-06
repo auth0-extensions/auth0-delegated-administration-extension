@@ -401,5 +401,66 @@ describe('settings reducer', () => {
 
     });
 
+    it('userFields good validate function', () => {
+      var field = {
+        label: 'SomeField',
+        property: 'someField',
+        edit: {
+          validationFunction: 'function  (value) { return false; }'
+        },
+        create: {
+          validationFunction: 'function  (value) { return "create"; }'
+        }
+      };
+
+      var fieldTarget = _.cloneDeep(field);
+      fieldTarget.edit.validationFunction = eval(`(${field.edit.validationFunction})`);
+      fieldTarget.create.validationFunction = eval(`(${field.create.validationFunction})`);
+
+      const state = settings(initialState, {
+        type: constants.FETCH_SETTINGS_FULFILLED,
+        payload: {
+          data: {
+            settings: {
+              dict: { title: 'test', memberships: 'test1, test2' },
+              userFields: [field],
+              css: 'style.css'
+            }
+          }
+        }
+      }).toJSON();
+
+      const target = {
+        loading: false,
+        error: null,
+        record: {
+          settings: {
+            dict: { title: 'test', memberships: 'test1, test2' },
+            userFields: [fieldTarget],
+            css: 'style.css'
+          }
+        }
+      };
+
+      expect(
+        state.record.settings.userFields[0].edit.validationFunction.toString()
+      ).toEqual(
+        target.record.settings.userFields[0].edit.validationFunction.toString()
+      );
+
+      expect(
+        state.record.settings.userFields[0].create.validationFunction.toString()
+      ).toEqual(
+        target.record.settings.userFields[0].create.validationFunction.toString()
+      );
+
+      expect(
+        state
+      ).toEqual(
+        target
+      );
+    });
+
+
   });
 });
