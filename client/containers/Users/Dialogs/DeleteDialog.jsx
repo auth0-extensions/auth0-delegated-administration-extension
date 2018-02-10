@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import connectContainer from 'redux-static';
@@ -5,10 +6,12 @@ import { Error, Confirm } from 'auth0-extension-ui';
 
 import { userActions } from '../../../actions';
 import getDialogMessage from './getDialogMessage';
+import { getName } from '../../../utils/display';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     userDelete: state.userDelete,
+    settings: state.settings,
     languageDictionary: state.languageDictionary
   });
 
@@ -34,16 +37,17 @@ export default connectContainer(class extends Component {
 
   render() {
     const { cancelDeleteUser } = this.props;
-    const { userName, error, requesting, loading } = this.props.userDelete.toJS();
+    const { user, error, requesting, loading } = this.props.userDelete.toJS();
 
+    const userFields = _.get(this.props.settings.toJS(), 'record.settings.userFields', []);
     const languageDictionary = this.props.languageDictionary.get('record').toJS();
-    const { preText, postText } = getDialogMessage(
-      languageDictionary.deleteDialogMessage, 'username',
-      {
-        preText: 'Do you really want to delete ',
-        postText: '? This will completely remove the user and cannot be undone.'
-      }
-    );
+
+    const messageFormat = languageDictionary.deleteDialogMessage ||
+      'Do you really want to delete {username}? ' +
+      'This will completely remove the user and cannot be undone.';
+
+    const message = getDialogMessage(messageFormat, 'username',
+      getName(user, userFields, languageDictionary));
 
     return (
       <Confirm title={languageDictionary.deleteDialogTitle || "Delete User?"}
@@ -52,7 +56,7 @@ export default connectContainer(class extends Component {
                languageDictionary={languageDictionary}>
         <Error message={error}/>
         <p>
-          {preText}<strong>{userName}</strong>{postText}
+          {message}
         </p>
       </Confirm>
     );

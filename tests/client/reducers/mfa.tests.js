@@ -6,8 +6,7 @@ const initialState = {
   error: null,
   loading: false,
   requesting: false,
-  userId: null,
-  userName: null,
+  user: null,
   provider: null
 };
 
@@ -36,8 +35,11 @@ describe('mfa reducer', () => {
         error: null,
         loading: false,
         requesting: true,
-        userId: 'user_1',
-        userName: 'user',
+        user: {
+          user_id: 'user_1',
+          user_name: 'user',
+          email: 'test@mail.com'
+        },
         provider: {}
       }
     );
@@ -58,8 +60,10 @@ describe('mfa reducer', () => {
         error: null,
         loading: false,
         requesting: true,
-        userId: 'user_1',
-        userName: 'test@mail.com',
+        user: {
+          user_id: 'user_1',
+          email: 'test@mail.com'
+        },
         provider: {}
       }
     );
@@ -85,8 +89,7 @@ describe('mfa reducer', () => {
         error: null,
         loading: true,
         requesting: false,
-        userId: null,
-        userName: null,
+        user: null,
         provider: null
       }
     );
@@ -100,11 +103,10 @@ describe('mfa reducer', () => {
       }).toJSON()
     ).toEqual(
       {
-        error: 'An error occured while removing multi factor authentication for the user: ERROR',
+        error: 'An error occurred while removing multi factor authentication for the user: ERROR',
         loading: false,
         requesting: false,
-        userId: null,
-        userName: null,
+        user: null,
         provider: null
       }
     );

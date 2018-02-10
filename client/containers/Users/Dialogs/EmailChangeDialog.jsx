@@ -4,30 +4,13 @@ import PropTypes from 'prop-types';
 import connectContainer from 'redux-static';
 import { Error, Confirm } from 'auth0-extension-ui';
 
+import submitForm from '../../../actions/submitForm';
 import { userActions } from '../../../actions';
+import { useDisabledConnectionField, useEmailField } from '../../../utils/useDefaultFields';
+import { getName, mapValues } from '../../../utils/display';
 import getDialogMessage from './getDialogMessage';
+import UserFieldsForm from '../../../components/Users/UserFieldsForm';
 
-class EmailChangeForm extends Component {
-
-  render() {
-
-    return (
-      <div className="row">
-        {this.renderConnection(connection, userFields)}
-        <div className="form-group">
-          <label id="email-change-email-label" className="col-xs-2 control-label">{emailLabel}</label>
-          <div className="col-xs-9">
-            <input id="email-change-email-input" ref="email" type="email" className="form-control"
-                   defaultValue={defaultEmailValue}/>
-          </div>
-        </div>
-        <input ref="user" type="hidden" readOnly="readonly" className="form-control" value={userId}/>
-      </div>
-    );
-  }
-};
-
-//EmailChangeForm = reduxForm({ form: 'test' })(EmailChangeForm);
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
@@ -37,14 +20,15 @@ export default connectContainer(class extends Component {
   });
 
   static actionsToProps = {
+    submitForm,
     ...userActions
-  }
+  };
 
   static propTypes = {
     cancelEmailChange: PropTypes.func.isRequired,
     changeEmail: PropTypes.func.isRequired,
     emailChange: PropTypes.object.isRequired
-  }
+  };
 
   shouldComponentUpdate(nextProps) {
     return nextProps.languageDictionary !== this.props.languageDictionary ||
@@ -52,44 +36,37 @@ export default connectContainer(class extends Component {
   }
 
   onConfirm = () => {
-    this.props.changeEmail(this.refs.user.value, this.refs.email.value);
+    this.props.submitForm('change-email');
   }
 
-  renderConnection(connection, userFields) {
-    const connectionField = _.find(userFields, field => field.property === 'connection');
+  onSubmit = (emailForm) => {
+    const { user } = this.props.emailChange.toJS();
 
-    const displayConnection = !connectionField || (_.isBoolean(connectionField.edit) && connectionField.edit === true) || _.isObject(connectionField.edit);
-
-    const label = (connectionField && connectionField.label) || 'Connection';
-    return displayConnection ? <div className="form-group">
-      <label id="email-change-connection-label" className="col-xs-2 control-label">{label}</label>
-      <div className="col-xs-9">
-        <input id="email-change-connection-input" type="text" readOnly="readonly" className="form-control"
-               value={connection}/>
-      </div>
-    </div> : <div></div>;
-  }
+    this.props.changeEmail(user.user_id, emailForm);
+  };
 
   render() {
     const { cancelEmailChange } = this.props;
-    const { userId, customField, connection, userName, userEmail, error, requesting, loading } = this.props.emailChange.toJS();
-
-    const defaultEmailValue = customField ? customField.display(customField.user) : userEmail;
+    const { user, connection, error, requesting, loading } = this.props.emailChange.toJS();
 
     const userFields = _.get(this.props.settings.toJS(), 'record.settings.userFields', []);
 
     const languageDictionary = this.props.languageDictionary.get('record').toJS();
-    const { preText, postText } = getDialogMessage(
-      languageDictionary.changeEmailMessage, 'username',
-      {
-        preText: 'Do you really want to change the email for ',
-        postText: '?'
-      }
-    );
 
-    const emailField = _.find(userFields, field => field.property === 'email');
+    const messageFormat = languageDictionary.changeEmailMessage ||
+      'Do you really want to change the email for {username}?';
+    const message = getDialogMessage(messageFormat, 'username',
+      getName(user, userFields, languageDictionary));
 
-    const emailLabel = (emailField && emailField.label) || 'Email';
+    const fields = _.cloneDeep(userFields) || [];
+    useEmailField(true, fields);
+    useDisabledConnectionField(true, fields, connection);
+
+    const allowedFields = ['email', 'connection'];
+    const filteredFields = _.filter(fields,
+      field => _.includes(allowedFields, field.property));
+
+    const UserFieldsFormInstance = UserFieldsForm('change-email', this.onSubmit.bind(this));
 
     return (
       <Confirm
@@ -99,8 +76,14 @@ export default connectContainer(class extends Component {
       >
         <Error message={error}/>
         <p>
-          {preText}<strong>{userName}</strong>{postText}
+          {message}
         </p>
+        <UserFieldsFormInstance
+          initialValues={mapValues(user, allowedFields, filteredFields)}
+          isEditForm={true}
+          fields={filteredFields}
+          languageDictionary={languageDictionary}
+        />
       </Confirm>
     );
   }

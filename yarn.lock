@@ -375,9 +375,9 @@ auth0-extension-tools@1.2.1, auth0-extension-tools@^1.0.0:
     superagent "^2.2.0"
     webtask-tools "^2.2.0"
 
-auth0-extension-ui@^1.1.3:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/auth0-extension-ui/-/auth0-extension-ui-1.1.3.tgz#7dabb64b9086f1a14ff2c03044d358acd4666b6a"
+auth0-extension-ui@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/auth0-extension-ui/-/auth0-extension-ui-1.1.4.tgz#72ca192ae0c9a6d68a94b786389566a6eda59a20"
   dependencies:
     babel-runtime "^6.11.6"
     css-loader "^0.25.0"

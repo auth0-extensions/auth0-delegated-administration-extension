@@ -6,10 +6,7 @@ const initialState = {
   error: null,
   loading: false,
   requesting: false,
-  userId: null,
-  userName: null,
-  userEmail: null,
-  customField: null,
+  user: null,
   connection: null
 };
 
@@ -31,18 +28,17 @@ describe('email change reducer', () => {
           email: 'test@mail.ru'
         },
         connection: 'connections',
-        customField: { property: 'test' }
       }).toJSON()
     ).toEqual(
       {
         error: null,
         loading: false,
         requesting: true,
-        userId: 'user_id_1',
-        userName: 'test@mail.ru',
-        userEmail: 'test@mail.ru',
+        user: {
+          user_id: 'user_id_1',
+          email: 'test@mail.ru'
+        },
         connection: 'connections',
-        customField: { property: 'test' }
       }
     );
   });
@@ -63,11 +59,12 @@ describe('email change reducer', () => {
         error: null,
         loading: false,
         requesting: true,
-        userId: 'user_id_1',
-        userName: 'test',
-        userEmail: 'test@mail.ru',
-        connection: 'connections',
-        customField: undefined
+        user: {
+          user_id: 'user_id_1',
+          name: 'test',
+          email: 'test@mail.ru'
+        },
+        connection: 'connections'
       }
     );
   });
@@ -88,11 +85,12 @@ describe('email change reducer', () => {
         error: null,
         loading: false,
         requesting: true,
-        userId: 'user_id_1',
-        userName: 'test',
-        userEmail: 'test@mail.ru',
-        connection: 'connections',
-        customField: undefined
+        user: {
+          user_id: 'user_id_1',
+          user_name: 'test',
+          email: 'test@mail.ru'
+        },
+        connection: 'connections'
       }
     );
   });
@@ -117,11 +115,8 @@ describe('email change reducer', () => {
         error: null,
         loading: true,
         requesting: false,
-        userId: null,
-        userName: null,
-        userEmail: null,
-        connection: null,
-        customField: null
+        user: null,
+        connection: null
       }
     );
   });
@@ -137,11 +132,8 @@ describe('email change reducer', () => {
         loading: false,
         error: 'An error occurred while changing the email: ERROR',
         requesting: false,
-        userId: null,
-        userName: null,
-        userEmail: null,
-        connection: null,
-        customField: null
+        user: null,
+        connection: null
       }
     );
   });

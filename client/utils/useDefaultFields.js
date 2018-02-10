@@ -1,4 +1,18 @@
-export const useUsernameField = (fields, connections, hasSelectedConnection, initialValues) => {
+import _ from 'lodash';
+
+const applyDefaults = (type, fields, property, defaults) => {
+  const field = _.find(fields, { property });
+
+  if (field) {
+    if (_.isBoolean(field[type]) && field[type] === false)
+      return _.remove(fields, { property });
+    return _.defaults(field, defaults);
+  }
+  return fields.unshift(defaults);
+};
+
+export const useUsernameField = (isEditField, fields, connections, hasSelectedConnection, initialValues) => {
+  const type = isEditField ? 'edit' : 'create';
   const selectedConnection = _.find(connections, (conn) => conn.name === hasSelectedConnection);
   const requireUsername = selectedConnection && selectedConnection.options ? selectedConnection.options.requires_username : false;
   if (!requireUsername && (!initialValues || !initialValues.username)) {
@@ -8,15 +22,17 @@ export const useUsernameField = (fields, connections, hasSelectedConnection, ini
   const defaults = {
     property: 'username',
     label: 'Username',
-    create: true
+    [type]: {
+      type: 'text',
+      required: true
+    }
   };
 
-  const usernameField = _.find(fields, { property: 'username' });
-  if (usernameField) return _.defaults(usernameField, defaults);
-  return fields.unshift(defaults);
+  return applyDefaults(type, fields, 'username', defaults);
 };
 
-export const useMembershipsField = (fields, hasMembership, memberships, createMemberships, getDictValue) => {
+export const useMembershipsField = (isEditField, fields, hasMembership, memberships, createMemberships, getDictValue) => {
+  const type = isEditField ? 'edit' : 'create';
   const allMemberships = _(memberships || [])
     .concat(hasMembership)
     .uniq()
@@ -30,28 +46,27 @@ export const useMembershipsField = (fields, hasMembership, memberships, createMe
   const defaults = {
     property: 'memberships',
     label: getDictValue('memberships', 'Memberships'),
-    create: {
+    [type]: {
       type: 'select',
       component: 'InputMultiCombo',
       options: allMemberships.map(m => ({ value: m, label: m }))
     }
   };
 
-  const index = _.findIndex(fields, 'property', 'memberships');
-  if (index >= 0) return _.defaults(fields[index], defaults);
-
-  fields.unshift(defaults);
+  return applyDefaults(type, fields, 'memberships', defaults);
 };
 
-export const useConnectionsField = (fields, connections, onConnectionChange) => {
+export const useConnectionsField = (isEditField, fields, connections, onConnectionChange) => {
+  const type = isEditField ? 'edit' : 'create';
   if (!connections || connections.length <= 1) {
-    return _.remove(fields, (field) => field.property === 'connection');
+    return _.remove(fields, { property: 'connection' });
   }
 
   const defaults = {
     property: 'connection',
     label: 'Connection',
-    create: {
+    [type]: {
+      required: true,
       type: 'select',
       component: 'InputCombo',
       options: connections.map(conn => ({ value: conn.name, text: conn.name })),
@@ -59,47 +74,110 @@ export const useConnectionsField = (fields, connections, onConnectionChange) => 
     }
   };
 
-  const field = _.find(fields, { property: 'connection' });
-  if (field) return _.defaults(field, defaults);
-  fields.unshift(defaults);
+  return applyDefaults(type, fields, 'connection', defaults);
 };
 
-export const usePasswordFields = (fields) => {
+export const useDisabledConnectionField = (isEditField, fields, connection) => {
+  const type = isEditField ? 'edit' : 'create';
+  if (!connection) {
+    return _.remove(fields, { property: 'connection' });
+  }
+
   const defaults = {
-    create: {
+    property: 'connection',
+    label: 'Connection',
+    [type]: {
+      type: 'text',
+      disabled: true
+    }
+  };
+
+  applyDefaults(type, fields, 'connection', defaults);
+
+  const field = _.find(fields, { property: 'connection' });
+  // If connection is an editable field, we need to display it on other pages, but only as disabled
+  if (field && (
+      (_.isObject(field[type]) && field[type].disabled !== true) || _.isBoolean(field[type])
+    )) field[type] = defaults[type];
+};
+
+export const usePasswordFields = (isEditField, fields) => {
+  const type = isEditField ? 'edit' : 'create';
+  const repeatPasswordDefaults = {
+    property: 'repeatPassword',
+    label: 'Repeat Password',
+    [type]: {
+      required: true,
+      type: 'password',
+      component: 'InputText',
+      validationFunction:
+        (value, values) =>
+          (value !== values.password ? 'passwords must match' : false )
+    }
+  };
+
+  const passwordDefaults = {
+    property: 'password',
+    label: 'Password',
+    [type]: {
+      required: true,
       type: 'password',
       component: 'InputText'
     }
   };
 
-  const repeatPasswordField = _.find(fields, { property: 'repeatPassword' });
-  const repeatDefaults = _.assign({}, defaults, { validationFunction: (value, values) => (value !== values.password ? 'passwords must match' : false ) });
-  if (repeatPasswordField) {
-    _.defaults(repeatPasswordField, { property: 'repeatPassword', label: 'Repeat Password' }, repeatDefaults);
-  } else {
-    fields.unshift(_.assign({}, { property: 'repeatPassword', label: 'Repeat Password' }, repeatDefaults));
-  }
-
-  const passwordField = _.find(fields, { property: 'password' });
-  if (passwordField) {
-    _.defaults(passwordField, { property: 'password', label: 'Password' }, defaults);
-  } else {
-    fields.unshift(_.assign({}, { property: 'password', label: 'Password' }, defaults));
-  }
+  applyDefaults(type, fields, 'repeatPassword', repeatPasswordDefaults);
+  applyDefaults(type, fields, 'password', passwordDefaults);
 };
 
-export const useEmailField = (fields) => {
+export const useEmailField = (isEditField, fields) => {
+  const type = isEditField ? 'edit' : 'create';
   const defaults = {
     property: 'email',
     label: 'Email',
-    create: {
+    [type]: {
       type: 'text',
       component: 'InputText',
       required: true
     }
   };
 
+  applyDefaults(type, fields, 'email', defaults);
+};
+
+export const useClientField = (isEditField, fields, clients) => {
+  const type = isEditField ? 'edit' : 'create';
+  const defaults = {
+    property: 'client',
+    label: 'Client',
+    [type]: {
+      type: 'select',
+      component: 'InputCombo',
+      required: true,
+      options: clients.map(option => ({ value: option.client_id, label: option.name}))
+    }
+  };
+
+  applyDefaults(type, fields, 'client', defaults);
+};
+
+export const useDisabledEmailField = (isEditField, fields) => {
+  const type = isEditField ? 'edit' : 'create';
+  const defaults = {
+    property: 'email',
+    label: 'Email',
+    [type]: {
+      type: 'text',
+      component: 'InputText',
+      disabled: true
+    }
+  };
+
+  applyDefaults(type, fields, 'email', defaults);
+
   const field = _.find(fields, { property: 'email' });
-  if (field) return _.defaults(field, defaults);
-  fields.unshift(defaults);
+  // If connection is an editable field, we need to display it on other pages, but only as disabled
+  if (field && (
+      (_.isObject(field[type]) && field[type].disabled !== true) || _.isBoolean(field[type])
+    )) field[type] = defaults[type];
 };

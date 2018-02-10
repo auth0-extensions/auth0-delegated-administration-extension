@@ -7,16 +7,14 @@ const initialState = {
   error: null,
   loading: false,
   requesting: false,
-  userId: null,
-  userName: null
+  user: null
 };
 
 export const userDelete = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
   [constants.REQUEST_DELETE_USER]: (state, action) =>
     state.merge({
       ...initialState,
-      userId: action.user.user_id,
-      userName: action.user.user_name || action.user.email,
+      user: action.user,
       requesting: true
     }),
   [constants.CANCEL_DELETE_USER]: (state) =>

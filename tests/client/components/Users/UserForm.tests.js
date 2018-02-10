@@ -72,11 +72,11 @@ describe('#Client-Components-UserForm', () => {
 
   it('should render', () => {
     const targets = {
-      username: 'Username',
+      username: 'Username (required)',
       memberships: 'Memberships',
-      connection: 'Connection',
-      password: 'Password',
-      repeatPassword: 'Repeat Password',
+      connection: 'Connection (required)',
+      password: 'Password (required)',
+      repeatPassword: 'Repeat Password (required)',
       email: 'Email (required)'
     };
 
@@ -114,6 +114,10 @@ describe('#Client-Components-UserForm', () => {
       },
       {
         property: 'password',
+        create: true
+      },
+      {
+        property: 'repeatPassword',
         create: true
       },
       {

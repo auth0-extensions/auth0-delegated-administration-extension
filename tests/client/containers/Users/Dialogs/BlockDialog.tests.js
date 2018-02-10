@@ -21,11 +21,12 @@ describe('#Client-Containers-Users-Dialogs-BlockDialog', () => {
   const renderComponent = (username, languageDictionary) => {
     const initialState = {
       block: fromJS({
-        userName: username,
+        user: { name: username },
         error: null,
         requesting: true,
         loading: false
       }),
+      settings: fromJS({}),
       languageDictionary: fromJS({
         record: languageDictionary || {}
       })

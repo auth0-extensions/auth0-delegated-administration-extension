@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import connectContainer from 'redux-static';
@@ -5,10 +6,12 @@ import { Error, Confirm } from 'auth0-extension-ui';
 
 import { userActions } from '../../../actions';
 import getDialogMessage from './getDialogMessage';
+import { getName } from '../../../utils/display';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     block: state.block,
+    settings: state.settings,
     languageDictionary: state.languageDictionary
   });
 
@@ -34,17 +37,17 @@ export default connectContainer(class extends Component {
 
   render() {
     const { cancelBlockUser } = this.props;
-    const { userName, error, requesting, loading } = this.props.block.toJS();
+    const { user, error, requesting, loading } = this.props.block.toJS();
+
+    const userFields = _.get(this.props.settings.toJS(), 'record.settings.userFields', []);
 
     const languageDictionary = this.props.languageDictionary.get('record').toJS();
 
-    const { preText, postText } = getDialogMessage(
-      languageDictionary.blockDialogMessage, 'username',
-      {
-        preText: 'Do you really want to block ',
-        postText: '? After doing so the user will not be able to sign in anymore.'
-      }
-    );
+    const messageFormat = languageDictionary.blockDialogMessage ||
+      'Do you really want to block {username}? '+
+      'After doing so the user will not be able to sign in anymore.';
+    const message = getDialogMessage(messageFormat, 'username',
+      getName(user, userFields, languageDictionary));
 
     return (
       <Confirm title={languageDictionary.blockDialogTitle || "Block User?"}
@@ -53,7 +56,7 @@ export default connectContainer(class extends Component {
                languageDictionary={languageDictionary}>
         <Error message={error}/>
         <p>
-          {preText}<strong>{userName}</strong>{postText}
+          {message}
         </p>
       </Confirm>
     );

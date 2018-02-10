@@ -21,10 +21,11 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
     options = options || {};
     const initialState = {
       passwordReset: fromJS({
-        userName: options.username,
+        user: { name: options.username, email: 'four@horseman.com' },
         error: null,
         requesting: true,
-        loading: false
+        loading: false,
+        connection: 'connA'
       }),
       languageDictionary: fromJS({
         record: languageDictionary || {}
@@ -75,21 +76,21 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
 
   const checkConnectionLabel = (component, connectionLabel) => {
     if (connectionLabel) {
-      const label = document.querySelector('#password-reset-connection-label');
+      const label = document.querySelector('label[for=connection]');
       expect(label).to.not.be.null;
       expect(label.textContent).to.equal(connectionLabel);
     } else {
-      expect(document.querySelector('#password-reset-connection-label')).to.be.null;
+      expect(document.querySelector('label[for=connection]')).to.be.null;
     }
   };
 
   const checkEmailLabel = (component, emailLabel) => {
-    expect(document.querySelector('#password-reset-email-label')
+    expect(document.querySelector('label[for=email]')
       .textContent).to.equal(emailLabel);
   };
 
   const checkClientLabel = (component, passwordLabel) => {
-    expect(document.querySelector('#password-reset-client-label')
+    expect(document.querySelector('label[for=client]')
       .textContent).to.equal(passwordLabel);
   };
 
@@ -107,7 +108,7 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
       ' user allowing them to choose a new password.');
     checkConnectionLabel(component, 'Connection');
     checkEmailLabel(component, 'Email');
-    checkClientLabel(component, 'Client');
+    checkClientLabel(component, 'Client (required)');
     checkConfirm(component, 'Reset Password?', {});
   });
 
@@ -119,7 +120,7 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
       ' user allowing them to choose a new password.');
     checkConnectionLabel(component, 'Connection');
     checkEmailLabel(component, 'Email');
-    checkClientLabel(component, 'Client');
+    checkClientLabel(component, 'Client (required)');
     checkConfirm(component, 'Reset Password?', languageDictionary);
   });
 

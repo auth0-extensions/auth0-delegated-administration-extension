@@ -7,18 +7,14 @@ const initialState = {
   error: null,
   loading: false,
   requesting: false,
-  userId: null,
-  connection: null,
-  userName: null
+  user: null
 };
 
 export const verificationEmail = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
   [constants.REQUEST_RESEND_VERIFICATION_EMAIL]: (state, action) =>
     state.merge({
       ...initialState,
-      userId: action.user.user_id,
-      connection: action.connection,
-      userName: action.user.name || action.user.user_name || action.user.email,
+      user: action.user,
       requesting: true
     }),
   [constants.CANCEL_RESEND_VERIFICATION_EMAIL]: (state) =>
@@ -32,7 +28,7 @@ export const verificationEmail = createReducer(fromJS(initialState), { // eslint
   [constants.RESEND_VERIFICATION_EMAIL_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occured while sending email: ${action.errorMessage}`
+      error: `An error occurred while sending email: ${action.errorMessage}`
     }),
   [constants.RESEND_VERIFICATION_EMAIL_FULFILLED]: (state) =>
     state.merge({

@@ -21,11 +21,13 @@ describe('#Client-Containers-Users-Dialogs-UsernameChangeDialog', () => {
     options = options || {};
     const initialState = {
       usernameChange: fromJS({
-        userName: options.username,
+        user: { name: options.username },
         error: null,
         requesting: true,
-        loading: false
+        loading: false,
+        connection: 'connA'
       }),
+      connections: fromJS({ records: [{ name: 'connA', options: { requires_username: true }}]}),
       languageDictionary: fromJS({
         record: languageDictionary || {}
       }),
@@ -57,15 +59,15 @@ describe('#Client-Containers-Users-Dialogs-UsernameChangeDialog', () => {
 
   const checkConnectionLabel = (component, connectionLabel) => {
     if (connectionLabel) {
-      expect(document.querySelector('#username-change-connection-label')
+      expect(document.querySelector('label[for=connection]')
         .textContent).to.equal(connectionLabel);
     } else {
-      expect(document.querySelector('#username-change-connection-label')).to.be.null;
+      expect(document.querySelector('label[for=connection]')).to.be.null;
     }
   };
 
   const checkUsernameLabel = (component, usernameLabel) => {
-    expect(document.querySelector('#username-change-username-label')
+    expect(document.querySelector('label[for=username]')
       .textContent).to.equal(usernameLabel);
   };
 
@@ -74,14 +76,14 @@ describe('#Client-Containers-Users-Dialogs-UsernameChangeDialog', () => {
     expect(confirm.length).to.equal(1);
     expect(confirm.prop('languageDictionary')).to.deep.equal(languageDictionary);
     expect(confirm.prop('title')).to.deep.equal(title);
-  }
+  };
 
   it('should render', () => {
     const component = renderComponent({username:'bill'});
 
     checkText(component, 'Do you really want to change the username for ', 'bill', '?');
     checkConnectionLabel(component, 'Connection');
-    checkUsernameLabel(component, 'Username');
+    checkUsernameLabel(component, 'Username (required)');
     checkConfirm(component, 'Change Username?', {});
   });
 
@@ -90,7 +92,7 @@ describe('#Client-Containers-Users-Dialogs-UsernameChangeDialog', () => {
 
     checkText(component, 'Do you really want to change the username for ', 'bill', '?');
     checkConnectionLabel(component, 'Connection');
-    checkUsernameLabel(component, 'Username');
+    checkUsernameLabel(component, 'Username (required)');
     checkConfirm(component, 'Change Username?', { someKey: 'someValue' });
   });
 
@@ -99,7 +101,7 @@ describe('#Client-Containers-Users-Dialogs-UsernameChangeDialog', () => {
 
     checkText(component, 'Do you really want to change the username for ', 'bill', '?');
     checkConnectionLabel(component, 'Connection');
-    checkUsernameLabel(component, 'Username');
+    checkUsernameLabel(component, 'Username (required)');
     checkConfirm(component, 'Change Username?', { someKey: 'someValue' });
   });
 

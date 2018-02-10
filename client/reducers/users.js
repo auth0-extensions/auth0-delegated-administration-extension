@@ -55,6 +55,6 @@ export const users = createReducer(fromJS(initialState), { // eslint-disable-lin
     ),
   [constants.REMOVE_MULTIFACTOR_FULFILLED]: (state, action) =>
     state.updateIn(
-      [ 'records', state.get('records').findIndex(p => p.get('user_id') === action.meta.userId), 'multifactor' ], (multifactor) => multifactor.splice(0, 1)
+      [ 'records', state.get('records').findIndex(p => p.get('user_id') === action.meta.userId), 'multifactor' ], (multifactor) => multifactor && multifactor.splice(0, 1)
     )
 });

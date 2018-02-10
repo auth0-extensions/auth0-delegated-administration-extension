@@ -6,9 +6,7 @@ const initialState = {
   error: null,
   loading: false,
   requesting: false,
-  userId: null,
-  userName: null,
-  userEmail: null,
+  user: null,
   connection: null
 };
 
@@ -36,9 +34,10 @@ describe('Password Reset reducer', () => {
         error: null,
         loading: false,
         requesting: true,
-        userId: 'user_1',
-        userName: 'test@mail.com',
-        userEmail: 'test@mail.com',
+        user: {
+          user_id: 'user_1',
+          email: 'test@mail.com'
+        },
         connection: 'connection'
       }
     );
@@ -60,9 +59,11 @@ describe('Password Reset reducer', () => {
         error: null,
         loading: false,
         requesting: true,
-        userId: 'user_1',
-        userName: 'user_name',
-        userEmail: 'test@mail.com',
+        user: {
+          user_id: 'user_1',
+          user_name: 'user_name',
+          email: 'test@mail.com'
+        },
         connection: 'connection'
       }
     );
@@ -84,9 +85,11 @@ describe('Password Reset reducer', () => {
         error: null,
         loading: false,
         requesting: true,
-        userId: 'user_1',
-        userName: 'user_name',
-        userEmail: 'test@mail.com',
+        user: {
+          user_id: 'user_1',
+          name: 'user_name',
+          email: 'test@mail.com'
+        },
         connection: 'connection'
       }
     );
@@ -112,9 +115,7 @@ describe('Password Reset reducer', () => {
         error: null,
         loading: true,
         requesting: false,
-        userId: null,
-        userName: null,
-        userEmail: null,
+        user: null,
         connection: null
       }
     );
@@ -128,12 +129,10 @@ describe('Password Reset reducer', () => {
       }).toJSON()
     ).toEqual(
       {
-        error: 'An error occured while resetting the password: ERROR',
+        error: 'An error occurred while resetting the password: ERROR',
         loading: false,
         requesting: false,
-        userId: null,
-        userName: null,
-        userEmail: null,
+        user: null,
         connection: null
       }
     );

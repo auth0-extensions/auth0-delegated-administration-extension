@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import {
@@ -13,16 +14,17 @@ import {
 } from 'auth0-extension-ui';
 
 import './UserTable.styles.css';
-import { getProperty } from '../../utils';
+import { getValueForType } from '../../utils/display';
 
 export default class UsersTable extends Component {
   static propTypes = {
-    users: React.PropTypes.array.isRequired,
-    loading: React.PropTypes.bool.isRequired,
-    userFields: React.PropTypes.array.isRequired,
-    onColumnSort: React.PropTypes.func.isRequired,
-    sortOrder: React.PropTypes.number.isRequired,
-    sortProperty: React.PropTypes.string.isRequired,
+    users: PropTypes.array.isRequired,
+    loading: PropTypes.bool.isRequired,
+    userFields: PropTypes.array.isRequired,
+    onColumnSort: PropTypes.func.isRequired,
+    sortOrder: PropTypes.number.isRequired,
+    sortProperty: PropTypes.string.isRequired,
+    languageDictionary: PropTypes.object
   };
 
   getListFields(props) {
@@ -158,33 +160,6 @@ export default class UsersTable extends Component {
     }
   }
 
-  getValue(field, user, defaultValue) {
-    // First get the value
-    let value;
-    if (typeof field.property === 'function') value = field.property(user);
-    else if (field.property) value = getProperty(user, field.property);
-
-    // Now get the display value
-    const displayProperty = field.search && field.search.display ? field.search.display : field.display;
-    let display;
-    let displayFunction;
-    if (typeof displayProperty === 'function') displayFunction = displayProperty;
-    if (displayFunction) {
-      try {
-        display = displayFunction(user, value);
-      } catch(e) {
-        display = 'error';
-        console.error(`Error fetching value for ${user.user_id}'s ${field.label}: `, e.message);
-      }
-    }
-
-    if (!display && typeof value === 'object') {
-      display = JSON.stringify(value);
-    }
-
-    return display || value || defaultValue;
-  }
-
   onColumnSort(property, sortOrder) {
     const sort = {
       property,
@@ -195,6 +170,8 @@ export default class UsersTable extends Component {
 
   render() {
     const { users, sortProperty, sortOrder } = this.props;
+
+    const languageDictionary = this.props.languageDictionary || {};
 
     const listFields = this.state.listFields;
 
@@ -241,11 +218,11 @@ export default class UsersTable extends Component {
                   if (index === 0) {
                     return (
                       <TableRouteCell key={key} route={`/users/${user.user_id}`}>
-                        {this.getValue(field, user, '(empty)')}
+                        {getValueForType('search', user, field, languageDictionary) || '(empty)'}
                       </TableRouteCell>
                     );
                   }
-                  return <TableTextCell key={key}>{this.getValue(field, user)}</TableTextCell>;
+                  return <TableTextCell key={key}>{getValueForType('search', user, field, languageDictionary)}</TableTextCell>;
                 })
               }
             </TableRow>

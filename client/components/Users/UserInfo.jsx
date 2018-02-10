@@ -1,12 +1,11 @@
 import _ from 'lodash';
-import moment from 'moment';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Error, LoadingPanel } from 'auth0-extension-ui';
 
 import './UserInfo.styles.css';
 import UserInfoField from './UserInfoField';
-import { getProperty } from '../../utils'
+import { getValue } from '../../utils/display';
 
 export default class UserInfo extends Component {
   static propTypes = {
@@ -29,50 +28,17 @@ export default class UserInfo extends Component {
   getMemberships = (memberships) => {
     const meta = memberships || [];
     return meta.join(', ');
-  }
+  };
 
   getIdentities = (user) => {
     if (user.size === 0) return {};
     return user.get('identities').toJSON()[0];
-  }
+  };
 
   getBlocked = (user, languageDictionary) => {
     if (user.size === 0) return '';
     return user.get('blocked') ? (languageDictionary.yesLabel || 'Yes') : (languageDictionary.noLabel || 'No');
-  }
-
-  getValue(user, field, languageDictionary) {
-    if (user.size === 0) {
-      return null;
-    }
-
-    if (_.isFunction(field.display)) {
-      try {
-        return field.display(user);
-      } catch (e) {
-        /* Swallow eval errors */
-        console.log(`Could not display ${field.property} because: ${e.message}`);
-        return null;
-      }
-    }
-
-    let value = getProperty(user, field.property);
-    if (value === undefined) return null;
-
-    if (field.type && field.type === 'elapsedTime') {
-      value = moment(value).locale(languageDictionary.momentLocale || 'en').fromNow();
-    }
-
-    if (_.isObject(value)) {
-      value = JSON.stringify(value);
-    }
-
-    if (_.isBoolean(value)) {
-      value = value ? (languageDictionary.trueLabel || 'TRUE') : (languageDictionary.falseLabel || 'FALSE');
-    }
-
-    return value;
-  }
+  };
 
   render() {
     const { user, error, loading, memberships } = this.props;
@@ -148,7 +114,7 @@ export default class UserInfo extends Component {
       .value();
 
     const fieldsAndValues = _.map(fields, (field) => {
-      field.value = this.getValue(userObject, field, languageDictionary);
+      field.value = getValue(userObject, field, languageDictionary);
       return field;
     });
     const nonNullFields = _.filter(fieldsAndValues, field => field.value) || [];

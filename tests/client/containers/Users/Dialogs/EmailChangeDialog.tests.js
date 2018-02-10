@@ -21,7 +21,12 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
     options = options || {};
     const initialState = {
       emailChange: fromJS({
-        userName: options.username,
+        user: {
+          user_id: 1,
+          name: options.username,
+          email: 'four@horseman.com'
+        },
+        connection: 'connA',
         error: null,
         requesting: true,
         loading: false
@@ -57,15 +62,15 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
 
   const checkConnectionLabel = (component, connectionLabel) => {
     if (connectionLabel) {
-      expect(document.querySelector('#email-change-connection-label')
+      expect(document.querySelector('label[for=connection]')
         .textContent).to.equal(connectionLabel);
     } else {
-      expect(document.querySelector('#email-change-connection-label')).to.be.null;
+      expect(document.querySelector('label[for=connection]')).to.be.null;
     }
   };
 
   const checkEmailLabel = (component, emailLabel) => {
-    expect(document.querySelector('#email-change-email-label')
+    expect(document.querySelector('label[for=email]')
       .textContent).to.equal(emailLabel);
   };
 
@@ -81,7 +86,7 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
 
     checkText(component, 'Do you really want to change the email for ', 'bill', '?');
     checkConnectionLabel(component, 'Connection');
-    checkEmailLabel(component, 'Email');
+    checkEmailLabel(component, 'Email (required)');
     checkConfirm(component, 'Change Email?');
   });
 
@@ -90,7 +95,7 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
 
     checkText(component, 'Do you really want to change the email for ', 'bill', '?');
     checkConnectionLabel(component, 'Connection');
-    checkEmailLabel(component, 'Email');
+    checkEmailLabel(component, 'Email (required)');
     checkConfirm(component, 'Change Email?');
   });
 
@@ -99,7 +104,7 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
 
     checkText(component, 'Do you really want to change the email for ', 'bill', '?');
     checkConnectionLabel(component, 'Connection');
-    checkEmailLabel(component, 'Email');
+    checkEmailLabel(component, 'Email (required)');
     checkConfirm(component, 'Change Email?');
   });
 
@@ -139,7 +144,7 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
             {
               property: 'email',
               label: 'EmailLabel',
-              edit: {}
+              edit: true
             },
             {
               property: 'connection',

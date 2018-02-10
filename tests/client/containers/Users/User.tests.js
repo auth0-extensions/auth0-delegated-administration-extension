@@ -37,7 +37,7 @@ describe('#Client-Containers-Users-User', () => {
 
   const renderComponent = (languageDictionary) => {
     const basicUsername = fromJS({
-      userName: 'bill',
+      user: {name: 'bill'},
       loading: false,
       error: null
     });

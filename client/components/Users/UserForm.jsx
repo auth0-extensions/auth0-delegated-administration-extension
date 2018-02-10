@@ -31,18 +31,24 @@ class AddUserForm extends Component {
     const {
       submitting,
       customFields,
-      connections
+      connections,
+      hasSelectedConnection,
+      initialValues,
+      hasMembership,
+      memberships,
+      createMemberships,
+      getDictValue
     } = this.props;
 
     const languageDictionary = this.props.languageDictionary || {};
 
     /* First let's add field to the top if not in the list of fields */
     const fields = _.cloneDeep(customFields) || [];
-    useDefaultFields.useConnectionsField(fields, connections, this.onConnectionsChange);
-    useDefaultFields.usePasswordFields(fields);
-    useDefaultFields.useUsernameField(fields);
-    useDefaultFields.useEmailField(fields);
-    useDefaultFields.useMembershipsField(fields);
+    useDefaultFields.useConnectionsField(false, fields, connections, this.onConnectionsChange);
+    useDefaultFields.usePasswordFields(false, fields);
+    useDefaultFields.useUsernameField(false, fields, connections, hasSelectedConnection, initialValues);
+    useDefaultFields.useEmailField(false, fields);
+    useDefaultFields.useMembershipsField(false, fields, hasMembership, memberships, createMemberships, getDictValue);
 
     return (
       <div>

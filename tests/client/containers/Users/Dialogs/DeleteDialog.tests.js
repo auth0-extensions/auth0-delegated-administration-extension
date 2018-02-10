@@ -21,11 +21,12 @@ describe('#Client-Containers-Users-Dialogs-DeleteDialog', () => {
   const renderComponent = (username, languageDictionary) => {
     const initialState = {
       userDelete: fromJS({
-        userName: username,
+        user: { name: username },
         error: null,
         requesting: true,
         loading: false
       }),
+      settings: fromJS({}),
       languageDictionary: fromJS({
         record: languageDictionary || {}
       })
@@ -65,21 +66,25 @@ describe('#Client-Containers-Users-Dialogs-DeleteDialog', () => {
     const component = renderComponent('bill');
 
     checkText(component, 'Do you really want to delete ', 'bill', '? This will completely remove the user and cannot be undone.');
+    checkConfirm(component, 'Delete User?', {});
   });
 
   it('should render not applicable language dictionary', () => {
     const component = renderComponent('bill', { someKey: 'someValue' });
 
     checkText(component, 'Do you really want to delete ', 'bill', '? This will completely remove the user and cannot be undone.');
+    checkConfirm(component, 'Delete User?', { someKey: 'someValue' });
   });
 
   it('should render applicable language dictionary', () => {
     const languageDictionary = {
-      deleteDialogMessage: 'Some pre message {username} ignore second {username}'
+      deleteDialogMessage: 'Some pre message {username} ignore second {username}',
+      deleteDialogTitle: 'Delete User Title'
     };
     const component = renderComponent('bob', languageDictionary);
 
     checkText(component, 'Some pre message ', 'bob', ' ignore second {username}');
+    checkConfirm(component, 'Delete User Title', languageDictionary);
   });
 
   it('should render applicable language dictionary spaces in username', () => {

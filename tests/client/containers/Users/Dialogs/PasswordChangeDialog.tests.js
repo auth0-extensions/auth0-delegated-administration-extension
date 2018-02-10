@@ -21,7 +21,8 @@ describe('#Client-Containers-Users-Dialogs-PasswordChangeDialog', () => {
     options = options || {};
     const initialState = {
       passwordChange: fromJS({
-        userName: options.username,
+        user: { name: options.username, email: 'four@horseman.com' },
+        connection: 'connA',
         error: null,
         requesting: true,
         loading: false
@@ -57,26 +58,26 @@ describe('#Client-Containers-Users-Dialogs-PasswordChangeDialog', () => {
 
   const checkConnectionLabel = (component, connectionLabel) => {
     if (connectionLabel) {
-      const label = document.querySelector('#password-change-connection-label');
+      const label = document.querySelector('label[for=connection]');
       expect(label).to.not.be.null;
       expect(label.textContent).to.equal(connectionLabel);
     } else {
-      expect(document.querySelector('#password-change-connection-label')).to.be.null;
+      expect(document.querySelector('label[for=connection]')).to.be.null;
     }
   };
 
   const checkEmailLabel = (component, emailLabel) => {
-    expect(document.querySelector('#password-change-email-label')
+    expect(document.querySelector('label[for=email]')
       .textContent).to.equal(emailLabel);
   };
 
   const checkPasswordLabel = (component, passwordLabel) => {
-    expect(document.querySelector('#password-change-password-label')
+    expect(document.querySelector('label[for=password]')
       .textContent).to.equal(passwordLabel);
   };
 
   const checkRepeatPasswordLabel = (component, passwordLabel) => {
-    expect(document.querySelector('#password-change-repeat-password-label')
+    expect(document.querySelector('label[for=repeatPassword]')
       .textContent).to.equal(passwordLabel);
   };
 
@@ -91,10 +92,10 @@ describe('#Client-Containers-Users-Dialogs-PasswordChangeDialog', () => {
     const component = renderComponent({username:'bill'});
 
     checkText(component, 'Do you really want to reset the password for ', 'bill', '? You\'ll need a safe way to communicate the new password to your user, never send the user this new password in clear text.');
-    checkConnectionLabel(component, 'Connection');
     checkEmailLabel(component, 'Email');
-    checkPasswordLabel(component, 'Password');
-    checkRepeatPasswordLabel(component, 'Repeat Password');
+    checkConnectionLabel(component, 'Connection');
+    checkPasswordLabel(component, 'Password (required)');
+    checkRepeatPasswordLabel(component, 'Repeat Password (required)');
     checkConfirm(component, 'Change Password?', {});
   });
 
@@ -106,8 +107,8 @@ describe('#Client-Containers-Users-Dialogs-PasswordChangeDialog', () => {
       ' communicate the new password to your user, never send the user this new password in clear text.');
     checkConnectionLabel(component, 'Connection');
     checkEmailLabel(component, 'Email');
-    checkPasswordLabel(component, 'Password');
-    checkRepeatPasswordLabel(component, 'Repeat Password');
+    checkPasswordLabel(component, 'Password (required)');
+    checkRepeatPasswordLabel(component, 'Repeat Password (required)');
     checkConfirm(component, 'Change Password?', languageDictionary);
   });
 

@@ -7,10 +7,7 @@ const initialState = {
   error: null,
   loading: false,
   requesting: false,
-  userId: null,
-  userName: null,
-  userEmail: null,
-  customField: null,
+  user: null,
   connection: null
 };
 
@@ -18,11 +15,8 @@ export const emailChange = createReducer(fromJS(initialState), { // eslint-disab
   [constants.REQUEST_EMAIL_CHANGE]: (state, action) =>
     state.merge({
       ...initialState,
-      userId: action.user.user_id,
-      userName: action.user.name || action.user.user_name || action.user.email,
-      userEmail: action.user.email,
+      user: action.user,
       connection: action.connection,
-      customField: action.customField,
       requesting: true
     }),
   [constants.CANCEL_EMAIL_CHANGE]: (state) =>

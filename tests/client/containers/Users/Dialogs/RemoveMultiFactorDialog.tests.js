@@ -21,11 +21,13 @@ describe('#Client-Containers-Users-Dialogs-RemoveMultiFactorDialog', () => {
   const renderComponent = (username, languageDictionary) => {
     const initialState = {
       mfa: fromJS({
-        userName: username,
+        user: { name: username },
         error: null,
         requesting: true,
-        loading: false
+        loading: false,
+        connection: 'connA'
       }),
+      settings: fromJS({}),
       languageDictionary: fromJS({
         record: languageDictionary || {}
       })

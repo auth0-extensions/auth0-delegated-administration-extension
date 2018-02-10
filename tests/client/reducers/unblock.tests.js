@@ -6,8 +6,7 @@ const initialState = {
   error: null,
   loading: false,
   requesting: false,
-  userId: null,
-  userName: null
+  user: null
 };
 
 describe('unblock reducer', () => {
@@ -26,16 +25,17 @@ describe('unblock reducer', () => {
         user: {
           user_id: 'user_1',
           user_name: 'user'
-        },
-        provider: {}
+        }
       }).toJSON()
     ).toEqual(
       {
         error: null,
         loading: false,
         requesting: true,
-        userId: 'user_1',
-        userName: 'user'
+        user: {
+          user_id: 'user_1',
+          user_name: 'user'
+        }
       }
     );
   });
@@ -47,16 +47,17 @@ describe('unblock reducer', () => {
         user: {
           user_id: 'user_1',
           email: 'test@mail.com'
-        },
-        provider: {}
+        }
       }).toJSON()
     ).toEqual(
       {
         error: null,
         loading: false,
         requesting: true,
-        userId: 'user_1',
-        userName: 'test@mail.com'
+        user: {
+          user_id: 'user_1',
+          email: 'test@mail.com'
+        }
       }
     );
   });
@@ -81,8 +82,7 @@ describe('unblock reducer', () => {
         error: null,
         loading: true,
         requesting: false,
-        userId: null,
-        userName: null
+        user: null
       }
     );
   });
@@ -95,11 +95,10 @@ describe('unblock reducer', () => {
       }).toJSON()
     ).toEqual(
       {
-        error: 'An error occured while unblocking the user: ERROR',
+        error: 'An error occurred while unblocking the user: ERROR',
         loading: false,
         requesting: false,
-        userId: null,
-        userName: null
+        user: null
       }
     );
   });

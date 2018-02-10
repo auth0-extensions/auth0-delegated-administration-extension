@@ -21,11 +21,12 @@ describe('#Client-Containers-Users-Dialogs-UnblockDialog', () => {
   const renderComponent = (username, languageDictionary) => {
     const initialState = {
       unblock: fromJS({
-        userName: username,
+        user: { name: username },
         error: null,
         requesting: true,
         loading: false
       }),
+      settings: fromJS({}),
       languageDictionary: fromJS({
         record: languageDictionary || {}
       })

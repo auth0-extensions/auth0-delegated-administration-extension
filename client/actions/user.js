@@ -200,16 +200,16 @@ export function cancelRemoveMultiFactor() {
  */
 export function removeMultiFactor() {
   return (dispatch, getState) => {
-    const { userId, provider } = getState().mfa.toJS();
+    const { user: {user_id}, provider } = getState().mfa.toJS();
     dispatch({
       type: constants.REMOVE_MULTIFACTOR,
       payload: {
-        promise: axios.delete(`/api/users/${userId}/multifactor/${provider}`)
+        promise: axios.delete(`/api/users/${user_id}/multifactor/${provider}`)
       },
       meta: {
-        userId,
+        userId: user_id,
         onSuccess: () => {
-          dispatch(fetchUserDetail(userId));
+          dispatch(fetchUserDetail(user_id))
         }
       }
     });
@@ -264,7 +264,7 @@ export function updateUser(userId, data, onSuccess) {
  */
 export function blockUser() {
   return (dispatch, getState) => {
-    const userId = getState().block.get('userId');
+    const userId = getState().block.get('user').get('user_id');
     dispatch({
       type: constants.BLOCK_USER,
       payload: {
@@ -304,7 +304,7 @@ export function cancelUnblockUser() {
  */
 export function unblockUser() {
   return (dispatch, getState) => {
-    const userId = getState().unblock.get('userId');
+    const userId = getState().unblock.get('user').get('user_id');
     dispatch({
       type: constants.UNBLOCK_USER,
       payload: {
@@ -344,14 +344,14 @@ export function cancelDeleteUser() {
  */
 export function deleteUser() {
   return (dispatch, getState) => {
-    const { userId } = getState().userDelete.toJS();
+    const { user: {user_id} } = getState().userDelete.toJS();
     dispatch({
       type: constants.DELETE_USER,
       payload: {
-        promise: axios.delete(`/api/users/${userId}`)
+        promise: axios.delete(`/api/users/${user_id}`)
       },
       meta: {
-        userId,
+        userId: user_id,
         onSuccess: () => {
           dispatch(push('/users'));
         }
@@ -385,17 +385,17 @@ export function cancelPasswordReset() {
  */
 export function resetPassword(application) {
   return (dispatch, getState) => {
-    const { userId, connection } = getState().passwordReset.toJS();
+    const { user: { user_id }, connection } = getState().passwordReset.toJS();
     dispatch({
       type: constants.PASSWORD_RESET,
       payload: {
-        promise: axios.post(`/api/users/${userId}/password-reset`, {
+        promise: axios.post(`/api/users/${user_id}/password-reset`, {
           connection,
-          clientId: application
+          clientId: application.client
         })
       },
       meta: {
-        userId
+        userId: user_id
       }
     });
   };
@@ -424,20 +424,20 @@ export function cancelPasswordChange() {
 /*
  * Change password.
  */
-export function changePassword(password, confirmPassword) {
+export function changePassword(formData) {
   return (dispatch, getState) => {
-    const { userId, connection } = getState().passwordChange.toJS();
+    const { user: { user_id }, connection } = getState().passwordChange.toJS();
     dispatch({
       type: constants.PASSWORD_CHANGE,
       payload: {
-        promise: axios.put(`/api/users/${userId}/change-password`, {
+        promise: axios.put(`/api/users/${user_id}/change-password`, {
           connection,
-          password,
-          confirmPassword
+          password: formData.password,
+          confirmPassword: formData.repeatPassword
         })
       },
       meta: {
-        userId
+        userId: user_id
       }
     });
   };
@@ -472,13 +472,12 @@ export function changeUsername(userId, data) {
     dispatch({
       type: constants.USERNAME_CHANGE,
       meta: {
-        userId,
         onSuccess: () => {
           dispatch(fetchUserDetail(userId));
         }
       },
       payload: {
-        promise: axios.put(`/api/users/${userId}/change-username`, { username: data }, { responseType: 'json' })
+        promise: axios.put(`/api/users/${userId}/change-username`, data, { responseType: 'json' })
       }
     });
   };
@@ -519,7 +518,7 @@ export function changeEmail(userId, data) {
         }
       },
       payload: {
-        promise: axios.put(`/api/users/${userId}/change-email`, { email: data }, { responseType: 'json' })
+        promise: axios.put(`/api/users/${userId}/change-email`, data, { responseType: 'json' })
       }
     });
   };
