@@ -39,7 +39,9 @@ export default connectContainer(class extends Component {
   };
 
   onSubmit = (formData) => {
-    this.props.changeUsername(this.props.usernameChange.toJS().user.user_id, formData);
+    const languageDictionary = this.props.languageDictionary.get('record').toJS();
+
+    this.props.changeUsername(this.props.usernameChange.toJS().user.user_id, formData, languageDictionary);
   };
 
   render() {

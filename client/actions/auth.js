@@ -1,7 +1,6 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 import { push } from 'react-router-redux';
-import uuid from 'uuid';
 
 import * as constants from '../constants';
 

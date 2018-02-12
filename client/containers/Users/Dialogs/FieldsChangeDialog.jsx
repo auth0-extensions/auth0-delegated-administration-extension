@@ -40,7 +40,7 @@ export default connectContainer(class extends Component {
       .uniq()
       .value();
 
-    this.props.changeFields(this.props.userId, _.pick(user, submitFields));
+    this.props.changeFields(this.props.userId, _.pick(user, submitFields), this.props.languageDictionary.get('record').toJS());
   }
 
   render() {

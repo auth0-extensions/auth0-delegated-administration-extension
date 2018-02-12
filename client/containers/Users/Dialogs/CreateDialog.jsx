@@ -40,7 +40,8 @@ export default connectContainer(class extends Component {
   }
 
   onSubmit = (user) => {
-    this.props.createUser(user);
+    const languageDictionary = this.props.languageDictionary.get('record').toJS();
+    this.props.createUser(user, languageDictionary);
   }
 
   render() {

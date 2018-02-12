@@ -42,7 +42,9 @@ export default connectContainer(class PasswordChangeDialog extends Component {
   };
 
   onSubmit = (changeForm) => {
-    this.props.changePassword(changeForm);
+    const languageDictionary = this.props.languageDictionary.get('record').toJS();
+
+    this.props.changePassword(changeForm, languageDictionary);
   };
 
   render() {

@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import nock from 'nock';
-import expect from 'expect';
+import { expect } from 'chai';
+import { describe, it } from 'mocha';
 import Promise from 'bluebird';
 import request from 'supertest';
 import express from 'express';
@@ -114,6 +115,114 @@ describe('#users router', () => {
     callback(null, result);
   }).toString();
 
+  const settingsWithValidationUserFields = ((ctx, callback) => {
+    var result = {
+      connections: ['conn-a', 'conn-b'],
+      dict: {
+        title: ctx.request.user.email + ' dashboard',
+        memberships: 'Groups'
+      },
+      css: 'http://localhost:3001/app/default.css',
+      userFields: [
+        {
+          property: "email",
+          label: "Email",
+          edit: {
+            required: true,
+            type: "text",
+            validationFunction: ((value, values) => value !== "good value" ? "bad value" +
+              " for" +
+              " edit email" : false).toString()
+          },
+          create: {
+            required: true,
+            type: "text",
+            validationFunction: ((value, values) => value !== "good value" ? "bad value for create email" : false).toString()
+          }
+        },
+        {
+          property: "username",
+          label: "Username",
+          edit: {
+            required: true,
+            type: "text",
+            validationFunction: ((value, values) => value !== "good value" ? "bad value for edit username" : false).toString()
+          },
+          create: {
+            required: true,
+            type: "text",
+            validationFunction: ((value, values) => value !== "good value" ? "bad value for create username" : false).toString()
+          }
+        },
+        {
+          property: "password",
+          label: "Password",
+          edit: {
+            required: true,
+            type: "password",
+            validationFunction: ((value, values) => value !== "good value" ? "bad value for edit password" : false).toString()
+          },
+          create: {
+            required: true,
+            type: "password",
+            validationFunction: ((value, values) => value !== "good value" ? "bad value for create password" : false).toString()
+          }
+        },
+        {
+          property: "repeatPassword",
+          label: "Repeat Password",
+          edit: {
+            required: true,
+            type: "password",
+            validationFunction: ((value, values) => value !== "good value" ? "bad value for edit repeat password" : false).toString()
+          },
+          create: {
+            required: true,
+            type: "password",
+            validationFunction: ((value, values) => value !== "good value" ? "bad value for create repeat password" : false).toString()
+          }
+        },
+        {
+          property: "user_metadata.custom",
+          label: "Custom Field Simple Options",
+          edit: {
+            required: true,
+            type: "select",
+            options: ['good value', 'bad value'],
+            component: 'InputCombo',
+            validationFunction: ((value, values) => value !== "good value" && value !== "other value" ? "bad value for edit custom" : false).toString()
+          },
+          create: {
+            required: true,
+            type: "select",
+            options: ['good value', 'bad value'],
+            component: 'InputCombo',
+            validationFunction: ((value, values) => value !== "good value" && value !== "other value" ? "bad value for create custom" : false).toString()
+          }
+        },
+        {
+          property: "user_metadata.custom2",
+          label: "Custom Field Complex Options",
+          edit: {
+            required: true,
+            type: "select",
+            options: [{ value: 'good value', label: 'good' }, { value: 'bad value', label: 'bad' }],
+            component: 'InputCombo',
+            validationFunction: ((value, values) => value !== "good value" && value !== "other value" ? "bad value for edit custom2" : false).toString()
+          },
+          create: {
+            required: true,
+            type: "select",
+            options: [{ value: 'good value', label: 'good' }, { value: 'bad value', label: 'bad' }],
+            component: 'InputCombo',
+            validationFunction: ((value, values) => value !== "good value" && value !== "other value" ? "bad value for create custom2" : false).toString()
+          }
+        }
+      ]
+    };
+    callback(null, result);
+  }).toString();
+
   const app = express();
 
   app.use(bodyParser.json());
@@ -137,7 +246,7 @@ describe('#users router', () => {
         .expect('Content-Type', /text/)
         .expect(400)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -151,11 +260,11 @@ describe('#users router', () => {
         .expect('Content-Type', /json/)
         .expect(200)
         .end((err, res) => {
-          if (err) throw err;
-          const targetUsers = _.sortByOrder(_.cloneDeep(defaultUsers), ['user_id'],['desc']);
+          if (err) return done(err);
+          const targetUsers = _.sortByOrder(_.cloneDeep(defaultUsers), ['user_id'], ['desc']);
           defaultUsers.push(userFour);
           defaultUsers.push(userFive);
-          expect(res.body).toEqual({ users: targetUsers });
+          expect(res.body).to.deep.equal({ users: targetUsers });
 
           done();
         });
@@ -167,8 +276,8 @@ describe('#users router', () => {
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
-          if (err) throw err;
-          expect(res.body).toEqual({ users: [defaultUsers[0]] });
+          if (err) return done(err);
+          expect(res.body).to.deep.equal({ users: [defaultUsers[0]] });
           done();
         });
     });
@@ -181,9 +290,9 @@ describe('#users router', () => {
         .expect('Content-Type', /json/)
         .expect(200)
         .end((err, res) => {
-          if (err) throw err;
-          expect(res.body.memberships).toEqual(['deptA']);
-          expect(res.body.user.user_id).toEqual(1);
+          if (err) return done(err);
+          expect(res.body.memberships).to.deep.equal(['deptA']);
+          expect(res.body.user.user_id).to.equal(1);
           done();
         });
     });
@@ -194,9 +303,9 @@ describe('#users router', () => {
         .expect('Content-Type', /json/)
         .expect(200)
         .end((err, res) => {
-          if (err) throw err;
-          expect(res.body.memberships).toEqual(['deptA']);
-          expect(res.body.user.user_id).toEqual(2);
+          if (err) return done(err);
+          expect(res.body.memberships).to.deep.equal(['deptA']);
+          expect(res.body.user.user_id).to.equal(2);
           done();
         });
     });
@@ -207,9 +316,9 @@ describe('#users router', () => {
         .expect('Content-Type', /json/)
         .expect(200)
         .end((err, res) => {
-          if (err) throw err;
-          expect(res.body.memberships).toEqual([]);
-          expect(res.body.user.user_id).toEqual(3);
+          if (err) return done(err);
+          expect(res.body.memberships).to.deep.equal([]);
+          expect(res.body.user.user_id).to.equal(3);
           done();
         });
     });
@@ -220,7 +329,7 @@ describe('#users router', () => {
         .expect('Content-Type', /text/)
         .expect(404)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -231,7 +340,7 @@ describe('#users router', () => {
         .expect('Content-Type', /text/)
         .expect(400)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -249,9 +358,9 @@ describe('#users router', () => {
         .send(newUser)
         .expect(201)
         .end((err) => {
-          if (err) throw err;
-          expect(defaultUsers[5].email).toEqual(newUser.email);
-          expect(defaultUsers[5].app_metadata.department).toEqual(newUser.memberships[0]);
+          if (err) return done(err);
+          expect(defaultUsers[5].email).to.equal(newUser.email);
+          expect(defaultUsers[5].app_metadata.department).to.equal(newUser.memberships[0]);
           done();
         });
     });
@@ -267,8 +376,8 @@ describe('#users router', () => {
         .send(newUser)
         .expect(400)
         .end((err, res) => {
-          if (err) throw err;
-          expect(res.error).toMatch(/The email address is required/);
+          if (err) return done(err);
+          expect(res.error.text).to.match(/The email address is required/);
           done();
         });
     });
@@ -286,8 +395,8 @@ describe('#users router', () => {
         .send(newUser)
         .expect(400)
         .end((err, res) => {
-          if (err) throw err;
-          expect(res.error).toMatch(/The passwords do not match/);
+          if (err) return done(err);
+          expect(res.error.text).to.match(/The passwords do not match/);
           done();
         });
     });
@@ -303,7 +412,7 @@ describe('#users router', () => {
         .send(newUser)
         .expect(400)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -315,8 +424,8 @@ describe('#users router', () => {
         .delete('/users/6')
         .expect(204)
         .end((err) => {
-          if (err) throw err;
-          expect(defaultUsers[5]).toEqual(undefined);
+          if (err) return done(err);
+          expect(defaultUsers[5]).to.equal(undefined);
           done();
         });
     });
@@ -326,8 +435,8 @@ describe('#users router', () => {
         .delete('/users/3')
         .expect(400)
         .end((err, res) => {
-          if (err) throw err;
-          expect(res.error).toMatch(/You cannot delete yourself/);
+          if (err) return done(err);
+          expect(res.error.text).to.match(/You cannot delete yourself/);
           done();
         });
     });
@@ -337,7 +446,7 @@ describe('#users router', () => {
         .delete('/users/5')
         .expect(400)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -351,11 +460,11 @@ describe('#users router', () => {
 
       request(app)
         .put('/users/1/change-password')
-        .send({ password: 'password', confirmPassword: 'password' })
+        .send({ password: 'password', repeatPassword: 'password' })
         .expect(204)
         .end((err) => {
-          if (err) throw err;
-          expect(defaultUsers[0].password).toEqual('password');
+          if (err) return done(err);
+          expect(defaultUsers[0].password).to.equal('password');
           done();
         });
     });
@@ -363,10 +472,10 @@ describe('#users router', () => {
     it('should return error if password not confirmed', (done) => {
       request(app)
         .put('/users/1/change-password')
-        .send({ password: 'password', confirmPassword: '' })
+        .send({ password: 'password', repeatPassword: '' })
         .expect(400)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -374,10 +483,10 @@ describe('#users router', () => {
     it('should return "access denied" error', (done) => {
       request(app)
         .put('/users/5/change-password')
-        .send({ password: 'password', confirmPassword: 'password' })
+        .send({ password: 'password', repeatPassword: 'password' })
         .expect(400)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -391,8 +500,8 @@ describe('#users router', () => {
         .send({ username: 'name' })
         .expect(204)
         .end((err) => {
-          if (err) throw err;
-          expect(defaultUsers[0].username).toEqual('name');
+          if (err) return done(err);
+          expect(defaultUsers[0].username).to.equal('name');
           done();
         });
     });
@@ -403,7 +512,7 @@ describe('#users router', () => {
         .send({ username: 'name' })
         .expect(400)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -416,8 +525,8 @@ describe('#users router', () => {
         .send({ email: 'new-user1@example.com' })
         .expect(204)
         .end((err) => {
-          if (err) throw err;
-          expect(defaultUsers[0].email).toEqual('new-user1@example.com');
+          if (err) return done(err);
+          expect(defaultUsers[0].email).to.equal('new-user1@example.com');
           done();
         });
     });
@@ -428,7 +537,7 @@ describe('#users router', () => {
         .send({ email: 'name' })
         .expect(400)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -441,8 +550,8 @@ describe('#users router', () => {
         .expect('Content-Type', /json/)
         .expect(200)
         .end((err, res) => {
-          if (err) throw err;
-          expect(res.body).toEqual({ devices: [] });
+          if (err) return done(err);
+          expect(res.body).to.deep.equal({ devices: [] });
           done();
         });
     });
@@ -452,7 +561,7 @@ describe('#users router', () => {
         .get('/users/5/devices')
         .expect(400)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -464,7 +573,7 @@ describe('#users router', () => {
         .delete('/users/1/multifactor/provider')
         .expect(204)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -474,7 +583,7 @@ describe('#users router', () => {
         .delete('/users/5/multifactor/provider')
         .expect(400)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -486,8 +595,8 @@ describe('#users router', () => {
         .put('/users/1/block')
         .expect(204)
         .end((err) => {
-          if (err) throw err;
-          expect(defaultUsers[0].blocked).toEqual(true);
+          if (err) return done(err);
+          expect(defaultUsers[0].blocked).to.equal(true);
           done();
         });
     });
@@ -497,7 +606,7 @@ describe('#users router', () => {
         .put('/users/5/block')
         .expect(400)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -509,8 +618,8 @@ describe('#users router', () => {
         .put('/users/1/unblock')
         .expect(204)
         .end((err) => {
-          if (err) throw err;
-          expect(defaultUsers[0].blocked).toEqual(false);
+          if (err) return done(err);
+          expect(defaultUsers[0].blocked).to.equal(false);
           done();
         });
     });
@@ -520,7 +629,7 @@ describe('#users router', () => {
         .put('/users/5/unblock')
         .expect(400)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -532,7 +641,7 @@ describe('#users router', () => {
         .post('/users/1/send-verification-email')
         .expect(204)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -542,7 +651,7 @@ describe('#users router', () => {
         .post('/users/5/send-verification-email')
         .expect(400)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -555,7 +664,7 @@ describe('#users router', () => {
         .send({ connection: 'connection' })
         .expect(204)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -565,7 +674,7 @@ describe('#users router', () => {
         .post('/users/5/password-reset')
         .expect(400)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -581,8 +690,8 @@ describe('#users router', () => {
         .get('/users/1/logs')
         .expect(200)
         .end((err, res) => {
-          if (err) throw err;
-          expect(res.body).toEqual([]);
+          if (err) return done(err);
+          expect(res.body).to.deep.equal([]);
           done();
         });
     });
@@ -596,7 +705,8 @@ describe('#users router', () => {
         .get('/users/1/logs')
         .expect(500)
         .end((err, res) => {
-          expect(res.text).toMatch(/something bad happened/);
+          if (err) return done(err);
+          expect(res.text).to.match(/something bad happened/);
           done();
         });
     });
@@ -610,8 +720,8 @@ describe('#users router', () => {
         .get('/users/1/logs')
         .expect(500)
         .end((err, res) => {
-          expect(res.error).toMatch(/Error: Request Error: 400/);
-          if (err) throw err;
+          if (err) return done(err);
+          expect(res.error.text).to.match(/Error: Request Error: 400/);
           done();
         });
     });
@@ -621,7 +731,7 @@ describe('#users router', () => {
         .get('/users/5/logs')
         .expect(400)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -641,7 +751,7 @@ describe('#users router', () => {
         .del('/users/1/multifactor/guardian')
         .expect(204)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -655,7 +765,7 @@ describe('#users router', () => {
         .del('/users/2/multifactor/guardian')
         .expect(204)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -669,7 +779,7 @@ describe('#users router', () => {
         .del('/users/3/multifactor/guardian')
         .expect(404)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -679,7 +789,7 @@ describe('#users router', () => {
         .del('/users/1/multifactor/guardian')
         .expect(404)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -689,7 +799,7 @@ describe('#users router', () => {
         .del('/users/1/multifactor/badProvider')
         .expect(500)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -706,8 +816,8 @@ describe('#users router', () => {
         })
         .expect(204)
         .end((err) => {
-          if (err) throw err;
-          expect(defaultUsers[0].app_metadata.someNewKey).toEqual('someNewValue');
+          if (err) return done(err);
+          expect(defaultUsers[0].app_metadata.someNewKey).to.equal('someNewValue');
           done();
         });
     });
@@ -717,7 +827,7 @@ describe('#users router', () => {
         .patch('/users/5')
         .expect(400)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -727,7 +837,7 @@ describe('#users router', () => {
         .patch('/users/6')
         .expect(404)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -737,7 +847,7 @@ describe('#users router', () => {
         .patch('/users/2')
         .expect(400)
         .end((err) => {
-          if (err) throw err;
+          if (err) return done(err);
           done();
         });
     });
@@ -759,11 +869,11 @@ describe('#users router', () => {
     it('change-password', (done) => {
       request(app)
         .put('/users/1/change-password')
-        .send({ password: 'pwd1', confirmPassword: 'pwd1' })
+        .send({ password: 'pwd1', repeatPassword: 'pwd1' })
         .expect(204)
         .end((err) => {
-          if (err) throw err;
-          expect(defaultUsers[0].password).toEqual('pwd1');
+          if (err) return done(err);
+          expect(defaultUsers[0].password).to.equal('pwd1');
           done();
         });
     });
@@ -773,9 +883,10 @@ describe('#users router', () => {
         .put('/users/1/change-email')
         .send({ email: 'new-user2@example.com' })
         .expect(204)
-        .end((err) => {
-          if (err) throw err;
-          expect(defaultUsers[0].email).toEqual('new-user2@example.com');
+        .end((err, res) => {
+          if (res.error.text) console.log(res.error.text);
+          if (err) return done(err);
+          expect(defaultUsers[0].email).to.equal('new-user2@example.com');
           done();
         });
     });
@@ -786,8 +897,8 @@ describe('#users router', () => {
         .send({ username: 'name2' })
         .expect(204)
         .end((err) => {
-          if (err) throw err;
-          expect(defaultUsers[0].username).toEqual('name2');
+          if (err) return done(err);
+          expect(defaultUsers[0].username).to.equal('name2');
           done();
         });
     });
@@ -807,10 +918,11 @@ describe('#users router', () => {
     it('change-password', (done) => {
       request(app)
         .put('/users/1/change-password')
-        .send({ password: 'pwd12', confirmPassword: 'pwd12' })
-        .expect(500)
+        .send({ password: 'pwd12', repeatPassword: 'pwd12' })
+        .expect(400)
         .end((err, res) => {
-          expect(res.error).toMatch(/ValidationError: The password is required/);
+          if (err) return done(err);
+          expect(res.error.text).to.match(/ValidationError: The password is required/);
           done();
         });
     });
@@ -819,9 +931,10 @@ describe('#users router', () => {
       request(app)
         .put('/users/1/change-email')
         .send({ email: 'new-user3@example.com' })
-        .expect(500)
+        .expect(400)
         .end((err, res) => {
-          expect(res.error).toMatch(/ValidationError: The email is required/);
+          if (err) return done(err);
+          expect(res.error.text).to.match(/ValidationError: The email is required/);
           done();
         });
     });
@@ -830,11 +943,410 @@ describe('#users router', () => {
       request(app)
         .put('/users/1/change-username')
         .send({ username: 'name3' })
-        .expect(500)
+        .expect(400)
         .end((err, res) => {
-          expect(res.error).toMatch(/ValidationError: The username is required/);
+          if (err) return done(err);
+          expect(res.error.text).to.match(/ValidationError: The username is required/);
           done();
         });
+    });
+  });
+
+  describe('#userFields custom validation errors', () => {
+    const newGoodUser = {
+      email: 'good value',
+      memberships: ['deptA'],
+      password: 'good value',
+      repeatPassword: 'good value',
+      username: 'good value',
+      user_metadata: {
+        custom: 'good value',
+        custom2: 'good value'
+      },
+      app_metadata: { department: 'deptA' }
+    };
+
+    before(() => {
+      scriptManager.getCached = skipCache;
+      storage.data.scripts.settings = settingsWithValidationUserFields;
+
+      storage.data.scripts.create = ((ctx, callback) => {
+        callback(null, ctx.payload);
+      }).toString();
+    });
+
+    const catchError = (done, assertMethod) => {
+      try {
+        assertMethod();
+        done();
+      } catch (e) {
+        done(e);
+      }
+    };
+
+    it('create user: pass validation', (done) => {
+      request(app)
+        .post('/users')
+        .send(newGoodUser)
+        .expect(201)
+        .end((err) => {
+          if (err) return done(err);
+          const postedUser = defaultUsers[5];
+          expect(postedUser).to.deep.equal(newGoodUser);
+          done();
+        });
+    });
+
+    it('create profile: required', (done) => {
+      const badUser = _.cloneDeep(newGoodUser);
+      delete badUser.user_metadata.custom;
+      delete badUser.user_metadata.custom2;
+      request(app)
+        .post('/users')
+        .send(badUser)
+        .expect(400)
+        .end((err, res) => {
+          if (err) return done(err);
+          catchError(done, () => {
+            expect(res.error.text).to.match(/Custom Field Simple Options: required/);
+            expect(res.error.text).to.match(/Custom Field Complex Options: required/);
+          });
+        });
+
+    });
+
+    it('create profile: required languageDictionary', (done) => {
+      const badUser = _.cloneDeep(newGoodUser);
+      delete badUser.user_metadata.custom;
+      delete badUser.user_metadata.custom2;
+      request(app)
+        .post('/users?requiredErrorText=requiredtext')
+        .send(badUser)
+        .expect(400)
+        .end((err, res) => {
+          if (err) return done(err);
+          catchError(done, () => {
+            expect(res.error.text).to.match(/Custom Field Simple Options: requiredtext/);
+            expect(res.error.text).to.match(/Custom Field Complex Options: requiredtext/);
+          });
+        });
+    });
+
+    it('create profile: fail validation: validationFunction', (done) => {
+      const badUser = _.cloneDeep(newGoodUser);
+      badUser.user_metadata.custom = 'bad value';
+      badUser.user_metadata.custom2 = 'bad value';
+
+      request(app)
+        .post('/users')
+        .send(badUser)
+        .expect(400)
+        .end((err, res) => {
+          if (err) return done(err);
+          catchError(done, () => {
+            expect(res.error.text).to.match(/Custom Field Simple Options: bad value for create custom/);
+            expect(res.error.text).to.match(/Custom Field Complex Options: bad value for create custom2/);
+          });
+        });
+    });
+
+    it('create profile: fail validation: not an option', (done) => {
+      const badUser = _.cloneDeep(newGoodUser);
+      badUser.user_metadata.custom = 'other value';
+      badUser.user_metadata.custom2 = 'other value';
+
+      request(app)
+        .post('/users')
+        .send(badUser)
+        .expect(400)
+        .end((err, res) => {
+          if (err) return done(err);
+          catchError(done, () => {
+            expect(res.error.text).to.match(/Custom Field Simple Options: other value is not an allowed option/);
+            expect(res.error.text).to.match(/Custom Field Complex Options: other value is not an allowed option/);
+          });
+        });
+    });
+
+    it('change profile: required', (done) => {
+      defaultUsers[0] = newGoodUser;
+
+      request(app)
+        .patch(`/users/1`)
+        .send({})
+        .expect(400)
+        .end((err, res) => {
+          if (err) return done(err);
+          catchError(done, () => {
+            expect(res.error.text).to.match(/Custom Field Simple Options: required/);
+            expect(res.error.text).to.match(/Custom Field Complex Options: required/);
+          });
+        });
+    });
+
+    it('change profile: required, languageDictionary', (done) => {
+      defaultUsers[0] = newGoodUser;
+
+      request(app)
+        .patch(`/users/1?requiredErrorText=requiredtext`)
+        .send({})
+        .expect(400)
+        .end((err, res) => {
+          if (err) return done(err);
+          catchError(done, () => {
+            expect(res.error.text).to.match(/Custom Field Simple Options: requiredtext/);
+            expect(res.error.text).to.match(/Custom Field Complex Options: requiredtext/);
+          });
+        });
+    });
+
+    it('change profile: fail validation: validationFunction', (done) => {
+      defaultUsers[0] = newGoodUser;
+
+      request(app)
+        .patch(`/users/1`)
+        .send({ user_metadata: { custom: 'bad value', custom2: 'bad value' } })
+        .expect(400)
+        .end((err, res) => {
+          if (err) return done(err);
+          catchError(done, () => {
+            expect(res.error.text).to.match(/Custom Field Simple Options: bad value for edit custom/);
+            expect(res.error.text).to.match(/Custom Field Complex Options: bad value for edit custom2/);
+          });
+        });
+    });
+
+    it('change profile: fail validation: not an option', (done) => {
+      defaultUsers[0] = newGoodUser;
+
+      request(app)
+        .patch(`/users/1`)
+        .send({ user_metadata: { custom: 'other value', custom2: 'other value' } })
+        .expect(400)
+        .end((err, res) => {
+          if (err) return done(err);
+          catchError(done, () => {
+            expect(res.error.text).to.match(/Custom Field Simple Options: other value is not an allowed option/);
+            expect(res.error.text).to.match(/Custom Field Complex Options: other value is not an allowed option/);
+          });
+        });
+    });
+
+    it('change profile: pass validation', (done) => {
+      defaultUsers[0] = newGoodUser;
+
+      request(app)
+        .patch(`/users/1`)
+        .send({ user_metadata: { custom: 'good value', custom2: 'good value' } })
+        .expect(204)
+        .end((err, res) => {
+          if (res.error.text) console.log(res.error.text);
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    const testCreate = (user, regexObject, done) => {
+      request(app)
+        .post('/users')
+        .send(user)
+        .expect(400)
+        .end((err, res) => {
+          if (err) return done(err);
+          catchError(done, () => {
+            if (_.isArray(regexObject)) {
+              return regexObject.forEach(thisRegex =>
+                expect(res.error.text).to.match(thisRegex)
+              );
+            }
+            expect(res.error.text).to.match(regexObject);
+          });
+        });
+    };
+
+    const mapPropertyToEndpoint = {
+      email: 'change-email',
+      username: 'change-username',
+      password: 'change-password'
+    };
+
+    const testEditFail = (property, user, regexObject, done, requiredText) => {
+      defaultUsers[0] = newGoodUser;
+
+      const url = `/users/1/${mapPropertyToEndpoint[property]}${requiredText ? `?requiredErrorText=${requiredText}` : ''}`;
+      request(app)
+        .put(url)
+        .send(user)
+        .expect(400)
+        .end((err, res) => {
+          if (err) return done(err);
+          catchError(done, () => {
+            if (_.isArray(regexObject)) {
+              return regexObject.forEach(thisRegex =>
+                expect(res.error.text).to.match(thisRegex)
+              );
+            }
+            expect(res.error.text).to.match(regexObject);
+          });
+        });
+    };
+
+    const testEditPass = (property, user, done) => {
+      defaultUsers[0] = newGoodUser;
+
+      const url = `/users/1/${mapPropertyToEndpoint[property]}`;
+      request(app)
+        .put(url)
+        .send(user)
+        .expect(204)
+        .end((err, res) => {
+          if (res.error.text) console.log(res.error.text);
+          if (err) return done(err);
+          done();
+        });
+    };
+
+    const testCreateRequired = (property, label, done) => {
+      const badUser = _.cloneDeep(newGoodUser);
+      delete badUser[property];
+      let regexObject = new RegExp(`${label}: required`);
+      if (property === 'password') {
+        delete badUser['repeatPassword'];
+        regexObject = [
+          regexObject,
+          new RegExp(`Repeat Password: required`)
+        ]
+      }
+      testCreate(badUser, regexObject, done);
+    };
+
+    const testCreateFailValidation = (property, label, done) => {
+      const badUser = _.cloneDeep(newGoodUser);
+      badUser[property] = 'bad value';
+      let regexObject = new RegExp(`${label}: bad value for create ${property}`);
+      if (property === 'password') {
+        badUser['repeatPassword'] = 'bad value';
+        regexObject = [
+          regexObject,
+          new RegExp(`Repeat Password: bad value for create repeat password`)
+        ]
+      }
+      testCreate(badUser, regexObject, done);
+    };
+
+    const testEditRequired = (property, label, done) => {
+      const badUser = {};
+      let regexObject = new RegExp(`${label}: required`);
+      if (property === 'password') {
+        regexObject = [
+          regexObject,
+          new RegExp(`Repeat Password: required`)
+        ]
+      }
+      testEditFail(property, badUser, regexObject, done);
+    };
+
+    const testEditRequiredText = (property, label, done) => {
+      const badUser = {};
+      let regexObject = new RegExp(`${label}: requiredtext`);
+      if (property === 'password') {
+        regexObject = [
+          regexObject,
+          new RegExp(`Repeat Password: requiredtext`)
+        ]
+      }
+      testEditFail(property, badUser, regexObject, done, 'requiredtext');
+    };
+
+    const testEditFailValidation = (property, label, done) => {
+      const badUser = { [property]: 'bad value' };
+      let regexObject = new RegExp(`${label}: bad value for edit ${property}`);
+      if (property === 'password') {
+        badUser.repeatPassword = 'bad value';
+        regexObject = [
+          regexObject,
+          new RegExp(`Repeat Password: bad value for edit repeat password`)
+        ]
+      }
+      testEditFail(property, badUser, regexObject, done);
+    };
+
+    const testEditPassValidation = (property, label, done) => {
+      const goodUser = { [property]: 'good value' };
+      if (property === 'password') goodUser.repeatPassword = 'good value';
+      testEditPass(property, goodUser, done);
+    };
+
+    it('create email: required', (done) => {
+      testCreateRequired('email', 'Email', done);
+    });
+
+    it('create email: fail validation', (done) => {
+      testCreateFailValidation('email', 'Email', done);
+    });
+
+    it('change email: required', (done) => {
+      testEditRequired('email', 'Email', done);
+    });
+
+    it('change email: required, language', (done) => {
+      testEditRequiredText('email', 'Email', done);
+    });
+
+    it('change email: fail validation', (done) => {
+      testEditFailValidation('email', 'Email', done);
+    });
+
+    it('change email: pass validation', (done) => {
+      testEditPassValidation('email', 'Email', done);
+    });
+
+    it('create username: required', (done) => {
+      testCreateRequired('username', 'Username', done);
+    });
+
+    it('create username: fail validation', (done) => {
+      testCreateFailValidation('username', 'Username', done);
+    });
+
+    it('change username: required', (done) => {
+      testEditRequired('username', 'Username', done);
+    });
+
+    it('change username: required, language', (done) => {
+      testEditRequiredText('username', 'Username', done);
+    });
+
+    it('change username: fail validation', (done) => {
+      testEditFailValidation('username', 'Username', done);
+    });
+
+    it('change username: pass validation', (done) => {
+      testEditPassValidation('username', 'Username', done);
+    });
+
+    it('create password: required', (done) => {
+      testCreateRequired('password', 'Password', done);
+    });
+
+    it('create password: fail validation', (done) => {
+      testCreateFailValidation('password', 'Password', done);
+    });
+
+    it('change password: required', (done) => {
+      testEditRequired('password', 'Password', done);
+    });
+
+    it('change password: required, language', (done) => {
+      testEditRequiredText('password', 'Password', done);
+    });
+
+    it('change password: fail validation', (done) => {
+      testEditFailValidation('password', 'Password', done);
+    });
+
+    it('change password: pass validation', (done) => {
+      testEditPassValidation('password', 'Password', done);
     });
   });
 
@@ -851,7 +1363,8 @@ describe('#users router', () => {
         .get('/users/1')
         .expect(400)
         .end((err, res) => {
-          expect(res.error).toMatch(/Error: intentional error/);
+          if (err) return done(err);
+          expect(res.error.text).to.match(/Error: intentional error/);
           done();
         });
     });
