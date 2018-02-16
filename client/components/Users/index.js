@@ -9,3 +9,4 @@ export UserInfo from './UserInfo';
 export UsersTable from './UsersTable';
 export LuceneSearchBar from './LuceneSearchBar';
 export UserPaginator from './UserPaginator';
+export ValidationError from './ValidationError';

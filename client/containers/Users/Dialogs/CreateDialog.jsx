@@ -5,14 +5,15 @@ import { Error } from 'auth0-extension-ui';
 import { Modal } from 'react-bootstrap';
 
 import { userActions, scriptActions } from '../../../actions';
-import { UserForm } from '../../../components/Users';
+import { UserForm, ValidationError } from '../../../components/Users';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     userCreate: state.userCreate,
     accessLevel: state.accessLevel,
     connections: state.connections,
-    languageDictionary: state.languageDictionary
+    languageDictionary: state.languageDictionary,
+    userForm: state.form
   });
 
   static actionsToProps = {
@@ -24,6 +25,7 @@ export default connectContainer(class extends Component {
     accessLevel: PropTypes.object.isRequired,
     connections: PropTypes.object.isRequired,
     userCreate: PropTypes.object.isRequired,
+    userForm: PropTypes.object.isRequired,
     createUser: PropTypes.func.isRequired,
     getDictValue: PropTypes.func.isRequired,
     cancelCreateUser: PropTypes.func.isRequired,
@@ -48,7 +50,6 @@ export default connectContainer(class extends Component {
     const { error, loading, record } = this.props.userCreate.toJS();
     const connections = this.props.connections.toJS();
     const accessLevel = this.props.accessLevel.get('record').toJS();
-
     const languageDictionary = this.props.languageDictionary.get('record').toJS();
 
     return (
@@ -69,6 +70,11 @@ export default connectContainer(class extends Component {
           languageDictionary={languageDictionary}
         >
           <Error message={error} />
+          <ValidationError
+            userForm={this.props.userForm}
+            customFields={this.props.userFields || []}
+            errorMessage={languageDictionary.validationError}
+          />
         </UserForm>
       </Modal>
     );
