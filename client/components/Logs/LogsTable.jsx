@@ -2,13 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Error, LoadingPanel, Table, TableBody, TableIconCell, TableTextCell, TableHeader, TableColumn, TableRow } from 'auth0-extension-ui';
 import moment from 'moment';
-import connectContainer from "redux-static";
 
-export default connectContainer(class extends Component {
-  static stateToProps = state => ({
-    settings: state.settings.get('record').toJS().settings
-  });
-
+export default class LogTable extends Component {
   static propTypes = {
     onOpen: PropTypes.func.isRequired,
     error: PropTypes.string,
@@ -48,7 +43,7 @@ export default connectContainer(class extends Component {
             {logs.map((log, index) => {
               const type = log.type;
               const icon = type.icon;
-              const onClick = suppressRawData ? null : () => this.this.props.onOpen(log._id);
+              const onClick = suppressRawData ? null : () => this.props.onOpen(log._id);
               log.time_ago = moment(log.date).locale(languageDictionary.momentLocale || 'en').fromNow();
               return (
                 <TableRow key={index}>
@@ -67,4 +62,4 @@ export default connectContainer(class extends Component {
       </LoadingPanel>
     );
   }
-});
+};

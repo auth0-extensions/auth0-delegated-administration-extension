@@ -31,9 +31,8 @@ class ValidationError extends Component {
   };
 
   render() {
-    if (this.props.userForm.user && this.props.userForm.user.submitFailed && this.props.userForm.user.syncErrors) {
+    if (this.props.userForm && this.props.userForm.user && this.props.userForm.user.submitFailed && this.props.userForm.user.syncErrors) {
       const fields = this.getPlainFields(this.props.userForm.user.syncErrors);
-
       return <Alert bsStyle="danger" className="validation-error">
           <h4>{this.props.errorMessage || 'Validation Error'}</h4>
           <ul className="validation-error-fields-list">
