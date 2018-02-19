@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Error, LoadingPanel, Table, TableBody, TableIconCell, TableTextCell, TableHeader, TableColumn, TableRow } from 'auth0-extension-ui';
 import moment from 'moment';
 
-export default class LogTable extends Component {
+export default class LogsTable extends Component {
   static propTypes = {
     onOpen: PropTypes.func.isRequired,
     error: PropTypes.string,
