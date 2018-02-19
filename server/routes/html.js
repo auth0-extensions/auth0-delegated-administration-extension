@@ -52,6 +52,7 @@ export default () => {
       BASE_PATH: urlHelpers.getBasePath(req),
       TITLE: config('TITLE'),
       FEDERATED_LOGOUT: config('FEDERATED_LOGOUT') === 'true',
+      AUTH0_MANAGE_URL: config('AUTH0_MANAGE_URL') || 'https://manage.auth0.com'
     };
 
     // Render from CDN.

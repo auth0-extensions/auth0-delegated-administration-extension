@@ -79,16 +79,24 @@ export default class Header extends Component {
     );
   }
 
+  renderTitle = (isAdmin) => {
+    if (isAdmin && window.config.AUTH0_MANAGE_URL) {
+      return <a className="navbar-brand" href={window.config.AUTH0_MANAGE_URL}>{this.props.getDictValue('title', window.config.TITLE)}</a>;
+    }
+
+    return <span className="navbar-brand">{this.props.getDictValue('title', window.config.TITLE)}</span>;
+  };
+
   render() {
     const { user, issuer, accessLevel } = this.props;
     const languageDictionary = this.props.languageDictionary || {};
-    const showMenu = accessLevel.role === 2;
+    const isAdmin = accessLevel.role === 2;
     return (
       <header className="dashboard-header">
         <nav role="navigation" className="navbar navbar-default">
           <div className="container">
             <div id="header" className="navbar-header" style={{ width: '800px' }}>
-              <a className="navbar-brand" href="#">{this.props.getDictValue('title', window.config.TITLE)}</a>
+              {this.renderTitle(isAdmin)}
             </div>
             <div id="navbar-collapse" className="collapse navbar-collapse">
               <ul className="nav navbar-nav navbar-right">
@@ -100,7 +108,7 @@ export default class Header extends Component {
                     </span>
                     <i className="icon-budicon-460"></i>
                   </span>
-                  {this.getMenu(showMenu, languageDictionary)}
+                  {this.getMenu(isAdmin, languageDictionary)}
                 </li>
               </ul>
             </div>
