@@ -314,6 +314,8 @@ export default (storage, scriptManager) => {
                 throw new ValidationError('The password is required.');
               }
 
+              payload = _.pick(payload, ['password', 'connection', 'verify_password']);
+
               const payloadFinal = _.defaults(payload, {
                 connection: req.body.connection,
                 verify_password: false
