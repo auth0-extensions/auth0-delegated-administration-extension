@@ -37,12 +37,20 @@ export default class Header extends Component {
     return `https://cdn.auth0.com/avatars/${iss.slice(0, 2).toLowerCase()}.png`;
   }
 
+  showOnFocus() {
+    document.querySelector('#navbar-collapse li.dropdown').classList.add('open');
+  }
+
+  hideOnBlur() {
+    document.querySelector('#navbar-collapse li.dropdown').classList.remove('open');
+  }
+
   getMenu(isAdmin, languageDictionary) {
     if (!isAdmin) {
       return (
         <ul role="menu" className="dropdown-menu">
           <li role="presentation">
-            <a role="menuitem" tabIndex="-1" onClick={this.props.onLogout}>
+            <a role="menuitem" onClick={this.props.onLogout} onFocus={this.showOnFocus} onBlur={this.hideOnBlur} tabIndex="0">
               {languageDictionary.logoutMenuItemText || 'Logout'}
             </a>
           </li>
@@ -53,17 +61,17 @@ export default class Header extends Component {
     return (
       <ul role="menu" className="dropdown-menu">
         <li role="presentation">
-          <Link to="/users">
+          <Link to="/users" onFocus={this.showOnFocus} onBlur={this.hideOnBlur}>
             {languageDictionary.usersAndLogsMenuItemText || 'Users & Logs'}
           </Link>
         </li>
         <li role="presentation">
-          <Link to="/configuration">
+          <Link to="/configuration" onFocus={this.showOnFocus} onBlur={this.hideOnBlur}>
             {languageDictionary.configurationMenuItemText || 'Configuration'}
           </Link>
         </li>
         <li role="presentation">
-          <a role="menuitem" tabIndex="-1" onClick={this.props.onLogout}>
+          <a role="menuitem" onClick={this.props.onLogout} onFocus={this.showOnFocus} onBlur={this.hideOnBlur} tabIndex="0">
             {languageDictionary.logoutMenuItemText || 'Logout'}
           </a>
         </li>
@@ -71,20 +79,28 @@ export default class Header extends Component {
     );
   }
 
+  renderTitle = (isAdmin) => {
+    if (isAdmin && window.config.AUTH0_MANAGE_URL) {
+      return <a className="navbar-brand" href={window.config.AUTH0_MANAGE_URL}>{this.props.getDictValue('title', window.config.TITLE)}</a>;
+    }
+
+    return <span className="navbar-brand">{this.props.getDictValue('title', window.config.TITLE)}</span>;
+  };
+
   render() {
     const { user, issuer, accessLevel } = this.props;
     const languageDictionary = this.props.languageDictionary || {};
-    const showMenu = accessLevel.role === 2;
+    const isAdmin = accessLevel.role === 2;
     return (
       <header className="dashboard-header">
         <nav role="navigation" className="navbar navbar-default">
           <div className="container">
             <div id="header" className="navbar-header" style={{ width: '800px' }}>
-              <a className="navbar-brand" href="#">{this.props.getDictValue('title', window.config.TITLE)}</a>
+              {this.renderTitle(isAdmin)}
             </div>
             <div id="navbar-collapse" className="collapse navbar-collapse">
               <ul className="nav navbar-nav navbar-right">
-                <li className="dropdown">
+                  <li className="dropdown">
                   <span role="button" data-toggle="dropdown" data-target="#" className="btn-dro btn-username">
                     <img role="presentation" src={this.getPicture(issuer, user)} className="picture avatar" />
                     <span className="username-text">
@@ -92,7 +108,7 @@ export default class Header extends Component {
                     </span>
                     <i className="icon-budicon-460"></i>
                   </span>
-                  {this.getMenu(showMenu, languageDictionary)}
+                  {this.getMenu(isAdmin, languageDictionary)}
                 </li>
               </ul>
             </div>

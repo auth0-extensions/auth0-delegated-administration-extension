@@ -6,6 +6,13 @@ export default {
       color: 'green'
     }
   },
+  ssa: {
+    event: 'Success Silent Auth',
+    icon: {
+      name: '312',
+      color: 'green'
+    }
+  },
   seacft: {
     event: 'Success Exchange',
     description: 'Authorization Code for Access Token',
@@ -24,6 +31,13 @@ export default {
   },
   f: {
     event: 'Failed Login',
+    icon: {
+      name: '311',
+      color: '#A93F3F'
+    }
+  },
+  fsa: {
+    event: 'Failed Silent Auth',
     icon: {
       name: '311',
       color: '#A93F3F'

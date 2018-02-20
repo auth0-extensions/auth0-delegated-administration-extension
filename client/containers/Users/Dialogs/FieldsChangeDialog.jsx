@@ -4,13 +4,14 @@ import { Error } from 'auth0-extension-ui';
 import { Modal } from 'react-bootstrap';
 
 import { userActions, scriptActions } from '../../../actions';
-import { UserFieldsChangeForm } from '../../../components/Users';
+import { UserFieldsChangeForm, ValidationError } from '../../../components/Users';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     fieldsChange: state.fieldsChange,
     userId: state.fieldsChange.toJS().userId,
-    languageDictionary: state.languageDictionary
+    languageDictionary: state.languageDictionary,
+    userForm: state.form
   });
 
   static actionsToProps = {
@@ -23,6 +24,7 @@ export default connectContainer(class extends Component {
     changeFields: PropTypes.func.isRequired,
     cancelChangeFields: PropTypes.func.isRequired,
     userFields: PropTypes.array.isRequired,
+    userForm: PropTypes.object.isRequired,
     userId: PropTypes.string.isRequired,
     languageDictionary: PropTypes.object
   };
@@ -45,7 +47,6 @@ export default connectContainer(class extends Component {
 
   render() {
     const { error, loading, record } = this.props.fieldsChange.toJS();
-
     const languageDictionary = this.props.languageDictionary.get('record').toJS();
 
     return (
@@ -64,6 +65,11 @@ export default connectContainer(class extends Component {
           languageDictionary={languageDictionary}
         >
           <Error message={error} />
+          <ValidationError
+            userForm={this.props.userForm}
+            customFields={this.props.userFields || []}
+            errorMessage={languageDictionary.validationError}
+          />
         </UserFieldsChangeForm>
       </Modal>
     );

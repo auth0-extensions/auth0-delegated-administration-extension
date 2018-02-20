@@ -9,6 +9,7 @@ export default class LogsTable extends Component {
     error: PropTypes.string,
     loading: PropTypes.bool.isRequired,
     logs: PropTypes.object.isRequired,
+    settings: PropTypes.object.isRequired,
     languageDictionary: PropTypes.object
   }
 
@@ -17,8 +18,9 @@ export default class LogsTable extends Component {
   }
 
   render() {
-    const { error, loading } = this.props;
+    const { error, loading, settings } = this.props;
     const languageDictionary = this.props.languageDictionary || {};
+    const suppressRawData = settings && settings.suppressRawData === true;
 
     if (!error && this.props.logs.size === 0) {
       return <div>{languageDictionary.noLogsMessage || 'No logs found'}</div>;
@@ -41,11 +43,12 @@ export default class LogsTable extends Component {
             {logs.map((log, index) => {
               const type = log.type;
               const icon = type.icon;
+              const onClick = suppressRawData ? null : () => this.props.onOpen(log._id);
               log.time_ago = moment(log.date).locale(languageDictionary.momentLocale || 'en').fromNow();
               return (
                 <TableRow key={index}>
                   <TableIconCell color={icon.color} icon={icon.name} />
-                  <TableTextCell onClick={() => this.props.onOpen(log._id)}>{type.event}</TableTextCell>
+                  <TableTextCell onClick={onClick}>{type.event}</TableTextCell>
                   <TableTextCell>{log.user_name || log.description || type.description}</TableTextCell>
                   <TableTextCell>{log.time_ago}</TableTextCell>
                   <TableTextCell>{log.connection || languageDictionary.notApplicableLabel || 'N/A'}</TableTextCell>
@@ -59,4 +62,4 @@ export default class LogsTable extends Component {
       </LoadingPanel>
     );
   }
-}
+};

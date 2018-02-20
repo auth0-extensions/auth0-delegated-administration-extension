@@ -20,7 +20,7 @@ export const getName = (user, fields, languageDictionary) => {
     return getValue(user, field, languageDictionary);
   }
 
-  return user.name || user.user_name || user.email;
+  return user && (user.name || user.user_name || user.email);
 };
 
 export const getValueForType = (type, user, field, languageDictionary) => {

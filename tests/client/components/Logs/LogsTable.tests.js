@@ -26,13 +26,14 @@ describe('#Client-Components-Logs-LogsTable', () => {
     { type: fail, description: 'some description', date: aDayAgo }
   ];
 
-  const renderComponent = (logs, languageDictionary) => {
+  const renderComponent = (logs, languageDictionary, suppressRawData) => {
     return shallow(
       <LogsTable
         loading={false}
         error={null}
         onOpen={() => 'onOpen'}
         logs={fromJS(logs)}
+        settings={{ suppressRawData }}
         languageDictionary={languageDictionary}
       />
     );
@@ -53,6 +54,7 @@ describe('#Client-Components-Logs-LogsTable', () => {
     const textColumns = row.find(TableTextCell);
     expect(textColumns.length).to.equal(5);
     // could use map here, but easier to debug if issue with them separated
+    expect(textColumns.at(0).prop('onClick')).to.be.a(target.control);
     expect(textColumns.at(0).childAt(0).text()).to.equal(target.text[0]);
     expect(textColumns.at(1).childAt(0).text()).to.equal(target.text[1]);
     expect(textColumns.at(2).childAt(0).text()).to.equal(target.text[2]);
@@ -60,8 +62,8 @@ describe('#Client-Components-Logs-LogsTable', () => {
     expect(textColumns.at(4).childAt(0).text()).to.equal(target.text[4]);
   };
 
-  const checkDefault = (languageDictionary) => {
-    const component = renderComponent(dummyLogs, languageDictionary);
+  const checkDefault = (languageDictionary, suppressRawData) => {
+    const component = renderComponent(dummyLogs, languageDictionary, suppressRawData);
 
     expect(component.length).to.be.greaterThan(0);
 
@@ -80,16 +82,22 @@ describe('#Client-Components-Logs-LogsTable', () => {
     /* Test the rows */
     checkRow(component, 0, {
       icon: { color: 'green', name: 'success' },
-      text: ['sapi', 'bill', 'a day ago', 'connA', 'client']
+      text: ['sapi', 'bill', 'a day ago', 'connA', 'client'],
+      control: (suppressRawData) ? 'null' : 'function'
     });
     checkRow(component, 1, {
       icon: { color: 'red', name: 'failure' },
-      text: ['fapi', 'some description', 'a day ago', 'N/A', 'N/A']
+      text: ['fapi', 'some description', 'a day ago', 'N/A', 'N/A'],
+      control: (suppressRawData) ? 'null' : 'function'
     });
-  }
+  };
 
   it('should render', () => {
     checkDefault();
+  });
+
+  it('should render with suppressed raw data', () => {
+    checkDefault({}, true);
   });
 
   it('should render not applicable language dictionary', () => {
@@ -126,11 +134,13 @@ describe('#Client-Components-Logs-LogsTable', () => {
     /* Test the rows */
     checkRow(component, 0, {
       icon: { color: 'green', name: 'success' },
-      text: ['sapi', 'bill', 'il y a un jour', 'connA', 'client']
+      text: ['sapi', 'bill', 'il y a un jour', 'connA', 'client'],
+      control: 'function'
     });
     checkRow(component, 1, {
       icon: { color: 'red', name: 'failure' },
-      text: ['fapi', 'some description', 'il y a un jour', 'Not Applicable', 'Not Applicable']
+      text: ['fapi', 'some description', 'il y a un jour', 'Not Applicable', 'Not Applicable'],
+      control: 'function'
     });
   });
 

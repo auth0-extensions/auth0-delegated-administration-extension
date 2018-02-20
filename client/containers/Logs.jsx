@@ -72,7 +72,7 @@ class LogsContainer extends Component {
           <div className="col-xs-12 wrapper">
             <Error message={logs.error} />
             <LoadingPanel show={logs.loading}>
-              <LogsTable onOpen={this.props.fetchLog} loading={logs.loading} logs={logs.records} languageDictionary={languageDictionary} />
+              <LogsTable onOpen={this.props.fetchLog} loading={logs.loading} logs={logs.records} settings={this.props.settings} languageDictionary={languageDictionary} />
             </LoadingPanel>
           </div>
         </div>
@@ -102,6 +102,7 @@ function mapStateToProps(state) {
       error: state.log.get('error'),
       loading: state.log.get('loading')
     },
+    settings: state.settings.get('record').toJS().settings,
     languageDictionary: state.languageDictionary.get('record').toJS()
   };
 }
