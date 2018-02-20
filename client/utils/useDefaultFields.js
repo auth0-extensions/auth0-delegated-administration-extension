@@ -69,7 +69,7 @@ export const useConnectionsField = (isEditField, fields, connections, onConnecti
       required: true,
       type: 'select',
       component: 'InputCombo',
-      options: connections.map(conn => ({ value: conn.name, text: conn.name })),
+      options: connections.map(conn => ({ value: conn.name, label: conn.name })),
       onChange: onConnectionChange
     }
   };

@@ -50,12 +50,14 @@ class AddUserForm extends Component {
     useDefaultFields.useEmailField(false, fields);
     useDefaultFields.useMembershipsField(false, fields, hasMembership, memberships, createMemberships, getDictValue);
 
+    const createFields = _.filter(fields, field => field.create);
+
     return (
       <div>
         <Modal.Body>
           {this.props.children}
           <div className="form-horizontal">
-            <UserCustomFormFields isEditForm={false} fields={fields} languageDictionary={languageDictionary}/>
+            <UserCustomFormFields isEditForm={false} fields={createFields} languageDictionary={languageDictionary}/>
           </div>
         </Modal.Body>
         <Modal.Footer>
