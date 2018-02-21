@@ -30,7 +30,10 @@ export const passwordChange = createReducer(fromJS(initialState), { // eslint-di
   [constants.PASSWORD_CHANGE_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occurred while changing the password: ${action.errorMessage}`
+      error: {
+        message: action.errorMessage,
+        type: 'change_password'
+      }
     }),
   [constants.PASSWORD_CHANGE_FULFILLED]: (state) =>
     state.merge({

@@ -95,7 +95,10 @@ describe('User Delete reducer', () => {
       }).toJSON()
     ).toEqual(
       {
-        error: 'An error occured while deleting the user: ERROR',
+        error: {
+          message: 'ERROR',
+          type: 'delete_user'
+        },
         loading: false,
         requesting: false,
         user: null

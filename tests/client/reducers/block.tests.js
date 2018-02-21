@@ -96,7 +96,10 @@ describe('block reducer', () => {
     ).toEqual(
       {
         loading: false,
-        error: 'An error occurred while blocking the user: ERROR',
+        error: {
+          message: 'ERROR',
+          type: 'block_user'
+        },
         requesting: false,
         user: null
       }

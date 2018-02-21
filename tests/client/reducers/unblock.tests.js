@@ -95,7 +95,10 @@ describe('unblock reducer', () => {
       }).toJSON()
     ).toEqual(
       {
-        error: 'An error occurred while unblocking the user: ERROR',
+        error: {
+          message: 'ERROR',
+          type: 'unblock_user'
+        },
         loading: false,
         requesting: false,
         user: null

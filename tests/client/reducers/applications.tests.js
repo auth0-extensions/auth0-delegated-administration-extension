@@ -40,7 +40,10 @@ describe('applications reducer', () => {
     ).toEqual(
       {
         loading: false,
-        error: 'An error occured while loading the applications: ERROR',
+        error: {
+          message: 'ERROR',
+          type: 'load_applications'
+        },
         records: []
       }
     );

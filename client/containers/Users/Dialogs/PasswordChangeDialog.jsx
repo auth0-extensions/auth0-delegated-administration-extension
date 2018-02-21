@@ -14,6 +14,7 @@ import {
 } from '../../../utils/useDefaultFields';
 
 import UserFieldsForm from '../../../components/Users/UserFieldsForm';
+import getErrorMessage from "../../../utils/getErrorMessage";
 
 export default connectContainer(class PasswordChangeDialog extends Component {
   static stateToProps = (state) => ({
@@ -84,7 +85,7 @@ export default connectContainer(class PasswordChangeDialog extends Component {
         onCancel={cancelPasswordChange}
         languageDictionary={languageDictionary}
         onConfirm={this.onConfirm}>
-        <Error message={error}/>
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error)} />
         <p>
           {message}
         </p>

@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import { Button, Modal } from 'react-bootstrap';
 import { Error, Json, LoadingPanel } from 'auth0-extension-ui';
 
+import getErrorMessage from '../../utils/getErrorMessage.js';
+
 export default class LogDialog extends Component {
   static propTypes = {
     onClose: PropTypes.func.isRequired,
@@ -36,7 +38,7 @@ export default class LogDialog extends Component {
             show={loading} spinnerStyle={{ height: '16px', width: '16px' }}
             animationStyle={{ paddingTop: '0px', paddingBottom: '0px', marginTop: '0px', marginBottom: '10px' }}
           >
-            <Error message={error}>
+            <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error)}>
               <Json jsonObject={log} />
             </Error>
           </LoadingPanel>

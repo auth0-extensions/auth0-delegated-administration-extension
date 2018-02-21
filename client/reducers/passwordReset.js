@@ -30,7 +30,10 @@ export const passwordReset = createReducer(fromJS(initialState), { // eslint-dis
   [constants.PASSWORD_RESET_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occurred while resetting the password: ${action.errorMessage}`
+      error: {
+        message: action.errorMessage,
+        type: 'reset_password'
+      }
     }),
   [constants.PASSWORD_RESET_FULFILLED]: (state) =>
     state.merge({

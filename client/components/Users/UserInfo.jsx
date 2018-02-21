@@ -6,6 +6,7 @@ import { Error, LoadingPanel } from 'auth0-extension-ui';
 import './UserInfo.styles.css';
 import UserInfoField from './UserInfoField';
 import { getValue } from '../../utils/display';
+import getErrorMessage from "../../utils/getErrorMessage";
 
 export default class UserInfo extends Component {
   static propTypes = {
@@ -121,7 +122,7 @@ export default class UserInfo extends Component {
 
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
-        <Error message={error}></Error>
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error)} />
         <div className="user-info">
           {nonNullFields.map((field, index) => <UserInfoField key={index}
                                                               title={field.title}>{field.value}</UserInfoField>)}

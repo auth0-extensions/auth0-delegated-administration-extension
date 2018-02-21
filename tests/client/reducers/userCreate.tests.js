@@ -74,7 +74,10 @@ describe('User Create reducer', () => {
       }).toJSON()
     ).toEqual(
       {
-        error: 'An error occurred while creating the user: ERROR',
+        error: {
+          message: 'ERROR',
+          type: 'create_user'
+        },
         record: null,
         loading: false,
         validationErrors: { }
@@ -90,7 +93,10 @@ describe('User Create reducer', () => {
       }).toJSON()
     ).toEqual(
       {
-        error: 'An error occurred while creating the user: null',
+        error: {
+          message: 'ERROR',
+          type: 'create_user'
+        },
         record: null,
         loading: false,
         validationErrors: { }

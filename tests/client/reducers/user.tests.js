@@ -72,7 +72,10 @@ describe('user reducer', () => {
         memberships: [],
         logs: {
           loading: false,
-          error: 'An error occured while loading the user logs: ERROR',
+          error: {
+            message: 'ERROR',
+            type: 'load_user_logs'
+          },
           records: []
         },
         devices: {
@@ -318,7 +321,10 @@ describe('user reducer', () => {
         },
         devices: {
           loading: false,
-          error: 'An error occured while loading the devices: ERROR',
+          error: {
+            message: 'ERROR',
+            type: 'load_user_devices'
+          },
           records: {}
         }
       }
@@ -427,7 +433,10 @@ describe('user reducer', () => {
     ).toEqual(
       {
         loading: false,
-        error: 'An error occured while loading the user: ERROR',
+        error: {
+          message: 'ERROR',
+          type: 'load_user'
+        },
         userId: null,
         record: {},
         memberships: [],

@@ -57,7 +57,10 @@ describe('log reducer', () => {
     ).toEqual(
       {
         loading: false,
-        error: 'An error occured while loading the log record: ERROR',
+        error: {
+          message: 'ERROR',
+          type: 'load_log'
+        },
         logId: null,
         record: {}
       }

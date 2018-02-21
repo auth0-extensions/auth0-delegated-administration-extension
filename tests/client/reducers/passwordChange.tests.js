@@ -129,7 +129,10 @@ describe('Password Change reducer', () => {
       }).toJSON()
     ).toEqual(
       {
-        error: 'An error occurred while changing the password: ERROR',
+        error: {
+          message: 'ERROR',
+          type: 'change_password'
+        },
         loading: false,
         requesting: false,
         user: null,

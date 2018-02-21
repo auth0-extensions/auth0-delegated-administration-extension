@@ -130,7 +130,10 @@ describe('email change reducer', () => {
     ).toEqual(
       {
         loading: false,
-        error: 'An error occurred while changing the email: ERROR',
+        error: {
+          message: 'ERROR',
+          type: 'change_email'
+        },
         requesting: false,
         user: null,
         connection: null

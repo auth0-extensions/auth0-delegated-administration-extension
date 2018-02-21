@@ -131,7 +131,10 @@ describe('User Name Change reducer', () => {
       }).toJSON()
     ).toEqual(
       {
-        error: 'An error occurred while changing the username: ERROR',
+        error: {
+          message: 'ERROR',
+          type: 'change_username'
+        },
         loading: false,
         requesting: false,
         user: null,

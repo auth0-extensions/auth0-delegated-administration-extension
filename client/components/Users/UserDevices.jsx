@@ -12,6 +12,7 @@ import {
   TableColumn,
   TableRow
 } from 'auth0-extension-ui';
+import getErrorMessage from "../../utils/getErrorMessage";
 
 export default class UserDevices extends Component {
   static propTypes = {
@@ -42,7 +43,7 @@ export default class UserDevices extends Component {
 
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
-        <Error message={error}/>
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error)} />
         <Table>
           <TableHeader>
             <TableColumn width="3%"/>

@@ -121,7 +121,10 @@ describe('Resend verification reducer', () => {
       }).toJSON()
     ).toEqual(
       {
-        error: 'An error occurred while sending email: ERROR',
+        error: {
+          message: 'ERROR',
+          type: 'send_email'
+        },
         loading: false,
         requesting: false,
         user: null

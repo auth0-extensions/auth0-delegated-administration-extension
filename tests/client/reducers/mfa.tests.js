@@ -103,7 +103,10 @@ describe('mfa reducer', () => {
       }).toJSON()
     ).toEqual(
       {
-        error: 'An error occurred while removing multi factor authentication for the user: ERROR',
+        error: {
+          message: 'ERROR',
+          type: 'remove_mfa'
+        },
         loading: false,
         requesting: false,
         user: null,

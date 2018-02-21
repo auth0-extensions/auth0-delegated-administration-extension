@@ -89,7 +89,10 @@ describe('users reducer', () => {
     ).toEqual(
       {
         loading: false,
-        error: 'An error occurred while retrieving list of users: ERROR',
+        error: {
+          message: 'ERROR',
+          type: 'load_users'
+        },
         records: [],
         total: 0,
         currentPage: 1,

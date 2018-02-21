@@ -129,7 +129,10 @@ describe('Password Reset reducer', () => {
       }).toJSON()
     ).toEqual(
       {
-        error: 'An error occurred while resetting the password: ERROR',
+        error: {
+          message: 'ERROR',
+          type: 'reset_password'
+        },
         loading: false,
         requesting: false,
         user: null,

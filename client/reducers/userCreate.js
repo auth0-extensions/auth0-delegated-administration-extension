@@ -32,7 +32,10 @@ export const userCreate = createReducer(fromJS(initialState), { // eslint-disabl
     return state.merge({
       loading: false,
       validationErrors: {},
-      error: `An error occurred while creating the user: ${errorMessage}`
+      error: {
+        message: action.errorMessage,
+        type: 'create_user'
+      }
     });
   },
   [constants.CREATE_USER_FULFILLED]: (state) =>

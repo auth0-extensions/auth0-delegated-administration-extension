@@ -41,7 +41,10 @@ describe('languageDictionary reducer', () => {
     ).toEqual(
       {
         loading: false,
-        error: 'An error occurred while loading the language dictionary: ERROR',
+        error: {
+          message: 'ERROR',
+          type: 'load_dictionary'
+        },
         record: {}
       }
     );

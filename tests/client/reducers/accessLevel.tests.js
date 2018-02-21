@@ -40,7 +40,10 @@ describe('accessLevel reducer', () => {
     ).toEqual(
       {
         loading: false,
-        error: 'An error occured while loading the settings: ERROR',
+        error: {
+          message: 'ERROR',
+          type: 'load_settings'
+        },
         record: { role: 2, memberships: [], createMemberships: false }
       }
     );

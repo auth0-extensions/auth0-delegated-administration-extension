@@ -32,7 +32,10 @@ export const fieldsChange = createReducer(fromJS(initialState), { // eslint-disa
     return state.merge({
       loading: false,
       validationErrors: {},
-      error: `An error occurred while creating the user: ${errorMessage}`
+      error: {
+        message: errorMessage,
+        type: 'change_fields'
+      }
     });
   },
   [constants.FIELDS_CHANGE_FULFILLED]: (state) =>

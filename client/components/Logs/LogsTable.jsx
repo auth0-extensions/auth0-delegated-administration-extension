@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Error, LoadingPanel, Table, TableBody, TableIconCell, TableTextCell, TableHeader, TableColumn, TableRow } from 'auth0-extension-ui';
 import moment from 'moment';
 import _ from 'lodash';
+import getErrorMessage from "../../utils/getErrorMessage";
 
 export default class LogsTable extends Component {
   static propTypes = {
@@ -30,7 +31,7 @@ export default class LogsTable extends Component {
     const logs = this.props.logs.toJS();
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
-        <Error message={error} />
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error)} />
         <Table>
           <TableHeader>
             <TableColumn width="3%" />

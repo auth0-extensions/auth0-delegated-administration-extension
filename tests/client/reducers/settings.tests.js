@@ -41,7 +41,10 @@ describe('settings reducer', () => {
     ).toEqual(
       {
         loading: false,
-        error: 'An error occurred while loading the connections: ERROR',
+        error: {
+          message: 'ERROR',
+          type: 'load_settings'
+        },
         record: { settings: { dict: { title: '', memberships: '' }, userFields: [], css: '' } }
       }
     );

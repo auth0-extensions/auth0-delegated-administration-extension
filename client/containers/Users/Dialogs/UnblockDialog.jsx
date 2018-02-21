@@ -7,6 +7,7 @@ import { Error, Confirm } from 'auth0-extension-ui';
 import { userActions } from '../../../actions';
 import getDialogMessage from './getDialogMessage';
 import { getName } from '../../../utils/display';
+import getErrorMessage from "../../../utils/getErrorMessage";
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
@@ -56,7 +57,7 @@ export default connectContainer(class extends Component {
         onCancel={cancelUnblockUser}
         languageDictionary={languageDictionary}
         onConfirm={this.onConfirm}>
-        <Error message={error} />
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error)} />
         <p>
           {message}
         </p>

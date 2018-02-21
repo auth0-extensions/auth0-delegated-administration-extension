@@ -18,7 +18,10 @@ export const connections = createReducer(fromJS(initialState), { // eslint-disab
   [constants.FETCH_CONNECTIONS_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occured while loading the connections: ${action.errorMessage}`
+      error: {
+        message: action.errorMessage,
+        type: 'load_connections'
+      }
     }),
   [constants.FETCH_CONNECTIONS_FULFILLED]: (state, action) =>
     state.merge({

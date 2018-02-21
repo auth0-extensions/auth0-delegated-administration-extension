@@ -32,7 +32,10 @@ describe('scripts reducer', () => {
       {
         settings: {
           loading: false,
-          error: 'An error occurred while loading the script: ERROR'
+          error: {
+            message: 'ERROR',
+            type: 'load_script'
+          }
         }
       }
     );
@@ -89,7 +92,10 @@ describe('scripts reducer', () => {
       {
         settings: {
           loading: false,
-          error: 'An error occurred while saving the script: ERROR'
+          error: {
+            message: 'ERROR',
+            type: 'save_script'
+          }
         }
       }
     );
