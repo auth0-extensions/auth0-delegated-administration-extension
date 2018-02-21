@@ -12,7 +12,7 @@ import users from '../../../server/routes/users';
 import ScriptManager from '../../../server/lib/scriptmanager';
 import { user, defaultUsers, defaultScripts, defaultConfig } from '../../utils/dummyData';
 
-describe('#users router', () => {
+describe.skip('#users router', () => {
   config.setProvider((key) => defaultConfig[key], null);
 
   const fakeApiClient = (req, res, next) => {
