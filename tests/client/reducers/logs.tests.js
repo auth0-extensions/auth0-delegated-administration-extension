@@ -118,6 +118,7 @@ describe('logs reducer', () => {
             client_name: 'My App',
             connection: 'Username-Password-Authentication',
             date: '2016-09-26T13:03:50.703Z',
+            shortType: 'custom_type',
             type: {
               event: 'Unknown Event',
               icon: {
@@ -132,6 +133,7 @@ describe('logs reducer', () => {
             client_name: 'My App',
             connection: 'Username-Password-Authentication',
             date: '2016-09-26T13:03:36.005Z',
+            shortType: 's',
             type: {
               event: 'Success Login',
               icon: {

@@ -129,8 +129,9 @@ class Users extends Component {
                 totalItems={total}
                 handlePageChange={this.onPageChange}
                 perPage={10}
+                textFormat={languageDictionary.paginationTextFormat}
               /> :
-              <TableTotals currentCount={users.length} totalCount={total} />
+              <TableTotals currentCount={users.length} totalCount={total} textFormat={languageDictionary.tableTotalsTextFormat} />
             }
           </div>
         </div>

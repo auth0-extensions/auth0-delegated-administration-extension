@@ -86,7 +86,10 @@ export default class UserOverview extends React.Component {
                 handleReset={this.onReset}
                 handleOptionChange={this.onHandleOptionChange}
                 searchOptions={this.searchOptions}
-                searchValue={this.state.searchValue}/>
+                searchValue={this.state.searchValue}
+                placeholder={this.props.languageDictionary.searchBarPlaceholder}
+                resetButtonText={this.props.languageDictionary.searchBarReset}
+                instructionsText={this.props.languageDictionary.searchBarInstructions}/>
             ) : (
               <LuceneSearchBar
                 onReset={this.props.onReset}
