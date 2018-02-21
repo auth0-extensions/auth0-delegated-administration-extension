@@ -38,6 +38,17 @@ class App extends Component {
     return val || defaultValue;
   };
 
+  onLogout = () => {
+    const appSettings = this.props.settings;
+    let logoutUrl;
+
+    if (appSettings.get('settings') && appSettings.get('settings').get('dict')) {
+      logoutUrl = appSettings.get('settings').get('dict').get('logoutUrl');
+    }
+
+    this.props.logout(logoutUrl);
+  };
+
   render() {
     const { settingsLoading } = this.props;
     const languageDictionary = this.props.languageDictionary ? this.props.languageDictionary.toJS() : {};
@@ -50,7 +61,7 @@ class App extends Component {
           user={this.props.user}
           issuer={this.props.issuer}
           getDictValue={this.getDictValue}
-          onLogout={this.props.logout}
+          onLogout={this.onLogout}
           accessLevel={this.props.accessLevel.toJSON()}
           languageDictionary={languageDictionary}
         />
