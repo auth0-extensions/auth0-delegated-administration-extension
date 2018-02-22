@@ -52,7 +52,7 @@ export default class LogsTable extends Component {
                 <TableRow key={index}>
                   <TableIconCell color={icon.color} icon={icon.name} />
                   <TableTextCell onClick={onClick}>{logType || languageDictionary.logDialogDefaultLogRecordText || 'Log Record'}</TableTextCell>
-                  <TableTextCell>{logDescription || log.user_name || log.description || log.type.description}</TableTextCell>
+                  <TableTextCell>{log.user_name || log.description || logDescription || log.type.description}</TableTextCell>
                   <TableTextCell>{log.time_ago}</TableTextCell>
                   <TableTextCell>{log.connection || languageDictionary.notApplicableLabel || 'N/A'}</TableTextCell>
                   <TableTextCell>{log.client_name || languageDictionary.notApplicableLabel || 'N/A'}</TableTextCell>

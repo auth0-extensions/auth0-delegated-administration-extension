@@ -78,9 +78,10 @@ const checkCustomFieldValidation = (req, context, isEditRequest, onlyTheseFields
     }
 
     if (field[type].options) {
+      const optionValue = _.isObject(value) ? value.value : value;
       const options = _.map(field[type].options, option => (_.isObject(option) ? option.value : option));
-      if (options.indexOf(value) < 0) {
-        errorList[errorKey] = `${value} is not an allowed option`;
+      if (options.indexOf(optionValue) < 0) {
+        errorList[errorKey] = `${optionValue} is not an allowed option`;
         return;
       }
     }

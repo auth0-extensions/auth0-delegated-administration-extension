@@ -208,14 +208,20 @@ describe('#users router', () => {
             type: "select",
             options: [{ value: 'good value', label: 'good' }, { value: 'bad value', label: 'bad' }],
             component: 'InputCombo',
-            validationFunction: ((value, values) => value !== "good value" && value !== "other value" ? "bad value for edit custom2" : false).toString()
+            validationFunction: ((value, values) =>
+              value && value !== "good value" &&
+              value !== "other value" && value.value !== "good value" &&
+              value.value !== "other value" ? "bad value for edit custom2" : false).toString()
           },
           create: {
             required: true,
             type: "select",
             options: [{ value: 'good value', label: 'good' }, { value: 'bad value', label: 'bad' }],
             component: 'InputCombo',
-            validationFunction: ((value, values) => value !== "good value" && value !== "other value" ? "bad value for create custom2" : false).toString()
+            validationFunction: ((value, values) =>
+              value && value !== "good value" &&
+              value !== "other value" && value.value !== "good value" &&
+              value.value !== "other value" ? "bad value for create custom2" : false).toString()
           }
         }
       ]
@@ -961,7 +967,7 @@ describe('#users router', () => {
       username: 'good value',
       user_metadata: {
         custom: 'good value',
-        custom2: 'good value'
+        custom2: { label: 'good', value: 'good value' }
       },
       app_metadata: { department: 'deptA' }
     };
@@ -1035,6 +1041,24 @@ describe('#users router', () => {
     it('create profile: fail validation: validationFunction', (done) => {
       const badUser = _.cloneDeep(newGoodUser);
       badUser.user_metadata.custom = 'bad value';
+      badUser.user_metadata.custom2 = { label: 'bad', value: 'bad value' };
+
+      request(app)
+        .post('/users')
+        .send(badUser)
+        .expect(400)
+        .end((err, res) => {
+          if (err) return done(err);
+          catchError(done, () => {
+            expect(res.error.text).to.match(/Custom Field Simple Options: bad value for create custom/);
+            expect(res.error.text).to.match(/Custom Field Complex Options: bad value for create custom2/);
+          });
+        });
+    });
+
+    it('create profile: fail validation: validationFunction', (done) => {
+      const badUser = _.cloneDeep(newGoodUser);
+      badUser.user_metadata.custom = 'bad value';
       badUser.user_metadata.custom2 = 'bad value';
 
       request(app)
@@ -1051,6 +1075,42 @@ describe('#users router', () => {
     });
 
     it('create profile: fail validation: not an option', (done) => {
+      const badUser = _.cloneDeep(newGoodUser);
+      badUser.user_metadata.custom = 'other value';
+      badUser.user_metadata.custom2 = { label: 'other', value: 'other value' };
+
+      request(app)
+        .post('/users')
+        .send(badUser)
+        .expect(400)
+        .end((err, res) => {
+          if (err) return done(err);
+          catchError(done, () => {
+            expect(res.error.text).to.match(/Custom Field Simple Options: other value is not an allowed option/);
+            expect(res.error.text).to.match(/Custom Field Complex Options: other value is not an allowed option/);
+          });
+        });
+    });
+
+    it('create profile: fail validation: not an option', (done) => {
+      const badUser = _.cloneDeep(newGoodUser);
+      badUser.user_metadata.custom = 'other value';
+      badUser.user_metadata.custom2 = 'other value';
+
+      request(app)
+        .post('/users')
+        .send(badUser)
+        .expect(400)
+        .end((err, res) => {
+          if (err) return done(err);
+          catchError(done, () => {
+            expect(res.error.text).to.match(/Custom Field Simple Options: other value is not an allowed option/);
+            expect(res.error.text).to.match(/Custom Field Complex Options: other value is not an allowed option/);
+          });
+        });
+    });
+
+    it('create profile: pass validation: option object', (done) => {
       const badUser = _.cloneDeep(newGoodUser);
       badUser.user_metadata.custom = 'other value';
       badUser.user_metadata.custom2 = 'other value';
