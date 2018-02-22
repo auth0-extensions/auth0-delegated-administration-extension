@@ -91,14 +91,19 @@ describe('block reducer', () => {
     expect(
       block(initialState, {
         type: constants.BLOCK_USER_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
         loading: false,
         error: {
+          type: 'TEST',
           message: 'ERROR',
-          type: 'block_user'
+          status: 500
         },
         requesting: false,
         user: null

@@ -35,14 +35,19 @@ describe('applications reducer', () => {
     expect(
       applications(initialState, {
         type: constants.FETCH_APPLICATIONS_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
         loading: false,
         error: {
+          type: 'TEST',
           message: 'ERROR',
-          type: 'load_applications'
+          status: 500
         },
         records: []
       }

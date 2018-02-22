@@ -35,14 +35,19 @@ describe('accessLevel reducer', () => {
     expect(
       accessLevel(initialState, {
         type: constants.FETCH_ACCESS_LEVEL_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
         loading: false,
         error: {
           message: 'ERROR',
-          type: 'load_settings'
+          type: 'TEST',
+          status: 500
         },
         record: { role: 2, memberships: [], createMemberships: false }
       }

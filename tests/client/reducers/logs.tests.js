@@ -65,14 +65,19 @@ describe('logs reducer', () => {
     expect(
       logs(initialState, {
         type: constants.FETCH_LOGS_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
         loading: false,
         error: {
+          type: 'TEST',
           message: 'ERROR',
-          type: 'load_logs'
+          status: 500
         },
         records: [],
         currentRecord: null

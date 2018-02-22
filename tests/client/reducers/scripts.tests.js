@@ -26,15 +26,20 @@ describe('scripts reducer', () => {
       scripts({}, {
         type: constants.FETCH_SCRIPT_REJECTED,
         meta: { name: 'settings' },
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
         settings: {
           loading: false,
           error: {
+            type: 'TEST',
             message: 'ERROR',
-            type: 'load_script'
+            status: 500
           }
         }
       }
@@ -86,15 +91,20 @@ describe('scripts reducer', () => {
       scripts({}, {
         type: constants.UPDATE_SCRIPT_REJECTED,
         meta: { name: 'settings' },
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
         settings: {
           loading: false,
           error: {
+            type: 'TEST',
             message: 'ERROR',
-            type: 'save_script'
+            status: 500
           }
         }
       }

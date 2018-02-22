@@ -70,13 +70,18 @@ describe('User Create reducer', () => {
       userCreate(initialState, {
         type: constants.CREATE_USER_REJECTED,
         error: true,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
         error: {
+          type: 'TEST',
           message: 'ERROR',
-          type: 'create_user'
+          status: 500
         },
         record: null,
         loading: false,
@@ -89,13 +94,18 @@ describe('User Create reducer', () => {
     expect(
       userCreate(initialState, {
         type: constants.CREATE_USER_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
         error: {
+          type: 'TEST',
           message: 'ERROR',
-          type: 'create_user'
+          status: 500
         },
         record: null,
         loading: false,

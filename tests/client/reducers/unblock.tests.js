@@ -91,13 +91,18 @@ describe('unblock reducer', () => {
     expect(
       unblock(initialState, {
         type: constants.UNBLOCK_USER_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
         error: {
+          type: 'TEST',
           message: 'ERROR',
-          type: 'unblock_user'
+          status: 500
         },
         loading: false,
         requesting: false,
