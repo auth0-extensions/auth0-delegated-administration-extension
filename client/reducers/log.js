@@ -25,10 +25,7 @@ export const log = createReducer(fromJS(initialState), { // eslint-disable-line 
   [constants.FETCH_LOG_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: {
-        message: action.errorMessage,
-        type: 'load_log'
-      }
+      error: action.errorData
     }),
   [constants.FETCH_LOG_FULFILLED]: (state, action) => {
     const { data } = action.payload;

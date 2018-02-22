@@ -7,7 +7,7 @@ import { Error, Confirm } from 'auth0-extension-ui';
 import { userActions } from '../../../actions';
 import getDialogMessage from './getDialogMessage';
 import { getName } from '../../../utils/display';
-import getErrorMessage from "../../../utils/getErrorMessage";
+import getErrorMessage from '../../../utils/getErrorMessage';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({

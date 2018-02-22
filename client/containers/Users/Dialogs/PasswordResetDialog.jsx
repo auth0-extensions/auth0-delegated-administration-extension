@@ -16,7 +16,7 @@ import {
 } from '../../../utils/useDefaultFields';
 
 import UserFieldsForm from '../../../components/Users/UserFieldsForm';
-import getErrorMessage from "../../../utils/getErrorMessage";
+import getErrorMessage from '../../../utils/getErrorMessage';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({

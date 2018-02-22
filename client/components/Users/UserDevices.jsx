@@ -12,7 +12,7 @@ import {
   TableColumn,
   TableRow
 } from 'auth0-extension-ui';
-import getErrorMessage from "../../utils/getErrorMessage";
+import getErrorMessage from '../../utils/getErrorMessage';
 
 export default class UserDevices extends Component {
   static propTypes = {

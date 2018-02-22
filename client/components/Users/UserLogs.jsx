@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Error, LoadingPanel, Table, TableBody, TableIconCell, TableTextCell, TableHeader, TableColumn, TableRow } from 'auth0-extension-ui';
 import moment from 'moment';
-import getErrorMessage from "../../utils/getErrorMessage";
+import getErrorMessage from '../../utils/getErrorMessage';
 
 export default class UserLogs extends Component {
   static propTypes = {

@@ -63,10 +63,7 @@ export const settings = createReducer(fromJS(initialState), { // eslint-disable-
   [constants.FETCH_SETTINGS_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: {
-        message: action.errorMessage,
-        type: 'load_settings'
-      }
+      error: action.errorData
     }),
   [constants.FETCH_SETTINGS_FULFILLED]: (state, action) => {
     const data = action.payload.data;

@@ -30,10 +30,7 @@ export const usernameChange = createReducer(fromJS(initialState), { // eslint-di
   [constants.USERNAME_CHANGE_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: {
-        message: action.errorMessage,
-        type: 'change_username'
-      }
+      error: action.errorData
     }),
   [constants.USERNAME_CHANGE_FULFILLED]: (state) =>
     state.merge({

@@ -27,10 +27,7 @@ export const unblock = createReducer(fromJS(initialState), { // eslint-disable-l
   [constants.UNBLOCK_USER_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: {
-        message: action.errorMessage,
-        type: 'unblock_user'
-      }
+      error: action.errorData
     }),
   [constants.UNBLOCK_USER_FULFILLED]: (state) =>
     state.merge({

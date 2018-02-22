@@ -28,10 +28,7 @@ export const userDelete = createReducer(fromJS(initialState), { // eslint-disabl
   [constants.DELETE_USER_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: {
-        message: action.errorMessage,
-        type: 'delete_user'
-      }
+      error: action.errorData
     }),
   [constants.DELETE_USER_FULFILLED]: (state) =>
     state.merge({

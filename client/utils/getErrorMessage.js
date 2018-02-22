@@ -1,40 +1,39 @@
 const defaultMessages = {
-  error: 'An error occurred while',
-  load_settings: 'loading the settings',
-  load_applications: 'loading the applications',
-  block_user: 'blocking the user',
-  load_connections: 'loading the connections',
-  change_email: 'changing the email',
-  change_fields: 'changing the users fields',
-  load_dictionary: 'loading the language dictionary',
-  load_log: 'loading the log record',
-  load_logs: 'loading the logs list',
-  remove_mfa: 'removing multi factor authentication for the user',
-  change_password: 'changing the password',
-  reset_password: 'resetting the password',
-  load_script: 'loading the script',
-  save_script: 'saving the script',
-  unblock_user: 'unblocking the user',
-  load_user_logs: 'loading the user logs',
-  load_user_devices: 'loading the user devices',
-  load_user: 'loading the user',
-  create_user: 'creating the user',
-  delete_user: 'deleting the user',
-  change_username: 'changing the username',
-  load_users: 'loading the users list',
-  send_email: 'sending verification email'
+  defaultErrorMessage: 'Unknown Error',
+  FETCH_ACCESS_LEVEL: { default: 'An error occurred while loading the settings: {message}' },
+  FETCH_APPLICATIONS: { default: 'An error occurred while loading the applications: {message}' },
+  BLOCK_USER: { default: 'An error occurred while blocking the user: {message}' },
+  FETCH_CONNECTIONS: { default: 'An error occurred while loading the connections: {message}' },
+  EMAIL_CHANGE: { default: 'An error occurred while changing the email: {message}' },
+  FIELDS_CHANGE: { default: 'An error occurred while changing the users fields: {message}' },
+  FETCH_LANGUAGE_DICTIONARY: { default: 'An error occurred while loading the language dictionary: {message}' },
+  FETCH_LOG: { default: 'An error occurred while loading the log record: {message}' },
+  FETCH_LOGS: { default: 'An error occurred while loading the logs list: {message}' },
+  REMOVE_MULTIFACTOR: { default: 'An error occurred while removing multi factor authentication for the user: {message}' },
+  PASSWORD_CHANGE: { default: 'An error occurred while changing the password: {message}' },
+  PASSWORD_RESET: { default: 'An error occurred while resetting the password: {message}' },
+  FETCH_SCRIPT: { default: 'An error occurred while loading the script: {message}' },
+  UPDATE_SCRIPT: { default: 'An error occurred while saving the script: {message}' },
+  FETCH_SETTINGS: { default: 'An error occurred while loading the settings: {message}' },
+  UNBLOCK_USER: { default: 'An error occurred while unblocking the user: {message}' },
+  FETCH_USER_LOGS: { default: 'An error occurred while loading the user logs: {message}' },
+  FETCH_USER_DEVICES: { default: 'An error occurred while loading the user devices: {message}' },
+  FETCH_USER: { default: 'An error occurred while loading the user: {message}' },
+  CREATE_USER: { default: 'An error occurred while creating the user: {message}' },
+  DELETE_USER: { default: 'An error occurred while deleting the user: {message}' },
+  USERNAME_CHANGE: { default: 'An error occurred while changing the username: {message}' },
+  FETCH_USERS: { default: 'An error occurred while loading the users list: {message}' },
+  RESEND_VERIFICATION_EMAIL: { default: 'An error occurred while sending verification email: {message}' }
 };
 
-export default (errors, error) => {
+export default (errors = {}, error) => {
   if (!error) {
     return null;
   }
 
-  error = error.toJS();
+  error = (error.toJS) ? error.toJS() : error;
+  const messages = Object.assign({}, defaultMessages, errors);
+  const message = (messages[error.type] && messages[error.type][error.status]) || messages[error.type].default;
 
-  if (errors && error && error.type && errors[error.type]) {
-    return `${errors[error.type]}${error.message || ''}`;
-  }
-
-  return `${defaultMessages.error} ${defaultMessages[error.type] || ''}: ${error.message || ''}`;
+  return message.replace('{message}', error.message || messages.defaultErrorMessage);
 };

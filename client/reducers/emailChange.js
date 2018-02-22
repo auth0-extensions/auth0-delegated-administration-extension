@@ -30,10 +30,7 @@ export const emailChange = createReducer(fromJS(initialState), { // eslint-disab
   [constants.EMAIL_CHANGE_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: {
-        message: action.errorMessage,
-        type: 'change_email'
-      }
+      error: action.errorData
     }),
   [constants.EMAIL_CHANGE_FULFILLED]: (state) =>
     state.merge({

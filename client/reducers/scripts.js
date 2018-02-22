@@ -9,7 +9,7 @@ export const scripts = createReducer(fromJS({ }), { // eslint-disable-line impor
       .setIn([ action.meta.name ], fromJS({ loading: true, error: null, script: null, token: null })),
   [constants.FETCH_SCRIPT_REJECTED]: (state, action) =>
     state
-      .setIn([ action.meta.name ], fromJS({ loading: false, error: { message: action.errorMessage, type: 'load_script' } })),
+      .setIn([ action.meta.name ], fromJS({ loading: false, error: action.errorData })),
   [constants.FETCH_SCRIPT_FULFILLED]: (state, action) =>
     state
       .setIn([ action.meta.name ], fromJS({ loading: false, script: action.payload.data.script })),
@@ -20,7 +20,7 @@ export const scripts = createReducer(fromJS({ }), { // eslint-disable-line impor
   [constants.UPDATE_SCRIPT_REJECTED]: (state, action) =>
     state
       .setIn([ action.meta.name, 'loading' ], false)
-      .setIn([ action.meta.name, 'error' ], { message: action.errorMessage, type: 'save_script' }),
+      .setIn([ action.meta.name, 'error' ], action.errorData),
   [constants.UPDATE_SCRIPT_FULFILLED]: (state, action) =>
     state
       .setIn([ action.meta.name, 'loading' ], false)

@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { Error, Json, LoadingPanel } from 'auth0-extension-ui';
-import getErrorMessage from "../../utils/getErrorMessage";
+import getErrorMessage from '../../utils/getErrorMessage';
 
 export default class UserProfile extends Component {
   static propTypes = {

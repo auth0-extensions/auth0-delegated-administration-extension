@@ -10,7 +10,7 @@ import { useDisabledConnectionField, useEmailField } from '../../../utils/useDef
 import { getName, mapValues } from '../../../utils/display';
 import getDialogMessage from './getDialogMessage';
 import UserFieldsForm from '../../../components/Users/UserFieldsForm';
-import getErrorMessage from "../../../utils/getErrorMessage";
+import getErrorMessage from '../../../utils/getErrorMessage';
 
 
 export default connectContainer(class extends Component {

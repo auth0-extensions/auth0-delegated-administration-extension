@@ -30,10 +30,7 @@ export const users = createReducer(fromJS(initialState), { // eslint-disable-lin
   [constants.FETCH_USERS_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: {
-        message: action.errorMessage,
-        type: 'load_users'
-      }
+      error: action.errorData
     }),
   [constants.FETCH_USERS_FULFILLED]: (state, action) => {
     const { data } = action.payload;

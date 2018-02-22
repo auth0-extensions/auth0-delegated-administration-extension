@@ -27,10 +27,7 @@ export const block = createReducer(fromJS(initialState), { // eslint-disable-lin
   [constants.BLOCK_USER_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: {
-        message: action.errorMessage,
-        type: 'block_user'
-      }
+      error: action.errorData
     }),
   [constants.BLOCK_USER_FULFILLED]: (state) =>
     state.merge({

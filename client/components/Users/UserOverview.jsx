@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 import { LuceneSearchBar, UsersTable } from './';
 import { Error, LoadingPanel, TableTotals, SearchBar } from 'auth0-extension-ui';
-import getErrorMessage from "../../utils/getErrorMessage";
+import getErrorMessage from '../../utils/getErrorMessage';
 
 export default class UserOverview extends React.Component {
   static propTypes = {
