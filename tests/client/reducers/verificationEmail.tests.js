@@ -117,11 +117,19 @@ describe('Resend verification reducer', () => {
     expect(
       verificationEmail(initialState, {
         type: constants.RESEND_VERIFICATION_EMAIL_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
-        error: 'An error occurred while sending email: ERROR',
+        error: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        },
         loading: false,
         requesting: false,
         user: null

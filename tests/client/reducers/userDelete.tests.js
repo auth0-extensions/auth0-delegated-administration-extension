@@ -91,11 +91,19 @@ describe('User Delete reducer', () => {
     expect(
       userDelete(initialState, {
         type: constants.DELETE_USER_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
-        error: 'An error occured while deleting the user: ERROR',
+        error: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        },
         loading: false,
         requesting: false,
         user: null

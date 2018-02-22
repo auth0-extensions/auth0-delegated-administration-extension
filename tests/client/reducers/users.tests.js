@@ -84,12 +84,20 @@ describe('users reducer', () => {
     expect(
       users(initialState, {
         type: constants.FETCH_USERS_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
         loading: false,
-        error: 'An error occurred while retrieving list of users: ERROR',
+        error: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        },
         records: [],
         total: 0,
         currentPage: 1,

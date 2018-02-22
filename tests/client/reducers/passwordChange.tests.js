@@ -125,11 +125,19 @@ describe('Password Change reducer', () => {
     expect(
       passwordChange(initialState, {
         type: constants.PASSWORD_CHANGE_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
-        error: 'An error occurred while changing the password: ERROR',
+        error: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        },
         loading: false,
         requesting: false,
         user: null,

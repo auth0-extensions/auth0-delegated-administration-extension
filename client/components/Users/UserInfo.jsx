@@ -6,6 +6,7 @@ import { Error, LoadingPanel } from 'auth0-extension-ui';
 import './UserInfo.styles.css';
 import UserInfoField from './UserInfoField';
 import { getValue } from '../../utils/display';
+import getErrorMessage from '../../utils/getErrorMessage';
 
 export default class UserInfo extends Component {
   static propTypes = {
@@ -94,7 +95,13 @@ export default class UserInfo extends Component {
 
     /* Prepare the user object */
     const userObject = user.toJS();
-    if (!userObject || Object.keys(userObject).length === 0) return null;
+    if (!userObject || Object.keys(userObject).length === 0) {
+      return (
+        <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
+          <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error)} />
+        </LoadingPanel>
+      );
+    }
 
     userObject.currentMemberships = this.getMemberships(memberships);
     userObject.identity = this.getIdentities(user);
@@ -118,10 +125,10 @@ export default class UserInfo extends Component {
       return field;
     });
     const nonNullFields = _.filter(fieldsAndValues, field => field.value) || [];
-
+    console.log(getErrorMessage(languageDictionary.errors, error));
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
-        <Error message={error}></Error>
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error)} />
         <div className="user-info">
           {nonNullFields.map((field, index) => <UserInfoField key={index}
                                                               title={field.title}>{field.value}</UserInfoField>)}

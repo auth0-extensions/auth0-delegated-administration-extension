@@ -20,7 +20,7 @@ export const logs = createReducer(fromJS(initialState), { // eslint-disable-line
   [constants.FETCH_LOGS_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occurred while loading the logs: ${action.errorMessage}`
+      error: action.errorData
     }),
   [constants.FETCH_LOGS_FULFILLED]: (state, action) => {
     const { data } = action.payload;
@@ -29,6 +29,7 @@ export const logs = createReducer(fromJS(initialState), { // eslint-disable-line
       total: data.total,
       nextPage: action.meta.page + 1,
       records: state.get('records').concat(fromJS(data.logs.map(log => {
+        log.shortType = log.type;
         log.type = logTypes[log.type];
         if (!log.type) {
           log.type = {

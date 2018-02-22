@@ -28,7 +28,7 @@ export const verificationEmail = createReducer(fromJS(initialState), { // eslint
   [constants.RESEND_VERIFICATION_EMAIL_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occurred while sending email: ${action.errorMessage}`
+      error: action.errorData
     }),
   [constants.RESEND_VERIFICATION_EMAIL_FULFILLED]: (state) =>
     state.merge({

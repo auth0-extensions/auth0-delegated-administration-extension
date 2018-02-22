@@ -99,11 +99,19 @@ describe('mfa reducer', () => {
     expect(
       mfa(initialState, {
         type: constants.REMOVE_MULTIFACTOR_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
-        error: 'An error occurred while removing multi factor authentication for the user: ERROR',
+        error: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        },
         loading: false,
         requesting: false,
         user: null,

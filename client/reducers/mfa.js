@@ -30,7 +30,7 @@ export const mfa = createReducer(fromJS(initialState), { // eslint-disable-line 
   [constants.REMOVE_MULTIFACTOR_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occurred while removing multi factor authentication for the user: ${action.errorMessage}`
+      error: action.errorData
     }),
   [constants.REMOVE_MULTIFACTOR_FULFILLED]: (state) =>
     state.merge({

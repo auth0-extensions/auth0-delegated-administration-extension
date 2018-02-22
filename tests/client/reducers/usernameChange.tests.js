@@ -127,11 +127,19 @@ describe('User Name Change reducer', () => {
     expect(
       usernameChange(initialState, {
         type: constants.USERNAME_CHANGE_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
-        error: 'An error occurred while changing the username: ERROR',
+        error: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        },
         loading: false,
         requesting: false,
         user: null,

@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, ButtonToolbar } from 'react-bootstrap';
+import { Error, LoadingPanel, TableTotals } from 'auth0-extension-ui';
 
 import * as actions from '../actions/log';
 import LogDialog from '../components/Logs/LogDialog';
 import LogsTable from '../components/Logs/LogsTable';
-import { Error, LoadingPanel, TableTotals } from 'auth0-extension-ui';
 import TabsHeader from '../components/TabsHeader';
+import getErrorMessage from '../utils/getErrorMessage';
 
 class LogsContainer extends Component {
   static propTypes = {
@@ -70,7 +71,8 @@ class LogsContainer extends Component {
         </div>
         <div className="row">
           <div className="col-xs-12 wrapper">
-            <Error message={logs.error} />
+            <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, logs.error)} />
+
             <LoadingPanel show={logs.loading}>
               <LogsTable onOpen={this.props.fetchLog} loading={logs.loading} logs={logs.records} settings={this.props.settings} languageDictionary={languageDictionary} />
             </LoadingPanel>

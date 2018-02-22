@@ -125,12 +125,20 @@ describe('email change reducer', () => {
     expect(
       emailChange(initialState, {
         type: constants.EMAIL_CHANGE_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
         loading: false,
-        error: 'An error occurred while changing the email: ERROR',
+        error: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        },
         requesting: false,
         user: null,
         connection: null

@@ -36,12 +36,20 @@ describe('settings reducer', () => {
     expect(
       settings(initialState, {
         type: constants.FETCH_SETTINGS_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
         loading: false,
-        error: 'An error occurred while loading the connections: ERROR',
+        error: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        },
         record: { settings: { dict: { title: '', memberships: '' }, userFields: [], css: '' } }
       }
     );

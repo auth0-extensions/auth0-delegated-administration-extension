@@ -4,6 +4,7 @@ import _ from 'lodash';
 
 import { LuceneSearchBar, UsersTable } from './';
 import { Error, LoadingPanel, TableTotals, SearchBar } from 'auth0-extension-ui';
+import getErrorMessage from '../../utils/getErrorMessage';
 
 export default class UserOverview extends React.Component {
   static propTypes = {
@@ -68,12 +69,13 @@ export default class UserOverview extends React.Component {
   }
 
   render() {
-    const { loading, sortProperty, sortOrder } = this.props;
+    const { loading, sortProperty, sortOrder, error } = this.props;
+    const languageDictionary = this.props.languageDictionary || {};
     return (
       <div>
         <div className="row">
           <div className="col-xs-12 wrapper">
-            <Error message={this.props.error}/>
+            <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error)} />
           </div>
         </div>
         <div className="row">
@@ -86,13 +88,16 @@ export default class UserOverview extends React.Component {
                 handleReset={this.onReset}
                 handleOptionChange={this.onHandleOptionChange}
                 searchOptions={this.searchOptions}
-                searchValue={this.state.searchValue}/>
+                searchValue={this.state.searchValue}
+                placeholder={languageDictionary.searchBarPlaceholder}
+                resetButtonText={languageDictionary.searchBarReset}
+                instructionsText={languageDictionary.searchBarInstructions}/>
             ) : (
               <LuceneSearchBar
                 onReset={this.props.onReset}
                 onSearch={this.props.onSearch}
                 enabled={!loading}
-                languageDictionary={this.props.languageDictionary}/>
+                languageDictionary={languageDictionary}/>
             )}
           </div>
         </div>
@@ -102,7 +107,7 @@ export default class UserOverview extends React.Component {
               <UsersTable loading={loading} users={this.props.users}
                           userFields={this.props.userFields} onColumnSort={this.props.onColumnSort}
                           sortOrder={sortOrder} sortProperty={sortProperty}
-                          languageDictionary={this.props.languageDictionary}/>
+                          languageDictionary={languageDictionary}/>
             </div>
           </div>
         </LoadingPanel>

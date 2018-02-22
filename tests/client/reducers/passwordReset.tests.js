@@ -125,11 +125,19 @@ describe('Password Reset reducer', () => {
     expect(
       passwordReset(initialState, {
         type: constants.PASSWORD_RESET_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
-        error: 'An error occurred while resetting the password: ERROR',
+        error: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        },
         loading: false,
         requesting: false,
         user: null,

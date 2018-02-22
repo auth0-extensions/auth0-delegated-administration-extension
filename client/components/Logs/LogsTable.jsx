@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Error, LoadingPanel, Table, TableBody, TableIconCell, TableTextCell, TableHeader, TableColumn, TableRow } from 'auth0-extension-ui';
 import moment from 'moment';
+import _ from 'lodash';
+import getErrorMessage from '../../utils/getErrorMessage';
 
 export default class LogsTable extends Component {
   static propTypes = {
@@ -29,7 +31,7 @@ export default class LogsTable extends Component {
     const logs = this.props.logs.toJS();
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
-        <Error message={error} />
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error)} />
         <Table>
           <TableHeader>
             <TableColumn width="3%" />
@@ -41,15 +43,16 @@ export default class LogsTable extends Component {
           </TableHeader>
           <TableBody>
             {logs.map((log, index) => {
-              const type = log.type;
-              const icon = type.icon;
+              const icon = log.type.icon;
               const onClick = suppressRawData ? null : () => this.props.onOpen(log._id);
+              const logType = _.get(languageDictionary, `logTypes.${log.shortType}.event`, log.type.event);
+              const logDescription = _.get(languageDictionary, `logTypes.${log.shortType}.description`, log.type.event);
               log.time_ago = moment(log.date).locale(languageDictionary.momentLocale || 'en').fromNow();
               return (
                 <TableRow key={index}>
                   <TableIconCell color={icon.color} icon={icon.name} />
-                  <TableTextCell onClick={onClick}>{type.event}</TableTextCell>
-                  <TableTextCell>{log.user_name || log.description || type.description}</TableTextCell>
+                  <TableTextCell onClick={onClick}>{logType || languageDictionary.logDialogDefaultLogRecordText || 'Log Record'}</TableTextCell>
+                  <TableTextCell>{logDescription || log.user_name || log.description || log.type.description}</TableTextCell>
                   <TableTextCell>{log.time_ago}</TableTextCell>
                   <TableTextCell>{log.connection || languageDictionary.notApplicableLabel || 'N/A'}</TableTextCell>
                   <TableTextCell>{log.client_name || languageDictionary.notApplicableLabel || 'N/A'}</TableTextCell>

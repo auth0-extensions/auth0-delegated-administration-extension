@@ -3,7 +3,7 @@ import morgan from 'morgan';
 import Express from 'express';
 import bodyParser from 'body-parser';
 import * as tools from 'auth0-extension-tools';
-import { middlewares, routes } from 'auth0-extension-express-tools';
+import { routes } from 'auth0-extension-express-tools';
 
 import api from './routes/api';
 import hooks from './routes/hooks';
@@ -11,6 +11,7 @@ import meta from './routes/meta';
 import htmlRoute from './routes/html';
 import config from './lib/config';
 import logger from './lib/logger';
+import { errorHandler } from './lib/middlewares';
 
 module.exports = (cfg, storageProvider) => {
   config.setProvider(cfg);
@@ -56,6 +57,6 @@ module.exports = (cfg, storageProvider) => {
   app.get('*', htmlRoute());
 
   // Generic error handler.
-  app.use(middlewares.errorHandler(logger.error));
+  app.use(errorHandler(logger.error));
   return app;
 };

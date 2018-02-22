@@ -10,6 +10,7 @@ import { useDisabledConnectionField, useEmailField } from '../../../utils/useDef
 import { getName, mapValues } from '../../../utils/display';
 import getDialogMessage from './getDialogMessage';
 import UserFieldsForm from '../../../components/Users/UserFieldsForm';
+import getErrorMessage from '../../../utils/getErrorMessage';
 
 
 export default connectContainer(class extends Component {
@@ -74,7 +75,7 @@ export default connectContainer(class extends Component {
         show={requesting} loading={loading} onCancel={cancelEmailChange}
         onConfirm={this.onConfirm}
       >
-        <Error message={error}/>
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error)} />
         <p>
           {message}
         </p>

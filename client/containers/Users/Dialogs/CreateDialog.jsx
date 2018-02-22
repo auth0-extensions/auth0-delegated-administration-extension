@@ -6,6 +6,7 @@ import { Modal } from 'react-bootstrap';
 
 import { userActions, scriptActions } from '../../../actions';
 import { UserForm, ValidationError } from '../../../components/Users';
+import getErrorMessage from '../../../utils/getErrorMessage';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
@@ -69,7 +70,7 @@ export default connectContainer(class extends Component {
           onSubmit={this.onSubmit}
           languageDictionary={languageDictionary}
         >
-          <Error message={error} />
+          <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error)} />
           <ValidationError
             userForm={this.props.userForm}
             customFields={this.props.userFields || []}
