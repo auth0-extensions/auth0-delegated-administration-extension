@@ -41,11 +41,14 @@ function isExpired(decodedToken) {
   return !(d.valueOf() > (new Date().valueOf() + (1000)));
 }
 
-export function logout() {
+export function logout(logoutUrl) {
   return (dispatch) => {
-    sessionStorage.removeItem('delegated-admin:apiToken');
+    sessionStorage.clear();
+    localStorage.clear();
 
-    if (window.config.FEDERATED_LOGOUT) {
+    if (logoutUrl) {
+      window.location.href = logoutUrl;
+    } else if (window.config.FEDERATED_LOGOUT) {
       window.location.href = `https://${window.config.AUTH0_DOMAIN}/v2/logout?federated&client_id=${window.config.AUTH0_CLIENT_ID}&returnTo=${encodeURIComponent(window.config.BASE_URL)}`;
     } else {
       window.location.href = `https://${window.config.AUTH0_DOMAIN}/v2/logout?client_id=${window.config.AUTH0_CLIENT_ID}&returnTo=${encodeURIComponent(window.config.BASE_URL)}`;

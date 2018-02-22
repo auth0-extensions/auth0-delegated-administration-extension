@@ -45,12 +45,18 @@ export default class Header extends Component {
     document.querySelector('#navbar-collapse li.dropdown').classList.remove('open');
   }
 
+  onKeyUp = (e) => {
+    if (e && e.key === 'Enter') {
+      this.props.onLogout();
+    }
+  };
+
   getMenu(isAdmin, languageDictionary) {
     if (!isAdmin) {
       return (
         <ul role="menu" className="dropdown-menu">
           <li role="presentation">
-            <a role="menuitem" onClick={this.props.onLogout} onFocus={this.showOnFocus} onBlur={this.hideOnBlur} tabIndex="0">
+            <a role="menuitem" onClick={this.props.onLogout} onFocus={this.showOnFocus} onBlur={this.hideOnBlur} onKeyUp={this.onKeyUp} tabIndex="0">
               {languageDictionary.logoutMenuItemText || 'Logout'}
             </a>
           </li>
@@ -71,7 +77,7 @@ export default class Header extends Component {
           </Link>
         </li>
         <li role="presentation">
-          <a role="menuitem" onClick={this.props.onLogout} onFocus={this.showOnFocus} onBlur={this.hideOnBlur} tabIndex="0">
+          <a role="menuitem" onClick={this.props.onLogout} onFocus={this.showOnFocus} onBlur={this.hideOnBlur} onKeyUp={this.onKeyUp} tabIndex="0">
             {languageDictionary.logoutMenuItemText || 'Logout'}
           </a>
         </li>
