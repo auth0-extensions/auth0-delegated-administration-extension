@@ -74,7 +74,6 @@
 
   "userUserInfoTabTitle": "User Info",
   "userDevicesTabTitle": "Devices",
-  "userLogsTabTitle": "Logs",
   "userProfileTabTitle": "Profile",
   "userTitle": "User Details",
 
@@ -90,7 +89,7 @@
   "requiredFieldLabel": "(required)",
   "requiredErrorText": "required",
 
-  "errorTitle": "Oh, dear!",
+  "errorTitle": "Oh, snap!",
   "errors": {
     "defaultErrorMessage": "Unknown Error",
     "FETCH_ACCESS_LEVEL": { "default": "An error occurred while loading the settings: {message}" },
