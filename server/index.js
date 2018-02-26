@@ -45,7 +45,7 @@ module.exports = (cfg, storageProvider) => {
     clientName: 'Delegated Administration',
     urlPrefix: '/admins',
     sessionStorageKey: 'delegated-admin:apiToken',
-    scopes: 'read:clients delete:clients read:connections read:users update:users delete:users create:users read:logs read:device_credentials update:device_credentials delete:device_credentials'
+    scopes: 'read:clients delete:clients read:connections read:users update:users delete:users create:users read:logs read:device_credentials update:device_credentials delete:device_credentials delete:guardian_enrollments'
   }));
 
   app.use('/api', api(storage));

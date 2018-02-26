@@ -162,7 +162,7 @@ export default class UserActions extends Component {
 
     return (
       <MenuItem disabled={loading || false} onClick={this.removeMfa}>
-        {this.state.languageDictionary.removeMfaMenuItemText || "Remove MFA"} ({user.multifactor[0]})
+        {this.state.languageDictionary.removeMfaMenuItemText || "Remove MFA"}
       </MenuItem>
     );
   }
@@ -236,7 +236,7 @@ export default class UserActions extends Component {
   }
 
   removeMfa = () => {
-    this.props.removeMfa(this.state.user, this.state.user.multifactor[0]);
+    this.props.removeMfa(this.state.user, this.state.user.multifactor);
   }
 
   render() {

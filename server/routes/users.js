@@ -3,12 +3,13 @@ import auth0 from 'auth0';
 import request from 'request';
 import Promise from 'bluebird';
 import { Router } from 'express';
-import { managementApi, ArgumentError, ValidationError } from 'auth0-extension-tools';
+import { ArgumentError, ValidationError } from 'auth0-extension-tools';
 
 import config from '../lib/config';
 import logger from '../lib/logger';
 import { verifyUserAccess } from '../lib/middlewares';
-import removeGuardian from '../lib/removeGuardian';
+import { removeGuardian, requestGuardianEnrollments } from '../lib/removeGuardian';
+import getApiToken from '../lib/getApiToken';
 
 const executeWriteHook = (req, scriptManager, userFields, onlyTheseFields) => {
   const user = req.targetUser;
@@ -228,7 +229,22 @@ export default (storage, scriptManager) => {
           memberships: []
         };
       })
-      .then(data => res.json(data))
+      .then(data => {
+        if (data.user.multifactor && data.user.multifactor.indexOf('guardian') >= 0) {
+          return getApiToken(req)
+            .then(accessToken => requestGuardianEnrollments(accessToken, req.params.id))
+            .then((enrollments) => {
+              if (!enrollments || !enrollments.length) {
+                data.user.multifactor = data.user.multifactor.filter(item => item !== 'guardian');
+                data.user.multifactor = data.user.multifactor.length ? data.user.multifactor : null;
+              }
+
+              return res.json(data);
+            });
+        }
+
+        return res.json(data);
+      })
       .catch((err) => {
         logger.error('Failed to get user because: ', err);
         next(err);
@@ -418,7 +434,7 @@ export default (storage, scriptManager) => {
    * Get all logs for a user.
    */
   api.get('/:id/logs', verifyUserAccess('read:logs', scriptManager), (req, res, next) => {
-    managementApi.getAccessTokenCached(config('AUTH0_ISSUER_DOMAIN'), config('AUTH0_CLIENT_ID'), config('AUTH0_CLIENT_SECRET'))
+    getApiToken(req)
       .then((accessToken) => {
         const options = {
           uri: `https://${config('AUTH0_ISSUER_DOMAIN')}/api/v2/users/${encodeURIComponent(req.params.id)}/logs`,
@@ -450,15 +466,16 @@ export default (storage, scriptManager) => {
   /*
    * Remove MFA for the user.
    */
-  api.delete('/:id/multifactor/:provider', verifyUserAccess('remove:multifactor-provider', scriptManager), (req, res, next) => {
-    if (req.params.provider !== 'guardian') {
-      return req.auth0.users.deleteMultifactorProvider({ id: req.params.id, provider: req.params.provider })
-        .then(() => res.sendStatus(204))
-        .catch(next);
-    }
+  api.delete('/:id/multifactor', verifyUserAccess('remove:multifactor-provider', scriptManager), (req, res, next) => {
+    const providers = req.body.provider || [];
 
-    managementApi.getAccessTokenCached(config('AUTH0_ISSUER_DOMAIN'), config('AUTH0_CLIENT_ID'), config('AUTH0_CLIENT_SECRET'))
-      .then((accessToken) => removeGuardian(accessToken, req.params.id))
+    Promise.map(providers, (provider) => {
+      if (provider !== 'guardian') {
+        return req.auth0.users.deleteMultifactorProvider({ id: req.params.id, provider });
+      }
+
+      return getApiToken(req).then((accessToken) => removeGuardian(accessToken, req.params.id));
+    })
       .then(() => res.sendStatus(204))
       .catch(next);
   });

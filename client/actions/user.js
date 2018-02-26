@@ -203,7 +203,7 @@ export function removeMultiFactor() {
     dispatch({
       type: constants.REMOVE_MULTIFACTOR,
       payload: {
-        promise: axios.delete(`/api/users/${user_id}/multifactor/${provider}`)
+        promise: axios.delete(`/api/users/${user_id}/multifactor`, provider)
       },
       meta: {
         userId: user_id,
