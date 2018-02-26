@@ -104,7 +104,7 @@ class Users extends Component {
               : ''}
           </div>
         </div>
-        <dialogs.CreateDialog getDictValue={this.props.getDictValue} userFields={userFields} />
+        <dialogs.CreateDialog getDictValue={this.props.getDictValue} userFields={userFields} errorTranslator={settings && settings.errorTranslator} />
         <UserOverview
           onReset={this.onReset}
           onSearch={this.onSearch}
@@ -120,6 +120,7 @@ class Users extends Component {
           sortProperty={sortProperty}
           sortOrder={sortOrder}
           onColumnSort={this.onColumnSort}
+          settings={settings}
           languageDictionary={languageDictionary}
         />
         <div className="row">
@@ -155,7 +156,7 @@ function mapStateToProps(state) {
     pages: state.users.get('pages'),
     sortProperty: state.users.get('sortProperty'),
     sortOrder: state.users.get('sortOrder'),
-    settings: state.settings.get('record').toJS().settings,
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     languageDictionary: state.languageDictionary.get('record').toJS()
   };
 }

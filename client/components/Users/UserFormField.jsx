@@ -21,6 +21,7 @@ export default class UserFormField extends Component {
         name={field.property}
         type={field.type}
         label={field.label + (field.required ? requiredLabel : '')}
+        placeholder={field.placeholder}
         component={component}
         {...additionalOptions}
       />

@@ -21,7 +21,7 @@ export default connectContainer(class extends Component {
     log: state.log,
     logs: state.user.get('logs'),
     devices: state.user.get('devices'),
-    settings: state.settings.get('record').toJS().settings,
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     languageDictionary: state.languageDictionary.get('record').toJS()
   });
 
@@ -32,6 +32,7 @@ export default connectContainer(class extends Component {
 
   static propTypes = {
     accessLevel: PropTypes.object.isRequired,
+    settings: PropTypes.object.isRequired,
     user: PropTypes.object,
     log: PropTypes.object,
     logs: PropTypes.object,
@@ -47,12 +48,12 @@ export default connectContainer(class extends Component {
     this.props.fetchUser(this.props.params.id);
   }
 
-  renderProfile(suppressRawData, user, languageDictionary) {
+  renderProfile(suppressRawData, user, languageDictionary, settings) {
     if (suppressRawData) return null;
 
     return (
       <Tab eventKey={4} title={languageDictionary.userProfileTabTitle || 'Profile'}>
-        <UserProfile loading={user.get('loading')} user={user.get('record')} error={user.get('error')} languageDictionary={languageDictionary} />
+        <UserProfile loading={user.get('loading')} user={user.get('record')} error={user.get('error')} languageDictionary={languageDictionary} settings={settings} />
       </Tab>
     );
 
@@ -103,6 +104,7 @@ export default connectContainer(class extends Component {
                   memberships={user.get('memberships') && user.get('memberships').toJSON()}
                   userFields={userFields}
                   error={user.get('error')}
+                  settings={settings}
                   languageDictionary={languageDictionary}
                 />
               </Tab>
@@ -110,6 +112,7 @@ export default connectContainer(class extends Component {
                 <UserDevices
                   loading={devices.get('loading')} devices={devices.get('records')}
                   languageDictionary={languageDictionary}
+                  settings={settings}
                   error={devices.get('error')}
                 />
               </Tab>
@@ -118,6 +121,7 @@ export default connectContainer(class extends Component {
                   onClose={this.props.clearLog} error={log.get('error')}
                   loading={log.get('loading')} log={log.get('record')}
                   languageDictionary={languageDictionary}
+                  settings={settings}
                   logId={log.get('logId')}
                 />
                 <LogsTable
@@ -125,15 +129,15 @@ export default connectContainer(class extends Component {
                   logs={logs.get('records')}
                   languageDictionary={languageDictionary}
                   error={logs.get('error')}
-                  settings={this.props.settings}
+                  settings={settings}
                 />
               </Tab>
-              { this.renderProfile(suppressRawData, user, languageDictionary) }
+              { this.renderProfile(suppressRawData, user, languageDictionary, settings) }
             </Tabs>
           </div>
         </div>
         <dialogs.DeleteDialog />
-        <dialogs.FieldsChangeDialog getDictValue={this.props.getDictValue} userFields={userFields} />
+        <dialogs.FieldsChangeDialog getDictValue={this.props.getDictValue} userFields={userFields} errorTranslator={settings.errorTranslator}/>
         <dialogs.EmailChangeDialog />
         <dialogs.PasswordResetDialog />
         <dialogs.PasswordChangeDialog />

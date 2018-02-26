@@ -18,6 +18,7 @@ export default class UserOverview extends React.Component {
     onColumnSort: PropTypes.func.isRequired,
     sortOrder: PropTypes.number.isRequired,
     sortProperty: PropTypes.string.isRequired,
+    settings: PropTypes.object.isRequired,
     languageDictionary: PropTypes.object
   }
 
@@ -69,13 +70,13 @@ export default class UserOverview extends React.Component {
   }
 
   render() {
-    const { loading, sortProperty, sortOrder, error } = this.props;
+    const { loading, sortProperty, sortOrder, error, settings } = this.props;
     const languageDictionary = this.props.languageDictionary || {};
     return (
       <div>
         <div className="row">
           <div className="col-xs-12 wrapper">
-            <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error)} />
+            <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, settings.errorTranslator)} />
           </div>
         </div>
         <div className="row">

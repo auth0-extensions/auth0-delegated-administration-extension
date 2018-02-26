@@ -469,6 +469,51 @@ describe('settings reducer', () => {
       );
     });
 
+    it('errorTranslator function', () => {
+      var errorTranslator = (
+        function (err) {
+          return err.message || err;
+        }
+      ).toString();
 
+      var targetTranslator = eval(`(${errorTranslator})`);
+
+      const state = settings(initialState, {
+        type: constants.FETCH_SETTINGS_FULFILLED,
+        payload: {
+          data: {
+            settings: {
+              dict: { title: 'test', memberships: 'test1, test2' },
+              css: 'style.css',
+              errorTranslator: errorTranslator
+            }
+          }
+        }
+      }).toJSON();
+
+      const target = {
+        loading: false,
+        error: null,
+        record: {
+          settings: {
+            dict: { title: 'test', memberships: 'test1, test2' },
+            errorTranslator: targetTranslator,
+            css: 'style.css'
+          }
+        }
+      };
+
+      expect(
+        state.record.settings.errorTranslator.toString()
+      ).toEqual(
+        targetTranslator.toString()
+      );
+
+      expect(
+        state
+      ).toEqual(
+        target
+      );
+    });
   });
 });

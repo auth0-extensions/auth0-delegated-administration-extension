@@ -10,6 +10,7 @@ export default class LogDialog extends Component {
   static propTypes = {
     onClose: PropTypes.func.isRequired,
     log: PropTypes.object.isRequired,
+    settings: PropTypes.object.isRequired,
     error: PropTypes.string,
     loading: PropTypes.bool.isRequired,
     logId: PropTypes.string,
@@ -17,7 +18,7 @@ export default class LogDialog extends Component {
   }
 
   render() {
-    const { logId, error, loading, onClose } = this.props;
+    const { logId, error, loading, onClose, settings } = this.props;
     if (logId === null) {
       return <div></div>;
     }
@@ -38,7 +39,7 @@ export default class LogDialog extends Component {
             show={loading} spinnerStyle={{ height: '16px', width: '16px' }}
             animationStyle={{ paddingTop: '0px', paddingBottom: '0px', marginTop: '0px', marginBottom: '10px' }}
           >
-            <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error)}>
+            <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, settings.errorTranslator)}>
               <Json jsonObject={log} />
             </Error>
           </LoadingPanel>

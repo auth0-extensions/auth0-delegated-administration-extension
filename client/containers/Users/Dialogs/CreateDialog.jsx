@@ -31,6 +31,7 @@ export default connectContainer(class extends Component {
     getDictValue: PropTypes.func.isRequired,
     cancelCreateUser: PropTypes.func.isRequired,
     userFields: PropTypes.array.isRequired,
+    errorTranslator: PropTypes.func,
     languageDictionary: PropTypes.object
   }
 
@@ -70,7 +71,7 @@ export default connectContainer(class extends Component {
           onSubmit={this.onSubmit}
           languageDictionary={languageDictionary}
         >
-          <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error)} />
+          <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, this.props.errorTranslator)} />
           <ValidationError
             userForm={this.props.userForm}
             customFields={this.props.userFields || []}

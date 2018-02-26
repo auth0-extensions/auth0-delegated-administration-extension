@@ -75,6 +75,9 @@ export const settings = createReducer(fromJS(initialState), { // eslint-disable-
         parseFieldSection(field.property, field.search, 'userField.search', field.display);
       });
     }
+    if (data.settings.errorTranslator) {
+      data.settings.errorTranslator = parseFunction('errorTranslator', 'errorTranslator', data.settings.errorTranslator);
+    }
     return state.merge({
       loading: false,
       error: null,

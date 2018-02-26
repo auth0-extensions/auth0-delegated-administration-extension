@@ -27,7 +27,8 @@ export default connectContainer(class extends Component {
     userFields: PropTypes.array.isRequired,
     userForm: PropTypes.object.isRequired,
     userId: PropTypes.string.isRequired,
-    languageDictionary: PropTypes.object
+    languageDictionary: PropTypes.object,
+    errorTranslator: PropTypes.func
   };
 
   shouldComponentUpdate(nextProps) {
@@ -65,7 +66,7 @@ export default connectContainer(class extends Component {
           submitting={loading}
           languageDictionary={languageDictionary}
         >
-          <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error)} />
+          <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, this.props.errorTranslator)} />
           <ValidationError
             userForm={this.props.userForm}
             customFields={this.props.userFields || []}

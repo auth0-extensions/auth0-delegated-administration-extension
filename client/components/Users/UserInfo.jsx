@@ -13,6 +13,7 @@ export default class UserInfo extends Component {
     error: PropTypes.string,
     loading: PropTypes.bool.isRequired,
     user: PropTypes.object.isRequired,
+    settings: PropTypes.object.isRequired,
     memberships: PropTypes.array,
     userFields: PropTypes.array,
     languageDictionary: PropTypes.object
@@ -42,7 +43,7 @@ export default class UserInfo extends Component {
   };
 
   render() {
-    const { user, error, loading, memberships } = this.props;
+    const { user, error, loading, memberships, settings } = this.props;
     const languageDictionary = this.props.languageDictionary || {};
 
     /* First let's grab the custom fields */
@@ -98,7 +99,7 @@ export default class UserInfo extends Component {
     if (!userObject || Object.keys(userObject).length === 0) {
       return (
         <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
-          <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error)} />
+          <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, settings.errorTranslator)} />
         </LoadingPanel>
       );
     }
@@ -125,10 +126,10 @@ export default class UserInfo extends Component {
       return field;
     });
     const nonNullFields = _.filter(fieldsAndValues, field => field.value) || [];
-    console.log(getErrorMessage(languageDictionary.errors, error));
+
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
-        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error)} />
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, settings.errorTranslator)} />
         <div className="user-info">
           {nonNullFields.map((field, index) => <UserInfoField key={index}
                                                               title={field.title}>{field.value}</UserInfoField>)}

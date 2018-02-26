@@ -19,7 +19,7 @@ import getErrorMessage from '../../../utils/getErrorMessage';
 export default connectContainer(class PasswordChangeDialog extends Component {
   static stateToProps = (state) => ({
     passwordChange: state.passwordChange,
-    settings: state.settings,
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     languageDictionary: state.languageDictionary
   });
 
@@ -49,10 +49,10 @@ export default connectContainer(class PasswordChangeDialog extends Component {
   };
 
   render() {
-    const { cancelPasswordChange } = this.props;
+    const { cancelPasswordChange, settings } = this.props;
     const { connection, user, error, requesting, loading } = this.props.passwordChange.toJS();
 
-    const userFields = _.get(this.props.settings.toJS(), 'record.settings.userFields', []);
+    const userFields = settings.userFields || [];
 
     if (!requesting) {
       return null;
@@ -82,10 +82,12 @@ export default connectContainer(class PasswordChangeDialog extends Component {
         title={languageDictionary.changePasswordTitle || 'Change Password?'}
         show={requesting}
         loading={loading}
+        confirmMessage={languageDictionary.dialogConfirmText}
+        cancelMessage={languageDictionary.dialogCancelText}
         onCancel={cancelPasswordChange}
         languageDictionary={languageDictionary}
         onConfirm={this.onConfirm}>
-        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error)} />
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, settings.errorTranslator)} />
         <p>
           {message}
         </p>

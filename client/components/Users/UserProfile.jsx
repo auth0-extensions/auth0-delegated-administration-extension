@@ -7,6 +7,7 @@ export default class UserProfile extends Component {
     error: PropTypes.string,
     loading: PropTypes.bool.isRequired,
     user: PropTypes.object.isRequired,
+    settings: PropTypes.object.isRequired,
     languageDictionary: PropTypes.object
   }
 
@@ -15,10 +16,10 @@ export default class UserProfile extends Component {
   }
 
   render() {
-    const { user, error, loading } = this.props;
+    const { user, error, loading, settings } = this.props;
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
-        <Error title={this.props.languageDictionary.errorTitle} message={getErrorMessage(this.props.languageDictionary.errors, error)} >
+        <Error title={this.props.languageDictionary.errorTitle} message={getErrorMessage(this.props.languageDictionary.errors, error, settings.errorTranslator)} >
           <Json jsonObject={user.toJS()} />
         </Error>
       </LoadingPanel>

@@ -12,7 +12,7 @@ import getErrorMessage from '../../../utils/getErrorMessage';
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     unblock: state.unblock,
-    settings: state.settings,
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     languageDictionary: state.languageDictionary
   });
 
@@ -36,10 +36,10 @@ export default connectContainer(class extends Component {
   };
 
   render() {
-    const { cancelUnblockUser } = this.props;
+    const { cancelUnblockUser, settings } = this.props;
     const { user, error, requesting, loading } = this.props.unblock.toJS();
 
-    const userFields = _.get(this.props.settings.toJS(), 'record.settings.userFields', []);
+    const userFields = settings.userFields || [];
 
     const languageDictionary = this.props.languageDictionary.get('record').toJS();
 
@@ -54,10 +54,12 @@ export default connectContainer(class extends Component {
         title={languageDictionary.unblockDialogTitle || "Unblock User?"}
         show={requesting}
         loading={loading}
+        confirmMessage={languageDictionary.dialogConfirmText}
+        cancelMessage={languageDictionary.dialogCancelText}
         onCancel={cancelUnblockUser}
         languageDictionary={languageDictionary}
         onConfirm={this.onConfirm}>
-        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error)} />
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, settings.errorTranslator)} />
         <p>
           {message}
         </p>

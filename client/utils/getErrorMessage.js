@@ -26,7 +26,7 @@ const defaultMessages = {
   RESEND_VERIFICATION_EMAIL: { default: 'An error occurred while sending verification email: {message}' }
 };
 
-export default (errors = {}, error) => {
+export default (errors = {}, error, translator) => {
   if (!error) {
     return null;
   }
@@ -34,6 +34,10 @@ export default (errors = {}, error) => {
   error = (error.toJS) ? error.toJS() : error;
   const messages = Object.assign({}, defaultMessages, errors);
   const message = (messages[error.type] && messages[error.type][error.status]) || messages[error.type].default;
+
+  if (translator) {
+    return message.replace('{message}', translator(error) || messages.defaultErrorMessage);
+  }
 
   return message.replace('{message}', error.message || messages.defaultErrorMessage);
 };

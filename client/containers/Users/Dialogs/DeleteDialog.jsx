@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import connectContainer from 'redux-static';
@@ -12,7 +11,7 @@ import getErrorMessage from '../../../utils/getErrorMessage';
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     userDelete: state.userDelete,
-    settings: state.settings,
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     languageDictionary: state.languageDictionary
   });
 
@@ -37,10 +36,10 @@ export default connectContainer(class extends Component {
   };
 
   render() {
-    const { cancelDeleteUser } = this.props;
+    const { cancelDeleteUser, settings } = this.props;
     const { user, error, requesting, loading } = this.props.userDelete.toJS();
 
-    const userFields = _.get(this.props.settings.toJS(), 'record.settings.userFields', []);
+    const userFields = settings.userFields || [];
     const languageDictionary = this.props.languageDictionary.get('record').toJS();
 
     const messageFormat = languageDictionary.deleteDialogMessage ||
@@ -53,9 +52,10 @@ export default connectContainer(class extends Component {
     return (
       <Confirm title={languageDictionary.deleteDialogTitle || "Delete User?"}
                show={requesting} loading={loading}
+               confirmMessage={languageDictionary.dialogConfirmText} cancelMessage={languageDictionary.dialogCancelText}
                onCancel={cancelDeleteUser} onConfirm={this.onConfirm}
                languageDictionary={languageDictionary}>
-        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error)} />
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, settings.errorTranslator)} />
         <p>
           {message}
         </p>

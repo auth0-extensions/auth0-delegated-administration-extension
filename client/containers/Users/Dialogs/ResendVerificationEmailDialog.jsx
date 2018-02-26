@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import connectContainer from 'redux-static';
@@ -12,7 +11,7 @@ import getErrorMessage from '../../../utils/getErrorMessage';
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     verificationEmail: state.verificationEmail,
-    settings: state.settings,
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     languageDictionary: state.languageDictionary
   });
 
@@ -36,10 +35,10 @@ export default connectContainer(class extends Component {
   }
 
   render() {
-    const { cancelResendVerificationEmail } = this.props;
+    const { cancelResendVerificationEmail, settings } = this.props;
     const { user, error, requesting, loading } = this.props.verificationEmail.toJS();
 
-    const userFields = _.get(this.props.settings.toJS(), 'record.settings.userFields', []);
+    const userFields = settings.userFields || [];
     const languageDictionary = this.props.languageDictionary.get('record').toJS();
 
     const messageFormat = languageDictionary.resendVerificationEmailMessage ||
@@ -53,10 +52,12 @@ export default connectContainer(class extends Component {
         title={languageDictionary.resendVerificationEmailTitle || "Resend Verification Email?" }
         show={requesting}
         loading={loading}
+        confirmMessage={languageDictionary.dialogConfirmText}
+        cancelMessage={languageDictionary.dialogCancelText}
         onCancel={cancelResendVerificationEmail}
         languageDictionary={languageDictionary}
         onConfirm={this.onConfirm}>
-        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error)} />
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, settings.errorTranslator)} />
         <p>
           {message}
         </p>

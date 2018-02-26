@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import connectContainer from 'redux-static';
@@ -12,7 +11,7 @@ import getErrorMessage from '../../../utils/getErrorMessage';
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     block: state.block,
-    settings: state.settings,
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     languageDictionary: state.languageDictionary
   });
 
@@ -24,6 +23,7 @@ export default connectContainer(class extends Component {
     cancelBlockUser: PropTypes.func.isRequired,
     blockUser: PropTypes.func.isRequired,
     block: PropTypes.object.isRequired,
+    settings: PropTypes.object.isRequired,
     languageDictionary: PropTypes.object
   };
 
@@ -37,10 +37,10 @@ export default connectContainer(class extends Component {
   };
 
   render() {
-    const { cancelBlockUser } = this.props;
+    const { cancelBlockUser, settings } = this.props;
     const { user, error, requesting, loading } = this.props.block.toJS();
 
-    const userFields = _.get(this.props.settings.toJS(), 'record.settings.userFields', []);
+    const userFields = settings.userFields || [];
 
     const languageDictionary = this.props.languageDictionary.get('record').toJS();
 
@@ -53,9 +53,10 @@ export default connectContainer(class extends Component {
     return (
       <Confirm title={languageDictionary.blockDialogTitle || "Block User?"}
                show={requesting} loading={loading}
+               confirmMessage={languageDictionary.dialogConfirmText} cancelMessage={languageDictionary.dialogCancelText}
                onCancel={cancelBlockUser} onConfirm={this.onConfirm}
                languageDictionary={languageDictionary}>
-        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error)} />
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, settings.errorTranslator)} />
 
         <p>
           {message}

@@ -18,6 +18,7 @@ class LogsContainer extends Component {
     log: PropTypes.object,
     accessLevel: PropTypes.object,
     logs: PropTypes.object.isRequired,
+    settings: PropTypes.object.isRequired,
     languageDictionary: PropTypes.object.isRequired
   };
 
@@ -52,7 +53,8 @@ class LogsContainer extends Component {
   }
 
   render() {
-    const { log, logs, accessLevel, languageDictionary } = this.props;
+    const { log, logs, accessLevel, languageDictionary, settings } = this.props;
+
     return (
       <div>
         <TabsHeader role={accessLevel.role} languageDictionary={languageDictionary}/>
@@ -62,6 +64,7 @@ class LogsContainer extends Component {
           loading={log.loading}
           log={log.record}
           logId={log.id}
+          settings={settings}
           languageDictionary={languageDictionary}
         />
         <div className="row">
@@ -71,7 +74,7 @@ class LogsContainer extends Component {
         </div>
         <div className="row">
           <div className="col-xs-12 wrapper">
-            <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, logs.error)} />
+            <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, logs.error, settings.errorTranslator)} />
 
             <LoadingPanel show={logs.loading}>
               <LogsTable onOpen={this.props.fetchLog} loading={logs.loading} logs={logs.records} settings={this.props.settings} languageDictionary={languageDictionary} />
@@ -104,7 +107,7 @@ function mapStateToProps(state) {
       error: state.log.get('error'),
       loading: state.log.get('loading')
     },
-    settings: state.settings.get('record').toJS().settings,
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     languageDictionary: state.languageDictionary.get('record').toJS()
   };
 }

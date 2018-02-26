@@ -14,7 +14,7 @@ import getErrorMessage from '../../../utils/getErrorMessage';
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     usernameChange: state.usernameChange,
-    settings: state.settings,
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     connections: state.connections,
     languageDictionary: state.languageDictionary
   });
@@ -46,14 +46,14 @@ export default connectContainer(class extends Component {
   };
 
   render() {
-    const { cancelUsernameChange, connections } = this.props;
+    const { cancelUsernameChange, connections, settings } = this.props;
     const { user, connection, error, requesting, loading } = this.props.usernameChange.toJS();
 
     if (!requesting) {
       return null;
     }
 
-    const userFields = _.get(this.props.settings.toJS(), 'record.settings.userFields', []);
+    const userFields = settings.userFields || [];
 
     const languageDictionary = this.props.languageDictionary.get('record').toJS();
 
@@ -78,10 +78,12 @@ export default connectContainer(class extends Component {
         title={languageDictionary.changeUsernameTitle || 'Change Username?'}
         show={requesting}
         loading={loading}
+        confirmMessage={languageDictionary.dialogConfirmText}
+        cancelMessage={languageDictionary.dialogCancelText}
         onCancel={cancelUsernameChange}
         languageDictionary={languageDictionary}
         onConfirm={this.onConfirm}>
-        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error)} />
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, settings.errorTranslator)} />
         <p>
           {message}
         </p>

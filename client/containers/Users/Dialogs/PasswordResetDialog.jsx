@@ -22,7 +22,7 @@ export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     passwordReset: state.passwordReset,
     appsForConnection: getAppsForConnection(state, state.passwordReset.get('connection')),
-    settings: state.settings,
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     languageDictionary: state.languageDictionary
   });
 
@@ -41,7 +41,7 @@ export default connectContainer(class extends Component {
   shouldComponentUpdate(nextProps) {
     return nextProps.passwordReset !== this.props.passwordReset ||
       nextProps.languageDictionary !== this.props.languageDictionary ||
-      nextProps.settings !== this.props.settings ||
+      // nextProps.settings !== this.props.settings ||
       nextProps.appsForConnection !== this.props.appsForConnection;
   }
 
@@ -54,14 +54,14 @@ export default connectContainer(class extends Component {
   };
 
   render() {
-    const { cancelPasswordReset } = this.props;
+    const { cancelPasswordReset, settings } = this.props;
     const { connection, user, error, requesting, loading } = this.props.passwordReset.toJS();
 
     if (!requesting) {
       return null;
     }
 
-    const userFields = _.get(this.props.settings.toJS(), 'record.settings.userFields', []);
+    const userFields = settings.userFields || [];
     const languageDictionary = this.props.languageDictionary.get('record').toJS();
 
     const messageFormat = languageDictionary.resetPasswordMessage ||
@@ -86,10 +86,12 @@ export default connectContainer(class extends Component {
         title={languageDictionary.resetPasswordTitle || 'Reset Password?'}
         show={requesting}
         loading={loading}
+        confirmMessage={languageDictionary.dialogConfirmText}
+        cancelMessage={languageDictionary.dialogCancelText}
         onCancel={cancelPasswordReset}
         languageDictionary={languageDictionary}
         onConfirm={this.onConfirm}>
-        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error)} />
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, settings.errorTranslator)} />
         <p>
           {message}
         </p>
