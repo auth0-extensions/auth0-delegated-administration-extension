@@ -467,10 +467,13 @@ export function cancelUsernameChange() {
  * Change username.
  */
 export function changeUsername(userId, data, languageDictionary) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const user = getState().user.get('record').toJS();
+    user.username = data.username;
     dispatch({
       type: constants.USERNAME_CHANGE,
       meta: {
+        user,
         onSuccess: () => {
           dispatch(fetchUserDetail(userId));
         }
@@ -513,6 +516,7 @@ export function changeEmail(userId, data, languageDictionary) {
       type: constants.EMAIL_CHANGE,
       meta: {
         userId,
+        user: data,
         onSuccess: () => {
           dispatch(fetchUserDetail(userId));
         }

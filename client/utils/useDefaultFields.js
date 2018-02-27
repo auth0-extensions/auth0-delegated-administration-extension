@@ -15,13 +15,12 @@ export const useUsernameField = (isEditField, fields, connections, hasSelectedCo
   const type = isEditField ? 'edit' : 'create';
   const selectedConnection = _.find(connections, (conn) => conn.name === hasSelectedConnection);
   const requireUsername = selectedConnection && selectedConnection.options ? selectedConnection.options.requires_username : false;
-  if (!requireUsername && (!initialValues || !initialValues.username)) {
-    return _.remove(fields, { property: 'username' });
-  }
+  const noUsername = !requireUsername && (!initialValues || !initialValues.username);
 
   const defaults = {
     property: 'username',
     label: 'Username',
+    disable: noUsername,
     [type]: {
       type: 'text',
       required: true

@@ -23,9 +23,10 @@ export const emailChange = createReducer(fromJS(initialState), { // eslint-disab
     state.merge({
       ...initialState
     }),
-  [constants.EMAIL_CHANGE_PENDING]: (state) =>
+  [constants.EMAIL_CHANGE_PENDING]: (state, action) =>
     state.merge({
-      loading: true
+      loading: true,
+      user: action.meta.user
     }),
   [constants.EMAIL_CHANGE_REJECTED]: (state, action) =>
     state.merge({
