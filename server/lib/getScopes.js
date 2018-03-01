@@ -17,11 +17,12 @@ const getUserAccess = (user, type) => {
 };
 
 const checkRole = (data) => {
-  let accessLevel = 0;
+  let accessLevel = -1;
   if (!data) return accessLevel;
 
   const parsedData = (Array.isArray(data)) ? data : data.replace(', ', ',', 'g').split(',');
 
+  if (parsedData.indexOf(constants.AUDITOR_ROLE_NAME) >= 0) accessLevel = constants.AUDITOR_ACCESS_LEVEL;
   if (parsedData.indexOf(constants.USER_ROLE_NAME) >= 0) accessLevel = constants.USER_ACCESS_LEVEL;
   if (parsedData.indexOf(constants.ADMIN_ROLE_NAME) >= 0) accessLevel = constants.ADMIN_ACCESS_LEVEL;
 
@@ -32,6 +33,10 @@ export default function(user) {
   const roles = getUserAccess(user, 'roles');
   const permissions = getUserAccess(user, 'permissions');
   const userRole = checkRole(roles);
+
+  if (userRole >= constants.AUDITOR_ACCESS_LEVEL && permissions.indexOf(constants.AUDITOR_PERMISSION) < 0) {
+    permissions.push(constants.AUDITOR_PERMISSION);
+  }
 
   if (userRole >= constants.USER_ACCESS_LEVEL && permissions.indexOf(constants.USER_PERMISSION) < 0) {
     permissions.push(constants.USER_PERMISSION);

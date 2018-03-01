@@ -19,6 +19,7 @@ describe('Client-Utils-useDefaultFields', () => {
       const target = [{
         property: 'username',
         label: 'Username',
+        disable: false,
         edit: {
           required: true,
           type: 'text'
@@ -31,7 +32,17 @@ describe('Client-Utils-useDefaultFields', () => {
 
     it('empty array population skip username', () => {
       const fields = [];
-      const target = [];
+      const target = [
+        {
+          disable: true,
+          edit: {
+            required: true,
+            type: 'text'
+          },
+          label: 'Username',
+          property: 'username'
+        }
+      ];
 
       useDefaultFields.useUsernameField(true, fields, dummyConnectionsNoUsername, hasSelectedConnection, {});
       expect(fields).to.deep.equal(target);
@@ -48,6 +59,7 @@ describe('Client-Utils-useDefaultFields', () => {
       const target = [{
         property: 'username',
         label: 'Username',
+        disable: false,
         create: {
           type: 'select',
           component: 'InputCombo'
@@ -70,6 +82,7 @@ describe('Client-Utils-useDefaultFields', () => {
       const target = [{
         property: 'username',
         label: 'UsernameField',
+        disable: false,
         create: {
           type: 'select',
           component: 'InputCombo'
@@ -98,7 +111,7 @@ describe('Client-Utils-useDefaultFields', () => {
         label: 'UsernameField',
         edit: true
       }];
-      const target = [];
+      const target = [{ disable: true, edit: true, label: 'UsernameField', property: 'username' }];
 
       useDefaultFields.useUsernameField(true, fields, dummyConnectionsNoUsername, hasSelectedConnection, {});
       expect(fields).to.deep.equal(target);

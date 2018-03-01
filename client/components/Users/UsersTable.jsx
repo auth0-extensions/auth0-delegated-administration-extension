@@ -172,6 +172,7 @@ export default class UsersTable extends Component {
     const { users, sortProperty, sortOrder } = this.props;
 
     const languageDictionary = this.props.languageDictionary || {};
+    const labels = languageDictionary.labels || {};
 
     const listFields = this.state.listFields;
 
@@ -183,13 +184,12 @@ export default class UsersTable extends Component {
             listFields.map((field) => {
               const sort = _.isObject(field.search)
                 && (_.isBoolean(field.search.sort) && field.search.sort === true);
-
               if (sort) {
                 return (
                   <TableColumn key={field.property} width={field.listSize}>
                     <div className="table-column-div"
                          onClick={this.onColumnSort.bind(this, field.sortProperty || field.property, sortOrder)}>
-                      {field.label}
+                      {labels[field.property] || field.label}
                       {((field.sortProperty || field.property) === sortProperty) &&
                       <i className={sortOrder === -1 ? 'icon-budicon-462 icon' : 'icon-budicon-460 icon'}
                          aria-hidden="true"/>}
@@ -200,7 +200,7 @@ export default class UsersTable extends Component {
 
               return (
                 <TableColumn key={field.property} width={field.listSize}>
-                  {field.label}
+                  {labels[field.property] || field.label}
                 </TableColumn>
               );
             })

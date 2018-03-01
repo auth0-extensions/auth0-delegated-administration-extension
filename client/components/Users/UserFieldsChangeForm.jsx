@@ -35,7 +35,8 @@ class UserFieldsChangeForm extends Component {
           {this.props.children}
           <div className="form-horizontal">
             <UserCustomFormFields isEditForm={true}
-                                  fields={filteredCustomFields}/>
+                                  fields={filteredCustomFields}
+                                  languageDictionary={languageDictionary}/>
           </div>
         </Modal.Body>
         <Modal.Footer>

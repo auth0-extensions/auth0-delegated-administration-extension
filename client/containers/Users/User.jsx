@@ -63,15 +63,17 @@ export default connectContainer(class extends Component {
     const { user, databaseConnections, log, logs, devices, settings, languageDictionary } = this.props;
     const userFields = (settings && settings.userFields) || [];
     const suppressRawData = settings && settings.suppressRawData === true;
+    const role = this.props.accessLevel.role;
 
     return (
       <div className="user">
-        <TabsHeader role={this.props.accessLevel.role} languageDictionary={languageDictionary} />
+        <TabsHeader role={role} languageDictionary={languageDictionary} />
         <div className="row content-header">
           <div className="col-xs-12">
             <h2 className="pull-left">{languageDictionary.userTitle || 'User Details'}</h2>
             <div className="pull-right">
               <UserActions
+                role={role}
                 user={user}
                 userFields={userFields}
                 databaseConnections={databaseConnections}

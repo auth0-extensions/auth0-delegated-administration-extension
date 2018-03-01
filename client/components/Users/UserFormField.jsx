@@ -16,11 +16,12 @@ export default class UserFormField extends Component {
   getFieldComponent(field, component, additionalOptions) {
     const languageDictionary = this.props.languageDictionary || {};
     const requiredLabel = languageDictionary.requiredFieldLabel || ' (required)';
+    const label = (languageDictionary.labels && languageDictionary.labels[field.property]) || field.label;
     return (
       <Field
         name={field.property}
         type={field.type}
-        label={field.label + (field.required ? requiredLabel : '')}
+        label={label + (field.required ? requiredLabel : '')}
         placeholder={field.placeholder}
         component={component}
         {...additionalOptions}

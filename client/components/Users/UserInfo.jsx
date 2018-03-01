@@ -45,6 +45,7 @@ export default class UserInfo extends Component {
   render() {
     const { user, error, loading, memberships, settings } = this.props;
     const languageDictionary = this.props.languageDictionary || {};
+    const labels = languageDictionary.labels || {};
 
     /* First let's grab the custom fields */
     const customDisplayFields =
@@ -52,7 +53,7 @@ export default class UserInfo extends Component {
         .filter(field => field.display)
         .map(field => {
           return {
-            title: field.label || field.property,
+            title: labels[field.property] || field.label || field.property,
             property: field.property,
             display: field.display
           };
@@ -68,7 +69,7 @@ export default class UserInfo extends Component {
 
     let customDisplayFieldProperties = _(customDisplayFields).groupBy(field => field.property).value();
 
-    const defaultFieldInfo = [
+    const defaultFields = [
       { title: 'User ID', property: 'user_id' },
       { title: 'Name', property: 'name' },
       { title: 'Username', property: 'username' },
@@ -82,6 +83,11 @@ export default class UserInfo extends Component {
       { title: 'Updated', property: 'updated_at', type: 'elapsedTime' },
       { title: 'Last Login', property: 'last_login', type: 'elapsedTime' }
     ];
+
+    const defaultFieldInfo = defaultFields.map((field) => {
+      field.title = labels[field.property] || field.title;
+      return field;
+    });
 
     const standardFields = _(defaultFieldInfo).reject(field => field.property in customDisplayFieldProperties || field.property in nonDisplayFieldProperties).value();
     const standardFieldProperties = _(standardFields).groupBy(field => field.property).value();

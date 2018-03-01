@@ -83,7 +83,7 @@ class LogsContainer extends Component {
         </div>
         <div className="row">
           <div className="col-xs-12 wrapper">
-            <TableTotals currentCount={logs.records.size} totalCount={logs.total} />
+            <TableTotals currentCount={logs.records.size} totalCount={logs.total} textFormat={languageDictionary.tableTotalsTextFormat} />
             {this.createToolbar(true)}
           </div>
         </div>

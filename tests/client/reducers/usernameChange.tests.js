@@ -110,14 +110,17 @@ describe('User Name Change reducer', () => {
   it('should handle USERNAME_CHANGE_PENDING', () => {
     expect(
       usernameChange(initialState, {
-        type: constants.USERNAME_CHANGE_PENDING
+        type: constants.USERNAME_CHANGE_PENDING,
+        meta: {
+          user: {}
+        }
       }).toJSON()
     ).toEqual(
       {
         error: null,
         loading: true,
         requesting: false,
-        user: null,
+        user: {},
         connection: null
       }
     );

@@ -87,16 +87,17 @@ class Users extends Component {
     } = this.props;
 
     const userFields = (settings && settings.userFields) || [];
+    const role = accessLevel.get('record').get('role');
 
     return (
       <div className="users">
         <TabsHeader
           languageDictionary={languageDictionary}
-          role={accessLevel.get('record').get('role')} />
+          role={role} />
         <div className="row content-header">
           <div className="col-xs-12 user-table-content">
             <h1>{languageDictionary.usersTitle || 'Users'}</h1>
-            {(connections.length) ?
+            {(connections.length && role > 0) ?
               <button id="create-user-button" className="btn btn-success pull-right new" onClick={this.createUser}>
                 <i className="icon-budicon-473"></i>
                 {languageDictionary.createUserButtonText || 'Create User'}

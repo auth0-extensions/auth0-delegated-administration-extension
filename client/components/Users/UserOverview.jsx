@@ -72,6 +72,12 @@ export default class UserOverview extends React.Component {
   render() {
     const { loading, sortProperty, sortOrder, error, settings } = this.props;
     const languageDictionary = this.props.languageDictionary || {};
+    const labels = languageDictionary.labels || {};
+    const searchOptions = this.searchOptions.map(option => {
+      option.title = labels[option.value] || option.value;
+      return option;
+    });
+
     return (
       <div>
         <div className="row">
@@ -81,14 +87,14 @@ export default class UserOverview extends React.Component {
         </div>
         <div className="row">
           <div className="col-xs-12">
-            {(this.searchOptions && this.searchOptions.length > 0) ? (
+            {(searchOptions.length > 0) ? (
               <SearchBar
                 onReset={this.props.onReset}
                 enabled={!loading}
                 handleKeyPress={this.onKeyPress}
                 handleReset={this.onReset}
                 handleOptionChange={this.onHandleOptionChange}
-                searchOptions={this.searchOptions}
+                searchOptions={searchOptions}
                 searchValue={this.state.searchValue}
                 placeholder={languageDictionary.searchBarPlaceholder}
                 resetButtonText={languageDictionary.searchBarReset}

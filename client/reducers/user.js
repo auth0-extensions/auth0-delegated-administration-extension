@@ -41,6 +41,7 @@ const userLogs = createReducer(fromJS(initialState.logs), {
       records: fromJS(typeof action.payload.data.logs !== 'undefined' ?
         action.payload.data.logs.map(log => {
           log.time_ago = moment(log.date).fromNow();
+          log.shortType = log.type;
           log.type = logTypes[log.type];
           if (!log.type) {
             log.type = {

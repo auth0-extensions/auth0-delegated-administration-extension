@@ -135,6 +135,7 @@ describe('user reducer', () => {
               client_name: 'My App',
               connection: 'Username-Password-Authentication',
               date: '2016-09-26T13:03:50.703Z',
+              shortType: 's',
               type: {
                 event: 'Success Login',
                 icon: {
@@ -150,6 +151,7 @@ describe('user reducer', () => {
               client_name: 'My App',
               connection: 'Username-Password-Authentication',
               date: '2016-09-26T13:03:36.005Z',
+              shortType: "s",
               type: {
                 event: 'Success Login',
                 icon: {
@@ -214,6 +216,7 @@ describe('user reducer', () => {
               client_name: 'My App',
               connection: 'Username-Password-Authentication',
               date: '2016-09-26T13:03:50.703Z',
+              shortType: "s",
               type: {
                 event: 'Success Login',
                 icon: {
@@ -229,6 +232,7 @@ describe('user reducer', () => {
               client_name: 'My App',
               connection: 'Username-Password-Authentication',
               date: '2016-09-26T13:03:36.005Z',
+              shortType: "custom_type",
               type: {
                 event: 'Unknown Error',
                 icon: {

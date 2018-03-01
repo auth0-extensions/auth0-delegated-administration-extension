@@ -17,6 +17,7 @@ export default class UserActions extends Component {
     resetPassword: PropTypes.func.isRequired,
     unblockUser: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
+    role: PropTypes.number.isRequired,
     userFields: PropTypes.array.isRequired,
     languageDictionary: PropTypes.object
   }
@@ -240,7 +241,7 @@ export default class UserActions extends Component {
   }
 
   render() {
-    if (!this.state.user) {
+    if (!this.state.user || this.props.role < 1) {
       return null;
     }
 

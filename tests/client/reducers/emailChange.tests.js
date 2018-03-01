@@ -108,14 +108,17 @@ describe('email change reducer', () => {
   it('should handle EMAIL_CHANGE_PENDING', () => {
     expect(
       emailChange(initialState, {
-        type: constants.EMAIL_CHANGE_PENDING
+        type: constants.EMAIL_CHANGE_PENDING,
+        meta: {
+          user: {}
+        }
       }).toJSON()
     ).toEqual(
       {
         error: null,
         loading: true,
         requesting: false,
-        user: null,
+        user: {},
         connection: null
       }
     );

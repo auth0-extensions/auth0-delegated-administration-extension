@@ -18,12 +18,13 @@ describe('#Client-Components-Logs-LogsTable', () => {
 
   const fail = {
     event: 'fapi',
+    description: 'some description',
     icon: { name: 'failure', color: 'red' }
   };
 
   const dummyLogs = [
-    { type: success, user_name: 'bill', date: aDayAgo, connection: 'connA', client_name: 'client' },
-    { type: fail, description: 'some description', date: aDayAgo }
+    { type: success, shortType: 'sapi', user_name: 'bill', date: aDayAgo, connection: 'connA', client_name: 'client' },
+    { type: fail, shortType: 'fapi', description: 'some description', date: aDayAgo }
   ];
 
   const renderComponent = (logs, languageDictionary, suppressRawData) => {
@@ -112,7 +113,17 @@ describe('#Client-Components-Logs-LogsTable', () => {
       logConnectionColumnHeader: 'ConnectionHeader',
       logApplicationColumnHeader: 'ApplicationHeader',
       momentLocale: 'fr',
-      notApplicableLabel: 'Not Applicable'
+      notApplicableLabel: 'Not Applicable',
+      logTypes: {
+        fapi: {
+          event: 'Fapi Event',
+          description: 'Fapi Description'
+        },
+        sapi: {
+          event: 'Sapi Event',
+          description: 'Sapi Description'
+        }
+      }
     };
 
     const component = renderComponent(dummyLogs, languageDictionary);
@@ -134,12 +145,12 @@ describe('#Client-Components-Logs-LogsTable', () => {
     /* Test the rows */
     checkRow(component, 0, {
       icon: { color: 'green', name: 'success' },
-      text: ['sapi', 'bill', 'il y a un jour', 'connA', 'client'],
+      text: ['Sapi Event', 'bill', 'il y a un jour', 'connA', 'client'],
       control: 'function'
     });
     checkRow(component, 1, {
       icon: { color: 'red', name: 'failure' },
-      text: ['fapi', 'some description', 'il y a un jour', 'Not Applicable', 'Not Applicable'],
+      text: ['Fapi Event', 'Fapi Description', 'il y a un jour', 'Not Applicable', 'Not Applicable'],
       control: 'function'
     });
   });

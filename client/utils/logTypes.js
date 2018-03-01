@@ -339,6 +339,45 @@ export default {
       name: '311',
       color: '#A93F3F'
     }
+  },
+  gd_start_enroll: {
+    event: 'Enroll started',
+    description: 'Guardian - Start second factor enrollment',
+    icon: {
+      name: '299',
+      color: 'green'
+    }
+  },
+  gd_enrollment_complete: {
+    event: 'Guardian enrollment complete',
+    description: 'Guardian - Enrollment complete',
+    icon: {
+      name: '299',
+      color: 'green'
+    }
+  },
+  gd_auth_succeed: {
+    event: 'OTP Auth suceed',
+    description: 'Guardian - Second factor authentication succeed',
+    icon: {
+      name: 'mfa-login-succeed',
+      color: 'green'
+    }
+  },
+  gd_unenroll: {
+    event: 'Unenroll device account',
+    description: 'Guardian - Enrollment removed',
+    icon: {
+      name: '298',
+      color: 'green'
+    }
+  },
+  sui: {
+    event: 'Users import',
+    description: 'Users import finished',
+    icon: {
+      name: '299',
+      color: 'green'
+    }
   }
-}
-;
+};

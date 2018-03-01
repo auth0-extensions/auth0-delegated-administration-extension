@@ -6,7 +6,7 @@
   "deviceNameColumnHeader": "Device",
   "deviceNumberTokensColumnHeader": "# of Tokens/Public Keys",
   "noDevicesMessage": "This user does not have any registered devices.",
-  
+
   "usersAndLogsMenuItemText": "Users & Logs",
   "configurationMenuItemText": "Configuration",
   "logoutMenuItemText": "Logout",
@@ -82,7 +82,7 @@
 
   "loginErrorTitle": "Login Error",
   "loginErrorButtonText": "Login",
-  
+
   "logsRefreshButtonText": "Refresh",
   "logsLoadMoreButtonText": "Load More",
 
@@ -116,6 +116,192 @@
     "USERNAME_CHANGE": { "default": "An error occurred while changing the username: {message}" },
     "FETCH_USERS": { "default": "An error occurred while loading the users list: {message}" },
     "RESEND_VERIFICATION_EMAIL": { "default": "An error occurred while sending verification email: {message}" }
-  }
+  },
+  "searchBarInstructions": "To perform your search, press enter. You can also search for specific fields, eg: email:\"john@doe.com\".",
+  "searchBarReset": "Reset",
+  "paginationTextFormat": "Page {current} of {total}",
+  "tableTotalsTextFormat": "Showing {current} of {total}",
 
+  "createUsersButtonText": "Create User",
+  "validationError": "Validation Error",
+  "dialogConfirmText": "Confirm",
+  "dialogCancelText": "Cancel",
+  "yesLabel": "Yes",
+  "noLabel": "No",
+  "logTypes": {
+    "s": {
+      "event": "Success Login"
+    },
+    "ssa": {
+      "event": "Success Silent Auth"
+    },
+    "seacft": {
+      "event": "Success Exchange",
+      "description": "Authorization Code for Access Token"
+    },
+    "feacft": {
+      "event": "Failed Exchange",
+      "description": "Authorization Code for Access Token"
+    },
+    "f": {
+      "event": "Failed Login"
+    },
+    "fsa": {
+      "event": "Failed Silent Auth"
+    },
+    "w": {
+      "event": "Warnings During Login"
+    },
+    "du": {
+      "event": "Deleted User"
+    },
+    "fu": {
+      "event": "Failed Login (invalid email/username)"
+    },
+    "fp": {
+      "event": "Failed Login (wrong password)"
+    },
+    "fc": {
+      "event": "Failed by Connector"
+    },
+    "fco": {
+      "event": "Failed by CORS"
+    },
+    "con": {
+      "event": "Connector Online"
+    },
+    "coff": {
+      "event": "Connector Offline"
+    },
+    "fcpro": {
+      "event": "Failed Connector Provisioning"
+    },
+    "ss": {
+      "event": "Success Signup"
+    },
+    "fs": {
+      "event": "Failed Signup"
+    },
+    "cs": {
+      "event": "Code Sent"
+    },
+    "cls": {
+      "event": "Code/Link Sent"
+    },
+    "sv": {
+      "event": "Success Verification Email"
+    },
+    "fv": {
+      "event": "Failed Verification Email"
+    },
+    "scp": {
+      "event": "Success Change Password"
+    },
+    "fcp": {
+      "event": "Failed Change Password"
+    },
+    "sce": {
+      "event": "Success Change Email"
+    },
+    "fce": {
+      "event": "Failed Change Email"
+    },
+    "scu": {
+      "event": "Success Change Username"
+    },
+    "fcu": {
+      "event": "Failed Change Username"
+    },
+    "scpn": {
+      "event": "Success Change Phone Number"
+    },
+    "fcpn": {
+      "event": "Failed Change Phone Number"
+    },
+    "svr": {
+      "event": "Success Verification Email Request"
+    },
+    "fvr": {
+      "event": "Failed Verification Email Request"
+    },
+    "scpr": {
+      "event": "Success Change Password Request"
+    },
+    "fcpr": {
+      "event": "Failed Change Password Request"
+    },
+    "fn": {
+      "event": "Failed Sending Notification"
+    },
+    "sapi": {
+      "event": "API Operation"
+    },
+    "fapi": {
+      "event": "Failed API Operation"
+    },
+    "limit_wc": {
+      "event": "Blocked Account"
+    },
+    "limit_ui": {
+      "event": "Too Many Calls to /userinfo"
+    },
+    "api_limit": {
+      "event": "Rate Limit On API"
+    },
+    "sdu": {
+      "event": "Successful User Deletion"
+    },
+    "fdu": {
+      "event": "Failed User Deletion"
+    },
+    "seccft": {
+      "event": "Success Exchange (Client Credentials)"
+    },
+    "feccft": {
+      "event": "Failed Exchange (Client Credentials)"
+    },
+    "limit_mu": {
+      "event": "Blocked IP Address"
+    },
+    "slo": {
+      "event": "Success Logout"
+    },
+    "flo": {
+      "event": "Failed Logout"
+    },
+    "sd": {
+      "event": "Success Delegation"
+    },
+    "fd": {
+      "event": "Failed Delegation"
+    },
+    "gd_start_enroll": {
+      "event": "Enroll started",
+      "description": "Guardian - Start second factor enrollment"
+    },
+    "gd_enrollment_complete": {
+      "event": "Guardian enrollment complete",
+      "description": "Guardian - Enrollment complete"
+    },
+    "gd_auth_succeed": {
+      "event": "OTP Auth suceed",
+      "description": "Guardian - Second factor authentication succeed"
+    },
+    "gd_unenroll": {
+      "event": "Unenroll device account",
+      "description": "Guardian - Enrollment removed"
+    },
+    "sui": {
+      "event": "Users import",
+      "description": "Users import finished"
+    }
+  },
+  "labels": {
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "repeatPassword": "Confirm Password",
+    "username": "Username",
+    "app_metadata.city": "City"
+  }
 }
