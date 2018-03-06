@@ -19,6 +19,7 @@ class App extends Component {
     fetchConnections: PropTypes.func.isRequired,
     getAccessLevel: PropTypes.func.isRequired,
     getAppSettings: PropTypes.func.isRequired,
+    toggleStyleSettings: PropTypes.func.isRequired,
     languageDictionary: PropTypes.object.isRequired
   };
 
@@ -52,6 +53,9 @@ class App extends Component {
   render() {
     const { settingsLoading } = this.props;
     const languageDictionary = this.props.languageDictionary ? this.props.languageDictionary.toJS() : {};
+    const settings = this.props.settings.get('settings') && this.props.settings.get('settings').toJS();
+    const renderCssToggle = !!(settings && settings.css && settings.altcss);
+
     if (settingsLoading) {
       return <LoadingPanel show={settingsLoading} />;
     }
@@ -62,8 +66,10 @@ class App extends Component {
           issuer={this.props.issuer}
           getDictValue={this.getDictValue}
           onLogout={this.onLogout}
+          onCssToggle={this.props.toggleStyleSettings}
           accessLevel={this.props.accessLevel.toJSON()}
           languageDictionary={languageDictionary}
+          renderCssToggle={renderCssToggle}
         />
         <div className="container">
           <div className="row">

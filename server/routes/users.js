@@ -104,7 +104,8 @@ export default (storage, scriptManager) => {
     const settingsContext = {
       request: {
         user: req.user
-      }
+      },
+      locale: req.headers['dae-locale']
     };
 
     scriptManager.execute('settings', settingsContext)
@@ -271,7 +272,8 @@ export default (storage, scriptManager) => {
     const settingsContext = {
       request: {
         user: req.user
-      }
+      },
+      locale: req.headers['dae-locale']
     };
 
     scriptManager.execute('settings', settingsContext)
@@ -318,7 +320,8 @@ export default (storage, scriptManager) => {
     const settingsContext = {
       request: {
         user: req.user
-      }
+      },
+      locale: req.headers['dae-locale']
     };
 
     scriptManager.execute('settings', settingsContext)
@@ -362,7 +365,8 @@ export default (storage, scriptManager) => {
     const settingsContext = {
       request: {
         user: req.user
-      }
+      },
+      locale: req.headers['dae-locale']
     };
 
     scriptManager.execute('settings', settingsContext)
@@ -395,7 +399,8 @@ export default (storage, scriptManager) => {
     const settingsContext = {
       request: {
         user: req.user
-      }
+      },
+      locale: req.headers['dae-locale']
     };
 
     scriptManager.execute('settings', settingsContext)

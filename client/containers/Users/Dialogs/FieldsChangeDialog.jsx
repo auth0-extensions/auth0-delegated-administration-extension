@@ -53,7 +53,7 @@ export default connectContainer(class extends Component {
 
     return (
       <Modal show={record !== null} className="modal-overflow-visible" onHide={this.props.cancelChangeFields}>
-        <Modal.Header closeButton={loading} className="has-border">
+        <Modal.Header closeButton={!loading} className="has-border" closeLabel={languageDictionary.closeButtonText}>
           <Modal.Title>{languageDictionary.changeProfileDialogTitle || 'Change Profile'}</Modal.Title>
         </Modal.Header>
 

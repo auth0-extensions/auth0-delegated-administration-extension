@@ -81,27 +81,26 @@ describe('#Client-Containers-Users-Dialogs-PasswordChangeDialog', () => {
       .textContent).to.equal(passwordLabel);
   };
 
-  const checkConfirm = (component, title, languageDictionary) => {
+  const checkConfirm = (component, title) => {
     const confirm = component.find(Confirm);
     expect(confirm.length).to.equal(1);
-    expect(confirm.prop('languageDictionary')).to.deep.equal(languageDictionary);
     expect(confirm.prop('title')).to.deep.equal(title);
   };
 
   it('should render', () => {
-    const component = renderComponent({username:'bill'});
+    const component = renderComponent({ username: 'bill' });
 
     checkText(component, 'Do you really want to reset the password for ', 'bill', '? You\'ll need a safe way to communicate the new password to your user, never send the user this new password in clear text.');
     checkEmailLabel(component, 'Email');
     checkConnectionLabel(component, 'Connection');
     checkPasswordLabel(component, 'Password (required)');
     checkRepeatPasswordLabel(component, 'Repeat Password (required)');
-    checkConfirm(component, 'Change Password?', {});
+    checkConfirm(component, 'Change Password?');
   });
 
   it('should render not applicable language dictionary', () => {
     const languageDictionary = { someKey: 'someValue' };
-    const component = renderComponent({username:'bill'}, languageDictionary);
+    const component = renderComponent({ username: 'bill' }, languageDictionary);
 
     checkText(component, 'Do you really want to reset the password for ', 'bill', '? You\'ll need a safe way to' +
       ' communicate the new password to your user, never send the user this new password in clear text.');
@@ -109,7 +108,7 @@ describe('#Client-Containers-Users-Dialogs-PasswordChangeDialog', () => {
     checkEmailLabel(component, 'Email');
     checkPasswordLabel(component, 'Password (required)');
     checkRepeatPasswordLabel(component, 'Repeat Password (required)');
-    checkConfirm(component, 'Change Password?', languageDictionary);
+    checkConfirm(component, 'Change Password?');
   });
 
   it('should render applicable language dictionary', () => {
@@ -117,17 +116,17 @@ describe('#Client-Containers-Users-Dialogs-PasswordChangeDialog', () => {
       changePasswordMessage: 'Some pre message {username} ignore second {username}',
       changePasswordTitle: 'Change Password Title'
     };
-    const component = renderComponent({username:'bob'}, languageDictionary);
+    const component = renderComponent({ username: 'bob' }, languageDictionary);
 
     checkText(component, 'Some pre message ', 'bob', ' ignore second {username}');
-    checkConfirm(component, 'Change Password Title', languageDictionary);
+    checkConfirm(component, 'Change Password Title');
   });
 
   it('should render applicable language dictionary spaces in username', () => {
     const languageDictionary = {
       changePasswordMessage: 'Some other message {   username    }something else'
     };
-    const component = renderComponent({username:'sally'}, languageDictionary);
+    const component = renderComponent({ username: 'sally' }, languageDictionary);
 
     checkText(component, 'Some other message ', 'sally', 'something else');
   });
@@ -136,7 +135,7 @@ describe('#Client-Containers-Users-Dialogs-PasswordChangeDialog', () => {
     const languageDictionary = {
       changePasswordMessage: 'no username included: '
     };
-    const component = renderComponent({username:'john'}, languageDictionary);
+    const component = renderComponent({ username: 'john' }, languageDictionary);
 
     checkText(component, 'no username included: ', 'john', '');
   });
@@ -155,7 +154,7 @@ describe('#Client-Containers-Users-Dialogs-PasswordChangeDialog', () => {
         }
       }
     };
-    const component = renderComponent({username:'john', settings});
+    const component = renderComponent({ username: 'john', settings });
     checkConnectionLabel(component);
   });
 
@@ -188,7 +187,7 @@ describe('#Client-Containers-Users-Dialogs-PasswordChangeDialog', () => {
         }
       }
     };
-    const component = renderComponent({username:'john', settings});
+    const component = renderComponent({ username: 'john', settings });
     checkConnectionLabel(component, 'ConnectionLabel');
     checkEmailLabel(component, 'EmailLabel');
     checkPasswordLabel(component, 'PasswordLabel');
@@ -220,7 +219,7 @@ describe('#Client-Containers-Users-Dialogs-PasswordChangeDialog', () => {
         }
       }
     };
-    const component = renderComponent({username:'john', settings});
+    const component = renderComponent({ username: 'john', settings });
     checkConnectionLabel(component, 'Connection');
     checkEmailLabel(component, 'Email');
     checkPasswordLabel(component, 'Password');

@@ -16,11 +16,10 @@ const addRequiredTextParam = (url, languageDictionary) => {
 /*
  * Search for users.
  */
-export function fetchUsers(search, reset = false, page = 0, filterBy, sort) {
-
+export function fetchUsers(search, reset = false, page = 0, filterBy, sort, onSuccess) {
   return (dispatch, getState) => {
     const { sortProperty, sortOrder, searchValue } = getState().users.toJS();
-    const meta = { page, sortProperty, sortOrder, searchValue };
+    const meta = { page, sortProperty, sortOrder, searchValue, onSuccess };
 
     meta.searchValue = reset ? '' : search || searchValue;
     if (sort) {

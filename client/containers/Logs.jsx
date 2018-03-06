@@ -54,6 +54,8 @@ class LogsContainer extends Component {
 
   render() {
     const { log, logs, accessLevel, languageDictionary, settings } = this.props;
+    const originalTitle = (settings.dict && settings.dict.title) || window.config.TITLE || 'User Management';
+    document.title = `${languageDictionary.userLogsTabTitle || 'Logs'} - ${originalTitle}`;
 
     return (
       <div>
@@ -77,7 +79,7 @@ class LogsContainer extends Component {
             <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, logs.error, settings.errorTranslator)} />
 
             <LoadingPanel show={logs.loading}>
-              <LogsTable onOpen={this.props.fetchLog} loading={logs.loading} logs={logs.records} settings={this.props.settings} languageDictionary={languageDictionary} />
+              <LogsTable onOpen={this.props.fetchLog} loading={logs.loading} logs={logs.records} settings={settings} languageDictionary={languageDictionary} />
             </LoadingPanel>
           </div>
         </div>

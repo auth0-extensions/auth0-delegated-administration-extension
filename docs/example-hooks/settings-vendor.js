@@ -13,6 +13,7 @@ function(ctx, callback) {
       logoutUrl: 'https://mycompany.auth0.com/v2/logout?returnTo=https://mycompany.com'
     },
     css: vendor && 'https://cdn.mycompany.com/styles/' + vendor + '.css',
+    altcss: vendor && 'https://cdn.mycompany.com/styles/' + vendor + '-alternative.css',
     errorTranslator: (
       function (error) {
         return error.type + ' (' + error.status + '): ' + error.message;

@@ -56,7 +56,7 @@ export default connectContainer(class extends Component {
 
     return (
       <Modal show={record !== null} className="modal-overflow-visible" onHide={this.props.cancelCreateUser}>
-        <Modal.Header closeButton={loading} className="has-border">
+        <Modal.Header closeButton={!loading} className="has-border" closeLabel={languageDictionary.closeButtonText} >
           <Modal.Title>{languageDictionary.createDialogTitle || 'Create User'}</Modal.Title>
         </Modal.Header>
 

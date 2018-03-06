@@ -74,15 +74,14 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
       .textContent).to.equal(emailLabel);
   };
 
-  const checkConfirm = (component, title, languageDictionary) => {
+  const checkConfirm = (component, title) => {
     const confirm = component.find(Confirm);
     expect(confirm.length).to.equal(1);
-    expect(confirm.prop('languageDictionary')).to.deep.equal(languageDictionary);
     expect(confirm.prop('title')).to.deep.equal(title);
-  }
+  };
 
   it('should render', () => {
-    const component = renderComponent({username:'bill'});
+    const component = renderComponent({ username: 'bill' });
 
     checkText(component, 'Do you really want to change the email for ', 'bill', '?');
     checkConnectionLabel(component, 'Connection');
@@ -91,7 +90,7 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
   });
 
   it('should render not applicable language dictionary', () => {
-    const component = renderComponent({username:'bill'}, { someKey: 'someValue' });
+    const component = renderComponent({ username: 'bill' }, { someKey: 'someValue' });
 
     checkText(component, 'Do you really want to change the email for ', 'bill', '?');
     checkConnectionLabel(component, 'Connection');
@@ -100,7 +99,7 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
   });
 
   it('should render not applicable language dictionary', () => {
-    const component = renderComponent({username:'bill'}, { someKey: 'someValue' });
+    const component = renderComponent({ username: 'bill' }, { someKey: 'someValue' });
 
     checkText(component, 'Do you really want to change the email for ', 'bill', '?');
     checkConnectionLabel(component, 'Connection');
@@ -113,7 +112,7 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
       changeEmailMessage: 'Some pre message {username} ignore second {username}',
       changeEmailTitle: 'Change Email Title'
     };
-    const component = renderComponent({username:'bob'}, languageDictionary);
+    const component = renderComponent({ username: 'bob' }, languageDictionary);
 
     checkText(component, 'Some pre message ', 'bob', ' ignore second {username}');
   });
@@ -122,7 +121,7 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
     const languageDictionary = {
       changeEmailMessage: 'Some other message {   username    }something else'
     };
-    const component = renderComponent({username:'sally'}, languageDictionary);
+    const component = renderComponent({ username: 'sally' }, languageDictionary);
 
     checkText(component, 'Some other message ', 'sally', 'something else');
   });
@@ -131,7 +130,7 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
     const languageDictionary = {
       changeEmailMessage: 'no username included: '
     };
-    const component = renderComponent({username:'john'}, languageDictionary);
+    const component = renderComponent({ username: 'john' }, languageDictionary);
 
     checkText(component, 'no username included: ', 'john', '');
   });
@@ -155,9 +154,8 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
         }
       }
     };
-    const component = renderComponent({username:'john', settings});
+    const component = renderComponent({ username: 'john', settings });
     checkConnectionLabel(component);
-
   });
 
   it('should use userFields for label names', () => {
@@ -179,9 +177,8 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
         }
       }
     };
-    const component = renderComponent({username:'john', settings});
+    const component = renderComponent({ username: 'john', settings });
     checkConnectionLabel(component, 'ConnectionLabel');
-
   });
 
   it('should handle null label name in user fields', () => {
@@ -202,8 +199,7 @@ describe('#Client-Containers-Users-Dialogs-EmailChangeDialog', () => {
         }
       }
     };
-    const component = renderComponent({username:'john', settings});
+    const component = renderComponent({ username: 'john', settings });
     checkConnectionLabel(component, 'Connection');
-
   });
 });

@@ -12,6 +12,7 @@ export default class LogsTable extends Component {
     loading: PropTypes.bool.isRequired,
     logs: PropTypes.object.isRequired,
     settings: PropTypes.object.isRequired,
+    isUserLogs: PropTypes.bool,
     languageDictionary: PropTypes.object
   }
 
@@ -46,13 +47,14 @@ export default class LogsTable extends Component {
               const icon = log.type.icon;
               const onClick = suppressRawData ? null : () => this.props.onOpen(log._id);
               const logType = _.get(languageDictionary, `logTypes.${log.shortType}.event`, log.type.event);
-              const logDescription = _.get(languageDictionary, `logTypes.${log.shortType}.description`, log.description);
+              const logDescription = _.get(languageDictionary, `logTypes.${log.shortType}.description`, log.description || log.type.description);
+              const descriptionText = this.props.isUserLogs ? logDescription || log.user_name : log.user_name || logDescription;
               log.time_ago = moment(log.date).locale(languageDictionary.momentLocale || 'en').fromNow();
               return (
                 <TableRow key={index}>
-                  <TableIconCell color={icon.color} icon={icon.name} />
+                  <TableIconCell color={icon.color} icon={icon.name} title={logType} />
                   <TableTextCell onClick={onClick}>{logType || languageDictionary.logDialogDefaultLogRecordText || 'Log Record'}</TableTextCell>
-                  <TableTextCell>{log.user_name || logDescription || log.type.description}</TableTextCell>
+                  <TableTextCell>{descriptionText}</TableTextCell>
                   <TableTextCell>{log.time_ago}</TableTextCell>
                   <TableTextCell>{log.connection || languageDictionary.notApplicableLabel || 'N/A'}</TableTextCell>
                   <TableTextCell>{log.client_name || languageDictionary.notApplicableLabel || 'N/A'}</TableTextCell>

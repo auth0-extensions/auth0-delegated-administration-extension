@@ -22,7 +22,7 @@ export default connectContainer(class extends Component {
     logs: state.user.get('logs'),
     devices: state.user.get('devices'),
     settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
-    languageDictionary: state.languageDictionary.get('record').toJS()
+    languageDictionary: state.languageDictionary.get('record').toJS() || {}
   });
 
   static actionsToProps = {
@@ -31,6 +31,7 @@ export default connectContainer(class extends Component {
   }
 
   static propTypes = {
+    languageDictionary: PropTypes.object.isRequired,
     accessLevel: PropTypes.object.isRequired,
     settings: PropTypes.object.isRequired,
     user: PropTypes.object,
@@ -64,13 +65,15 @@ export default connectContainer(class extends Component {
     const userFields = (settings && settings.userFields) || [];
     const suppressRawData = settings && settings.suppressRawData === true;
     const role = this.props.accessLevel.role;
+    const originalTitle = (settings.dict && settings.dict.title) || window.config.TITLE || 'User Management';
+    document.title = `${languageDictionary.userTitle || 'User Details'} - ${originalTitle}`;
 
     return (
       <div className="user">
         <TabsHeader role={role} languageDictionary={languageDictionary} />
         <div className="row content-header">
           <div className="col-xs-12">
-            <h2 className="pull-left">{languageDictionary.userTitle || 'User Details'}</h2>
+            <h1 className="pull-left">{languageDictionary.userTitle || 'User Details'}</h1>
             <div className="pull-right">
               <UserActions
                 role={role}
@@ -132,6 +135,7 @@ export default connectContainer(class extends Component {
                   languageDictionary={languageDictionary}
                   error={logs.get('error')}
                   settings={settings}
+                  isUserLogs={true}
                 />
               </Tab>
               { this.renderProfile(suppressRawData, user, languageDictionary, settings) }

@@ -27,7 +27,7 @@ describe('#Client-Components-Logs-LogsTable', () => {
     { type: fail, shortType: 'fapi', description: 'some description', date: aDayAgo }
   ];
 
-  const renderComponent = (logs, languageDictionary, suppressRawData) => {
+  const renderComponent = (logs, languageDictionary, suppressRawData, isUserLogs) => {
     return shallow(
       <LogsTable
         loading={false}
@@ -35,6 +35,7 @@ describe('#Client-Components-Logs-LogsTable', () => {
         onOpen={() => 'onOpen'}
         logs={fromJS(logs)}
         settings={{ suppressRawData }}
+        isUserLogs={isUserLogs}
         languageDictionary={languageDictionary}
       />
     );
@@ -63,8 +64,8 @@ describe('#Client-Components-Logs-LogsTable', () => {
     expect(textColumns.at(4).childAt(0).text()).to.equal(target.text[4]);
   };
 
-  const checkDefault = (languageDictionary, suppressRawData) => {
-    const component = renderComponent(dummyLogs, languageDictionary, suppressRawData);
+  const checkDefault = (languageDictionary, suppressRawData, isUserLogs) => {
+    const component = renderComponent(dummyLogs, languageDictionary, suppressRawData, isUserLogs);
 
     expect(component.length).to.be.greaterThan(0);
 
@@ -99,6 +100,50 @@ describe('#Client-Components-Logs-LogsTable', () => {
 
   it('should render with suppressed raw data', () => {
     checkDefault({}, true);
+  });
+
+
+  it('should render language dictionary', () => {
+    const languageDictionary = {
+      logTypes: {
+        fapi: {
+          event: 'Fapi Event',
+          description: 'Fapi Description'
+        },
+        sapi: {
+          event: 'Sapi Event',
+          description: 'Sapi Description'
+        }
+      }
+    };
+
+    const component = renderComponent(dummyLogs, languageDictionary, false, true);
+
+    expect(component.length).to.be.greaterThan(0);
+
+    /* Test the header */
+    const header = component.find(TableHeader);
+    expect(header.length).to.equal(1);
+    const columns = header.find(TableColumn);
+    expect(columns.length).to.equal(6);
+    expect(columns.at(0).childAt(0).text()).to.equal('');
+    expect(columns.at(1).childAt(0).text()).to.equal('Event');
+    expect(columns.at(2).childAt(0).text()).to.equal('Description');
+    expect(columns.at(3).childAt(0).text()).to.equal('Date');
+    expect(columns.at(4).childAt(0).text()).to.equal('Connection');
+    expect(columns.at(5).childAt(0).text()).to.equal('Application');
+
+    /* Test the rows */
+    checkRow(component, 0, {
+      icon: { color: 'green', name: 'success' },
+      text: ['Sapi Event', 'Sapi Description', 'a day ago', 'connA', 'client'],
+      control: 'function'
+    });
+    checkRow(component, 1, {
+      icon: { color: 'red', name: 'failure' },
+      text: ['Fapi Event', 'Fapi Description', 'a day ago', 'N/A', 'N/A'],
+      control: 'function'
+    });
   });
 
   it('should render not applicable language dictionary', () => {

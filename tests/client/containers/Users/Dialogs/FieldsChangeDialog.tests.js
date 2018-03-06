@@ -48,14 +48,14 @@ describe('#Client-Containers-Users-Dialogs-FieldsChangeDialog', () => {
   });
 
   const checkTitle = (component, title) => {
-    const modalHeader = document.querySelector('.has-border');
+    const modalHeader = document.querySelector('.modal-title');
     expect(modalHeader.textContent).to.equal(title);
   };
 
   it('should render', () => {
     const component = renderComponent();
 
-    checkTitle(component, 'Change Profile')
+    checkTitle(component, 'Change Profile');
   });
 
   it('should render using language dictionary', () => {
@@ -64,6 +64,6 @@ describe('#Client-Containers-Users-Dialogs-FieldsChangeDialog', () => {
     };
     const component = renderComponent(languageDictionary);
 
-    checkTitle(component, 'Change Profile Title', languageDictionary)
+    checkTitle(component, 'Change Profile Title', languageDictionary);
   });
 });

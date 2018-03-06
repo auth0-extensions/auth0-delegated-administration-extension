@@ -12,6 +12,7 @@ import getErrorMessage from '../../utils/getErrorMessage';
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     scripts: state.scripts,
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     languageDictionary: state.languageDictionary && state.languageDictionary.get('record').toJS()
   });
 
@@ -21,6 +22,7 @@ export default connectContainer(class extends Component {
 
   static propTypes = {
     scripts: PropTypes.object.isRequired,
+    settings: PropTypes.object.isRequired,
     fetchScript: PropTypes.func.isRequired,
     updateScript: PropTypes.func.isRequired,
     languageDictionary: PropTypes.object
@@ -83,7 +85,9 @@ export default connectContainer(class extends Component {
   render() {
     const code = this.state.code;
     const scripts = this.props.scripts.toJS();
-    const languageDictionary = this.props.languageDictionary;
+    const { languageDictionary, settings } = this.props;
+    const originalTitle = (settings.dict && settings.dict.title) || window.config.TITLE || 'User Management';
+    document.title = `${languageDictionary.configurationMenuItemText || 'Configuration'} - ${originalTitle}`;
 
     return (
       <div className="configuration">

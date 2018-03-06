@@ -124,7 +124,8 @@ export default (storage) => {
     const settingsContext = {
       request: {
         user: req.user
-      }
+      },
+      locale: req.headers['dae-locale']
     };
 
     scriptManager.execute('settings', settingsContext)

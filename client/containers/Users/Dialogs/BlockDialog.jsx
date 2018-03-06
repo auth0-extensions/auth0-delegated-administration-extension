@@ -45,17 +45,21 @@ export default connectContainer(class extends Component {
     const languageDictionary = this.props.languageDictionary.get('record').toJS();
 
     const messageFormat = languageDictionary.blockDialogMessage ||
-      'Do you really want to block {username}? '+
+      'Do you really want to block {username}? ' +
       'After doing so the user will not be able to sign in anymore.';
     const message = getDialogMessage(messageFormat, 'username',
       getName(user, userFields, languageDictionary));
 
     return (
-      <Confirm title={languageDictionary.blockDialogTitle || "Block User?"}
-               show={requesting} loading={loading}
-               confirmMessage={languageDictionary.dialogConfirmText} cancelMessage={languageDictionary.dialogCancelText}
-               onCancel={cancelBlockUser} onConfirm={this.onConfirm}
-               languageDictionary={languageDictionary}>
+      <Confirm
+        title={languageDictionary.blockDialogTitle || 'Block User?'}
+        show={requesting} loading={loading}
+        confirmMessage={languageDictionary.dialogConfirmText}
+        cancelMessage={languageDictionary.dialogCancelText}
+        onCancel={cancelBlockUser}
+        onConfirm={this.onConfirm}
+        closeLabel={languageDictionary.closeButtonText}
+      >
         <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, settings.errorTranslator)} />
 
         <p>

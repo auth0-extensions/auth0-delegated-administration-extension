@@ -55,10 +55,9 @@ describe('#Client-Containers-Users-Dialogs-RemoveMultiFactorDialog', () => {
       .textContent).to.equal(`${preText}${username}${postText}`);
   };
 
-  const checkConfirm = (component, title, languageDictionary) => {
+  const checkConfirm = (component, title) => {
     const confirm = component.find(Confirm);
     expect(confirm.length).to.equal(1);
-    expect(confirm.prop('languageDictionary')).to.deep.equal(languageDictionary);
     expect(confirm.prop('title')).to.deep.equal(title);
   }
 
@@ -108,11 +107,11 @@ describe('#Client-Containers-Users-Dialogs-RemoveMultiFactorDialog', () => {
     const languageDictionary = { someKey: 'someValue',
       removeMultiFactorTitle: 'Remove Multifactor Alternate Title' };
     const component = renderComponent('june', languageDictionary);
-    checkConfirm(component, 'Remove Multifactor Alternate Title', languageDictionary);
+    checkConfirm(component, 'Remove Multifactor Alternate Title');
   });
 
   it('should render confirm gets null languageDictionary', () => {
     const component = renderComponent('jackie');
-    checkConfirm(component, 'Remove Multi Factor Authentication?', {});
+    checkConfirm(component, 'Remove Multi Factor Authentication?');
   });
 });

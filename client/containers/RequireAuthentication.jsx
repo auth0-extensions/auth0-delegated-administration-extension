@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
+import setLocale from '../utils/setLocale';
+
 export default function RequireAuthentication(InnerComponent) {
   class RequireAuthenticationContainer extends React.Component {
     static propTypes = {
@@ -27,6 +29,8 @@ export default function RequireAuthentication(InnerComponent) {
           this.props.push(`/login?returnUrl=${this.props.location.pathname}${this.props.location.search ? this.props.location.search : ''}`);
         }
       }
+
+      setLocale(this.props.location);
     }
 
     render() {

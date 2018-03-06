@@ -7,7 +7,8 @@ export default class SearchBar extends Component {
     enabled: PropTypes.bool.isRequired,
     onReset: PropTypes.func.isRequired,
     onSearch: PropTypes.func.isRequired,
-    languageDictionary: PropTypes.object
+    languageDictionary: PropTypes.object,
+    inputId: PropTypes.string
   }
 
   onKeyPress = (e) => {
@@ -46,8 +47,8 @@ export default class SearchBar extends Component {
               <i className="icon-budicon-489"></i>
               <input
                 className="user-input" type="text" ref="search"
-                placeholder={ languageDictionary.searchBarPlaceholder || 'Search for users using the Lucene syntax' }
-                spellCheck="false" style={{ marginLeft: '10px' }} onKeyPress={this.onKeyPress}
+                placeholder={languageDictionary.searchBarPlaceholder || 'Search for users using the Lucene syntax'}
+                spellCheck="false" style={{ marginLeft: '10px' }} onKeyPress={this.onKeyPress} id={this.props.inputId || ''}
               />
             </span>
             <span className="controls pull-right">

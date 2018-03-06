@@ -10,6 +10,8 @@
   "usersAndLogsMenuItemText": "Users & Logs",
   "configurationMenuItemText": "Configuration",
   "logoutMenuItemText": "Logout",
+  "toggleStyleSetDefault": "Switch to Default CSS",
+  "toggleStyleSetAlternative": "Switch to Alternative CSS",
 
   "userUsersTabTitle": "Users",
   "userLogsTabTitle": "Logs",

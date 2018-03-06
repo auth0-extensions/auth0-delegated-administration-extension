@@ -153,7 +153,7 @@ export default class UsersTable extends Component {
   componentWillReceiveProps(nextProps) {
     if (!_.isEqual(this.props.userFields, nextProps.userFields)) {
       const listFields = this.getListFields(nextProps);
-      
+
       this.setState({
         listFields
       });
@@ -168,13 +168,27 @@ export default class UsersTable extends Component {
     this.props.onColumnSort(sort);
   }
 
+  returnToSearch(event) {
+    if (event && event.key === 'Enter') {
+      event.target.click();
+    }
+  }
+
   render() {
-    const { users, sortProperty, sortOrder } = this.props;
+    const { users, loading, sortProperty, sortOrder } = this.props;
 
     const languageDictionary = this.props.languageDictionary || {};
     const labels = languageDictionary.labels || {};
 
     const listFields = this.state.listFields;
+
+    if (!users.length && !loading) {
+      return (
+        <label className="user-search-no-results" tabIndex="0" htmlFor="search-bar" onKeyUp={this.returnToSearch}>
+          {languageDictionary.userSearchNoResults || 'No users found by given parameters.'}
+        </label>
+      );
+    }
 
     return (
       <Table>
@@ -210,7 +224,13 @@ export default class UsersTable extends Component {
           {users.map(user =>
             <TableRow key={user.user_id}>
               <TableCell>
-                <img className="img-circle" src={user.picture} alt={name} width="32"/>
+                <img
+                  className="img-circle"
+                  src={user.picture}
+                  alt={user.name || user.user_name || user.email}
+                  title={user.name || user.user_name || user.email}
+                  width="32"
+                />
               </TableCell>
               {
                 listFields.map((field, index) => {

@@ -94,10 +94,9 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
       .textContent).to.equal(passwordLabel);
   };
 
-  const checkConfirm = (component, title, languageDictionary) => {
+  const checkConfirm = (component, title) => {
     const confirm = component.find(Confirm);
     expect(confirm.length).to.equal(1);
-    expect(confirm.prop('languageDictionary')).to.deep.equal(languageDictionary);
     expect(confirm.prop('title')).to.deep.equal(title);
   };
 
@@ -109,7 +108,7 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
     checkConnectionLabel(component, 'Connection');
     checkEmailLabel(component, 'Email');
     checkClientLabel(component, 'Client (required)');
-    checkConfirm(component, 'Reset Password?', {});
+    checkConfirm(component, 'Reset Password?');
   });
 
   it('should render not applicable language dictionary', () => {
@@ -121,7 +120,7 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
     checkConnectionLabel(component, 'Connection');
     checkEmailLabel(component, 'Email');
     checkClientLabel(component, 'Client (required)');
-    checkConfirm(component, 'Reset Password?', languageDictionary);
+    checkConfirm(component, 'Reset Password?');
   });
 
   it('should render applicable language dictionary', () => {
@@ -132,7 +131,7 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
     const component = renderComponent({ username: 'bob' }, languageDictionary);
 
     checkText(component, 'Some pre message ', 'bob', ' ignore second {username}');
-    checkConfirm(component, 'Reset Password Title', languageDictionary);
+    checkConfirm(component, 'Reset Password Title');
   });
 
   it('should render applicable language dictionary spaces in username', () => {

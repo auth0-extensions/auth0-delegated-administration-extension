@@ -67,6 +67,7 @@ const processTokens = (dispatch, apiToken, returnTo) => {
   }
 
   axios.defaults.headers.common.Authorization = `Bearer ${apiToken}`;
+  axios.defaults.headers.common['dae-locale'] = localStorage.getItem('dae:locale') || 'en';
 
   sessionStorage.setItem('delegated-admin:apiToken', apiToken);
 
@@ -158,6 +159,23 @@ export function getAppSettings(onSuccess) {
       })
     }
   });
+}
+
+export function toggleStyleSettings() {
+  return (dispatch, getState) => {
+    let settings = getState().settings.get('record').toJS();
+    settings = settings.settings || settings || {};
+    const useAlt = localStorage.getItem('delegated-admin:use-alt-css') === 'true';
+    const path = useAlt ? settings.css : settings.altcss;
+    localStorage.setItem('delegated-admin:use-alt-css', (!useAlt).toString());
+    dispatch({
+      type: constants.TOGGLE_STYLE_SETTINGS,
+      payload: {
+        useAlt,
+        path
+      }
+    });
+  };
 }
 
 function getLanguageDictionary(response, onSuccess) {

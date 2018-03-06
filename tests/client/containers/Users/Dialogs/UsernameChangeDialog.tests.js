@@ -71,38 +71,28 @@ describe('#Client-Containers-Users-Dialogs-UsernameChangeDialog', () => {
       .textContent).to.equal(usernameLabel);
   };
 
-  const checkConfirm = (component, title, languageDictionary) => {
+  const checkConfirm = (component, title) => {
     const confirm = component.find(Confirm);
     expect(confirm.length).to.equal(1);
-    expect(confirm.prop('languageDictionary')).to.deep.equal(languageDictionary);
     expect(confirm.prop('title')).to.deep.equal(title);
   };
 
   it('should render', () => {
-    const component = renderComponent({username:'bill'});
+    const component = renderComponent({ username: 'bill' });
 
     checkText(component, 'Do you really want to change the username for ', 'bill', '?');
     checkConnectionLabel(component, 'Connection');
     checkUsernameLabel(component, 'Username (required)');
-    checkConfirm(component, 'Change Username?', {});
+    checkConfirm(component, 'Change Username?');
   });
 
   it('should render not applicable language dictionary', () => {
-    const component = renderComponent({username:'bill'}, { someKey: 'someValue' });
+    const component = renderComponent({ username: 'bill' }, { someKey: 'someValue' });
 
     checkText(component, 'Do you really want to change the username for ', 'bill', '?');
     checkConnectionLabel(component, 'Connection');
     checkUsernameLabel(component, 'Username (required)');
-    checkConfirm(component, 'Change Username?', { someKey: 'someValue' });
-  });
-
-  it('should render not applicable language dictionary', () => {
-    const component = renderComponent({username:'bill'}, { someKey: 'someValue' });
-
-    checkText(component, 'Do you really want to change the username for ', 'bill', '?');
-    checkConnectionLabel(component, 'Connection');
-    checkUsernameLabel(component, 'Username (required)');
-    checkConfirm(component, 'Change Username?', { someKey: 'someValue' });
+    checkConfirm(component, 'Change Username?');
   });
 
   it('should render applicable language dictionary', () => {
@@ -110,7 +100,7 @@ describe('#Client-Containers-Users-Dialogs-UsernameChangeDialog', () => {
       changeUsernameMessage: 'Some pre message {username} ignore second {username}',
       changeUsernameTitle: 'Change Username Title'
     };
-    const component = renderComponent({username:'bob'}, languageDictionary);
+    const component = renderComponent({ username: 'bob' }, languageDictionary);
 
     checkText(component, 'Some pre message ', 'bob', ' ignore second {username}');
   });

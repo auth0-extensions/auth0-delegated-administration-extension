@@ -11,6 +11,7 @@ import Header from '../../../client/components/Header';
 
 describe('#Client-Components-Header', () => {
   const logout = () => 'onLogout';
+  const cssToggle = () => 'cssToggle';
   const defaultGetDictValue = (key, defaultValue) => defaultValue;
   const dummyUser = {
     name: 'bill',
@@ -31,6 +32,7 @@ describe('#Client-Components-Header', () => {
     const user = options.user || dummyUser;
     const accessLevel = options.accessLevel || {};
     const issuer = options.issuer || 'issuer';
+    const renderCssToggle = options.cssToggle || false;
 
     return shallow(
       <Header
@@ -39,6 +41,8 @@ describe('#Client-Components-Header', () => {
         accessLevel={accessLevel}
         issuer={issuer}
         onLogout={logout}
+        onCssToggle={cssToggle}
+        renderCssToggle={options.renderCssToggle}
         languageDictionary={options.languageDictionary}
       />
     );
@@ -64,6 +68,12 @@ describe('#Client-Components-Header', () => {
     expect(links.length).to.equal(2);
     expect(links.at(0).childAt(0).text()).to.equal(usersAndLogsText);
     expect(links.at(1).childAt(0).text()).to.equal(configurationText);
+  };
+
+  const checkForCssToggleMenuItem = (component, text) => {
+    const links = component.find('a[role="menuitem"]');
+    expect(links.length).to.equal(2);
+    expect(links.at(0).text()).to.equal(text);
   };
 
   const checkForNoAdminMenuItems = (component) => {
@@ -206,4 +216,24 @@ describe('#Client-Components-Header', () => {
     checkForNoAdminMenuItems(component);
   });
 
+  it('should render cssToggle menu item for nonAdmin', () => {
+    const component = renderComponent({ renderCssToggle: true, languageDictionary: { toggleStyleSetAlternative: 'Switch to Alternative' } });
+
+    expect(component.length).to.be.greaterThan(0);
+
+    checkForCssToggleMenuItem(component, 'Switch to Alternative');
+  });
+
+  it('should render cssToggle menu item for Admin', () => {
+    const options = {
+      accessLevel: { role: 2 },
+      renderCssToggle: true,
+      languageDictionary: { toggleStyleSetAlternative: 'Switch to Alternative' }
+    };
+    const component = renderComponent(options);
+
+    expect(component.length).to.be.greaterThan(0);
+
+    checkForCssToggleMenuItem(component, 'Switch to Alternative');
+  });
 });
