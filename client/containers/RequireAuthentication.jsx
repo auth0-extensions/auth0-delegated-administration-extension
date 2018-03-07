@@ -1,9 +1,8 @@
+import axios from 'axios';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-
-import setLocale from '../utils/setLocale';
 
 export default function RequireAuthentication(InnerComponent) {
   class RequireAuthenticationContainer extends React.Component {
@@ -30,7 +29,7 @@ export default function RequireAuthentication(InnerComponent) {
         }
       }
 
-      setLocale(this.props.location);
+      axios.defaults.headers.common['dae-locale'] = window.config.LOCALE;
     }
 
     render() {

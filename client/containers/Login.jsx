@@ -5,7 +5,6 @@ import { push } from 'react-router-redux';
 import { LoadingPanel, Confirm, Error } from 'auth0-extension-ui';
 
 import { login } from '../actions/auth';
-import setLocale from '../utils/setLocale';
 
 class LoginContainer extends Component {
   static propTypes = {
@@ -21,13 +20,12 @@ class LoginContainer extends Component {
       this.props.push(this.props.auth.returnTo || '/users');
     } else if (!this.props.auth.isAuthenticating && !this.props.auth.error) {
       // reset the local storage for locale
-      setLocale(this.props.location);
-      this.props.login(this.props.location.query.returnUrl, localStorage.getItem('dae:locale'));
+      this.props.login(this.props.location.query.returnUrl, window.config.LOCALE || 'en');
     }
   }
 
   login() {
-    this.props.login(this.props.location.query.returnUrl, localStorage.getItem('dae:locale'));
+    this.props.login(this.props.location.query.returnUrl, window.config.LOCALE || 'en');
   }
 
   render() {

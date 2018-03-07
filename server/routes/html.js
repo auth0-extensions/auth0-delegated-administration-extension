@@ -1,4 +1,5 @@
 import fs from 'fs';
+import url from 'url';
 import ejs from 'ejs';
 import path from 'path';
 import { urlHelpers } from 'auth0-extension-express-tools';
@@ -38,21 +39,41 @@ export default () => {
     </html>
     `;
 
+  const getLocale = (req) => {
+    const basePath = urlHelpers.getBasePath(req);
+    const pathname = url.parse(req.originalUrl).pathname;
+    const relativePath = pathname.replace(basePath, '').split('/');
+    const routes = [
+      'api',
+      'login',
+      'logs',
+      'configuration',
+      'users'
+    ];
+    if (relativePath.length > 1 && routes.indexOf(relativePath[0]) < 0 && relativePath[0] !== '') {
+      return relativePath[0];
+    }
+
+    return 'en';
+  };
+
   return (req, res, next) => {
     if (req.url.indexOf('/api') === 0) {
       return next();
     }
 
+    const locale = getLocale(req);
     const settings = {
       AUTH0_DOMAIN: config('AUTH0_DOMAIN'),
       AUTH0_TOKEN_ISSUER: `https://${config('AUTH0_ISSUER_DOMAIN')}/`,
       AUTH0_CLIENT_ID: config('EXTENSION_CLIENT_ID'),
       EXTEND_URL: config('EXTEND_URL'),
       BASE_URL: urlHelpers.getBaseUrl(req),
-      BASE_PATH: urlHelpers.getBasePath(req),
+      BASE_PATH: `${urlHelpers.getBasePath(req)}${locale}/`,
       TITLE: config('TITLE'),
       FEDERATED_LOGOUT: config('FEDERATED_LOGOUT') === 'true',
-      AUTH0_MANAGE_URL: config('AUTH0_MANAGE_URL') || 'https://manage.auth0.com'
+      AUTH0_MANAGE_URL: config('AUTH0_MANAGE_URL') || 'https://manage.auth0.com',
+      LOCALE: locale
     };
 
     // Render from CDN.

@@ -13,6 +13,7 @@ export default class Header extends Component {
     onLogout: PropTypes.func.isRequired,
     onCssToggle: PropTypes.func.isRequired,
     renderCssToggle: PropTypes.bool,
+    styleSettings: PropTypes.object.isRequired,
     languageDictionary: PropTypes.object
   };
 
@@ -57,7 +58,7 @@ export default class Header extends Component {
     if (this.props.renderCssToggle) {
       const toggleTextDefault = languageDictionary.toggleStyleSetDefault || 'Use Default Style';
       const toggleTextAlt = languageDictionary.toggleStyleSetAlternative || 'Use Alternative Style';
-      const text = (window.localStorage && window.localStorage.getItem('delegated-admin:use-alt-css') === 'true') ? toggleTextDefault : toggleTextAlt;
+      const text = this.props.styleSettings.get('useAlt') ? toggleTextDefault : toggleTextAlt;
       return (
         <li role="presentation">
           <a role="menuitem" onClick={this.props.onCssToggle} onFocus={this.showOnFocus} onBlur={this.hideOnBlur} onKeyUp={this.onKeyUp} tabIndex="0">

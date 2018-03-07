@@ -82,7 +82,7 @@ export default connectContainer(class extends Component {
           {message}
         </p>
         <UserFieldsFormInstance
-          initialValues={mapValues(user, allowedFields, filteredFields)}
+          initialValues={mapValues(user, allowedFields, filteredFields, 'edit')}
           isEditForm={true}
           fields={filteredFields}
           languageDictionary={languageDictionary}

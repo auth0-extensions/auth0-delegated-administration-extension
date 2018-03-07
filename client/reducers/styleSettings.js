@@ -12,5 +12,10 @@ export const styleSettings = createReducer(fromJS(initialState), { // eslint-dis
     state.merge({
       useAlt: action.payload.useAlt,
       path: action.payload.path
+    }),
+  [constants.GET_STYLE_SETTINGS]: (state, action) =>
+    state.merge({
+      useAlt: action.payload.useAlt,
+      path: action.payload.path
     })
 });

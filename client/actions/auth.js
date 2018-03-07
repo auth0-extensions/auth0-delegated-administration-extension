@@ -16,7 +16,7 @@ const webAuth = new auth0.WebAuth({ // eslint-disable-line no-undef
 });
 
 export function login(returnUrl, locale) {
-  sessionStorage.setItem('delegated-admin:returnTo', returnUrl || '/users');
+  sessionStorage.setItem('delegated-admin:returnTo', returnUrl || `/${locale}/users`);
 
   webAuth.authorize({
     responseType: 'id_token',
@@ -170,6 +170,23 @@ export function toggleStyleSettings() {
     localStorage.setItem('delegated-admin:use-alt-css', (!useAlt).toString());
     dispatch({
       type: constants.TOGGLE_STYLE_SETTINGS,
+      payload: {
+        useAlt: !useAlt,
+        path
+      }
+    });
+  };
+}
+
+export function getStyleSettings() {
+  return (dispatch, getState) => {
+    let settings = getState().settings.get('record').toJS();
+    settings = settings.settings || settings || {};
+    const useAlt = localStorage.getItem('delegated-admin:use-alt-css') === 'true';
+    const path = !useAlt ? settings.css : settings.altcss;
+
+    dispatch({
+      type: constants.GET_STYLE_SETTINGS,
       payload: {
         useAlt,
         path

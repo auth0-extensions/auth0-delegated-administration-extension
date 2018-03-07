@@ -33,6 +33,7 @@ describe('#Client-Components-Header', () => {
     const accessLevel = options.accessLevel || {};
     const issuer = options.issuer || 'issuer';
     const renderCssToggle = options.cssToggle || false;
+    const styleSettings = options.styleSettings || { useAlt: false };
 
     return shallow(
       <Header
@@ -42,6 +43,7 @@ describe('#Client-Components-Header', () => {
         issuer={issuer}
         onLogout={logout}
         onCssToggle={cssToggle}
+        styleSettings={fromJS(styleSettings)}
         renderCssToggle={options.renderCssToggle}
         languageDictionary={options.languageDictionary}
       />

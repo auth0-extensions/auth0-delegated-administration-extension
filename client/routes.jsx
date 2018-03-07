@@ -11,11 +11,6 @@ export default (history) =>
       <Route path="configuration" component={containers.Configuration} />
       <Route path="users" component={containers.Users} />
       <Route path="users/:id" component={containers.User} />
-      <Route path="/:locale/logs" component={containers.Logs} />
-      <Route path="/:locale/configuration" component={containers.Configuration} />
-      <Route path="/:locale/users" component={containers.Users} />
-      <Route path="/:locale/users/:id" component={containers.User} />
     </Route>
     <Route path="/login" component={containers.Login} />
-    <Route path="/:locale/login" component={containers.Login} />
   </Router>;

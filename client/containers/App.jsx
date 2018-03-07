@@ -15,6 +15,7 @@ class App extends Component {
     issuer: PropTypes.string,
     logout: PropTypes.func,
     settingsLoading: PropTypes.bool,
+    styleSettings: PropTypes.bool,
     fetchApplications: PropTypes.func.isRequired,
     fetchConnections: PropTypes.func.isRequired,
     getAccessLevel: PropTypes.func.isRequired,
@@ -28,6 +29,7 @@ class App extends Component {
     this.props.fetchApplications();
     this.props.fetchConnections();
     this.props.getAccessLevel();
+    this.props.getStyleSettings();
   }
 
   getDictValue = (index, defaultValue) => {
@@ -68,6 +70,7 @@ class App extends Component {
           onLogout={this.onLogout}
           onCssToggle={this.props.toggleStyleSettings}
           accessLevel={this.props.accessLevel.toJSON()}
+          styleSettings={this.props.styleSettings}
           languageDictionary={languageDictionary}
           renderCssToggle={renderCssToggle}
         />
@@ -97,6 +100,7 @@ function select(state) {
     user: state.auth.get('user'),
     accessLevel: state.accessLevel.get('record'),
     settings: state.settings.get('record'),
+    styleSettings: state.styleSettings,
     settingsLoading: state.settings.get('loading'),
     languageDictionary: state.languageDictionary.get('record')
   };
