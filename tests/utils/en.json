@@ -15,6 +15,7 @@
 
   "userUsersTabTitle": "Users",
   "userLogsTabTitle": "Logs",
+  "userActionsButton": "Actions",
 
   "logEventColumnHeader": "Event",
   "logDescriptionColumnHeader": "Description",
@@ -24,6 +25,7 @@
 
   "logDialogTitleText": "Log",
   "logDialogDefaultLogRecordText": "Log Record",
+  "noLogsMessage": "No logs found",
 
   "cancelButtonText": "Cancel",
   "updateButtonText": "Update",

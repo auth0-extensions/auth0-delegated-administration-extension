@@ -245,8 +245,11 @@ export default class UserActions extends Component {
       return null;
     }
 
+    const languageDictionary = this.props.languageDictionary || {};
+    const buttonTitle = languageDictionary.userActionsButton || 'Actions';
+
     return (
-      <DropdownButton bsStyle="success" title="Actions" id="user-actions">
+      <DropdownButton bsStyle="success" title={buttonTitle} id="user-actions">
         {this.getMultifactorAction(this.state.user, this.state.loading)}
         {this.getBlockedAction(this.state.user, this.state.loading)}
         {this.getResetPasswordAction(this.state.user, this.state.loading)}
