@@ -92,7 +92,7 @@ export default connectContainer(class PasswordChangeDialog extends Component {
           {message}
         </p>
         <UserFieldsFormInstance
-          initialValues={mapValues(user, allowedFields, filteredFields, 'edit')}
+          initialValues={mapValues(user, allowedFields, filteredFields, 'edit', languageDictionary)}
           isEditForm={true}
           fields={filteredFields}
           languageDictionary={languageDictionary}

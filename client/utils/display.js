@@ -35,7 +35,7 @@ export const getValue = (user, field, languageDictionary) => {
 
   if (_.isFunction(field.display)) {
     try {
-      return field.display(user);
+      return field.display(user, languageDictionary);
     } catch (e) {
       /* Swallow eval errors */
       console.log(`Could not display ${field.property} because: ${e.message}`);
