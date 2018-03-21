@@ -35,7 +35,7 @@ export default class UsersTable extends Component {
         listSize: '20%',
         property: 'name',
         label: 'Name',
-        display: (user, value) => (value || user.nickname || user.email || user.user_id),
+        display: (user) => (user.nickname || user.email || user.user_id),
         search: {
           sort: true
         }
@@ -45,7 +45,7 @@ export default class UsersTable extends Component {
         listSize: '29%',
         property: 'email',
         label: 'Email',
-        display: (user, value) => value || 'N/A'
+        display: (user) => user.email || 'N/A'
       },
       {
         listOrder: 2,
@@ -75,7 +75,7 @@ export default class UsersTable extends Component {
         listSize: '25%',
         property: 'identities',
         label: 'Connection',
-        display: (user, value) => value[0].connection
+        display: (user) => user.identities[0].connection
       });
     } else if (_.isFunction(connectionField.display) || (_.isBoolean(connectionField.display) && connectionField.display === true)) {
       defaultListFields.push({
@@ -83,7 +83,7 @@ export default class UsersTable extends Component {
         listSize: '25%',
         property: 'identities',
         label: 'Connection',
-        display: (user, value) => (_.isFunction(connectionField.display) ? connectionField.display(user, value) : value[0].connection)
+        display: (user) => (_.isFunction(connectionField.display) ? connectionField.display(user) : user.identities[0].connection)
       });
     }
 

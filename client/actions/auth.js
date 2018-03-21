@@ -16,11 +16,11 @@ const webAuth = new auth0.WebAuth({ // eslint-disable-line no-undef
 });
 
 export function login(returnUrl, locale) {
-  sessionStorage.setItem('delegated-admin:returnTo', returnUrl || `/${locale}/users`);
+  sessionStorage.setItem('delegated-admin:returnTo', returnUrl || '/users');
 
   webAuth.authorize({
     responseType: 'id_token',
-    redirectUri: `${window.config.BASE_URL}/login`,
+    redirectUri: `${window.config.BASE_URL}/${locale}/login`,
     scope: 'openid roles',
     ui_locales: locale
   });
@@ -204,8 +204,10 @@ function getLanguageDictionary(response, onSuccess) {
     } else if (_.isString(settings.languageDictionary) && settings.languageDictionary.startsWith('http')) {
       // Setting Authorization to None because we don't want to ship the token to some undeclared endpoint,
       // especially if not enforcing https
-      const oldHeader = axios.defaults.headers.common["Authorization"];
-      delete axios.defaults.headers.common["Authorization"]; // and create your own headers
+      const oldAuth = axios.defaults.headers.common['Authorization'];
+      const oldLocale = axios.defaults.headers.common['dae-locale'];
+      delete axios.defaults.headers.common['Authorization']; // and create your own headers
+      delete axios.defaults.headers.common['dae-locale']; // and create your own headers
 
       promise = axios.get(settings.languageDictionary, { responseType: 'json' })
         .then((response) => {
@@ -214,7 +216,8 @@ function getLanguageDictionary(response, onSuccess) {
         });
 
       // TODO: Race condition?  I hope not!
-      axios.defaults.headers.common["Authorization"] = oldHeader;
+      axios.defaults.headers.common['Authorization'] = oldAuth;
+      axios.defaults.headers.common['dae-locale'] = oldLocale;
     } // ignore else, bad languageDictionary
   }
 

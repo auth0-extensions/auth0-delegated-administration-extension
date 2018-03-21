@@ -40,7 +40,8 @@ store.subscribe(() => {
         }
       }
       const css = useAltCss ? settings.get('altcss') : settings.get('css');
-      if (css !== '') {
+
+      if (css && css.length) {
         const head = document.getElementsByTagName('head')[0];
         const link = document.createElement('link');
         link.id = 'custom_css';

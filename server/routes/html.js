@@ -50,7 +50,7 @@ export default () => {
       'configuration',
       'users'
     ];
-    if (relativePath.length > 1 && routes.indexOf(relativePath[0]) < 0 && relativePath[0] !== '') {
+    if (routes.indexOf(relativePath[0]) < 0 && relativePath[0] !== '') {
       return relativePath[0];
     }
 
@@ -63,13 +63,19 @@ export default () => {
     }
 
     const locale = getLocale(req);
+    const basePath = urlHelpers.getBasePath(req);
+
+    if (req.url.indexOf(`/${locale}`) !== 0) {
+      return res.redirect(`${basePath}${locale}${req.url || '/login'}`);
+    }
+
     const settings = {
       AUTH0_DOMAIN: config('AUTH0_DOMAIN'),
       AUTH0_TOKEN_ISSUER: `https://${config('AUTH0_ISSUER_DOMAIN')}/`,
       AUTH0_CLIENT_ID: config('EXTENSION_CLIENT_ID'),
       EXTEND_URL: config('EXTEND_URL'),
       BASE_URL: urlHelpers.getBaseUrl(req),
-      BASE_PATH: `${urlHelpers.getBasePath(req)}${locale}/`,
+      BASE_PATH: `${basePath}${locale}/`,
       TITLE: config('TITLE'),
       FEDERATED_LOGOUT: config('FEDERATED_LOGOUT') === 'true',
       AUTH0_MANAGE_URL: config('AUTH0_MANAGE_URL') || 'https://manage.auth0.com',
