@@ -25,6 +25,7 @@
 
   "logDialogTitleText": "Log",
   "logDialogDefaultLogRecordText": "Log Record",
+  "logTableDefaultLogRecordDescription": "Log Description Override",
   "noLogsMessage": "No logs found",
 
   "cancelButtonText": "Cancel",
