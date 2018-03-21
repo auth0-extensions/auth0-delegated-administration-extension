@@ -124,6 +124,7 @@ export default class UserInfo extends Component {
     const fields = _(customDisplayFields)
       .concat(standardFields)
       .concat(extraFields)
+      .filter(field => field.property !== 'picture')
       .sortBy(field => field.title)
       .value();
 

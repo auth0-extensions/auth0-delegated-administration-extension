@@ -32,6 +32,16 @@ export default class UsersTable extends Component {
     const defaultListFields = [
       {
         listOrder: 0,
+        listSize: '6%',
+        property: 'picture',
+        label: '',
+        display: (user) => user.picture || '',
+        search: {
+          sort: true
+        }
+      },
+      {
+        listOrder: 0,
         listSize: '20%',
         property: 'name',
         label: 'Name',
@@ -193,7 +203,6 @@ export default class UsersTable extends Component {
     return (
       <Table>
         <TableHeader>
-          <TableColumn width="6%"/>
           {
             listFields.map((field) => {
               const sort = _.isObject(field.search)
@@ -223,19 +232,23 @@ export default class UsersTable extends Component {
         <TableBody>
           {users.map(user =>
             <TableRow key={user.user_id}>
-              <TableCell>
-                <img
-                  className="img-circle"
-                  src={user.picture}
-                  alt={user.name || user.user_name || user.email}
-                  title={user.name || user.user_name || user.email}
-                  width="32"
-                />
-              </TableCell>
               {
                 listFields.map((field, index) => {
                   const key = `${user.user_id}_${field.property}`;
-                  if (index === 0) {
+                  if (field.property === 'picture') {
+                    return (
+                      <TableCell>
+                        <img
+                          className="img-circle"
+                          src={getValueForType('search', user, field, languageDictionary) || '(empty)'}
+                          alt={user.name || user.user_name || user.email}
+                          title={user.name || user.user_name || user.email}
+                          width="32"
+                        />
+                      </TableCell>
+                    );
+                  }
+                  if (field.property === 'name') {
                     return (
                       <TableRouteCell key={key} route={`/users/${user.user_id}`}>
                         {getValueForType('search', user, field, languageDictionary) || '(empty)'}

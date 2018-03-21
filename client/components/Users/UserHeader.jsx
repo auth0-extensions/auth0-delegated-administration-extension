@@ -28,6 +28,17 @@ export default class UserHeader extends Component {
     return user.name || user.nickname || user.email;
   }
 
+  getPicture(user, userFields) {
+    const pictureField = _.find(userFields, field => field.property === 'picture');
+
+    if (pictureField && _.isFunction(pictureField.display)) {
+      /* Custom Name Field function, use that instead of email address */
+      return pictureField.display(user);
+    }
+
+    return user.picture;
+  }
+
   getEmail(user, userFields) {
     // Check for user.email right away to make sure the user has been initialized
     if (!user.email) return <div></div>;
@@ -62,7 +73,7 @@ export default class UserHeader extends Component {
         <img
           role="presentation"
           className="img-polaroid"
-          src={user.picture}
+          src={this.getPicture(user, userFields)}
           alt={languageDictionary.userImageTitle || 'User Image'}
           title={languageDictionary.userImageTitle || 'User Image'}
         />
@@ -70,7 +81,7 @@ export default class UserHeader extends Component {
           <img
             role="presentation"
             className="user-bg"
-            src={user.picture}
+            src={this.getPicture(user, userFields)}
             alt={languageDictionary.userImageTitle || 'User Image'}
             title={languageDictionary.userImageTitle || 'User Image'}
           />
