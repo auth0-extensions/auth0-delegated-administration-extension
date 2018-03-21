@@ -128,7 +128,6 @@ describe('logs reducer', () => {
             date: '2016-09-26T13:03:50.703Z',
             shortType: 'custom_type',
             type: {
-              event: 'Unknown Event',
               icon: {
                 name: '354',
                 color: '#FFA500'
