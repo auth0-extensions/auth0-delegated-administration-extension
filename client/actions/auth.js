@@ -20,7 +20,7 @@ export function login(returnUrl, locale) {
 
   webAuth.authorize({
     responseType: 'id_token',
-    redirectUri: `${window.config.BASE_URL}/${locale}/login`,
+    redirectUri: `${window.config.BASE_URL}/login`,
     scope: 'openid roles',
     ui_locales: locale
   });
@@ -67,7 +67,7 @@ const processTokens = (dispatch, apiToken, returnTo) => {
   }
 
   axios.defaults.headers.common.Authorization = `Bearer ${apiToken}`;
-  axios.defaults.headers.common['dae-locale'] = localStorage.getItem('dae:locale') || 'en';
+  axios.defaults.headers.common['dae-locale'] = window.config.LOCALE || 'en';
 
   sessionStorage.setItem('delegated-admin:apiToken', apiToken);
 
