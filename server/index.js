@@ -2,6 +2,7 @@ import path from 'path';
 import morgan from 'morgan';
 import Express from 'express';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import * as tools from 'auth0-extension-tools';
 import { routes } from 'auth0-extension-express-tools';
 
@@ -54,7 +55,7 @@ module.exports = (cfg, storageProvider) => {
   app.use('/.extensions', hooks());
 
   // Fallback to rendering HTML.
-  app.get('*', htmlRoute());
+  app.get('*', cookieParser(), htmlRoute());
 
   // Generic error handler.
   app.use(errorHandler(logger.error));

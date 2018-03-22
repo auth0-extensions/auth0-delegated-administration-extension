@@ -576,7 +576,8 @@ describe('#users router', () => {
   describe('#Remove MFA', () => {
     it('should remove MFA', (done) => {
       request(app)
-        .delete('/users/1/multifactor/provider')
+        .delete('/users/1/multifactor')
+        .send({ provider: [ 'provider' ] })
         .expect(204)
         .end((err) => {
           if (err) return done(err);
@@ -586,7 +587,8 @@ describe('#users router', () => {
 
     it('should return "access denied" error', (done) => {
       request(app)
-        .delete('/users/5/multifactor/provider')
+        .delete('/users/5/multifactor')
+        .send({ provider: [ 'provider' ] })
         .expect(400)
         .end((err) => {
           if (err) return done(err);
@@ -754,7 +756,8 @@ describe('#users router', () => {
         .reply(204);
 
       request(app)
-        .del('/users/1/multifactor/guardian')
+        .del('/users/1/multifactor')
+        .send({ provider: [ 'guardian' ] })
         .expect(204)
         .end((err) => {
           if (err) return done(err);
@@ -768,7 +771,8 @@ describe('#users router', () => {
         .reply(200, []);
 
       request(app)
-        .del('/users/2/multifactor/guardian')
+        .del('/users/2/multifactor')
+        .send({ provider: [ 'guardian' ] })
         .expect(204)
         .end((err) => {
           if (err) return done(err);
@@ -782,7 +786,8 @@ describe('#users router', () => {
         .reply(200, [{ id: 1 }]);
 
       request(app)
-        .del('/users/3/multifactor/guardian')
+        .del('/users/3/multifactor')
+        .send({ provider: [ 'guardian' ] })
         .expect(404)
         .end((err) => {
           if (err) return done(err);
@@ -792,7 +797,8 @@ describe('#users router', () => {
 
     it('bad request on guardian get', (done) => {
       request(app)
-        .del('/users/1/multifactor/guardian')
+        .del('/users/1/multifactor')
+        .send({ provider: [ 'guardian' ] })
         .expect(404)
         .end((err) => {
           if (err) return done(err);
@@ -802,7 +808,8 @@ describe('#users router', () => {
 
     it('should return "bad request" error bad provider', (done) => {
       request(app)
-        .del('/users/1/multifactor/badProvider')
+        .del('/users/1/multifactor')
+        .send({ provider: [ 'badProvider' ] })
         .expect(500)
         .end((err) => {
           if (err) return done(err);

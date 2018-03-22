@@ -54,7 +54,7 @@ export default () => {
       return relativePath[0];
     }
 
-    return 'en';
+    return req.cookies['dae-locale'] || 'en';
   };
 
   return (req, res, next) => {
@@ -65,8 +65,11 @@ export default () => {
     const locale = getLocale(req);
     const basePath = urlHelpers.getBasePath(req);
 
-    if (req.url.indexOf(`/${locale}`) !== 0) {
-      return res.redirect(`${basePath}${locale}${req.url || '/login'}`);
+    if (req.url.indexOf('/login') !== 0) {
+      res.cookie('dae-locale', locale);
+      if (req.url.indexOf(`/${locale}`) !== 0) {
+        return res.redirect(`${basePath}${locale}${req.url || '/login'}`);
+      }
     }
 
     const settings = {
