@@ -4,7 +4,7 @@ import { Router } from 'express';
 export default (scriptManager) => {
   const api = Router();
   api.get('/', (req, res, next) => {
-    req.auth0.connections.getAll({ strategy: 'auth0', fields: 'id,name,strategy,enabled_clients,options' })
+    req.auth0.connections.getAll({ strategy: 'auth0', per_page: 100, fields: 'id,name,strategy,enabled_clients,options' })
       .then(connections => {
         const settingsContext = {
           request: {
