@@ -1,3 +1,10 @@
+## [2.5.1] - 2018-03-28
+
+### Changes
+
+- Request connections by strategy instead of filtering response
+- limit to 100 connection results
+
 ## [2.5.0] - 2017-10-25
 
 ### Changes
