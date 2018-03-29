@@ -63,6 +63,7 @@ export default connectContainer(class extends Component {
   render() {
     const { user, databaseConnections, log, logs, devices, settings, languageDictionary } = this.props;
     const userFields = (settings && settings.userFields) || [];
+    const allowedUserFields = userFields.filter(field => field.property !== 'picture' && field.property !== 'client');
     const suppressRawData = settings && settings.suppressRawData === true;
     const role = this.props.accessLevel.role;
     const originalTitle = (settings.dict && settings.dict.title) || window.config.TITLE || 'User Management';
@@ -78,7 +79,7 @@ export default connectContainer(class extends Component {
               <UserActions
                 role={role}
                 user={user}
-                userFields={userFields}
+                userFields={allowedUserFields}
                 databaseConnections={databaseConnections}
                 deleteUser={this.props.requestDeleteUser}
                 changeFields={this.props.requestFieldsChange}
@@ -97,7 +98,7 @@ export default connectContainer(class extends Component {
         </div>
         <div className="row">
           <div className="col-xs-12">
-            <UserHeader loading={user.get('loading')} user={user.get('record')} error={user.get('error')} userFields={userFields} languageDictionary={languageDictionary} />
+            <UserHeader loading={user.get('loading')} user={user.get('record')} error={user.get('error')} userFields={allowedUserFields} languageDictionary={languageDictionary} />
           </div>
         </div>
         <div className="row user-tabs">
@@ -107,7 +108,7 @@ export default connectContainer(class extends Component {
                 <UserInfo
                   loading={user.get('loading')} user={user.get('record')}
                   memberships={user.get('memberships') && user.get('memberships').toJSON()}
-                  userFields={userFields}
+                  userFields={allowedUserFields}
                   error={user.get('error')}
                   settings={settings}
                   languageDictionary={languageDictionary}
@@ -143,7 +144,7 @@ export default connectContainer(class extends Component {
           </div>
         </div>
         <dialogs.DeleteDialog />
-        <dialogs.FieldsChangeDialog getDictValue={this.props.getDictValue} userFields={userFields} errorTranslator={settings.errorTranslator}/>
+        <dialogs.FieldsChangeDialog getDictValue={this.props.getDictValue} userFields={allowedUserFields} errorTranslator={settings.errorTranslator}/>
         <dialogs.EmailChangeDialog />
         <dialogs.PasswordResetDialog />
         <dialogs.PasswordChangeDialog />

@@ -23,19 +23,19 @@ export const getName = (user, fields, languageDictionary) => {
   return user && (user.name || user.user_name || user.email);
 };
 
-export const getValueForType = (type, user, field, languageDictionary) => {
+export const getValueForType = (type, user, field, languageDictionary = {}, additionalData = {}) => {
   const mergedField = _.assign({}, field, field[type]);
-  return getValue(user, mergedField, languageDictionary);
+  return getValue(user, mergedField, languageDictionary, additionalData);
 };
 
-export const getValue = (user, field, languageDictionary) => {
+export const getValue = (user, field, languageDictionary = {}, additionalData = {}) => {
   if (!user || user.size === 0) {
     return null;
   }
 
   if (_.isFunction(field.display)) {
     try {
-      return field.display(user, languageDictionary);
+      return field.display(user, languageDictionary, additionalData);
     } catch (e) {
       /* Swallow eval errors */
       console.log(`Could not display ${field.property} because: ${e.message}`);
@@ -61,13 +61,13 @@ export const getValue = (user, field, languageDictionary) => {
   return value;
 };
 
-export const mapValues = (user, fieldNames, fields, type, languageDictionary) => {
+export const mapValues = (user, fieldNames, fields, type, languageDictionary = {}, additionalData = {}) => {
   const mappedUser = {};
   if (user) {
     fieldNames.forEach(fieldName => {
       const field = _.find(fields, { property: fieldName });
       if (field) {
-        const value = getValueForType(type, user, field, languageDictionary);
+        const value = getValueForType(type, user, field, languageDictionary, additionalData);
         if (value) mappedUser[fieldName] = value;
         return;
       }

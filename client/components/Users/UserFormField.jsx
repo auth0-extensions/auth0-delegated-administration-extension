@@ -80,6 +80,7 @@ export default class UserFormField extends Component {
 
     /* Add some default behavior */
     if (!field.label) field.label = field.property;
+    if (field[formType].type === 'hidden') field.label = '';
     if (!_.isFunction(field[formType].validationFunction) && field[formType].validationFunction) {
       console.warn(`WARNING: validation function for field: ${field.label}(${field.property}) is not a function`);
       delete field[formType].validationFunction;

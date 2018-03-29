@@ -96,7 +96,7 @@ export default connectContainer(class extends Component {
           {message}
         </p>
         <UserFieldsFormInstance
-          initialValues={mapValues(user, allowedFields, filteredFields, 'edit', languageDictionary)}
+          initialValues={mapValues(user, allowedFields, filteredFields, 'edit', languageDictionary, { applications: this.props.appsForConnection.toJS() })}
           isEditForm={true}
           fields={filteredFields}
           languageDictionary={languageDictionary}
