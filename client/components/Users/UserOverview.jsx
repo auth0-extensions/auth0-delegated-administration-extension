@@ -87,7 +87,7 @@ export default class UserOverview extends React.Component {
     const languageDictionary = this.props.languageDictionary || {};
     const labels = languageDictionary.labels || {};
     const searchOptions = this.searchOptions.map((option) => {
-      option.title = labels[option.value] || option.value;
+      option.title = labels[option.value] || option.title || option.value;
       return option;
     });
 
