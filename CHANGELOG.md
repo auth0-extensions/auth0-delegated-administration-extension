@@ -1,3 +1,9 @@
+## [2.6.0] - 2018-03-29
+
+### Changes
+
+- Updated login using auth0.js@8
+
 ## [2.5.1] - 2018-03-28
 
 ### Changes
