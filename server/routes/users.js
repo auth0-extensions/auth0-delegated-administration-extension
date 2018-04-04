@@ -179,7 +179,7 @@ export default (storage, scriptManager) => {
           page: req.query.page || 0,
           include_totals: true,
           fields: 'user_id,username,name,email,identities,picture,last_login,logins_count,multifactor,blocked,app_metadata,user_metadata',
-          search_engine: 'v2'
+          search_engine: config('SEARCH_ENGINE') || 'v3'
         };
 
         return req.auth0.users.getAll(options);
