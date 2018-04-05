@@ -172,14 +172,16 @@ export default (storage, scriptManager) => {
 
     scriptManager.execute('filter', filterContext)
       .then((filter) => {
+        const searchEngine = filter && filter.searchEngine;
+        const filterQuery = (filter && typeof filter.query !== 'undefined') ? filter.query : filter;
         const options = {
           sort,
-          q: (searchQuery && filter) ? `(${searchQuery}) AND ${filter}` : searchQuery || filter,
+          q: (searchQuery && filterQuery) ? `(${searchQuery}) AND ${filterQuery}` : searchQuery || filterQuery,
           per_page: req.query.per_page || 10,
           page: req.query.page || 0,
           include_totals: true,
           fields: 'user_id,username,name,email,identities,picture,last_login,logins_count,multifactor,blocked,app_metadata,user_metadata',
-          search_engine: config('SEARCH_ENGINE') || 'v3'
+          search_engine: searchEngine || config('SEARCH_ENGINE') || 'v3'
         };
 
         return req.auth0.users.getAll(options);
