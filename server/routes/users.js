@@ -36,7 +36,7 @@ const executeWriteHook = (req, scriptManager, userFields, onlyTheseFields) => {
 };
 
 const isValidField = (type, onlyTheseFields, field) =>
-  ((onlyTheseFields && _.includes(onlyTheseFields, field.property)) || (!onlyTheseFields && field[type]));
+  ((onlyTheseFields && _.includes(onlyTheseFields, field.property)) || (!onlyTheseFields && field[type] !== false));
 
 const checkCustomFieldValidation = (req, context, isEditRequest, onlyTheseFields) => {
   /* Exit early if no custom fields */
