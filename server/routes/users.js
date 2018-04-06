@@ -126,7 +126,7 @@ export default (storage, scriptManager) => {
           return data;
         }
 
-        const identities = data.user.identities.filter(identity => identity.provider === 'auth0')
+        const identities = data.user.identities.filter(identity => identity.provider === 'auth0');
         const name = identities[0] && identities[0].connection;
 
         if (!name) {
