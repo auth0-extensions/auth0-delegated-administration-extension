@@ -10,6 +10,7 @@ const initialState = {
   userId: null,
   record: {},
   memberships: [],
+  connection: {},
   logs: {
     loading: false,
     error: null,
@@ -43,6 +44,7 @@ describe('user reducer', () => {
         userId: null,
         record: {},
         memberships: [],
+        connection: {},
         logs: {
           loading: true,
           error: null,
@@ -70,6 +72,7 @@ describe('user reducer', () => {
         userId: null,
         record: {},
         memberships: [],
+        connection: {},
         logs: {
           loading: false,
           error: 'An error occured while loading the user logs: ERROR',
@@ -118,6 +121,7 @@ describe('user reducer', () => {
         userId: null,
         record: {},
         memberships: [],
+        connection: {},
         logs: {
           loading: false,
           error: null,
@@ -197,6 +201,7 @@ describe('user reducer', () => {
         userId: null,
         record: {},
         memberships: [],
+        connection: {},
         logs: {
           loading: false,
           error: null,
@@ -257,6 +262,7 @@ describe('user reducer', () => {
         userId: null,
         record: {},
         memberships: [],
+        connection: {},
         logs: {
           loading: false,
           error: null,
@@ -284,6 +290,7 @@ describe('user reducer', () => {
         userId: null,
         record: {},
         memberships: [],
+        connection: {},
         logs: {
           loading: false,
           error: null,
@@ -311,6 +318,7 @@ describe('user reducer', () => {
         userId: null,
         record: {},
         memberships: [],
+        connection: {},
         logs: {
           loading: false,
           error: null,
@@ -371,6 +379,7 @@ describe('user reducer', () => {
         userId: null,
         record: {},
         memberships: [],
+        connection: {},
         logs: {
           loading: false,
           error: null,
@@ -404,6 +413,7 @@ describe('user reducer', () => {
         userId: 'user_1',
         record: {},
         memberships: [],
+        connection: {},
         logs: {
           loading: false,
           error: null,
@@ -431,6 +441,7 @@ describe('user reducer', () => {
         userId: null,
         record: {},
         memberships: [],
+        connection: {},
         logs: {
           loading: false,
           error: null,
@@ -469,6 +480,7 @@ describe('user reducer', () => {
         error: null,
         userId: 1,
         record: {},
+        connection: {},
         memberships: [],
         logs: {
           loading: false,
@@ -488,6 +500,7 @@ describe('user reducer', () => {
               user_id: 1,
               name: 'test'
             },
+            connection: {},
             memberships: [ 'department_1', 'department_2' ]
           }
         }
@@ -502,6 +515,7 @@ describe('user reducer', () => {
           name: 'test'
         },
         memberships: [ 'department_1', 'department_2' ],
+        connection: {},
         logs: {
           loading: false,
           error: null,
