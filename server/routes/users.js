@@ -38,7 +38,7 @@ export default (storage, scriptManager) => {
         username: req.body.username,
         password: req.body.password,
         connection: req.body.connection,
-        app_metadata: (req.body.memberships && req.body.memberships.length && { memberships: req.body.memberships }) || { }
+        app_metadata: (req.body.memberships && req.body.memberships.length && { memberships: req.body.memberships }) || {}
       }
     };
 
@@ -116,8 +116,33 @@ export default (storage, scriptManager) => {
 
             return {
               user,
-              memberships: [ ]
+              memberships: []
             };
+          });
+      })
+      .then(data => {
+        if (!data.user.identities) {
+          data.connection = {};
+          return data;
+        }
+
+        const identities = data.user.identities.filter(identity => identity.provider === 'auth0')
+        const name = identities[0] && identities[0].connection;
+
+        if (!name) {
+          data.connection = {};
+          return data;
+        }
+
+        return req.auth0.connections.getAll({ name, fields: 'id' })
+          .then(connection => req.auth0.connections.get({ id: connection[0].id, fields: 'enabled_clients' }))
+          .then((connection) => {
+            data.connection = {
+              ...connection,
+              name
+            };
+
+            return data;
           });
       })
       .then(data => res.json(data))

@@ -1,10 +1,12 @@
 import _ from 'lodash';
 import { Router } from 'express';
 
+import multipartRequest from '../lib/multipartRequest';
+
 export default (scriptManager) => {
   const api = Router();
   api.get('/', (req, res, next) => {
-    req.auth0.connections.getAll({ strategy: 'auth0', per_page: 100, fields: 'id,name,strategy,enabled_clients,options' })
+    multipartRequest(req.auth0, 'connections', { strategy: 'auth0', fields: 'id,name,strategy,options' })
       .then(connections => {
         const settingsContext = {
           request: {

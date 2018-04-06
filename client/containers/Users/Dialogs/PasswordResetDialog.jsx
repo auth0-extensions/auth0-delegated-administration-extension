@@ -8,7 +8,7 @@ import getAppsForConnection from '../../../selectors/getAppsForConnection';
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     passwordReset: state.passwordReset,
-    appsForConnection: getAppsForConnection(state, state.passwordReset.get('connection'))
+    appsForConnection: getAppsForConnection(state)
   });
 
   static actionsToProps = {
