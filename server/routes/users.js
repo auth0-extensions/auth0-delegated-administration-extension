@@ -135,7 +135,13 @@ export default (storage, scriptManager) => {
         }
 
         return req.auth0.connections.getAll({ name, fields: 'id' })
-          .then(connection => req.auth0.connections.get({ id: connection[0].id, fields: 'enabled_clients' }))
+          .then((connection) => {
+            if (connection && connection[0] && connection[0].id) {
+              return req.auth0.connections.get({ id: connection[0].id, fields: 'enabled_clients' });
+            }
+
+            return {};
+          })
           .then((connection) => {
             data.connection = {
               ...connection,
