@@ -233,6 +233,24 @@ export default (storage, scriptManager) => {
         };
       })
       .then(data => {
+        if (!data.user.identities) {
+          data.connection = {};
+          return data;
+        }
+
+        const name = data.user.identities && data.user.identities[0] && data.user.identities[0].connection;
+        return req.auth0.connections.getAll({ name, fields: 'id' })
+          .then(connection => req.auth0.connections.get({ id: connection[0].id, fields: 'enabled_clients' }))
+          .then((connection) => {
+            data.connection = {
+              ...connection,
+              name
+            };
+
+            return data;
+          });
+      })
+      .then(data => {
         if (data.user.multifactor && data.user.multifactor.indexOf('guardian') >= 0) {
           return getApiToken(req)
             .then(accessToken => requestGuardianEnrollments(accessToken, req.params.id))

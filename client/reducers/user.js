@@ -11,6 +11,7 @@ const initialState = {
   userId: null,
   record: { },
   memberships: [],
+  connection: {},
   logs: {
     loading: false,
     error: null,
@@ -104,7 +105,8 @@ export const user = createReducer(fromJS(initialState), { // eslint-disable-line
     return state.merge({
       loading: false,
       record: fromJS(data.user),
-      memberships: fromJS(data.memberships)
+      memberships: fromJS(data.memberships),
+      connection: fromJS(data.connection)
     });
   },
 

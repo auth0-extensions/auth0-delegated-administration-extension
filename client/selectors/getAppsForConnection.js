@@ -3,8 +3,8 @@ import { createSelector } from 'reselect';
 const getApps = (state) =>
   state.applications.get('records');
 
-const getConnection = (state, connectionName) =>
-  connectionName && state.connections.get('records').find(conn => conn.get('name') === connectionName);
+const getConnection = (state) =>
+  state.user.get('connection');
 
 const getAppsForConnection = createSelector(
   [ getApps, getConnection ],
