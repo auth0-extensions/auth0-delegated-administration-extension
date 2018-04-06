@@ -7,6 +7,7 @@ import { managementApi, ArgumentError, ValidationError } from 'auth0-extension-t
 import config from '../lib/config';
 import { verifyUserAccess } from '../lib/middlewares';
 import removeGuardian from '../lib/removeGuardian';
+import getConnectionIdByName from '../lib/getConnectionIdByName';
 
 export default (storage, scriptManager) => {
   const api = Router();
@@ -120,7 +121,7 @@ export default (storage, scriptManager) => {
             };
           });
       })
-      .then(data => {
+      .then((data) => {
         if (!data.user.identities) {
           data.connection = {};
           return data;
@@ -134,18 +135,17 @@ export default (storage, scriptManager) => {
           return data;
         }
 
-        return req.auth0.connections.getAll({ name, fields: 'id' })
-          .then((connection) => {
-            if (connection && connection[0] && connection[0].id) {
-              return req.auth0.connections.get({ id: connection[0].id, fields: 'enabled_clients' });
+        return getConnectionIdByName(req.auth0, name)
+          .then((connectionId) => {
+            if (connectionId) {
+              return req.auth0.connections.get({ id: connectionId, fields: 'enabled_clients' });
             }
 
             return {};
           })
           .then((connection) => {
             data.connection = {
-              ...connection,
-              name
+              enabled_clients: connection.enabled_clients
             };
 
             return data;

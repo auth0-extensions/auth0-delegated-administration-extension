@@ -1,7 +1,7 @@
 import Promise from 'bluebird';
 import { ArgumentError } from 'auth0-extension-tools';
 
-export default function(client, entity, opts = {}, perPage = 100, concurrency = 5) {
+export default function (client, entity, opts = {}, perPage = 100, concurrency = 5) {
   if (client === null || client === undefined) {
     throw new ArgumentError('Must provide a auth0 client object.');
   }
@@ -26,7 +26,7 @@ export default function(client, entity, opts = {}, perPage = 100, concurrency = 
         return null;
       });
 
-  const getPage = (page) =>
+  const getPage = page =>
     getter({ ...options, page })
       .then((data) => {
         data.forEach(item => result.push(item));
@@ -41,7 +41,7 @@ export default function(client, entity, opts = {}, perPage = 100, concurrency = 
         }
 
         const pages = [];
-        for (let i=1; i<=pageCount; i++) {
+        for (let i = 1; i <= pageCount; i++) {
           pages.push(i);
         }
 
