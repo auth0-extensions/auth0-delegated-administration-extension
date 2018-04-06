@@ -7,6 +7,7 @@ import { managementApi, ArgumentError, ValidationError } from 'auth0-extension-t
 import config from '../lib/config';
 import { verifyUserAccess } from '../lib/middlewares';
 import removeGuardian from '../lib/removeGuardian';
+import getConnectionIdByName from '../lib/getConnectionIdByName';
 
 export default (storage, scriptManager) => {
   const api = Router();
@@ -38,7 +39,7 @@ export default (storage, scriptManager) => {
         username: req.body.username,
         password: req.body.password,
         connection: req.body.connection,
-        app_metadata: (req.body.memberships && req.body.memberships.length && { memberships: req.body.memberships }) || { }
+        app_metadata: (req.body.memberships && req.body.memberships.length && { memberships: req.body.memberships }) || {}
       }
     };
 
@@ -116,8 +117,38 @@ export default (storage, scriptManager) => {
 
             return {
               user,
-              memberships: [ ]
+              memberships: []
             };
+          });
+      })
+      .then((data) => {
+        if (!data.user.identities) {
+          data.connection = {};
+          return data;
+        }
+
+        const identities = data.user.identities.filter(identity => identity.provider === 'auth0');
+        const name = identities[0] && identities[0].connection;
+
+        if (!name) {
+          data.connection = {};
+          return data;
+        }
+
+        return getConnectionIdByName(req.auth0, name)
+          .then((connectionId) => {
+            if (connectionId) {
+              return req.auth0.connections.get({ id: connectionId, fields: 'enabled_clients' });
+            }
+
+            return {};
+          })
+          .then((connection) => {
+            data.connection = {
+              enabled_clients: connection.enabled_clients
+            };
+
+            return data;
           });
       })
       .then(data => res.json(data))

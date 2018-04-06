@@ -7,6 +7,7 @@ const logger = require('../../server/lib/logger');
 const options = {
   publicPath: 'http://localhost:3001/app/',
   hot: true,
+  disableHostCheck: true,
   inline: true,
   historyApiFallback: true,
   proxy: {

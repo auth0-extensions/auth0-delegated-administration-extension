@@ -39,7 +39,7 @@ store.subscribe(() => {
         }
       }
       const css = settings.get('css');
-      if (css !== '') {
+      if (css) {
         const head = document.getElementsByTagName('head')[0];
         const link = document.createElement('link');
         link.id = 'custom_css';
