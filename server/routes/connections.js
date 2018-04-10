@@ -6,7 +6,7 @@ import multipartRequest from '../lib/multipartRequest';
 export default (scriptManager) => {
   const api = Router();
   api.get('/', (req, res, next) => {
-    multipartRequest(req.auth0, 'connections', { strategy: 'auth0', fields: 'id,name,strategy,options' }, 1, 1)
+    multipartRequest(req.auth0, 'connections', { strategy: 'auth0', fields: 'id,name,strategy,options' })
       .then((connections) => {
         global.connections = connections.map(conn => ({ name: conn.name, id: conn.id }));
         const settingsContext = {
