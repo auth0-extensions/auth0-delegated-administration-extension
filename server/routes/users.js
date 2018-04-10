@@ -10,6 +10,7 @@ import logger from '../lib/logger';
 import { verifyUserAccess } from '../lib/middlewares';
 import { removeGuardian, requestGuardianEnrollments } from '../lib/removeGuardian';
 import getApiToken from '../lib/getApiToken';
+import getConnectionIdByName from '../lib/getConnectionIdByName';
 
 const executeWriteHook = (req, scriptManager, userFields, onlyTheseFields) => {
   const user = req.targetUser;
@@ -238,19 +239,31 @@ export default (storage, scriptManager) => {
           return data;
         }
 
-        const name = data.user.identities && data.user.identities[0] && data.user.identities[0].connection;
-        return req.auth0.connections.getAll({ name, fields: 'id' })
-          .then(connection => req.auth0.connections.get({ id: connection[0].id, fields: 'enabled_clients' }))
+        const identities = data.user.identities.filter(identity => identity.provider === 'auth0');
+        const name = identities[0] && identities[0].connection;
+
+        if (!name) {
+          data.connection = {};
+          return data;
+        }
+
+        return getConnectionIdByName(req.auth0, name)
+          .then((connectionId) => {
+            if (connectionId) {
+              return req.auth0.connections.get({ id: connectionId, fields: 'enabled_clients' });
+            }
+
+            return {};
+          })
           .then((connection) => {
             data.connection = {
-              ...connection,
-              name
+              enabled_clients: connection.enabled_clients
             };
 
             return data;
           });
       })
-      .then(data => {
+      .then((data) => {
         if (data.user.multifactor && data.user.multifactor.indexOf('guardian') >= 0) {
           return getApiToken(req)
             .then(accessToken => requestGuardianEnrollments(accessToken, req.params.id))

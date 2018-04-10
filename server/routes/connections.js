@@ -7,7 +7,8 @@ export default (scriptManager) => {
   const api = Router();
   api.get('/', (req, res, next) => {
     multipartRequest(req.auth0, 'connections', { strategy: 'auth0', fields: 'id,name,strategy,options' }, 1, 1)
-      .then(connections => {
+      .then((connections) => {
+        global.connections = connections.map(conn => ({ name: conn.name, id: conn.id }));
         const settingsContext = {
           request: {
             user: req.user
@@ -16,9 +17,9 @@ export default (scriptManager) => {
         };
 
         return scriptManager.execute('settings', settingsContext)
-          .then(settings => {
+          .then((settings) => {
             let result = _.chain(connections)
-              .sortBy((conn) => conn.name.toLowerCase())
+              .sortBy(conn => conn.name.toLowerCase())
               .value();
 
             if (settings && settings.connections && Array.isArray(settings.connections) && settings.connections.length) {
