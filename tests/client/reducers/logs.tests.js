@@ -65,12 +65,20 @@ describe('logs reducer', () => {
     expect(
       logs(initialState, {
         type: constants.FETCH_LOGS_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
         loading: false,
-        error: 'An error occurred while loading the logs: ERROR',
+        error: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        },
         records: [],
         currentRecord: null
       }
@@ -118,8 +126,8 @@ describe('logs reducer', () => {
             client_name: 'My App',
             connection: 'Username-Password-Authentication',
             date: '2016-09-26T13:03:50.703Z',
+            shortType: 'custom_type',
             type: {
-              event: 'Unknown Event',
               icon: {
                 name: '354',
                 color: '#FFA500'
@@ -132,6 +140,7 @@ describe('logs reducer', () => {
             client_name: 'My App',
             connection: 'Username-Password-Authentication',
             date: '2016-09-26T13:03:36.005Z',
+            shortType: 's',
             type: {
               event: 'Success Login',
               icon: {

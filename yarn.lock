@@ -375,9 +375,9 @@ auth0-extension-tools@1.2.1, auth0-extension-tools@^1.0.0:
     superagent "^2.2.0"
     webtask-tools "^2.2.0"
 
-auth0-extension-ui@^1.1.3:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/auth0-extension-ui/-/auth0-extension-ui-1.1.3.tgz#7dabb64b9086f1a14ff2c03044d358acd4666b6a"
+auth0-extension-ui@~1.1.5:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/auth0-extension-ui/-/auth0-extension-ui-1.1.5.tgz#2df73919efce61f2c585bd7f57d1f1b6b8fa87f4"
   dependencies:
     babel-runtime "^6.11.6"
     css-loader "^0.25.0"
@@ -1627,6 +1627,10 @@ center-align@^0.1.1:
   dependencies:
     align-text "^0.1.3"
     lazy-cache "^1.0.3"
+
+chai-match@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/chai-match/-/chai-match-1.1.1.tgz#39fb0a2e6b7c8f6386dcfead48d148a915fa6c46"
 
 "chai@>=1.9.2 <4.0.0", chai@^3.5.0:
   version "3.5.0"

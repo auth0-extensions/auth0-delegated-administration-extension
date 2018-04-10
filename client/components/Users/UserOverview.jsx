@@ -1,9 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { findDOMNode } from 'react-dom';
 import _ from 'lodash';
+import { Error, LoadingPanel, TableTotals, SearchBar } from 'auth0-extension-ui';
 
 import { LuceneSearchBar, UsersTable } from './';
-import { Error, LoadingPanel, TableTotals, SearchBar } from 'auth0-extension-ui';
+import getErrorMessage from '../../utils/getErrorMessage';
+import './UserOverview.styles.css';
 
 export default class UserOverview extends React.Component {
   static propTypes = {
@@ -17,6 +20,7 @@ export default class UserOverview extends React.Component {
     onColumnSort: PropTypes.func.isRequired,
     sortOrder: PropTypes.number.isRequired,
     sortProperty: PropTypes.string.isRequired,
+    settings: PropTypes.object.isRequired,
     languageDictionary: PropTypes.object
   }
 
@@ -46,13 +50,18 @@ export default class UserOverview extends React.Component {
     this.onHandleOptionChange = this.onHandleOptionChange.bind(this);
   }
 
+  onSearch = (query, filter) => {
+    this.props.onSearch(query, filter, this.focusSearchResults);
+  }
+
   onKeyPress = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       const query = e.target.value;
-      this.props.onSearch(query, this.state.selectedFilter.filterBy);
+      this.onSearch(query, this.state.selectedFilter.filterBy);
     }
   }
+
 
   onReset() {
     this.props.onReset();
@@ -67,42 +76,66 @@ export default class UserOverview extends React.Component {
     });
   }
 
+  focusSearchResults = () => {
+    const searchResults = findDOMNode(this.refs.searchResults);
+    const element = searchResults.querySelector('a') || searchResults.querySelector('label');
+    element.focus();
+  };
+
   render() {
-    const { loading, sortProperty, sortOrder } = this.props;
+    const { loading, sortProperty, sortOrder, error, settings } = this.props;
+    const languageDictionary = this.props.languageDictionary || {};
+    const labels = languageDictionary.labels || {};
+    const searchOptions = this.searchOptions.map((option) => {
+      option.title = labels[option.value] || option.value;
+      return option;
+    });
+
     return (
       <div>
         <div className="row">
           <div className="col-xs-12 wrapper">
-            <Error message={this.props.error}/>
+            <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, settings.errorTranslator)} />
           </div>
         </div>
         <div className="row">
           <div className="col-xs-12">
-            {(this.searchOptions && this.searchOptions.length > 0) ? (
+            <label className="hidden-label" htmlFor="search-bar">
+              {languageDictionary.searchBarPlaceholder || 'Search for users using the Lucene syntax'}
+            </label>
+
+            {(searchOptions.length > 0) ? (
               <SearchBar
+                inputId="search-bar"
                 onReset={this.props.onReset}
                 enabled={!loading}
                 handleKeyPress={this.onKeyPress}
                 handleReset={this.onReset}
                 handleOptionChange={this.onHandleOptionChange}
-                searchOptions={this.searchOptions}
-                searchValue={this.state.searchValue}/>
-            ) : (
-              <LuceneSearchBar
-                onReset={this.props.onReset}
-                onSearch={this.props.onSearch}
-                enabled={!loading}
-                languageDictionary={this.props.languageDictionary}/>
-            )}
+                searchOptions={searchOptions}
+                searchValue={this.state.searchValue}
+                placeholder={languageDictionary.searchBarPlaceholder}
+                resetButtonText={languageDictionary.searchBarReset}
+                instructionsText={languageDictionary.searchBarInstructions}
+              />
+              ) : (
+                <LuceneSearchBar
+                  inputId="search-bar"
+                  onReset={this.props.onReset}
+                  onSearch={this.onSearch}
+                  enabled={!loading}
+                  languageDictionary={languageDictionary}
+                />
+              )}
           </div>
         </div>
         <LoadingPanel show={loading}>
           <div className="row">
-            <div className="col-xs-12">
+            <div className="col-xs-12" ref="searchResults">
               <UsersTable loading={loading} users={this.props.users}
                           userFields={this.props.userFields} onColumnSort={this.props.onColumnSort}
                           sortOrder={sortOrder} sortProperty={sortProperty}
-                          languageDictionary={this.props.languageDictionary}/>
+                          languageDictionary={languageDictionary}/>
             </div>
           </div>
         </LoadingPanel>

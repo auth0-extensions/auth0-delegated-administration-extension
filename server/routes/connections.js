@@ -9,7 +9,8 @@ export default (scriptManager) => {
         const settingsContext = {
           request: {
             user: req.user
-          }
+          },
+          locale: req.headers['dae-locale']
         };
 
         return scriptManager.execute('settings', settingsContext)

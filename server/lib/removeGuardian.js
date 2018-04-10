@@ -22,7 +22,7 @@ const requestClearGuardian = (token, enrollmentId) =>
       });
   });
 
-const requestGuardianEnrollments = (token, userId) =>
+export const requestGuardianEnrollments = (token, userId) =>
   new Promise((resolve, reject) => {
     request
       .get('https://' + config('AUTH0_DOMAIN') + '/api/v2/users/' + userId + '/enrollments')
@@ -38,5 +38,5 @@ const requestGuardianEnrollments = (token, userId) =>
       });
   });
 
-export default (accessToken, userId) => requestGuardianEnrollments(accessToken, userId)
+export const removeGuardian = (accessToken, userId) => requestGuardianEnrollments(accessToken, userId)
       .then((enrollmentId) => requestClearGuardian(accessToken, enrollmentId));

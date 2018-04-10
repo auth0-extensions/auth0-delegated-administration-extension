@@ -28,6 +28,17 @@ export default class UserHeader extends Component {
     return user.name || user.nickname || user.email;
   }
 
+  getPicture(user, userFields) {
+    const pictureField = _.find(userFields, field => field.property === 'picture');
+
+    if (pictureField && _.isFunction(pictureField.display)) {
+      /* Custom Name Field function, use that instead of email address */
+      return pictureField.display(user);
+    }
+
+    return user.picture;
+  }
+
   getEmail(user, userFields) {
     // Check for user.email right away to make sure the user has been initialized
     if (!user.email) return <div></div>;
@@ -59,21 +70,33 @@ export default class UserHeader extends Component {
 
     return (
       <div className="user-header">
-        <img role="presentation" className="img-polaroid" src={user.picture} />
+        <img
+          role="presentation"
+          className="img-polaroid"
+          src={this.getPicture(user, userFields)}
+          alt={languageDictionary.userImageTitle || 'User Image'}
+          title={languageDictionary.userImageTitle || 'User Image'}
+        />
         <div className="user-bg-box" style={{ position: 'relative', height: '120px', overflow: 'hidden' }}>
-          <img role="presentation" className="user-bg" src={user.picture} />
+          <img
+            role="presentation"
+            className="user-bg"
+            src={this.getPicture(user, userFields)}
+            alt={languageDictionary.userImageTitle || 'User Image'}
+            title={languageDictionary.userImageTitle || 'User Image'}
+          />
           <div className="box-content">
             <div className="login-count">
               <span className="lined-text">{ languageDictionary.loginsCountLabel || 'Logins Count:' }</span>
               <strong>{user.logins_count || 0}</strong>
             </div>
             <div className="username-area">
-              <h4>
+              <h2>
                 <span className="name user-head-nickname">
                   { this.getName(user, userFields) }
                 </span>
                 { this.getEmail(user, userFields) }
-              </h4>
+              </h2>
             </div>
           </div>
         </div>

@@ -36,12 +36,20 @@ describe('languageDictionary reducer', () => {
     expect(
       languageDictionary(initialState, {
         type: constants.FETCH_LANGUAGE_DICTIONARY_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
         loading: false,
-        error: 'An error occurred while loading the language dictionary: ERROR',
+        error: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        },
         record: {}
       }
     );

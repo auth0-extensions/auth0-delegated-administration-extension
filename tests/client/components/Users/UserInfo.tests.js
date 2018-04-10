@@ -19,6 +19,7 @@ describe('#Client-Components-UserInfo', () => {
         user={fromJS(user)}
         memberships={memberships}
         userFields={userFields}
+        settings={{}}
         languageDictionary={languageDictionary}
       />
     );

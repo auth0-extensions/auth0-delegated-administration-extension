@@ -6,9 +6,7 @@ const initialState = {
   error: null,
   loading: false,
   requesting: false,
-  userId: null,
-  connection: null,
-  userName: null
+  user: null
 };
 
 describe('Resend verification reducer', () => {
@@ -28,17 +26,18 @@ describe('Resend verification reducer', () => {
           user_id: 1,
           name: 'test_name',
           email: 'test@mail.ru'
-        },
-        connection: 'connection'
+        }
       }).toJSON()
     ).toEqual(
       {
         error: null,
         loading: false,
         requesting: true,
-        userId: 1,
-        connection: 'connection',
-        userName: 'test_name'
+        user: {
+          user_id: 1,
+          name: 'test_name',
+          email: 'test@mail.ru'
+        }
       }
     );
   });
@@ -51,17 +50,18 @@ describe('Resend verification reducer', () => {
           user_id: 1,
           user_name: 'test_username',
           email: 'test@mail.ru'
-        },
-        connection: 'connection'
+        }
       }).toJSON()
     ).toEqual(
       {
         error: null,
         loading: false,
         requesting: true,
-        userId: 1,
-        connection: 'connection',
-        userName: 'test_username'
+        user: {
+          user_id: 1,
+          user_name: 'test_username',
+          email: 'test@mail.ru'
+        }
       }
     );
   });
@@ -73,17 +73,17 @@ describe('Resend verification reducer', () => {
         user: {
           user_id: 1,
           email: 'test@mail.ru'
-        },
-        connection: 'connection'
+        }
       }).toJSON()
     ).toEqual(
       {
         error: null,
         loading: false,
         requesting: true,
-        userId: 1,
-        connection: 'connection',
-        userName: 'test@mail.ru'
+        user: {
+          user_id: 1,
+          email: 'test@mail.ru'
+        }
       }
     );
   });
@@ -108,9 +108,7 @@ describe('Resend verification reducer', () => {
         error: null,
         loading: true,
         requesting: false,
-        userId: null,
-        connection: null,
-        userName: null
+        user: null
       }
     );
   });
@@ -119,16 +117,22 @@ describe('Resend verification reducer', () => {
     expect(
       verificationEmail(initialState, {
         type: constants.RESEND_VERIFICATION_EMAIL_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
-        error: 'An error occured while sending email: ERROR',
+        error: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        },
         loading: false,
         requesting: false,
-        userId: null,
-        connection: null,
-        userName: null
+        user: null
       }
     );
   });

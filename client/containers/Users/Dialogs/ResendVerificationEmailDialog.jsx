@@ -1,13 +1,17 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import connectContainer from 'redux-static';
 import { Error, Confirm } from 'auth0-extension-ui';
 
 import { userActions } from '../../../actions';
 import getDialogMessage from './getDialogMessage';
+import { getName } from '../../../utils/display';
+import getErrorMessage from '../../../utils/getErrorMessage';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     verificationEmail: state.verificationEmail,
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     languageDictionary: state.languageDictionary
   });
 
@@ -27,33 +31,35 @@ export default connectContainer(class extends Component {
   }
 
   onConfirm = () => {
-    this.props.resendVerificationEmail(this.props.verificationEmail.toJS().userId);
+    this.props.resendVerificationEmail(this.props.verificationEmail.toJS().user.user_id);
   }
 
   render() {
-    const { cancelResendVerificationEmail } = this.props;
-    const { userName, error, requesting, loading } = this.props.verificationEmail.toJS();
+    const { cancelResendVerificationEmail, settings } = this.props;
+    const { user, error, requesting, loading } = this.props.verificationEmail.toJS();
 
+    const userFields = settings.userFields || [];
     const languageDictionary = this.props.languageDictionary.get('record').toJS();
-    const { preText, postText } = getDialogMessage(
-      languageDictionary.resendVerificationEmailMessage, 'username',
-      {
-        preText: 'Do you really want to resend verification email to ',
-        postText: '?'
-      }
-    );
+
+    const messageFormat = languageDictionary.resendVerificationEmailMessage ||
+      'Do you really want to resend verification email to {username}?';
+
+    const message = getDialogMessage(messageFormat, 'username',
+      getName(user, userFields, languageDictionary));
 
     return (
       <Confirm
         title={languageDictionary.resendVerificationEmailTitle || "Resend Verification Email?" }
         show={requesting}
         loading={loading}
+        confirmMessage={languageDictionary.dialogConfirmText}
+        cancelMessage={languageDictionary.dialogCancelText}
         onCancel={cancelResendVerificationEmail}
-        languageDictionary={languageDictionary}
+        closeLabel={languageDictionary.closeButtonText}
         onConfirm={this.onConfirm}>
-        <Error message={error} />
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, settings.errorTranslator)} />
         <p>
-          {preText}<strong>{userName}</strong>{postText}
+          {message}
         </p>
       </Confirm>
     );

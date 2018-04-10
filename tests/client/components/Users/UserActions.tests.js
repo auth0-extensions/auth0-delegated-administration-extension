@@ -76,7 +76,7 @@ describe('#Client-Components-UserActions', () => {
       "Change Password": changePassword(),
       "Delete User": deleteUser(),
       "Change Profile": changeFields(),
-      "Remove MFA (guardian)": removeMfa(),
+      "Remove MFA": removeMfa(),
       "Resend Verification Email": resendVerificationEmail(),
       "Reset Password": resetPassword(),
       "Change Username": changeUsername()
@@ -95,7 +95,7 @@ describe('#Client-Components-UserActions', () => {
       "Change Password": changePassword(),
       "Delete User": deleteUser(),
       "Change Profile": changeFields(),
-      "Remove MFA (guardian)": removeMfa(),
+      "Remove MFA": removeMfa(),
       "Resend Verification Email": resendVerificationEmail(),
       "Reset Password": resetPassword(),
       "Change Username": changeUsername()
@@ -126,7 +126,7 @@ describe('#Client-Components-UserActions', () => {
       "changePassword": changePassword(),
       "deleteUser": deleteUser(),
       "changeFields": changeFields(),
-      "removeMfa (guardian)": removeMfa(),
+      "removeMfa": removeMfa(),
       "resendVerificationEmail": resendVerificationEmail(),
       "resetPassword": resetPassword(),
       "changeUsername": changeUsername()
@@ -161,7 +161,7 @@ describe('#Client-Components-UserActions', () => {
       "changePassword": changePassword(),
       "deleteUser": deleteUser(),
       "changeFields": changeFields(),
-      "removeMfa (guardian)": removeMfa(),
+      "removeMfa": removeMfa(),
       "resendVerificationEmail": resendVerificationEmail(),
       "resetPassword": resetPassword(),
       "changeUsername": changeUsername()
@@ -184,7 +184,7 @@ describe('#Client-Components-UserActions', () => {
       "Change Password": changePassword(),
       "Delete User": deleteUser(),
       "Change Profile": changeFields(),
-      "Remove MFA (guardian)": removeMfa(),
+      "Remove MFA": removeMfa(),
       "Resend Verification Email": resendVerificationEmail(),
       "Reset Password": resetPassword(),
       "Change Username": changeUsername()
@@ -211,7 +211,7 @@ describe('#Client-Components-UserActions', () => {
       "Change Password": changePassword(),
       "Delete User": deleteUser(),
       "Change Profile": changeFields(),
-      "Remove MFA (guardian)": removeMfa(),
+      "Remove MFA": removeMfa(),
       "Resend Verification Email": resendVerificationEmail(),
       "Reset Password": resetPassword(),
       "Change Username": changeUsername()

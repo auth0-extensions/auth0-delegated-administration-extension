@@ -50,9 +50,9 @@ class Users extends Component {
     this.props.fetchUsers('', false, page - 1);
   };
 
-  onSearch = (query, filterBy) => {
+  onSearch = (query, filterBy, onSuccess) => {
     if (query && query.length > 0) {
-      this.props.fetchUsers(query, false, 0, filterBy);
+      this.props.fetchUsers(query, false, 0, filterBy, null, onSuccess);
     }
   };
 
@@ -87,16 +87,19 @@ class Users extends Component {
     } = this.props;
 
     const userFields = (settings && settings.userFields) || [];
+    const role = accessLevel.get('record').get('role');
+    const originalTitle = (settings.dict && settings.dict.title) || window.config.TITLE || 'User Management';
+    document.title = `${languageDictionary.userUsersTabTitle || 'Users'} - ${originalTitle}`;
 
     return (
       <div className="users">
         <TabsHeader
           languageDictionary={languageDictionary}
-          role={accessLevel.get('record').get('role')} />
+          role={role} />
         <div className="row content-header">
           <div className="col-xs-12 user-table-content">
             <h1>{languageDictionary.usersTitle || 'Users'}</h1>
-            {(connections.length) ?
+            {(connections.length && role > 0) ?
               <button id="create-user-button" className="btn btn-success pull-right new" onClick={this.createUser}>
                 <i className="icon-budicon-473"></i>
                 {languageDictionary.createUserButtonText || 'Create User'}
@@ -104,7 +107,7 @@ class Users extends Component {
               : ''}
           </div>
         </div>
-        <dialogs.CreateDialog getDictValue={this.props.getDictValue} userFields={userFields} />
+        <dialogs.CreateDialog getDictValue={this.props.getDictValue} userFields={userFields} errorTranslator={settings && settings.errorTranslator} />
         <UserOverview
           onReset={this.onReset}
           onSearch={this.onSearch}
@@ -120,6 +123,7 @@ class Users extends Component {
           sortProperty={sortProperty}
           sortOrder={sortOrder}
           onColumnSort={this.onColumnSort}
+          settings={settings}
           languageDictionary={languageDictionary}
         />
         <div className="row">
@@ -129,8 +133,9 @@ class Users extends Component {
                 totalItems={total}
                 handlePageChange={this.onPageChange}
                 perPage={10}
+                textFormat={languageDictionary.paginationTextFormat}
               /> :
-              <TableTotals currentCount={users.length} totalCount={total} />
+              <TableTotals currentCount={users.length} totalCount={total} textFormat={languageDictionary.tableTotalsTextFormat} />
             }
           </div>
         </div>
@@ -154,7 +159,7 @@ function mapStateToProps(state) {
     pages: state.users.get('pages'),
     sortProperty: state.users.get('sortProperty'),
     sortOrder: state.users.get('sortOrder'),
-    settings: state.settings.get('record').toJS().settings,
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     languageDictionary: state.languageDictionary.get('record').toJS()
   };
 }

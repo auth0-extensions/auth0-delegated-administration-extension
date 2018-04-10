@@ -52,12 +52,20 @@ describe('log reducer', () => {
     expect(
       log(initialState, {
         type: constants.FETCH_LOG_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
         loading: false,
-        error: 'An error occured while loading the log record: ERROR',
+        error: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        },
         logId: null,
         record: {}
       }
@@ -89,7 +97,7 @@ describe('log reducer', () => {
         logId: 'test_2',
         record: {
           _id: 'test_2',
-          type: 'Unknown Log Type: custom_type',
+          type: undefined,
           shortType: 'custom_type'
         }
       }

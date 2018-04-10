@@ -29,6 +29,7 @@ const reduxHistory = syncHistoryWithStore(history, store);
 store.subscribe(() => {
   switch (store.getState().lastAction.type) {
     case constants.FETCH_SETTINGS_FULFILLED: {
+      const useAltCss = localStorage.getItem('delegated-admin:use-alt-css') === 'true';
       const data = store.getState().settings.get('record');
       const settings = data.get('settings');
       const dict = settings.get('dict');
@@ -38,8 +39,9 @@ store.subscribe(() => {
           document.title = title;
         }
       }
-      const css = settings.get('css');
-      if (css !== '') {
+      const css = useAltCss ? settings.get('altcss') : settings.get('css');
+
+      if (css && css.length) {
         const head = document.getElementsByTagName('head')[0];
         const link = document.createElement('link');
         link.id = 'custom_css';
@@ -48,6 +50,25 @@ store.subscribe(() => {
         link.href = css;
         link.media = 'all';
         head.appendChild(link);
+      }
+      break;
+    }
+    case constants.TOGGLE_STYLE_SETTINGS: {
+      const css = store.getState().styleSettings.get('path');
+      if (css !== '') {
+        const customCss = document.getElementById('custom_css');
+        if (customCss) {
+          customCss.href = css;
+        } else {
+          const head = document.getElementsByTagName('head')[0];
+          const link = document.createElement('link');
+          link.id = 'custom_css';
+          link.rel = 'stylesheet';
+          link.type = 'text/css';
+          link.href = css;
+          link.media = 'all';
+          head.appendChild(link);
+        }
       }
       break;
     }

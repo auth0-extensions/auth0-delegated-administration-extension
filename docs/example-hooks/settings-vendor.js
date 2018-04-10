@@ -8,8 +8,16 @@ function(ctx, callback) {
   return callback(null, {
     dict: {
       title: vendor ? vendor + ' User Management' : 'User Management Dashboard',
-      memberships: 'Vendors'
+      memberships: 'Vendors',
+      menuName: 'Menu: ' + vendor || ctx.request.user.name,
+      logoutUrl: 'https://mycompany.auth0.com/v2/logout?returnTo=https://mycompany.com'
     },
-    css: vendor && 'https://cdn.mycompany.com/styles/' + vendor + '.css'
+    css: vendor && 'https://cdn.mycompany.com/styles/' + vendor + '.css',
+    altcss: vendor && 'https://cdn.mycompany.com/styles/' + vendor + '-alternative.css',
+    errorTranslator: (
+      function (error) {
+        return error.type + ' (' + error.status + '): ' + error.message;
+      }
+    ).toString()
   });
 }

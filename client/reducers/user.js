@@ -33,7 +33,7 @@ const userLogs = createReducer(fromJS(initialState.logs), {
     state.merge({
       ...initialState.logs,
       loading: false,
-      error: `An error occured while loading the user logs: ${action.errorMessage}`
+      error: action.errorData
     }),
   [constants.FETCH_USER_LOGS_FULFILLED]: (state, action) =>
     state.merge({
@@ -41,6 +41,7 @@ const userLogs = createReducer(fromJS(initialState.logs), {
       records: fromJS(typeof action.payload.data.logs !== 'undefined' ?
         action.payload.data.logs.map(log => {
           log.time_ago = moment(log.date).fromNow();
+          log.shortType = log.type;
           log.type = logTypes[log.type];
           if (!log.type) {
             log.type = {
@@ -67,7 +68,7 @@ const userDevices = createReducer(fromJS(initialState.devices), {
   [constants.FETCH_USER_DEVICES_REJECTED]: (state, action) =>
     state.merge({
       ...initialState.devices,
-      error: `An error occured while loading the devices: ${action.errorMessage}`
+      error: action.errorData
     }),
   [constants.FETCH_USER_DEVICES_FULFILLED]: (state, action) => {
     const devices = action.payload.data.devices.reduce((map, device) => {
@@ -92,7 +93,7 @@ export const user = createReducer(fromJS(initialState), { // eslint-disable-line
   [constants.FETCH_USER_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occured while loading the user: ${action.errorMessage}`
+      error: action.errorData
     }),
   [constants.FETCH_USER_FULFILLED]: (state, action) => {
     const { data } = action.payload;

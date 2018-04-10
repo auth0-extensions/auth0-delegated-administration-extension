@@ -7,10 +7,13 @@ import { scriptActions } from '../../actions';
 
 import Editor from '../../components/Editor';
 import './Configuration.css';
+import getErrorMessage from '../../utils/getErrorMessage';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
-    scripts: state.scripts
+    scripts: state.scripts,
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
+    languageDictionary: state.languageDictionary && state.languageDictionary.get('record').toJS()
   });
 
   static actionsToProps = {
@@ -19,8 +22,14 @@ export default connectContainer(class extends Component {
 
   static propTypes = {
     scripts: PropTypes.object.isRequired,
+    settings: PropTypes.object.isRequired,
     fetchScript: PropTypes.func.isRequired,
-    updateScript: PropTypes.func.isRequired
+    updateScript: PropTypes.func.isRequired,
+    languageDictionary: PropTypes.object
+  }
+
+  static defaultProps = {
+    languageDictionary: {}
   }
 
   constructor(props) {
@@ -76,6 +85,9 @@ export default connectContainer(class extends Component {
   render() {
     const code = this.state.code;
     const scripts = this.props.scripts.toJS();
+    const { languageDictionary, settings } = this.props;
+    const originalTitle = (settings.dict && settings.dict.title) || window.config.TITLE || 'User Management';
+    document.title = `${languageDictionary.configurationMenuItemText || 'Configuration'} - ${originalTitle}`;
 
     return (
       <div className="configuration">
@@ -90,7 +102,7 @@ export default connectContainer(class extends Component {
             <Tabs defaultActiveKey={this.state.activeTab} animation={false} id="configuration-tabs" >
               <Tab eventKey={1} title={code.filter && code.filter.length ? <span>Filter Hook</span> : <i>Filter Hook</i>}>
                 <LoadingPanel show={scripts.filter && scripts.filter.loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
-                  <Error message={scripts.filter && scripts.filter.error} />
+                  <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, scripts.filter && scripts.filter.error)} />
                   <p>
                     The <strong>filter hook</strong> allows you to specify which records are shown to the current
                     users when loading the list of users or searching. For example: <i>Only show users from my department</i>.
@@ -108,7 +120,7 @@ export default connectContainer(class extends Component {
               </Tab>
               <Tab eventKey={2} title={code.access && code.access.length ? <span>Access Hook</span> : <i>Access Hook</i>}>
                 <LoadingPanel show={scripts.access && scripts.access.loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
-                  <Error message={scripts.access && scripts.access.error} />
+                  <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, scripts.access && scripts.access.error)} />
                   <p>
                     The <strong>access hook</strong> will allow you to specify if the current user is allowed to
                     access a specific user (eg: view the details, delete the user, ...).
@@ -126,7 +138,7 @@ export default connectContainer(class extends Component {
               </Tab>
               <Tab eventKey={3} title={code.create && code.create.length ? <span>Write Hook</span> : <i>Write Hook</i>}>
                 <LoadingPanel show={scripts.create && scripts.create.loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
-                  <Error message={scripts.create && scripts.create.error} />
+                  <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, scripts.create && scripts.create.error)} />
                   <p>
                     The <strong>write hook</strong> will run every time a new user is created. This hook will allow
                     you to shape the user object before it's sent to Auth0. The context object contains the request (with the current user) and the payload sent by the end user.
@@ -144,7 +156,7 @@ export default connectContainer(class extends Component {
               </Tab>
               <Tab eventKey={4} title={code.memberships && code.memberships.length ? <span>Memberships Hook</span> : <i>Memberships Hook</i>}>
                 <LoadingPanel show={scripts.memberships && scripts.memberships.loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
-                  <Error message={scripts.memberships && scripts.memberships.error} />
+                  <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, scripts.memberships && scripts.memberships.error)} />
                   <p>
                     With the <strong>membership query</strong> you can specify in which groups the current user can
                     create new users. Only in their own department? Or other departments also?
@@ -162,7 +174,7 @@ export default connectContainer(class extends Component {
               </Tab>
               <Tab eventKey={5} title={code.settings && code.settings.length ? <span>Settings Query</span> : <i>Settings Query</i>}>
                 <LoadingPanel show={scripts.settings && scripts.settings.loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
-                  <Error message={scripts.settings && scripts.settings.error} />
+                  <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, scripts.settings && scripts.settings.error)} />
                   <p>
                     With the <strong>settings query</strong> you can control the title and the look-and-feel of the
                     dashboard after the user has logged in?

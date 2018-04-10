@@ -1,18 +1,19 @@
 import _ from 'lodash';
-import moment from 'moment';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Error, LoadingPanel } from 'auth0-extension-ui';
 
 import './UserInfo.styles.css';
 import UserInfoField from './UserInfoField';
-import { getProperty } from '../../utils'
+import { getValue } from '../../utils/display';
+import getErrorMessage from '../../utils/getErrorMessage';
 
 export default class UserInfo extends Component {
   static propTypes = {
     error: PropTypes.string,
     loading: PropTypes.bool.isRequired,
     user: PropTypes.object.isRequired,
+    settings: PropTypes.object.isRequired,
     memberships: PropTypes.array,
     userFields: PropTypes.array,
     languageDictionary: PropTypes.object
@@ -29,54 +30,22 @@ export default class UserInfo extends Component {
   getMemberships = (memberships) => {
     const meta = memberships || [];
     return meta.join(', ');
-  }
+  };
 
   getIdentities = (user) => {
     if (user.size === 0) return {};
     return user.get('identities').toJSON()[0];
-  }
+  };
 
   getBlocked = (user, languageDictionary) => {
     if (user.size === 0) return '';
     return user.get('blocked') ? (languageDictionary.yesLabel || 'Yes') : (languageDictionary.noLabel || 'No');
-  }
-
-  getValue(user, field, languageDictionary) {
-    if (user.size === 0) {
-      return null;
-    }
-
-    if (_.isFunction(field.display)) {
-      try {
-        return field.display(user);
-      } catch (e) {
-        /* Swallow eval errors */
-        console.log(`Could not display ${field.property} because: ${e.message}`);
-        return null;
-      }
-    }
-
-    let value = getProperty(user, field.property);
-    if (value === undefined) return null;
-
-    if (field.type && field.type === 'elapsedTime') {
-      value = moment(value).locale(languageDictionary.momentLocale || 'en').fromNow();
-    }
-
-    if (_.isObject(value)) {
-      value = JSON.stringify(value);
-    }
-
-    if (_.isBoolean(value)) {
-      value = value ? (languageDictionary.trueLabel || 'TRUE') : (languageDictionary.falseLabel || 'FALSE');
-    }
-
-    return value;
-  }
+  };
 
   render() {
-    const { user, error, loading, memberships } = this.props;
+    const { user, error, loading, memberships, settings } = this.props;
     const languageDictionary = this.props.languageDictionary || {};
+    const labels = languageDictionary.labels || {};
 
     /* First let's grab the custom fields */
     const customDisplayFields =
@@ -84,7 +53,7 @@ export default class UserInfo extends Component {
         .filter(field => field.display)
         .map(field => {
           return {
-            title: field.label || field.property,
+            title: labels[field.property] || field.label || field.property,
             property: field.property,
             display: field.display
           };
@@ -100,7 +69,7 @@ export default class UserInfo extends Component {
 
     let customDisplayFieldProperties = _(customDisplayFields).groupBy(field => field.property).value();
 
-    const defaultFieldInfo = [
+    const defaultFields = [
       { title: 'User ID', property: 'user_id' },
       { title: 'Name', property: 'name' },
       { title: 'Username', property: 'username' },
@@ -115,6 +84,11 @@ export default class UserInfo extends Component {
       { title: 'Last Login', property: 'last_login', type: 'elapsedTime' }
     ];
 
+    const defaultFieldInfo = defaultFields.map((field) => {
+      field.title = labels[field.property] || field.title;
+      return field;
+    });
+
     const standardFields = _(defaultFieldInfo).reject(field => field.property in customDisplayFieldProperties || field.property in nonDisplayFieldProperties).value();
     const standardFieldProperties = _(standardFields).groupBy(field => field.property).value();
 
@@ -128,7 +102,13 @@ export default class UserInfo extends Component {
 
     /* Prepare the user object */
     const userObject = user.toJS();
-    if (!userObject || Object.keys(userObject).length === 0) return null;
+    if (!userObject || Object.keys(userObject).length === 0) {
+      return (
+        <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
+          <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, settings.errorTranslator)} />
+        </LoadingPanel>
+      );
+    }
 
     userObject.currentMemberships = this.getMemberships(memberships);
     userObject.identity = this.getIdentities(user);
@@ -144,18 +124,19 @@ export default class UserInfo extends Component {
     const fields = _(customDisplayFields)
       .concat(standardFields)
       .concat(extraFields)
+      .filter(field => field.property !== 'picture')
       .sortBy(field => field.title)
       .value();
 
     const fieldsAndValues = _.map(fields, (field) => {
-      field.value = this.getValue(userObject, field, languageDictionary);
+      field.value = getValue(userObject, field, languageDictionary);
       return field;
     });
     const nonNullFields = _.filter(fieldsAndValues, field => field.value) || [];
 
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
-        <Error message={error}></Error>
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, settings.errorTranslator)} />
         <div className="user-info">
           {nonNullFields.map((field, index) => <UserInfoField key={index}
                                                               title={field.title}>{field.value}</UserInfoField>)}

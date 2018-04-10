@@ -5,14 +5,16 @@ import { Error } from 'auth0-extension-ui';
 import { Modal } from 'react-bootstrap';
 
 import { userActions, scriptActions } from '../../../actions';
-import { UserForm } from '../../../components/Users';
+import { UserForm, ValidationError } from '../../../components/Users';
+import getErrorMessage from '../../../utils/getErrorMessage';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     userCreate: state.userCreate,
     accessLevel: state.accessLevel,
     connections: state.connections,
-    languageDictionary: state.languageDictionary
+    languageDictionary: state.languageDictionary,
+    userForm: state.form
   });
 
   static actionsToProps = {
@@ -24,10 +26,12 @@ export default connectContainer(class extends Component {
     accessLevel: PropTypes.object.isRequired,
     connections: PropTypes.object.isRequired,
     userCreate: PropTypes.object.isRequired,
+    userForm: PropTypes.object.isRequired,
     createUser: PropTypes.func.isRequired,
     getDictValue: PropTypes.func.isRequired,
     cancelCreateUser: PropTypes.func.isRequired,
     userFields: PropTypes.array.isRequired,
+    errorTranslator: PropTypes.func,
     languageDictionary: PropTypes.object
   }
 
@@ -40,19 +44,19 @@ export default connectContainer(class extends Component {
   }
 
   onSubmit = (user) => {
-    this.props.createUser(user);
+    const languageDictionary = this.props.languageDictionary.get('record').toJS();
+    this.props.createUser(user, languageDictionary);
   }
 
   render() {
     const { error, loading, record } = this.props.userCreate.toJS();
     const connections = this.props.connections.toJS();
     const accessLevel = this.props.accessLevel.get('record').toJS();
-
     const languageDictionary = this.props.languageDictionary.get('record').toJS();
 
     return (
       <Modal show={record !== null} className="modal-overflow-visible" onHide={this.props.cancelCreateUser}>
-        <Modal.Header closeButton={loading} className="has-border">
+        <Modal.Header closeButton={!loading} className="has-border" closeLabel={languageDictionary.closeButtonText} >
           <Modal.Title>{languageDictionary.createDialogTitle || 'Create User'}</Modal.Title>
         </Modal.Header>
 
@@ -67,7 +71,12 @@ export default connectContainer(class extends Component {
           onSubmit={this.onSubmit}
           languageDictionary={languageDictionary}
         >
-          <Error message={error} />
+          <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, this.props.errorTranslator)} />
+          <ValidationError
+            userForm={this.props.userForm}
+            customFields={this.props.userFields || []}
+            errorMessage={languageDictionary.validationError}
+          />
         </UserForm>
       </Modal>
     );

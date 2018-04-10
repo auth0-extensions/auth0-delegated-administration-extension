@@ -61,7 +61,11 @@ describe('user reducer', () => {
     expect(
       user(initialState, {
         type: constants.FETCH_USER_LOGS_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
@@ -72,7 +76,11 @@ describe('user reducer', () => {
         memberships: [],
         logs: {
           loading: false,
-          error: 'An error occured while loading the user logs: ERROR',
+          error: {
+            type: 'TEST',
+            message: 'ERROR',
+            status: 500
+          },
           records: []
         },
         devices: {
@@ -127,6 +135,7 @@ describe('user reducer', () => {
               client_name: 'My App',
               connection: 'Username-Password-Authentication',
               date: '2016-09-26T13:03:50.703Z',
+              shortType: 's',
               type: {
                 event: 'Success Login',
                 icon: {
@@ -142,6 +151,7 @@ describe('user reducer', () => {
               client_name: 'My App',
               connection: 'Username-Password-Authentication',
               date: '2016-09-26T13:03:36.005Z',
+              shortType: "s",
               type: {
                 event: 'Success Login',
                 icon: {
@@ -206,6 +216,7 @@ describe('user reducer', () => {
               client_name: 'My App',
               connection: 'Username-Password-Authentication',
               date: '2016-09-26T13:03:50.703Z',
+              shortType: "s",
               type: {
                 event: 'Success Login',
                 icon: {
@@ -221,6 +232,7 @@ describe('user reducer', () => {
               client_name: 'My App',
               connection: 'Username-Password-Authentication',
               date: '2016-09-26T13:03:36.005Z',
+              shortType: "custom_type",
               type: {
                 event: 'Unknown Error',
                 icon: {
@@ -302,7 +314,11 @@ describe('user reducer', () => {
     expect(
       user(initialState, {
         type: constants.FETCH_USER_DEVICES_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
@@ -318,7 +334,11 @@ describe('user reducer', () => {
         },
         devices: {
           loading: false,
-          error: 'An error occured while loading the devices: ERROR',
+          error: {
+            type: 'TEST',
+            message: 'ERROR',
+            status: 500
+          },
           records: {}
         }
       }
@@ -422,12 +442,20 @@ describe('user reducer', () => {
     expect(
       user(initialState, {
         type: constants.FETCH_USER_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
         loading: false,
-        error: 'An error occured while loading the user: ERROR',
+        error: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        },
         userId: null,
         record: {},
         memberships: [],
