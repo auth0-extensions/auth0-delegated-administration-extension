@@ -509,13 +509,14 @@ export function cancelEmailChange() {
 /*
  * Change email.
  */
-export function changeEmail(userId, data, languageDictionary) {
+export function changeEmail(user, data, languageDictionary) {
   return (dispatch) => {
+    const userId = user.user_id;
+    user.email = data.email;
     dispatch({
       type: constants.EMAIL_CHANGE,
       meta: {
-        userId,
-        user: data,
+        user,
         onSuccess: () => {
           dispatch(fetchUserDetail(userId));
         }

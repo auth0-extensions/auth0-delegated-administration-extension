@@ -38,12 +38,12 @@ export default connectContainer(class extends Component {
 
   onConfirm = () => {
     this.props.submitForm('change-email');
-  }
+  };
 
   onSubmit = (emailForm) => {
     const { user } = this.props.emailChange.toJS();
 
-    this.props.changeEmail(user.user_id, emailForm, this.props.languageDictionary.get('record').toJS());
+    this.props.changeEmail(user, emailForm, this.props.languageDictionary.get('record').toJS());
   };
 
   render() {

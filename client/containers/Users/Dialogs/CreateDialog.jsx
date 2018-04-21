@@ -33,7 +33,7 @@ export default connectContainer(class extends Component {
     userFields: PropTypes.array.isRequired,
     errorTranslator: PropTypes.func,
     languageDictionary: PropTypes.object
-  }
+  };
 
   shouldComponentUpdate(nextProps) {
     return nextProps.userCreate !== this.props.userCreate ||
@@ -46,7 +46,7 @@ export default connectContainer(class extends Component {
   onSubmit = (user) => {
     const languageDictionary = this.props.languageDictionary.get('record').toJS();
     this.props.createUser(user, languageDictionary);
-  }
+  };
 
   render() {
     const { error, loading, record } = this.props.userCreate.toJS();
