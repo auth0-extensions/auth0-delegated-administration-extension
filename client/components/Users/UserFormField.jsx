@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { InputText, InputCombo, Multiselect, Select } from 'auth0-extension-ui';
+import { InputText, InputCombo, Select } from 'auth0-extension-ui';
+import Multiselect from '../Dashboard/MultiSelect';
 import { Field } from 'redux-form';
 
 import requiredValidationFunction from '../../utils/requiredValidationFunction';
@@ -47,7 +48,8 @@ export default class UserFormField extends Component {
       case 'InputMultiCombo': {
         const additionalOptions = {
           loadOptions: (input, callback) => callback(null, { options: field.options || [], complete: true }),
-          multi: true
+          multi: true,
+          displayLabelOnly: field.displayLabelOnly
         };
         if (validate) additionalOptions.validate = validate;
         return (this.getFieldComponent(field, Multiselect, additionalOptions));
