@@ -64,8 +64,15 @@ export default (storage, scriptManager) => {
 
     scriptManager.execute('filter', filterContext)
       .then((filter) => {
-        const searchEngine = filter && filter.searchEngine;
         const filterQuery = (filter && typeof filter.query !== 'undefined') ? filter.query : filter;
+        let searchEngine = filter && filter.searchEngine;
+
+        searchEngine = searchEngine || config('SEARCH_ENGINE') || 'v3';
+
+        if (config('AUTH0_RTA').replace('https://', '') !== 'auth0.auth0.com') {
+          searchEngine = 'v2';
+        }
+
         const options = {
           sort: 'last_login:-1',
           q: (req.query.search && filterQuery) ? `(${req.query.search}) AND ${filterQuery}` : req.query.search || filterQuery,
@@ -73,7 +80,7 @@ export default (storage, scriptManager) => {
           page: req.query.page || 0,
           include_totals: true,
           fields: 'user_id,name,email,identities,picture,last_login,logins_count,multifactor,blocked,app_metadata',
-          search_engine: searchEngine || config('SEARCH_ENGINE') || 'v3'
+          search_engine: searchEngine
         };
 
         return req.auth0.users.getAll(options);
