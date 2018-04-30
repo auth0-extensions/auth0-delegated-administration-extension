@@ -87,7 +87,7 @@ export default connectContainer(class PasswordChangeDialog extends Component {
         onCancel={cancelPasswordChange}
         closeLabel={languageDictionary.closeButtonText}
         onConfirm={this.onConfirm}>
-        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, settings.errorTranslator)} />
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error, settings.errorTranslator)} />
         <p>
           {message}
         </p>

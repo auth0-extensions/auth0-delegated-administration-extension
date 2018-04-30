@@ -1444,15 +1444,14 @@ describe('#users router', () => {
       storage.data.scripts.settings = ((ctx, callback) => callback(null, { userFields: [] }));
       storage.data.scripts.create = ((ctx, callback) => {
         const _ = require('lodash');
-        const user = _.pick(ctx.payload, ['password', 'repeatPassword']);
-        user.app_metadata = {
-          passwordReset: 'just now'
-        };
+        const user = ctx.payload;
+        user.app_metadata = user.app_metadata || {};
+        user.app_metadata.passwordReset = 'just now';
         callback(null, user);
       }).toString();
     });
 
-    it('change-password', (done) => {
+    it('change-password success', (done) => {
       request(app)
         .put('/users/1/change-password')
         .send({ password: 'pwd13', repeatPassword: 'pwd13' })
@@ -1461,6 +1460,20 @@ describe('#users router', () => {
           if (err) return done(err);
           expect(defaultUsers[0].password).to.equal('pwd13');
           expect(defaultUsers[0].app_metadata.passwordReset).to.equal('just now');
+          done();
+        });
+    });
+
+    it('change-password success, can not pass in app_metadata', (done) => {
+      request(app)
+        .put('/users/1/change-password')
+        .send({ password: 'pwd13', repeatPassword: 'pwd13', app_metadata: { someKey: 'someValue' } })
+        .expect(204)
+        .end((err, res) => {
+          if (err) return done(err);
+          const user = defaultUsers[0];
+          expect(user.password).to.equal('pwd13');
+          expect(user.app_metadata.someKey).to.equal(undefined);
           done();
         });
     });

@@ -39,7 +39,7 @@ export default class LogDialog extends Component {
             show={loading} spinnerStyle={{ height: '16px', width: '16px' }}
             animationStyle={{ paddingTop: '0px', paddingBottom: '0px', marginTop: '0px', marginBottom: '10px' }}
           >
-            <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, settings.errorTranslator)}>
+            <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error, settings.errorTranslator)}>
               <Json jsonObject={log} />
             </Error>
           </LoadingPanel>

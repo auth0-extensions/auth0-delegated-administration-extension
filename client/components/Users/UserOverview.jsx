@@ -95,7 +95,7 @@ export default class UserOverview extends React.Component {
       <div>
         <div className="row">
           <div className="col-xs-12 wrapper">
-            <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, settings.errorTranslator)} />
+            <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error, settings.errorTranslator)} />
           </div>
         </div>
         <div className="row">

@@ -76,7 +76,7 @@ class LogsContainer extends Component {
         </div>
         <div className="row">
           <div className="col-xs-12 wrapper">
-            <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, logs.error, settings.errorTranslator)} />
+            <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, logs.error, settings.errorTranslator)} />
 
             <LoadingPanel show={logs.loading}>
               <LogsTable onOpen={this.props.fetchLog} loading={logs.loading} logs={logs.records} settings={settings} languageDictionary={languageDictionary} />

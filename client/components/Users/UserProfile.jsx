@@ -19,7 +19,7 @@ export default class UserProfile extends Component {
     const { user, error, loading, settings } = this.props;
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
-        <Error title={this.props.languageDictionary.errorTitle} message={getErrorMessage(this.props.languageDictionary.errors, error, settings.errorTranslator)} >
+        <Error title={this.props.languageDictionary.errorTitle} message={getErrorMessage(this.props.languageDictionary, error, settings.errorTranslator)} >
           <Json jsonObject={user.toJS()} />
         </Error>
       </LoadingPanel>

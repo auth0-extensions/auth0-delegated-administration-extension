@@ -26,7 +26,10 @@ const defaultMessages = {
   RESEND_VERIFICATION_EMAIL: { default: 'An error occurred while sending verification email: {message}' }
 };
 
-export default (errors = {}, error, translator) => {
+export default (languageDictionary, error, translator) => {
+  languageDictionary = languageDictionary || {};
+  const errors = languageDictionary.errors || {};
+
   if (!error) {
     return null;
   }
@@ -36,7 +39,7 @@ export default (errors = {}, error, translator) => {
   const message = (messages[error.type] && messages[error.type][error.status]) || messages[error.type].default;
 
   if (translator) {
-    return message.replace('{message}', translator(error) || messages.defaultErrorMessage);
+    return message.replace('{message}', translator(error, languageDictionary) || messages.defaultErrorMessage);
   }
 
   return message.replace('{message}', error.message || messages.defaultErrorMessage);

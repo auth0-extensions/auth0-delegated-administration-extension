@@ -105,7 +105,7 @@ export default class UserInfo extends Component {
     if (!userObject || Object.keys(userObject).length === 0) {
       return (
         <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
-          <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, settings.errorTranslator)} />
+          <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error, settings.errorTranslator)} />
         </LoadingPanel>
       );
     }
@@ -136,7 +136,7 @@ export default class UserInfo extends Component {
 
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
-        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, settings.errorTranslator)} />
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error, settings.errorTranslator)} />
         <div className="user-info">
           {nonNullFields.map((field, index) => <UserInfoField key={index}
                                                               title={field.title}>{field.value}</UserInfoField>)}

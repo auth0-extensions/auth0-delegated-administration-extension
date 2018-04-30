@@ -83,7 +83,7 @@ export default connectContainer(class extends Component {
         onCancel={cancelUsernameChange}
         closeLabel={languageDictionary.closeButtonText}
         onConfirm={this.onConfirm}>
-        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, settings.errorTranslator)} />
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error, settings.errorTranslator)} />
         <p>
           {message}
         </p>

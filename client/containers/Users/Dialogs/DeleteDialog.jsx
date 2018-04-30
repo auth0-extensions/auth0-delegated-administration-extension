@@ -55,7 +55,7 @@ export default connectContainer(class extends Component {
                confirmMessage={languageDictionary.dialogConfirmText} cancelMessage={languageDictionary.dialogCancelText}
                onCancel={cancelDeleteUser} onConfirm={this.onConfirm}
                closeLabel={languageDictionary.closeButtonText}>
-        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, settings.errorTranslator)} />
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error, settings.errorTranslator)} />
         <p>
           {message}
         </p>

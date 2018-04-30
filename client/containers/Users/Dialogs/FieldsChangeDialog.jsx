@@ -66,7 +66,7 @@ export default connectContainer(class extends Component {
           submitting={loading}
           languageDictionary={languageDictionary}
         >
-          <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary.errors, error, this.props.errorTranslator)} />
+          <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error, this.props.errorTranslator)} />
           <ValidationError
             userForm={this.props.userForm}
             customFields={this.props.userFields || []}
