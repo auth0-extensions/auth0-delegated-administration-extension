@@ -1436,4 +1436,33 @@ describe('#users router', () => {
         });
     });
   });
+
+  describe('#write hook sets extra field for change password', () => {
+    before(() => {
+      scriptManager.getCached = skipCache;
+      storage.data.scripts = _.cloneDeep(defaultScriptData.scripts);
+      storage.data.scripts.settings = ((ctx, callback) => callback(null, { userFields: [] }));
+      storage.data.scripts.create = ((ctx, callback) => {
+        const _ = require('lodash');
+        const user = _.pick(ctx.payload, ['password', 'repeatPassword']);
+        user.app_metadata = {
+          passwordReset: 'just now'
+        };
+        callback(null, user);
+      }).toString();
+    });
+
+    it('change-password', (done) => {
+      request(app)
+        .put('/users/1/change-password')
+        .send({ password: 'pwd13', repeatPassword: 'pwd13' })
+        .expect(204)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(defaultUsers[0].password).to.equal('pwd13');
+          expect(defaultUsers[0].app_metadata.passwordReset).to.equal('just now');
+          done();
+        });
+    });
+  });
 });

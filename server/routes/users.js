@@ -334,7 +334,9 @@ export default (storage, scriptManager) => {
                 throw new ValidationError('The password is required.');
               }
 
-              payload = _.pick(payload, ['password', 'connection', 'verify_password']);
+              // Allow app_metadata in case someone needs to set a field in app_metadata to store a flag associated
+              // with the change
+              payload = _.pick(payload, ['password', 'connection', 'verify_password', 'app_metadata']);
 
               const payloadFinal = _.defaults(payload, {
                 connection: req.body.connection,

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { InputText, InputCombo, Select } from 'auth0-extension-ui';
-import Multiselect from '../Dashboard/MultiSelect';
+import { InputText, InputCombo, Multiselect, Select } from 'auth0-extension-ui';
 import { Field } from 'redux-form';
 
 import requiredValidationFunction from '../../utils/requiredValidationFunction';
