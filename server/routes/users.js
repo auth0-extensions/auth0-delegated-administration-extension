@@ -9,6 +9,7 @@ import config from '../lib/config';
 import logger from '../lib/logger';
 import { verifyUserAccess } from '../lib/middlewares';
 import { removeGuardian, requestGuardianEnrollments } from '../lib/removeGuardian';
+import { requestUserBlocks } from '../lib/userBLocks';
 import getApiToken from '../lib/getApiToken';
 
 const executeWriteHook = (req, scriptManager, userFields, onlyTheseFields) => {
@@ -232,20 +233,29 @@ export default (storage, scriptManager) => {
         };
       })
       .then(data => {
-        if (data.user.multifactor && data.user.multifactor.indexOf('guardian') >= 0) {
-          return getApiToken(req)
-            .then(accessToken => requestGuardianEnrollments(accessToken, req.params.id))
-            .then((enrollments) => {
-              if (!enrollments || !enrollments.length) {
-                data.user.multifactor = data.user.multifactor.filter(item => item !== 'guardian');
-                data.user.multifactor = data.user.multifactor.length ? data.user.multifactor : null;
-              }
+        return getApiToken(req)
+          .then((accessToken) => {
+            return requestUserBlocks(accessToken, req.params.id)
+              .then((blockedFor) => {
+                if (blockedFor) data.user.blocked_for = blockedFor;
+                return accessToken
+              });
+          })
+          .then((accessToken) => {
+            if (data.user.multifactor && data.user.multifactor.indexOf('guardian') >= 0) {
+              return requestGuardianEnrollments(accessToken, req.params.id)
+                .then((enrollments) => {
+                  if (!enrollments || !enrollments.length) {
+                    data.user.multifactor = data.user.multifactor.filter(item => item !== 'guardian');
+                    data.user.multifactor = data.user.multifactor.length ? data.user.multifactor : null;
+                  }
 
-              return res.json(data);
-            });
-        }
+                  return res.json(data);
+                });
+            }
 
-        return res.json(data);
+            return res.json(data);
+          });
       })
       .catch((err) => {
         logger.error('Failed to get user because: ', err);

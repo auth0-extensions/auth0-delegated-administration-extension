@@ -33,7 +33,7 @@ export default class UserFormField extends Component {
     const validate = (field.required || field.validationFunction) ? [] : undefined;
     if (field.required) validate.push(requiredValidationFunction(this.props.languageDictionary || {}));
     if (field.validationFunction) {
-      validate.push(field.validationFunction);
+      validate.push((value, values, context) => field.validationFunction(value, values, context, this.props.languageDictionary || {}));
     }
 
     switch (componentName) {

@@ -291,6 +291,10 @@ describe('#users router', () => {
 
   describe('#Get One', () => {
     it('should return user`s record', (done) => {
+      nock(domain)
+        .get(/user-blocks\/1/)
+        .reply(200, { blocked_for: [ 'blah' ] });
+
       request(app)
         .get('/users/1')
         .expect('Content-Type', /json/)
@@ -299,11 +303,16 @@ describe('#users router', () => {
           if (err) return done(err);
           expect(res.body.memberships).to.deep.equal(['deptA']);
           expect(res.body.user.user_id).to.equal(1);
+          expect(res.body.user.blocked_for).to.deep.equal([ 'blah' ]);
           done();
         });
     });
 
     it('should return user`s record 2', (done) => {
+      nock(domain)
+        .get(/user-blocks\/2/)
+        .reply(200, { blocked_for: [ ] });
+
       request(app)
         .get('/users/2')
         .expect('Content-Type', /json/)
@@ -312,11 +321,16 @@ describe('#users router', () => {
           if (err) return done(err);
           expect(res.body.memberships).to.deep.equal(['deptA']);
           expect(res.body.user.user_id).to.equal(2);
+          expect(res.body.user.blocked_for).to.deep.equal([ ]);
           done();
         });
     });
 
     it('should return user`s record 3', (done) => {
+      nock(domain)
+        .get(/user-blocks\/3/)
+        .reply(200, { blocked_for: [ 'yummy' ] });
+
       request(app)
         .get('/users/3')
         .expect('Content-Type', /json/)
@@ -325,6 +339,7 @@ describe('#users router', () => {
           if (err) return done(err);
           expect(res.body.memberships).to.deep.equal([]);
           expect(res.body.user.user_id).to.equal(3);
+          expect(res.body.user.blocked_for).to.deep.equal([ 'yummy' ]);
           done();
         });
     });
