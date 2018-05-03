@@ -34,10 +34,15 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
       connections: fromJS({
         records: [
           {
-            name: 'connA',
-            enabled_clients: [1, 2]
+            name: 'connA'
           }
         ]
+      }),
+      user: fromJS({
+        connection: {
+          name: 'connA',
+          enabled_clients: [ 1, 2 ]
+        }
       }),
       applications: fromJS({
         records: [

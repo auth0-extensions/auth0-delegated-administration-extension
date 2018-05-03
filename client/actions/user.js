@@ -154,7 +154,6 @@ export function fetchUserDetail(userId, onSuccess) {
     },
     payload: {
       promise: axios.get(`/api/users/${userId}`, {
-        timeout: 5000,
         headers: { 'Content-Type': 'application/json' },
         responseType: 'json'
       })
