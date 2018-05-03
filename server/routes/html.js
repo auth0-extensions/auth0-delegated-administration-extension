@@ -1,4 +1,5 @@
 import fs from 'fs';
+import url from 'url';
 import ejs from 'ejs';
 import path from 'path';
 import { urlHelpers } from 'auth0-extension-express-tools';
@@ -38,9 +39,37 @@ export default () => {
     </html>
     `;
 
+  const getLocale = (req) => {
+    const basePath = urlHelpers.getBasePath(req);
+    const pathname = url.parse(req.originalUrl).pathname;
+    const relativePath = pathname.replace(basePath, '').split('/');
+    const routes = [
+      'api',
+      'login',
+      'logs',
+      'configuration',
+      'users'
+    ];
+    if (routes.indexOf(relativePath[0]) < 0 && relativePath[0] !== '') {
+      return relativePath[0];
+    }
+
+    return req.cookies['dae-locale'] || 'en';
+  };
+
   return (req, res, next) => {
     if (req.url.indexOf('/api') === 0) {
       return next();
+    }
+
+    const locale = getLocale(req);
+    const basePath = urlHelpers.getBasePath(req);
+
+    if (req.url.indexOf('/login') !== 0) {
+      res.cookie('dae-locale', locale);
+      if (req.url.indexOf(`/${locale}`) !== 0) {
+        return res.redirect(`${basePath}${locale}${req.url || '/login'}`);
+      }
     }
 
     const settings = {
@@ -49,9 +78,11 @@ export default () => {
       AUTH0_CLIENT_ID: config('EXTENSION_CLIENT_ID'),
       EXTEND_URL: config('EXTEND_URL'),
       BASE_URL: urlHelpers.getBaseUrl(req),
-      BASE_PATH: urlHelpers.getBasePath(req),
+      BASE_PATH: `${basePath}${locale}/`,
       TITLE: config('TITLE'),
       FEDERATED_LOGOUT: config('FEDERATED_LOGOUT') === 'true',
+      AUTH0_MANAGE_URL: config('AUTH0_MANAGE_URL') || 'https://manage.auth0.com',
+      LOCALE: locale
     };
 
     // Render from CDN.

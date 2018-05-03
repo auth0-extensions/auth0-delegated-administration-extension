@@ -27,14 +27,12 @@ export const fieldsChange = createReducer(fromJS(initialState), { // eslint-disa
     state.merge({
       loading: true
     }),
-  [constants.FIELDS_CHANGE_REJECTED]: (state, action) => {
-    const errorMessage = action.error ? action.errorMessage : null;
-    return state.merge({
+  [constants.FIELDS_CHANGE_REJECTED]: (state, action) =>
+    state.merge({
       loading: false,
       validationErrors: {},
-      error: `An error occurred while creating the user: ${errorMessage}`
-    });
-  },
+      error: action.errorData
+    }),
   [constants.FIELDS_CHANGE_FULFILLED]: (state) =>
     state.merge({
       ...initialState

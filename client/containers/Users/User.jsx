@@ -21,8 +21,8 @@ export default connectContainer(class extends Component {
     log: state.log,
     logs: state.user.get('logs'),
     devices: state.user.get('devices'),
-    settings: state.settings.get('record').toJS().settings,
-    languageDictionary: state.languageDictionary.get('record').toJS()
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
+    languageDictionary: state.languageDictionary.get('record').toJS() || {}
   });
 
   static actionsToProps = {
@@ -31,7 +31,9 @@ export default connectContainer(class extends Component {
   }
 
   static propTypes = {
+    languageDictionary: PropTypes.object.isRequired,
     accessLevel: PropTypes.object.isRequired,
+    settings: PropTypes.object.isRequired,
     user: PropTypes.object,
     log: PropTypes.object,
     logs: PropTypes.object,
@@ -47,12 +49,12 @@ export default connectContainer(class extends Component {
     this.props.fetchUser(this.props.params.id);
   }
 
-  renderProfile(suppressRawData, user, languageDictionary) {
+  renderProfile(suppressRawData, user, languageDictionary, settings) {
     if (suppressRawData) return null;
 
     return (
       <Tab eventKey={4} title={languageDictionary.userProfileTabTitle || 'Profile'}>
-        <UserProfile loading={user.get('loading')} user={user.get('record')} error={user.get('error')} languageDictionary={languageDictionary} />
+        <UserProfile loading={user.get('loading')} user={user.get('record')} error={user.get('error')} languageDictionary={languageDictionary} settings={settings} />
       </Tab>
     );
 
@@ -61,18 +63,23 @@ export default connectContainer(class extends Component {
   render() {
     const { user, databaseConnections, log, logs, devices, settings, languageDictionary } = this.props;
     const userFields = (settings && settings.userFields) || [];
+    const allowedUserFields = userFields.filter(field => field.property !== 'picture' && field.property !== 'client');
     const suppressRawData = settings && settings.suppressRawData === true;
+    const role = this.props.accessLevel.role;
+    const originalTitle = (settings.dict && settings.dict.title) || window.config.TITLE || 'User Management';
+    document.title = `${languageDictionary.userTitle || 'User Details'} - ${originalTitle}`;
 
     return (
       <div className="user">
-        <TabsHeader role={this.props.accessLevel.role} languageDictionary={languageDictionary} />
+        <TabsHeader role={role} languageDictionary={languageDictionary} />
         <div className="row content-header">
           <div className="col-xs-12">
-            <h2 className="pull-left">{languageDictionary.userTitle || 'User Details'}</h2>
+            <h1 className="pull-left">{languageDictionary.userTitle || 'User Details'}</h1>
             <div className="pull-right">
               <UserActions
+                role={role}
                 user={user}
-                userFields={userFields}
+                userFields={allowedUserFields}
                 databaseConnections={databaseConnections}
                 deleteUser={this.props.requestDeleteUser}
                 changeFields={this.props.requestFieldsChange}
@@ -91,7 +98,7 @@ export default connectContainer(class extends Component {
         </div>
         <div className="row">
           <div className="col-xs-12">
-            <UserHeader loading={user.get('loading')} user={user.get('record')} error={user.get('error')} userFields={userFields} languageDictionary={languageDictionary} />
+            <UserHeader loading={user.get('loading')} user={user.get('record')} error={user.get('error')} userFields={allowedUserFields} languageDictionary={languageDictionary} />
           </div>
         </div>
         <div className="row user-tabs">
@@ -101,8 +108,9 @@ export default connectContainer(class extends Component {
                 <UserInfo
                   loading={user.get('loading')} user={user.get('record')}
                   memberships={user.get('memberships') && user.get('memberships').toJSON()}
-                  userFields={userFields}
+                  userFields={allowedUserFields}
                   error={user.get('error')}
+                  settings={settings}
                   languageDictionary={languageDictionary}
                 />
               </Tab>
@@ -110,6 +118,7 @@ export default connectContainer(class extends Component {
                 <UserDevices
                   loading={devices.get('loading')} devices={devices.get('records')}
                   languageDictionary={languageDictionary}
+                  settings={settings}
                   error={devices.get('error')}
                 />
               </Tab>
@@ -118,6 +127,7 @@ export default connectContainer(class extends Component {
                   onClose={this.props.clearLog} error={log.get('error')}
                   loading={log.get('loading')} log={log.get('record')}
                   languageDictionary={languageDictionary}
+                  settings={settings}
                   logId={log.get('logId')}
                 />
                 <LogsTable
@@ -125,14 +135,16 @@ export default connectContainer(class extends Component {
                   logs={logs.get('records')}
                   languageDictionary={languageDictionary}
                   error={logs.get('error')}
+                  settings={settings}
+                  isUserLogs={true}
                 />
               </Tab>
-              { this.renderProfile(suppressRawData, user, languageDictionary) }
+              { this.renderProfile(suppressRawData, user, languageDictionary, settings) }
             </Tabs>
           </div>
         </div>
         <dialogs.DeleteDialog />
-        <dialogs.FieldsChangeDialog getDictValue={this.props.getDictValue} userFields={userFields} />
+        <dialogs.FieldsChangeDialog getDictValue={this.props.getDictValue} userFields={allowedUserFields} errorTranslator={settings.errorTranslator}/>
         <dialogs.EmailChangeDialog />
         <dialogs.PasswordResetDialog />
         <dialogs.PasswordChangeDialog />

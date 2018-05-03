@@ -6,11 +6,7 @@ const initialState = {
   error: null,
   loading: false,
   requesting: false,
-  userId: null,
-  userName: null,
-  userEmail: null,
-  userNameToChange: null,
-  customField: null,
+  user: null,
   connection: null
 };
 
@@ -33,20 +29,20 @@ describe('User Name Change reducer', () => {
           username: 'user_name',
           email: 'test@mail.ru'
         },
-        connection: 'connection',
-        customField: { property: 'prop' }
+        connection: 'connection'
       }).toJSON()
     ).toEqual(
       {
         error: null,
         loading: false,
         requesting: true,
-        userId: 1,
-        userName: 'test',
-        userEmail: 'test@mail.ru',
-        userNameToChange: 'user_name',
-        connection: 'connection',
-        customField: { property: 'prop' }
+        user: {
+          user_id: 1,
+          name: 'test',
+          username: 'user_name',
+          email: 'test@mail.ru'
+        },
+        connection: 'connection'
       }
     );
   });
@@ -67,12 +63,12 @@ describe('User Name Change reducer', () => {
         error: null,
         loading: false,
         requesting: true,
-        userId: 1,
-        userName: 'user_name',
-        userEmail: 'test@mail.ru',
-        userNameToChange: 'user_name',
-        connection: 'connection',
-        customField: undefined
+        user: {
+          user_id: 1,
+          username: 'user_name',
+          email: 'test@mail.ru'
+        },
+        connection: 'connection'
       }
     );
   });
@@ -92,12 +88,11 @@ describe('User Name Change reducer', () => {
         error: null,
         loading: false,
         requesting: true,
-        userId: 1,
-        userName: 'test@mail.ru',
-        userEmail: 'test@mail.ru',
-        userNameToChange: undefined,
-        connection: 'connection',
-        customField: undefined
+        user: {
+          user_id: 1,
+          email: 'test@mail.ru'
+        },
+        connection: 'connection'
       }
     );
   });
@@ -115,19 +110,18 @@ describe('User Name Change reducer', () => {
   it('should handle USERNAME_CHANGE_PENDING', () => {
     expect(
       usernameChange(initialState, {
-        type: constants.USERNAME_CHANGE_PENDING
+        type: constants.USERNAME_CHANGE_PENDING,
+        meta: {
+          user: {}
+        }
       }).toJSON()
     ).toEqual(
       {
         error: null,
         loading: true,
         requesting: false,
-        userId: null,
-        userName: null,
-        userEmail: null,
-        userNameToChange: null,
-        connection: null,
-        customField: null
+        user: {},
+        connection: null
       }
     );
   });
@@ -136,19 +130,23 @@ describe('User Name Change reducer', () => {
     expect(
       usernameChange(initialState, {
         type: constants.USERNAME_CHANGE_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
-        error: 'An error occurred while changing the username: ERROR',
+        error: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        },
         loading: false,
         requesting: false,
-        userId: null,
-        userName: null,
-        userEmail: null,
-        userNameToChange: null,
-        connection: null,
-        customField: null
+        user: null,
+        connection: null
       }
     );
   });

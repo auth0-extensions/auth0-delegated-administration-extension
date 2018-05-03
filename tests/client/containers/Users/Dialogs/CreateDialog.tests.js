@@ -55,14 +55,14 @@ describe('#Client-Containers-Users-Dialogs-CreateDialog', () => {
   });
 
   const checkTitle = (component, title) => {
-    const modalHeader = document.querySelector('.has-border');
+    const modalHeader = document.querySelector('.modal-title');
     expect(modalHeader.textContent).to.equal(title);
   };
 
   it('should render', () => {
     const component = renderComponent();
 
-    checkTitle(component, 'Create User')
+    checkTitle(component, 'Create User');
   });
 
   it('should render using language dictionary', () => {
@@ -71,6 +71,6 @@ describe('#Client-Containers-Users-Dialogs-CreateDialog', () => {
     };
     const component = renderComponent(languageDictionary);
 
-    checkTitle(component, 'Create Dialog Title', languageDictionary)
+    checkTitle(component, 'Create Dialog Title', languageDictionary);
   });
 });

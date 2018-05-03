@@ -6,14 +6,20 @@ import { fetchUserLogs } from './userLog';
 import { fetchUserDevices } from './userDevice';
 import { getAccessLevel } from './auth';
 
+const addRequiredTextParam = (url, languageDictionary) => {
+  languageDictionary = languageDictionary || {};
+  if (languageDictionary.requiredErrorText)
+    return `${url}?requiredErrorText=${encodeURIComponent(languageDictionary.requiredErrorText)}`;
+  return url;
+};
+
 /*
  * Search for users.
  */
-export function fetchUsers(search, reset = false, page = 0, filterBy, sort) {
-
+export function fetchUsers(search, reset = false, page = 0, filterBy, sort, onSuccess) {
   return (dispatch, getState) => {
     const { sortProperty, sortOrder, searchValue } = getState().users.toJS();
-    const meta = { page, sortProperty, sortOrder, searchValue };
+    const meta = { page, sortProperty, sortOrder, searchValue, onSuccess };
 
     meta.searchValue = reset ? '' : search || searchValue;
     if (sort) {
@@ -43,24 +49,20 @@ export function fetchUsers(search, reset = false, page = 0, filterBy, sort) {
 /*
  * Create a user.
  */
-export function createUser(user, onSuccess) {
+export function createUser(user, languageDictionary) {
   return (dispatch) => {
     dispatch({
       type: constants.CREATE_USER,
       meta: {
         user,
         onSuccess: () => {
-          if (onSuccess) {
-            onSuccess();
-          } else {
-            // Give indexing some time when we reload users.
-            setTimeout(() => dispatch(fetchUsers()), 1000);
-            dispatch(getAccessLevel());
-          }
+          // Give indexing some time when we reload users.
+          setTimeout(() => dispatch(fetchUsers()), 1000);
+          dispatch(getAccessLevel());
         }
       },
       payload: {
-        promise: axios.post('/api/users/', user, {
+        promise: axios.post(addRequiredTextParam('/api/users/', languageDictionary), user, {
           responseType: 'json'
         })
       }
@@ -96,7 +98,7 @@ export function cancelCreateUser() {
 /*
  * Create a user.
  */
-export function changeFields(userId, user, onSuccess) {
+export function changeFields(userId, user, languageDictionary) {
   return (dispatch) => {
     dispatch({
       type: constants.FIELDS_CHANGE,
@@ -104,15 +106,11 @@ export function changeFields(userId, user, onSuccess) {
         userId,
         user,
         onSuccess: () => {
-          if (onSuccess) {
-            onSuccess();
-          } else {
-            dispatch(fetchUser(userId));
-          }
+          dispatch(fetchUser(userId));
         }
       },
       payload: {
-        promise: axios.patch(`/api/users/${userId}`, user, {
+        promise: axios.patch(addRequiredTextParam(`/api/users/${userId}`, languageDictionary), user, {
           responseType: 'json'
         })
       }
@@ -156,7 +154,6 @@ export function fetchUserDetail(userId, onSuccess) {
     },
     payload: {
       promise: axios.get(`/api/users/${userId}`, {
-        timeout: 5000,
         headers: { 'Content-Type': 'application/json' },
         responseType: 'json'
       })
@@ -200,16 +197,16 @@ export function cancelRemoveMultiFactor() {
  */
 export function removeMultiFactor() {
   return (dispatch, getState) => {
-    const { userId, provider } = getState().mfa.toJS();
+    const { user: {user_id}, provider } = getState().mfa.toJS();
     dispatch({
       type: constants.REMOVE_MULTIFACTOR,
       payload: {
-        promise: axios.delete(`/api/users/${userId}/multifactor/${provider}`)
+        promise: axios.delete(`/api/users/${user_id}/multifactor`, provider)
       },
       meta: {
-        userId,
+        userId: user_id,
         onSuccess: () => {
-          dispatch(fetchUserDetail(userId));
+          dispatch(fetchUserDetail(user_id))
         }
       }
     });
@@ -238,7 +235,7 @@ export function cancelBlockUser() {
 /*
  * Update the user details.
  */
-export function updateUser(userId, data, onSuccess) {
+export function updateUser(userId, data, onSuccess, languageDictionary) {
   return (dispatch) => {
     dispatch({
       type: constants.UPDATE_USER,
@@ -252,7 +249,7 @@ export function updateUser(userId, data, onSuccess) {
         }
       },
       payload: {
-        promise: axios.put(`/api/users/${userId}`, data, {
+        promise: axios.put(addRequiredTextParam(`/api/users/${userId}`, languageDictionary), data, {
           responseType: 'json'
         })
       }
@@ -264,7 +261,7 @@ export function updateUser(userId, data, onSuccess) {
  */
 export function blockUser() {
   return (dispatch, getState) => {
-    const userId = getState().block.get('userId');
+    const userId = getState().block.get('user').get('user_id');
     dispatch({
       type: constants.BLOCK_USER,
       payload: {
@@ -304,7 +301,7 @@ export function cancelUnblockUser() {
  */
 export function unblockUser() {
   return (dispatch, getState) => {
-    const userId = getState().unblock.get('userId');
+    const userId = getState().unblock.get('user').get('user_id');
     dispatch({
       type: constants.UNBLOCK_USER,
       payload: {
@@ -344,14 +341,14 @@ export function cancelDeleteUser() {
  */
 export function deleteUser() {
   return (dispatch, getState) => {
-    const { userId } = getState().userDelete.toJS();
+    const { user: {user_id} } = getState().userDelete.toJS();
     dispatch({
       type: constants.DELETE_USER,
       payload: {
-        promise: axios.delete(`/api/users/${userId}`)
+        promise: axios.delete(`/api/users/${user_id}`)
       },
       meta: {
-        userId,
+        userId: user_id,
         onSuccess: () => {
           dispatch(push('/users'));
         }
@@ -385,17 +382,17 @@ export function cancelPasswordReset() {
  */
 export function resetPassword(application) {
   return (dispatch, getState) => {
-    const { userId, connection } = getState().passwordReset.toJS();
+    const { user: { user_id }, connection } = getState().passwordReset.toJS();
     dispatch({
       type: constants.PASSWORD_RESET,
       payload: {
-        promise: axios.post(`/api/users/${userId}/password-reset`, {
+        promise: axios.post(`/api/users/${user_id}/password-reset`, {
           connection,
-          clientId: application
+          clientId: application.client
         })
       },
       meta: {
-        userId
+        userId: user_id
       }
     });
   };
@@ -424,20 +421,20 @@ export function cancelPasswordChange() {
 /*
  * Change password.
  */
-export function changePassword(password, confirmPassword) {
+export function changePassword(formData, languageDictionary) {
   return (dispatch, getState) => {
-    const { userId, connection } = getState().passwordChange.toJS();
+    const { user: { user_id }, connection } = getState().passwordChange.toJS();
     dispatch({
       type: constants.PASSWORD_CHANGE,
       payload: {
-        promise: axios.put(`/api/users/${userId}/change-password`, {
+        promise: axios.put(addRequiredTextParam(`/api/users/${user_id}/change-password`, languageDictionary), {
           connection,
-          password,
-          confirmPassword
+          password: formData.password,
+          repeatPassword: formData.repeatPassword
         })
       },
       meta: {
-        userId
+        userId: user_id
       }
     });
   };
@@ -467,18 +464,21 @@ export function cancelUsernameChange() {
 /*
  * Change username.
  */
-export function changeUsername(userId, data) {
-  return (dispatch) => {
+export function changeUsername(userId, data, languageDictionary) {
+  return (dispatch, getState) => {
+    const user = getState().user.get('record').toJS();
+    user.username = data.username;
     dispatch({
       type: constants.USERNAME_CHANGE,
       meta: {
-        userId,
+        user,
         onSuccess: () => {
           dispatch(fetchUserDetail(userId));
         }
       },
       payload: {
-        promise: axios.put(`/api/users/${userId}/change-username`, { username: data }, { responseType: 'json' })
+        promise: axios.put(addRequiredTextParam(`/api/users/${userId}/change-username`, languageDictionary),
+          data, { responseType: 'json' })
       }
     });
   };
@@ -508,18 +508,21 @@ export function cancelEmailChange() {
 /*
  * Change email.
  */
-export function changeEmail(userId, data) {
+export function changeEmail(user, data, languageDictionary) {
   return (dispatch) => {
+    const userId = user.user_id;
+    user.email = data.email;
     dispatch({
       type: constants.EMAIL_CHANGE,
       meta: {
-        userId,
+        user,
         onSuccess: () => {
           dispatch(fetchUserDetail(userId));
         }
       },
       payload: {
-        promise: axios.put(`/api/users/${userId}/change-email`, { email: data }, { responseType: 'json' })
+        promise: axios.put(addRequiredTextParam(`/api/users/${userId}/change-email`, languageDictionary),
+          data, { responseType: 'json' })
       }
     });
   };

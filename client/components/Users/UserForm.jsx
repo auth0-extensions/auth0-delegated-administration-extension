@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { InputText, InputCombo, Multiselect, Select } from 'auth0-extension-ui';
 import { Button, Modal } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { reduxForm, Field, formValueSelector } from 'redux-form';
+import { reduxForm, formValueSelector } from 'redux-form';
+
 import UserCustomFormFields from './UserCustomFormFields';
+import * as useDefaultFields from '../../utils/useDefaultFields';
 
 class AddUserForm extends Component {
   static propTypes = {
@@ -22,145 +23,41 @@ class AddUserForm extends Component {
     customFields: PropTypes.array,
     customFieldGetter: PropTypes.func.isRequired,
     languageDictionary: PropTypes.object,
-  }
+  };
 
-  renderUsername(connections, hasSelectedConnection, customFields) {
-    const usernameField = _.find(customFields, { property: 'username' });
-    const displayField = !usernameField || usernameField.create;
-
-    if (displayField) {
-      const selectedConnection = _.find(connections, (conn) => conn.name === hasSelectedConnection);
-      const requireUsername = selectedConnection && selectedConnection.options ? selectedConnection.options.requires_username : false;
-      if (!requireUsername && (!this.props.initialValues || !this.props.initialValues.username)) {
-        return null;
-      }
-
-      return (
-        <Field label={usernameField && usernameField.label || "Username"} name="username" component={InputText}/>
-      );
-    }
-
-    return null;
-  }
-
-  renderMemberships(hasMembership, memberships, createMemberships) {
-    const allMemberships = _(memberships || [])
-      .concat(hasMembership)
-      .uniq()
-      .sort()
-      .value();
-    if (allMemberships.length <= 1 && !createMemberships) {
-      return null;
-    }
-
-    return (
-      <Field
-        name="memberships"
-        id="memberships"
-        label={this.props.getDictValue('memberships', 'Memberships')}
-        component={Multiselect}
-        loadOptions={(input, callback) => {
-          callback(null, {
-            options: allMemberships.map(m => ({ value: m, label: m })),
-            complete: true
-          });
-        }}
-      />
-    );
-  }
-
-  renderConnections(connections, customFields) {
-    if (!connections || connections.length <= 1) {
-      return null;
-    }
-
-    const connectionUserField = _.find(customFields, { property: 'connection' });
-    const displayConnectionUserField = !connectionUserField || connectionUserField.create;
-
-    if (displayConnectionUserField) {
-      const options = connections.map(conn => ({ value: conn.name, text: conn.name }));
-      return (
-        <Field
-          label={connectionUserField && connectionUserField.label || "Connection"}
-          name="connection"
-          id="connection"
-          component={InputCombo}
-          options={options}
-          onChange={this.onConnectionChange}
-        />
-      );
-    }
-
-    return null;
-  }
-
-  renderPassword(customFields) {
-    const passwordField = _.find(customFields, { property: 'password' });
-    const repeatPasswordField = _.find(customFields, { property: 'repeatPassword' });
-    const displayField = !passwordField || passwordField.create;
-
-    if (displayField) {
-      return (
-        <div>
-          <Field
-            label={passwordField && passwordField.label || "Password"}
-            name="password"
-            type="password"
-            component={InputText}
-          />
-          <Field
-            label={repeatPasswordField && repeatPasswordField.label || "Repeat Password"}
-            name="repeatPassword"
-            type="password"
-            component={InputText}
-          />
-        </div>
-      );
-    }
-    return null;
-  }
-
-  renderEmail(customFields) {
-    const emailField = _.find(customFields, { property: 'email' });
-    const displayField = !emailField || emailField.create;
-
-    if (displayField) {
-      return (
-        <Field
-          label={ emailField && emailField.label || "Email"}
-          name="email"
-          component={InputText}
-        />
-      );
-    }
-    return null;
-  }
 
   render() {
-    const connections = this.props.connections;
 
     const {
       submitting,
+      customFields,
+      connections,
+      hasSelectedConnection,
+      initialValues,
+      hasMembership,
       memberships,
       createMemberships,
-      hasSelectedConnection,
-      hasMembership,
-      customFields
+      getDictValue
     } = this.props;
 
     const languageDictionary = this.props.languageDictionary || {};
+
+    /* First let's add field to the top if not in the list of fields */
+    const fields = _.cloneDeep(customFields) || [];
+    useDefaultFields.useConnectionsField(false, fields, connections, this.onConnectionsChange);
+    useDefaultFields.usePasswordFields(false, fields);
+    useDefaultFields.useUsernameField(false, fields, connections, hasSelectedConnection, initialValues);
+    useDefaultFields.useEmailField(false, fields);
+    useDefaultFields.useMembershipsField(false, fields, hasMembership, memberships, createMemberships, getDictValue);
+
+    const createFields = _.filter(fields, field => field.create);
 
     return (
       <div>
         <Modal.Body>
           {this.props.children}
           <div className="form-horizontal">
-            {this.renderMemberships(hasMembership, memberships, createMemberships)}
-            {this.renderEmail(customFields)}
-            {this.renderUsername(connections, hasSelectedConnection, customFields)}
-            {this.renderPassword(customFields)}
-            {this.renderConnections(connections, customFields)}
-            <UserCustomFormFields customFieldGetter={this.props.customFieldGetter} customFields={customFields}/>
+            <UserCustomFormFields isEditForm={false} fields={createFields} languageDictionary={languageDictionary}/>
           </div>
         </Modal.Body>
         <Modal.Footer>

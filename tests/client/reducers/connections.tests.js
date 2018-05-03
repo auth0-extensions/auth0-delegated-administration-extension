@@ -35,12 +35,20 @@ describe('connections reducer', () => {
     expect(
       connections(initialState, {
         type: constants.FETCH_CONNECTIONS_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
         loading: false,
-        error: 'An error occured while loading the connections: ERROR',
+        error: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        },
         records: []
       }
     );

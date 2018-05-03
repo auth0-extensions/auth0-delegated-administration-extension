@@ -1,0 +1,8 @@
+.has-error label {
+  font-weight: 700;
+}
+
+.validation-error-fields-list li label {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+}

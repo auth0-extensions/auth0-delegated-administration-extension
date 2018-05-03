@@ -17,6 +17,7 @@ export default class UserActions extends Component {
     resetPassword: PropTypes.func.isRequired,
     unblockUser: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
+    role: PropTypes.number.isRequired,
     userFields: PropTypes.array.isRequired,
     languageDictionary: PropTypes.object
   }
@@ -162,7 +163,7 @@ export default class UserActions extends Component {
 
     return (
       <MenuItem disabled={loading || false} onClick={this.removeMfa}>
-        {this.state.languageDictionary.removeMfaMenuItemText || "Remove MFA"} ({user.multifactor[0]})
+        {this.state.languageDictionary.removeMfaMenuItemText || "Remove MFA"}
       </MenuItem>
     );
   }
@@ -236,16 +237,19 @@ export default class UserActions extends Component {
   }
 
   removeMfa = () => {
-    this.props.removeMfa(this.state.user, this.state.user.multifactor[0]);
+    this.props.removeMfa(this.state.user, this.state.user.multifactor);
   }
 
   render() {
-    if (!this.state.user) {
+    if (!this.state.user || this.props.role < 1) {
       return null;
     }
 
+    const languageDictionary = this.props.languageDictionary || {};
+    const buttonTitle = languageDictionary.userActionsButton || 'Actions';
+
     return (
-      <DropdownButton bsStyle="success" title="Actions" id="user-actions">
+      <DropdownButton bsStyle="success" title={buttonTitle} id="user-actions">
         {this.getMultifactorAction(this.state.user, this.state.loading)}
         {this.getBlockedAction(this.state.user, this.state.loading)}
         {this.getResetPasswordAction(this.state.user, this.state.loading)}

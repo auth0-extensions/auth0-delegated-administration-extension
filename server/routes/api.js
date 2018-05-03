@@ -95,7 +95,7 @@ export default (storage) => {
       return addExtraUserInfo(getToken(req), req.user)
         .then((user) => {
           currentRequest.user = user;
-          currentRequest.user.scope = [constants.USER_PERMISSION, constants.ADMIN_PERMISSION];
+          currentRequest.user.scope = [constants.AUDITOR_PERMISSION, constants.USER_PERMISSION, constants.ADMIN_PERMISSION];
           return next();
         })
         .catch(next);
@@ -110,7 +110,10 @@ export default (storage) => {
     next();
   });
 
-  api.use(requireScope(constants.USER_PERMISSION));
+  api.use((req, res, next) => {
+    const permission = (req.method.toLowerCase() === 'get') ? constants.AUDITOR_PERMISSION : constants.USER_PERMISSION;
+    return requireScope(permission)(req, res, next);
+  });
   api.use('/applications', managementApiClient, applications());
   api.use('/connections', managementApiClient, connections(scriptManager));
   api.use('/scripts', requireScope(constants.ADMIN_PERMISSION), scripts(storage, scriptManager));
@@ -121,7 +124,8 @@ export default (storage) => {
     const settingsContext = {
       request: {
         user: req.user
-      }
+      },
+      locale: req.headers['dae-locale']
     };
 
     scriptManager.execute('settings', settingsContext)

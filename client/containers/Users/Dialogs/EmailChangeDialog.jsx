@@ -4,25 +4,32 @@ import PropTypes from 'prop-types';
 import connectContainer from 'redux-static';
 import { Error, Confirm } from 'auth0-extension-ui';
 
+import submitForm from '../../../actions/submitForm';
 import { userActions } from '../../../actions';
+import { useDisabledConnectionField, useEmailField } from '../../../utils/useDefaultFields';
+import { getName, mapValues } from '../../../utils/display';
 import getDialogMessage from './getDialogMessage';
+import UserFieldsForm from '../../../components/Users/UserFieldsForm';
+import getErrorMessage from '../../../utils/getErrorMessage';
+
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     emailChange: state.emailChange,
-    settings: state.settings,
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     languageDictionary: state.languageDictionary
   });
 
   static actionsToProps = {
+    submitForm,
     ...userActions
-  }
+  };
 
   static propTypes = {
     cancelEmailChange: PropTypes.func.isRequired,
     changeEmail: PropTypes.func.isRequired,
     emailChange: PropTypes.object.isRequired
-  }
+  };
 
   shouldComponentUpdate(nextProps) {
     return nextProps.languageDictionary !== this.props.languageDictionary ||
@@ -30,66 +37,56 @@ export default connectContainer(class extends Component {
   }
 
   onConfirm = () => {
-    this.props.changeEmail(this.refs.user.value, this.refs.email.value);
-  }
+    this.props.submitForm('change-email');
+  };
 
-  renderConnection(connection, userFields) {
-    const connectionField = _.find(userFields, field => field.property === 'connection');
+  onSubmit = (emailForm) => {
+    const { user } = this.props.emailChange.toJS();
 
-    const displayConnection = !connectionField || (_.isBoolean(connectionField.edit) && connectionField.edit === true) || _.isObject(connectionField.edit);
-
-    const label = (connectionField && connectionField.label) || 'Connection';
-    return displayConnection ? <div className="form-group">
-      <label id="email-change-connection-label" className="col-xs-2 control-label">{label}</label>
-      <div className="col-xs-9">
-        <input id="email-change-connection-input" type="text" readOnly="readonly" className="form-control" value={connection} />
-      </div>
-    </div> : <div></div>;
-  }
+    this.props.changeEmail(user, emailForm, this.props.languageDictionary.get('record').toJS());
+  };
 
   render() {
-    const { cancelEmailChange } = this.props;
-    const { userId, customField, connection, userName, userEmail, error, requesting, loading } = this.props.emailChange.toJS();
+    const { cancelEmailChange, settings } = this.props;
+    const { user, connection, error, requesting, loading } = this.props.emailChange.toJS();
 
-    const defaultEmailValue = customField ? customField.display(customField.user) : userEmail;
-
-    const userFields = _.get(this.props.settings.toJS(), 'record.settings.userFields', []);
+    const userFields = settings.userFields || [];
 
     const languageDictionary = this.props.languageDictionary.get('record').toJS();
-    const { preText, postText } = getDialogMessage(
-      languageDictionary.changeEmailMessage, 'username',
-      {
-        preText: 'Do you really want to change the email for ',
-        postText: '?'
-      }
-    );
 
-    const emailField = _.find(userFields, field => field.property === 'email');
+    const messageFormat = languageDictionary.changeEmailMessage ||
+      'Do you really want to change the email for {username}?';
+    const message = getDialogMessage(messageFormat, 'username',
+      getName(user, userFields, languageDictionary));
 
-    const emailLabel = (emailField && emailField.label) || 'Email';
+    const fields = _.cloneDeep(userFields) || [];
+    useEmailField(true, fields);
+    useDisabledConnectionField(true, fields, connection);
+
+    const allowedFields = ['email', 'connection'];
+    const filteredFields = _.filter(fields,
+      field => _.includes(allowedFields, field.property));
+
+    const UserFieldsFormInstance = UserFieldsForm('change-email', this.onSubmit.bind(this));
 
     return (
       <Confirm
         title={languageDictionary.changeEmailTitle || 'Change Email?'}
+        confirmMessage={languageDictionary.dialogConfirmText} cancelMessage={languageDictionary.dialogCancelText}
         show={requesting} loading={loading} onCancel={cancelEmailChange}
         onConfirm={this.onConfirm}
+        closeLabel={languageDictionary.closeButtonText}
       >
-        <Error message={error} />
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error, settings.errorTranslator)} />
         <p>
-          {preText}<strong>{userName}</strong>{postText}
+          {message}
         </p>
-        <div className="row">
-          <form className="form-horizontal col-xs-12" style={{ marginTop: '40px' }}>
-            { this.renderConnection(connection, userFields) }
-            <div className="form-group">
-              <label id="email-change-email-label" className="col-xs-2 control-label">{emailLabel}</label>
-              <div className="col-xs-9">
-                <input id="email-change-email-input" ref="email" type="email" className="form-control" defaultValue={defaultEmailValue} />
-              </div>
-            </div>
-            <input ref="user" type="hidden" readOnly="readonly" className="form-control" value={userId} />
-          </form>
-        </div>
+        <UserFieldsFormInstance
+          initialValues={mapValues(user, allowedFields, filteredFields, 'edit', languageDictionary)}
+          isEditForm={true}
+          fields={filteredFields}
+          languageDictionary={languageDictionary}
+        />
       </Confirm>
     );
   }

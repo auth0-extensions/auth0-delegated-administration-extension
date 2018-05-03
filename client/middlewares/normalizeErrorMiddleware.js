@@ -2,8 +2,9 @@ export default function normalizeErrorMiddleware() {
   return () => next => action => {
     if (action && action.type.endsWith('_REJECTED') && action.payload) {
       // Try to get the default error message from the response.
-      let errorMessage = action.payload.statusText || action.payload.status || 'Unknown Server Error';
+      let message = action.payload.statusText || action.payload.status || 'Unknown Server Error';
 
+      const status = (action.payload.response && action.payload.response.status) || 500;
       // Maybe some data is available.
       let error = action.payload.data && action.payload.data.message;
       if (!error) {
@@ -11,10 +12,14 @@ export default function normalizeErrorMiddleware() {
       }
 
       if (error) {
-        errorMessage = error.message || error;
+        message = error.message || error;
       }
 
-      action.errorMessage = errorMessage;
+      action.errorData = {
+        type: action.type.replace('_REJECTED', ''),
+        message,
+        status
+      };
     }
 
     next(action);

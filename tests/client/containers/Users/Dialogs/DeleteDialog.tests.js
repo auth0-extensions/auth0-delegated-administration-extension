@@ -21,11 +21,12 @@ describe('#Client-Containers-Users-Dialogs-DeleteDialog', () => {
   const renderComponent = (username, languageDictionary) => {
     const initialState = {
       userDelete: fromJS({
-        userName: username,
+        user: { name: username },
         error: null,
         requesting: true,
         loading: false
       }),
+      settings: fromJS({}),
       languageDictionary: fromJS({
         record: languageDictionary || {}
       })
@@ -54,32 +55,35 @@ describe('#Client-Containers-Users-Dialogs-DeleteDialog', () => {
       .textContent).to.equal(`${preText}${username}${postText}`);
   };
 
-  const checkConfirm = (component, title, languageDictionary) => {
+  const checkConfirm = (component, title) => {
     const confirm = component.find(Confirm);
     expect(confirm.length).to.equal(1);
-    expect(confirm.prop('languageDictionary')).to.deep.equal(languageDictionary);
     expect(confirm.prop('title')).to.deep.equal(title);
-  }
+  };
 
   it('should render', () => {
     const component = renderComponent('bill');
 
     checkText(component, 'Do you really want to delete ', 'bill', '? This will completely remove the user and cannot be undone.');
+    checkConfirm(component, 'Delete User?');
   });
 
   it('should render not applicable language dictionary', () => {
     const component = renderComponent('bill', { someKey: 'someValue' });
 
     checkText(component, 'Do you really want to delete ', 'bill', '? This will completely remove the user and cannot be undone.');
+    checkConfirm(component, 'Delete User?');
   });
 
   it('should render applicable language dictionary', () => {
     const languageDictionary = {
-      deleteDialogMessage: 'Some pre message {username} ignore second {username}'
+      deleteDialogMessage: 'Some pre message {username} ignore second {username}',
+      deleteDialogTitle: 'Delete User Title'
     };
     const component = renderComponent('bob', languageDictionary);
 
     checkText(component, 'Some pre message ', 'bob', ' ignore second {username}');
+    checkConfirm(component, 'Delete User Title');
   });
 
   it('should render applicable language dictionary spaces in username', () => {

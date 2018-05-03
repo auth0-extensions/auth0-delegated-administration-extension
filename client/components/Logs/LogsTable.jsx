@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Error, LoadingPanel, Table, TableBody, TableIconCell, TableTextCell, TableHeader, TableColumn, TableRow } from 'auth0-extension-ui';
 import moment from 'moment';
+import _ from 'lodash';
+import getErrorMessage from '../../utils/getErrorMessage';
 
 export default class LogsTable extends Component {
   static propTypes = {
@@ -9,6 +11,8 @@ export default class LogsTable extends Component {
     error: PropTypes.string,
     loading: PropTypes.bool.isRequired,
     logs: PropTypes.object.isRequired,
+    settings: PropTypes.object.isRequired,
+    isUserLogs: PropTypes.bool,
     languageDictionary: PropTypes.object
   }
 
@@ -17,8 +21,9 @@ export default class LogsTable extends Component {
   }
 
   render() {
-    const { error, loading } = this.props;
+    const { error, loading, settings } = this.props;
     const languageDictionary = this.props.languageDictionary || {};
+    const suppressRawData = settings && settings.suppressRawData === true;
 
     if (!error && this.props.logs.size === 0) {
       return <div>{languageDictionary.noLogsMessage || 'No logs found'}</div>;
@@ -27,7 +32,7 @@ export default class LogsTable extends Component {
     const logs = this.props.logs.toJS();
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
-        <Error message={error} />
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error, settings.errorTranslator)} />
         <Table>
           <TableHeader>
             <TableColumn width="3%" />
@@ -39,14 +44,17 @@ export default class LogsTable extends Component {
           </TableHeader>
           <TableBody>
             {logs.map((log, index) => {
-              const type = log.type;
-              const icon = type.icon;
+              const icon = log.type.icon;
+              const onClick = suppressRawData ? null : () => this.props.onOpen(log._id);
+              const logType = _.get(languageDictionary, `logTypes.${log.shortType}.event`, log.type.event);
+              const logDescription = _.get(languageDictionary, `logTypes.${log.shortType}.description`, languageDictionary.logTableDefaultLogRecordDescription || log.description || log.type.description);
+              const descriptionText = this.props.isUserLogs ? logDescription || log.user_name : log.user_name || logDescription;
               log.time_ago = moment(log.date).locale(languageDictionary.momentLocale || 'en').fromNow();
               return (
                 <TableRow key={index}>
-                  <TableIconCell color={icon.color} icon={icon.name} />
-                  <TableTextCell onClick={() => this.props.onOpen(log._id)}>{type.event}</TableTextCell>
-                  <TableTextCell>{log.user_name || log.description || type.description}</TableTextCell>
+                  <TableIconCell color={icon.color} icon={icon.name} title={logType} />
+                  <TableTextCell onClick={onClick}>{logType || languageDictionary.logDialogDefaultLogRecordText || 'Log Record'}</TableTextCell>
+                  <TableTextCell>{descriptionText}</TableTextCell>
                   <TableTextCell>{log.time_ago}</TableTextCell>
                   <TableTextCell>{log.connection || languageDictionary.notApplicableLabel || 'N/A'}</TableTextCell>
                   <TableTextCell>{log.client_name || languageDictionary.notApplicableLabel || 'N/A'}</TableTextCell>
@@ -59,4 +67,4 @@ export default class LogsTable extends Component {
       </LoadingPanel>
     );
   }
-}
+};

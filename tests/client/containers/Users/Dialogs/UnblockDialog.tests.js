@@ -21,11 +21,12 @@ describe('#Client-Containers-Users-Dialogs-UnblockDialog', () => {
   const renderComponent = (username, languageDictionary) => {
     const initialState = {
       unblock: fromJS({
-        userName: username,
+        user: { name: username },
         error: null,
         requesting: true,
         loading: false
       }),
+      settings: fromJS({}),
       languageDictionary: fromJS({
         record: languageDictionary || {}
       })
@@ -54,10 +55,9 @@ describe('#Client-Containers-Users-Dialogs-UnblockDialog', () => {
       .textContent).to.equal(`${preText}${username}${postText}`);
   };
 
-  const checkConfirm = (component, title, languageDictionary) => {
+  const checkConfirm = (component, title) => {
     const confirm = component.find(Confirm);
     expect(confirm.length).to.equal(1);
-    expect(confirm.prop('languageDictionary')).to.deep.equal(languageDictionary);
     expect(confirm.prop('title')).to.deep.equal(title);
   }
 
@@ -103,11 +103,11 @@ describe('#Client-Containers-Users-Dialogs-UnblockDialog', () => {
   it('should render confirm gets languageDictionary', () => {
     const languageDictionary = { someKey: 'someValue', unblockDialogTitle: 'Unblock User Alternate Title' };
     const component = renderComponent('june', languageDictionary);
-    checkConfirm(component, 'Unblock User Alternate Title', languageDictionary);
+    checkConfirm(component, 'Unblock User Alternate Title');
   });
 
   it('should render confirm gets null languageDictionary', () => {
     const component = renderComponent('jackie');
-    checkConfirm(component, 'Unblock User?', {});
+    checkConfirm(component, 'Unblock User?');
   });
 });

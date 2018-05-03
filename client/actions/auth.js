@@ -1,7 +1,6 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 import { push } from 'react-router-redux';
-import uuid from 'uuid';
 
 import * as constants from '../constants';
 
@@ -42,11 +41,14 @@ function isExpired(decodedToken) {
   return !(d.valueOf() > (new Date().valueOf() + (1000)));
 }
 
-export function logout() {
+export function logout(logoutUrl) {
   return (dispatch) => {
-    sessionStorage.removeItem('delegated-admin:apiToken');
+    sessionStorage.clear();
+    localStorage.clear();
 
-    if (window.config.FEDERATED_LOGOUT) {
+    if (logoutUrl) {
+      window.location.href = logoutUrl;
+    } else if (window.config.FEDERATED_LOGOUT) {
       window.location.href = `https://${window.config.AUTH0_DOMAIN}/v2/logout?federated&client_id=${window.config.AUTH0_CLIENT_ID}&returnTo=${encodeURIComponent(window.config.BASE_URL)}`;
     } else {
       window.location.href = `https://${window.config.AUTH0_DOMAIN}/v2/logout?client_id=${window.config.AUTH0_CLIENT_ID}&returnTo=${encodeURIComponent(window.config.BASE_URL)}`;
@@ -65,6 +67,7 @@ const processTokens = (dispatch, apiToken, returnTo) => {
   }
 
   axios.defaults.headers.common.Authorization = `Bearer ${apiToken}`;
+  axios.defaults.headers.common['dae-locale'] = window.config.LOCALE || 'en';
 
   sessionStorage.setItem('delegated-admin:apiToken', apiToken);
 
@@ -158,6 +161,40 @@ export function getAppSettings(onSuccess) {
   });
 }
 
+export function toggleStyleSettings() {
+  return (dispatch, getState) => {
+    let settings = getState().settings.get('record').toJS();
+    settings = settings.settings || settings || {};
+    const useAlt = localStorage.getItem('delegated-admin:use-alt-css') === 'true';
+    const path = useAlt ? settings.css : settings.altcss;
+    localStorage.setItem('delegated-admin:use-alt-css', (!useAlt).toString());
+    dispatch({
+      type: constants.TOGGLE_STYLE_SETTINGS,
+      payload: {
+        useAlt: !useAlt,
+        path
+      }
+    });
+  };
+}
+
+export function getStyleSettings() {
+  return (dispatch, getState) => {
+    let settings = getState().settings.get('record').toJS();
+    settings = settings.settings || settings || {};
+    const useAlt = localStorage.getItem('delegated-admin:use-alt-css') === 'true';
+    const path = !useAlt ? settings.css : settings.altcss;
+
+    dispatch({
+      type: constants.GET_STYLE_SETTINGS,
+      payload: {
+        useAlt,
+        path
+      }
+    });
+  };
+}
+
 function getLanguageDictionary(response, onSuccess) {
   const settings = _.get(response, 'data.settings', {});
   let promise = Promise.resolve({ data: {} });
@@ -167,11 +204,20 @@ function getLanguageDictionary(response, onSuccess) {
     } else if (_.isString(settings.languageDictionary) && settings.languageDictionary.startsWith('http')) {
       // Setting Authorization to None because we don't want to ship the token to some undeclared endpoint,
       // especially if not enforcing https
-      promise = axios.get(settings.languageDictionary, { headers: { 'Authorization': 'None' }, responseType: 'json' })
+      const oldAuth = axios.defaults.headers.common['Authorization'];
+      const oldLocale = axios.defaults.headers.common['dae-locale'];
+      delete axios.defaults.headers.common['Authorization']; // and create your own headers
+      delete axios.defaults.headers.common['dae-locale']; // and create your own headers
+
+      promise = axios.get(settings.languageDictionary, { responseType: 'json' })
         .then((response) => {
           if (response.data) return response;
           return Promise.reject(new Error(`Language Dictionary endpoint: ${settings.languageDictionary} returned no data`));
         });
+
+      // TODO: Race condition?  I hope not!
+      axios.defaults.headers.common['Authorization'] = oldAuth;
+      axios.defaults.headers.common['dae-locale'] = oldLocale;
     } // ignore else, bad languageDictionary
   }
 

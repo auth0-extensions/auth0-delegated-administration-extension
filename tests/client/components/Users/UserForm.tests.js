@@ -72,12 +72,12 @@ describe('#Client-Components-UserForm', () => {
 
   it('should render', () => {
     const targets = {
-      username: 'Username',
+      username: 'Username (required)',
       memberships: 'Memberships',
-      connection: 'Connection',
-      password: 'Password',
-      repeatPassword: 'Repeat Password',
-      email: 'Email'
+      connection: 'Connection (required)',
+      password: 'Password (required)',
+      repeatPassword: 'Repeat Password (required)',
+      email: 'Email (required)'
     };
 
     const component = renderComponent(everythingOptions);
@@ -114,6 +114,10 @@ describe('#Client-Components-UserForm', () => {
       },
       {
         property: 'password',
+        create: true
+      },
+      {
+        property: 'repeatPassword',
         create: true
       },
       {
@@ -158,6 +162,10 @@ describe('#Client-Components-UserForm', () => {
         },
         {
           property: 'password',
+          create: false
+        },
+        {
+          property: 'repeatPassword',
           create: false
         },
         {

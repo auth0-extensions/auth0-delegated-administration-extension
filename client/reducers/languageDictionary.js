@@ -19,7 +19,7 @@ export const languageDictionary = createReducer(fromJS(initialState), { // eslin
   [constants.FETCH_LANGUAGE_DICTIONARY_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occurred while loading the language dictionary: ${action.errorMessage}`
+      error: action.errorData
     }),
   [constants.FETCH_LANGUAGE_DICTIONARY_FULFILLED]: (state, action) => {
     const data = action.payload.data;

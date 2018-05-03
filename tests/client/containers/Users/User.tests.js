@@ -37,7 +37,7 @@ describe('#Client-Containers-Users-User', () => {
 
   const renderComponent = (languageDictionary) => {
     const basicUsername = fromJS({
-      userName: 'bill',
+      user: {name: 'bill'},
       loading: false,
       error: null
     });
@@ -131,7 +131,7 @@ describe('#Client-Containers-Users-User', () => {
   };
 
   const checkTitle = (component, title) => {
-    const titleObject = component.find('h2');
+    const titleObject = component.find('h1');
     expect(titleObject.length).to.equal(1);
     expect(titleObject.text()).to.equal(title);
   };
