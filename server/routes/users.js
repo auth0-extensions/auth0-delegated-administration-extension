@@ -9,32 +9,9 @@ import config from '../lib/config';
 import logger from '../lib/logger';
 import { verifyUserAccess } from '../lib/middlewares';
 import { removeGuardian, requestGuardianEnrollments } from '../lib/removeGuardian';
-import { requestUserBlocks } from '../lib/userBLocks';
+import requestUserBlocks from '../lib/userBlocks';
 import getApiToken from '../lib/getApiToken';
-
-const executeWriteHook = (req, scriptManager, userFields, onlyTheseFields) => {
-  const user = req.targetUser;
-  const context = {
-    method: 'update',
-    request: {
-      user: req.user,
-      originalUser: user
-    },
-    payload: req.body,
-    userFields
-  };
-
-  try {
-    context.payload = checkCustomFieldValidation(req, context, true, onlyTheseFields);
-  } catch (e) {
-    return Promise.reject(e);
-  }
-
-  return scriptManager.execute('create', context)
-    .then(data => {
-      return data;
-    });
-};
+import getConnectionIdByName from '../lib/getConnectionIdByName';
 
 const isValidField = (type, onlyTheseFields, field) =>
   ((onlyTheseFields && _.includes(onlyTheseFields, field.property)) || (!onlyTheseFields && field[type] !== false));
@@ -52,12 +29,12 @@ const checkCustomFieldValidation = (req, context, isEditRequest, onlyTheseFields
   const fieldsToValidate = _.filter(context.userFields, field => !_.includes(ignoredFields, field.property) && _.isObject(field[type]) && (field[type].required || field[type].validationFunction));
 
   const errorList = {};
-  fieldsToValidate.forEach(field => {
+  fieldsToValidate.forEach((field) => {
     const value = _.get(context.payload, field.property);
     const errorKey = field.label || field.property;
     if (!value || value.length === 0) {
       if (field[type].required) {
-        errorList[errorKey] = [requiredErrorText || 'required'];
+        errorList[errorKey] = [ requiredErrorText || 'required' ];
       }
       return;
     }
@@ -89,11 +66,32 @@ const checkCustomFieldValidation = (req, context, isEditRequest, onlyTheseFields
     }
   });
 
-  if (Object.keys(errorList).length > 0) throw new ValidationError(_.map(errorList, (value, index) => `${index}: ${value}`).join("\n"));
+  if (Object.keys(errorList).length > 0) throw new ValidationError(_.map(errorList, (value, index) => `${index}: ${value}`).join('\n'));
 
   /* remove fields from payload that have [type] false */
   if (onlyTheseFields) context.payload = _.pick(context.payload, onlyTheseFields);
   return _.omit(context.payload, ignoredFields);
+};
+
+const executeWriteHook = (req, scriptManager, userFields, onlyTheseFields) => {
+  const user = req.targetUser;
+  const context = {
+    method: 'update',
+    request: {
+      user: req.user,
+      originalUser: user
+    },
+    payload: req.body,
+    userFields
+  };
+
+  try {
+    context.payload = checkCustomFieldValidation(req, context, true, onlyTheseFields);
+  } catch (e) {
+    return Promise.reject(e);
+  }
+
+  return scriptManager.execute('create', context);
 };
 
 export default (storage, scriptManager) => {
@@ -112,7 +110,6 @@ export default (storage, scriptManager) => {
 
     scriptManager.execute('settings', settingsContext)
       .then((settings) => {
-
         const userFields = settings && settings.userFields;
         const createContext = {
           method: 'create',
@@ -174,14 +171,16 @@ export default (storage, scriptManager) => {
 
     scriptManager.execute('filter', filterContext)
       .then((filter) => {
+        const searchEngine = filter && filter.searchEngine;
+        const filterQuery = (filter && typeof filter.query !== 'undefined') ? filter.query : filter;
         const options = {
           sort,
-          q: (searchQuery && filter) ? `(${searchQuery}) AND ${filter}` : searchQuery || filter,
+          q: (searchQuery && filterQuery) ? `(${searchQuery}) AND ${filterQuery}` : searchQuery || filterQuery,
           per_page: req.query.per_page || 10,
           page: req.query.page || 0,
           include_totals: true,
           fields: 'user_id,username,name,email,identities,picture,last_login,logins_count,multifactor,blocked,app_metadata,user_metadata',
-          search_engine: 'v2'
+          search_engine: searchEngine || config('SEARCH_ENGINE') || 'v3'
         };
 
         return req.auth0.users.getAll(options);
@@ -232,18 +231,47 @@ export default (storage, scriptManager) => {
           memberships: []
         };
       })
-      .then(data => {
-        return getApiToken(req)
-          .then((accessToken) => {
-            return requestUserBlocks(accessToken, req.params.id)
+      .then((data) => {
+        if (!data.user.identities) {
+          data.connection = {};
+          return data;
+        }
+
+        const identities = data.user.identities.filter(identity => identity.provider === 'auth0');
+        const name = identities[0] && identities[0].connection;
+
+        if (!name) {
+          data.connection = {};
+          return data;
+        }
+
+        return getConnectionIdByName(req.auth0, name)
+          .then((connectionId) => {
+            if (connectionId) {
+              return req.auth0.connections.get({ id: connectionId, fields: 'enabled_clients' });
+            }
+
+            return {};
+          })
+          .then((connection) => {
+            data.connection = {
+              enabled_clients: connection.enabled_clients
+            };
+
+            return data;
+          });
+      })
+      .then(data =>
+        getApiToken(req)
+          .then(accessToken =>
+            requestUserBlocks(accessToken, req.params.id)
               .then((blockedFor) => {
                 if (blockedFor) data.user.blocked_for = blockedFor;
-                return accessToken
-              });
-          })
+                return accessToken;
+              }))
           .then((accessToken) => {
             if (data.user.multifactor && data.user.multifactor.indexOf('guardian') >= 0) {
-              return requestGuardianEnrollments(accessToken, req.params.id)
+              requestGuardianEnrollments(accessToken, req.params.id)
                 .then((enrollments) => {
                   if (!enrollments || !enrollments.length) {
                     data.user.multifactor = data.user.multifactor.filter(item => item !== 'guardian');
@@ -255,8 +283,8 @@ export default (storage, scriptManager) => {
             }
 
             return res.json(data);
-          });
-      })
+          })
+      )
       .catch((err) => {
         logger.error('Failed to get user because: ', err);
         next(err);
@@ -288,8 +316,8 @@ export default (storage, scriptManager) => {
     };
 
     scriptManager.execute('settings', settingsContext)
-      .then(settings => {
-        const defaultFields = ['username', 'email', 'password', 'repeatPassword', 'connection'];
+      .then((settings) => {
+        const defaultFields = [ 'username', 'email', 'password', 'repeatPassword', 'connection' ];
         const allowedFields = _.map(
           _.filter(settings.userFields,
             field => field.edit &&
@@ -297,9 +325,7 @@ export default (storage, scriptManager) => {
           ), 'property');
         return executeWriteHook(req, scriptManager, settings.userFields, allowedFields);
       })
-      .then(payload => {
-        return req.auth0.users.update({ id: req.params.id }, payload)
-      })
+      .then(payload => req.auth0.users.update({ id: req.params.id }, payload))
       .then(() => res.status(204).send())
       .catch(next);
   });
@@ -335,11 +361,11 @@ export default (storage, scriptManager) => {
       locale: req.headers['dae-locale']
     };
 
-    scriptManager.execute('settings', settingsContext)
+    return scriptManager.execute('settings', settingsContext)
       .then((settings) => {
         // If userFields is specified in the settings hook, then call the write hook and pass the userFields.
         if (settings && settings.userFields) {
-          return executeWriteHook(req, scriptManager, settings.userFields, ['password', 'repeatPassword'])
+          return executeWriteHook(req, scriptManager, settings.userFields, [ 'password', 'repeatPassword' ])
             .then((payload) => {
               if (!payload.password) {
                 throw new ValidationError('The password is required.');
@@ -347,7 +373,7 @@ export default (storage, scriptManager) => {
 
               // Allow app_metadata in case someone needs to set a field in app_metadata to store a flag associated
               // with the change
-              payload = _.pick(payload, ['password', 'connection', 'verify_password', 'app_metadata']);
+              payload = _.pick(payload, [ 'password', 'connection', 'verify_password', 'app_metadata' ]);
 
               const payloadFinal = _.defaults(payload, {
                 connection: req.body.connection,
@@ -386,7 +412,7 @@ export default (storage, scriptManager) => {
       .then((settings) => {
         // If userFields is specified in the settings hook, then call the write hook and pass the userFields.
         if (settings && settings.userFields) {
-          executeWriteHook(req, scriptManager, settings.userFields, ['username'])
+          executeWriteHook(req, scriptManager, settings.userFields, [ 'username' ])
             .then((payload) => {
               if (!payload.username) {
                 throw new ValidationError('The username is required.');
@@ -420,7 +446,7 @@ export default (storage, scriptManager) => {
       .then((settings) => {
         // If userFields is specified in the settings hook, then call the write hook and pass the userFields.
         if (settings && settings.userFields) {
-          executeWriteHook(req, scriptManager, settings.userFields, ['email'])
+          executeWriteHook(req, scriptManager, settings.userFields, [ 'email' ])
             .then((payload) => {
               if (!payload.email) {
                 throw new ValidationError('The email is required.');
@@ -492,7 +518,7 @@ export default (storage, scriptManager) => {
         return req.auth0.users.deleteMultifactorProvider({ id: req.params.id, provider });
       }
 
-      return getApiToken(req).then((accessToken) => removeGuardian(accessToken, req.params.id));
+      return getApiToken(req).then(accessToken => removeGuardian(accessToken, req.params.id));
     })
       .then(() => res.sendStatus(204))
       .catch(next);

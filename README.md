@@ -13,8 +13,9 @@ npm run server:prod
 To run the extension:
 
 ```bash
-npm install
-npm run serve:dev
+yarn install
+yarn run build
+yarn run serve:dev
 ```
 
 ### Configuration
@@ -25,11 +26,13 @@ Update the configuration file under `./server/config.json`:
 {
   "AUTHORIZE_API_KEY": "mysecret",
   "EXTENSION_SECRET": "mysecret",
+  "PUBLIC_WT_URL": "http://localhost:3000/",
   "WT_URL": "http://localhost:3000/",
   "AUTH0_DOMAIN": "me.auth0.com",
   "AUTH0_CLIENT_ID": "myclientid",
   "AUTH0_CLIENT_SECRET": "myclientsecret",
-  "EXTENSION_CLIENT_ID": "myotherclientid"
+  "EXTENSION_CLIENT_ID": "myotherclientid",
+  "AUTH0_RTA": "https://tbc.auth0.com/"
 }
 ```
 
@@ -52,9 +55,10 @@ This client will be used to interact with the Management API (eg: load users, ..
 This extension allows end users to login, not dashboard administrators. This means that we need to secure this extension in the same way that we secure other applications in Auth0.
 
  1. Create a "Single Page Application" in Clients
- 2. Add the Client ID to the `EXTENSION_CLIENT_ID` setting.
- 3. Then in the Client, under Advanced Settings, OAuth2 change the value from `HS256` to `RS256`.
- 4. Choose a connection (eg: DB connection) and only enable that one in your Client (Connections tab).
+ 2. Put `http://localhost:3000/login` as an `Allowed Callback URL`.
+ 3. Add the Client ID to the `EXTENSION_CLIENT_ID` setting.
+ 4. Then in the Client, under Advanced Settings, OAuth2 change the value from `HS256` to `RS256`.
+ 5. Choose a connection (eg: DB connection) and only enable that one in your Client (Connections tab).
 
 ## Custom Style
 

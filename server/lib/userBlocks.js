@@ -3,11 +3,11 @@ import request from 'superagent';
 
 import config from './config';
 
-export const requestUserBlocks = (token, userId) =>
+export default (token, userId) =>
   new Promise((resolve, reject) => {
     request
-      .get('https://' + config('AUTH0_DOMAIN') + '/api/v2/user-blocks/' + userId)
-      .set('Authorization', 'Bearer ' + token)
+      .get(`https://${config('AUTH0_DOMAIN')}/api/v2/user-blocks/${userId}`)
+      .set('Authorization', `Bearer ${token}`)
       .set('Content-Type', 'application/json')
       .end((err, res) => {
         if (err) {

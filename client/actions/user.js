@@ -18,9 +18,9 @@ const addRequiredTextParam = (url, languageDictionary) => {
  */
 export function fetchUsers(search, reset = false, page = 0, filterBy, sort, onSuccess) {
   return (dispatch, getState) => {
-    const { sortProperty, sortOrder, searchValue } = getState().users.toJS();
+    const { sortProperty, sortOrder, searchValue, selectedFilter } = getState().users.toJS();
     const meta = { page, sortProperty, sortOrder, searchValue, onSuccess };
-
+    meta.selectedFilter = reset ? '' : filterBy || selectedFilter;
     meta.searchValue = reset ? '' : search || searchValue;
     if (sort) {
       meta.sortProperty = sort.property;
@@ -34,7 +34,7 @@ export function fetchUsers(search, reset = false, page = 0, filterBy, sort, onSu
           params: {
             search: meta.searchValue,
             page,
-            filterBy,
+            filterBy: meta.selectedFilter,
             sortOrder: meta.sortOrder,
             sortProperty: meta.sortProperty
           },
@@ -154,7 +154,6 @@ export function fetchUserDetail(userId, onSuccess) {
     },
     payload: {
       promise: axios.get(`/api/users/${userId}`, {
-        timeout: 5000,
         headers: { 'Content-Type': 'application/json' },
         responseType: 'json'
       })

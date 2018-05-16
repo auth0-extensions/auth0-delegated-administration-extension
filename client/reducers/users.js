@@ -11,6 +11,7 @@ const initialState = {
   total: 0,
   currentPage: 1,
   pages: 1,
+  selectedFilter: '',
   searchValue: '',
   sortProperty: 'last_login',
   sortOrder: -1
@@ -39,6 +40,7 @@ export const users = createReducer(fromJS(initialState), { // eslint-disable-lin
       total: data.total,
       pages: Math.ceil(data.total / 10),
       nextPage: action.meta.page + 1,
+      selectedFilter: action.meta.selectedFilter,
       records: fromJS(data.users.map(user => ({
         ...user,
         last_login_relative: user.last_login ? moment(user.last_login).fromNow() : 'Never'

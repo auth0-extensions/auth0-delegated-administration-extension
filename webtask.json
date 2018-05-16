@@ -35,7 +35,7 @@
       "example": "https://cdn.fabrikam.com/static/extensions/theme/fabrikam.css",
       "required": false
     },
-		"FEDERATED_LOGOUT": {
+    "FEDERATED_LOGOUT": {
       "description": "Also sign out from the IDP when users logout?",
       "type": "select",
       "allowMultiple": false,
@@ -47,6 +47,22 @@
         {
           "value": "true",
           "text": "Yes"
+        }
+      ]
+    },
+    "SEARCH_ENGINE": {
+      "description": "Engine for searching users",
+      "type": "select",
+      "allowMultiple": false,
+      "default": "v3",
+      "options": [
+        {
+          "value": "v2",
+          "text": "v2"
+        },
+        {
+          "value": "v3",
+          "text": "v3"
         }
       ]
     }

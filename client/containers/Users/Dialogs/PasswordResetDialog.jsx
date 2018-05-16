@@ -21,7 +21,7 @@ import getErrorMessage from '../../../utils/getErrorMessage';
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     passwordReset: state.passwordReset,
-    appsForConnection: getAppsForConnection(state, state.passwordReset.get('connection')),
+    appsForConnection: getAppsForConnection(state),
     settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     languageDictionary: state.languageDictionary
   });
