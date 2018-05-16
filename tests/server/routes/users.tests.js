@@ -50,12 +50,14 @@ describe('#users router', () => {
           },
         update:
           (options, data) => {
+            if (!data || Object.keys(data).length === 0) Promise.reject(new Error('can not pass empty data'));
             const id = parseInt(options.id, 10) - 1;
             if (data.email) defaultUsers[id].email = data.email;
             if (data.username) defaultUsers[id].username = data.username;
             if (data.password) defaultUsers[id].password = data.password;
             if (data.blocked !== undefined) defaultUsers[id].blocked = data.blocked;
             if (data.app_metadata) _.assign(defaultUsers[id].app_metadata, data.app_metadata);
+            if (data.user_metadata) _.assign(defaultUsers[id].user_metadata, data.user_metadata);
             return Promise.resolve();
           },
         deleteMultifactorProvider:
@@ -1216,6 +1218,7 @@ describe('#users router', () => {
 
     it('change profile: pass validation', (done) => {
       defaultUsers[0] = newGoodUser;
+      defaultUsers[0].user_metadata = {};
 
       request(app)
         .patch(`/users/1`)
@@ -1224,6 +1227,8 @@ describe('#users router', () => {
         .end((err, res) => {
           if (res.error.text) console.log(res.error.text);
           if (err) return done(err);
+          expect(defaultUsers[0].user_metadata.custom).to.equal('good value');
+          expect(defaultUsers[0].user_metadata.custom2).to.equal('good value');
           done();
         });
     });

@@ -69,7 +69,14 @@ const checkCustomFieldValidation = (req, context, isEditRequest, onlyTheseFields
   if (Object.keys(errorList).length > 0) throw new ValidationError(_.map(errorList, (value, index) => `${index}: ${value}`).join('\n'));
 
   /* remove fields from payload that have [type] false */
-  if (onlyTheseFields) context.payload = _.pick(context.payload, onlyTheseFields);
+  if (onlyTheseFields) {
+    const oldPayload = _.cloneDeep(context.payload);
+    context.payload = {};
+    onlyTheseFields.forEach(key => {
+      _.set(context.payload, key, _.get(oldPayload, key));
+    });
+  }
+
   return _.omit(context.payload, ignoredFields);
 };
 
