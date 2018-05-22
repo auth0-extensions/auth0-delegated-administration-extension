@@ -172,7 +172,7 @@ export default (storage, scriptManager) => {
     scriptManager.execute('filter', filterContext)
       .then((filter) => {
         const searchEngine = filter && filter.searchEngine;
-        const defaultEngine = (config('AUTH0_RTA').replace('https://', '') === 'auth0.auth0.com') ? 'v2' : 'v3';
+        const defaultEngine = (config('AUTH0_RTA').replace('https://', '') !== 'auth0.auth0.com') ? 'v2' : 'v3';
         const filterQuery = (filter && typeof filter.query !== 'undefined') ? filter.query : filter;
         const options = {
           sort,
