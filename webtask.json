@@ -54,8 +54,12 @@
       "description": "Engine for searching users",
       "type": "select",
       "allowMultiple": false,
-      "default": "v3",
+      "default": "default",
       "options": [
+        {
+          "value": "default",
+          "text": "Default"
+        },
         {
           "value": "v2",
           "text": "v2"
