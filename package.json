@@ -123,7 +123,7 @@
     "winston": "^2.2.0"
   },
   "devDependencies": {
-    "auth0-extensions-cli": "^1.0.5",
+    "auth0-extensions-cli": "^1.0.8",
     "autoprefixer": "^6.5.1",
     "babel-eslint": "7.2.3",
     "babel-loader": "7.0.0",
