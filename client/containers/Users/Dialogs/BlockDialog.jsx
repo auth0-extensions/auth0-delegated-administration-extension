@@ -5,10 +5,13 @@ import { Error, Confirm } from 'auth0-extension-ui';
 
 import { userActions } from '../../../actions';
 import getDialogMessage from './getDialogMessage';
+import { getName } from '../../../utils/display';
+import getErrorMessage from '../../../utils/getErrorMessage';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     block: state.block,
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     languageDictionary: state.languageDictionary
   });
 
@@ -20,6 +23,7 @@ export default connectContainer(class extends Component {
     cancelBlockUser: PropTypes.func.isRequired,
     blockUser: PropTypes.func.isRequired,
     block: PropTypes.object.isRequired,
+    settings: PropTypes.object.isRequired,
     languageDictionary: PropTypes.object
   };
 
@@ -33,27 +37,33 @@ export default connectContainer(class extends Component {
   };
 
   render() {
-    const { cancelBlockUser } = this.props;
-    const { userName, error, requesting, loading } = this.props.block.toJS();
+    const { cancelBlockUser, settings } = this.props;
+    const { user, error, requesting, loading } = this.props.block.toJS();
+
+    const userFields = settings.userFields || [];
 
     const languageDictionary = this.props.languageDictionary.get('record').toJS();
 
-    const { preText, postText } = getDialogMessage(
-      languageDictionary.blockDialogMessage, 'username',
-      {
-        preText: 'Do you really want to block ',
-        postText: '? After doing so the user will not be able to sign in anymore.'
-      }
-    );
+    const messageFormat = languageDictionary.blockDialogMessage ||
+      'Do you really want to block {username}? ' +
+      'After doing so the user will not be able to sign in anymore.';
+    const message = getDialogMessage(messageFormat, 'username',
+      getName(user, userFields, languageDictionary));
 
     return (
-      <Confirm title={languageDictionary.blockDialogTitle || "Block User?"}
-               show={requesting} loading={loading}
-               onCancel={cancelBlockUser} onConfirm={this.onConfirm}
-               languageDictionary={languageDictionary}>
-        <Error message={error}/>
+      <Confirm
+        title={languageDictionary.blockDialogTitle || 'Block User?'}
+        show={requesting} loading={loading}
+        confirmMessage={languageDictionary.dialogConfirmText}
+        cancelMessage={languageDictionary.dialogCancelText}
+        onCancel={cancelBlockUser}
+        onConfirm={this.onConfirm}
+        closeLabel={languageDictionary.closeButtonText}
+      >
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error, settings.errorTranslator)} />
+
         <p>
-          {preText}<strong>{userName}</strong>{postText}
+          {message}
         </p>
       </Confirm>
     );

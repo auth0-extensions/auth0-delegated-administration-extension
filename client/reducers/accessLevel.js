@@ -18,7 +18,7 @@ export const accessLevel = createReducer(fromJS(initialState), { // eslint-disab
   [constants.FETCH_ACCESS_LEVEL_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occured while loading the settings: ${action.errorMessage}`,
+      error: action.errorData,
       record: fromJS({ ...initialState.record, role: 2 })
     }),
   [constants.FETCH_ACCESS_LEVEL_FULFILLED]: (state, action) =>

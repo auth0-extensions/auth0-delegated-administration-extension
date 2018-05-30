@@ -15,10 +15,12 @@ class App extends Component {
     issuer: PropTypes.string,
     logout: PropTypes.func,
     settingsLoading: PropTypes.bool,
+    styleSettings: PropTypes.bool,
     fetchApplications: PropTypes.func.isRequired,
     fetchConnections: PropTypes.func.isRequired,
     getAccessLevel: PropTypes.func.isRequired,
     getAppSettings: PropTypes.func.isRequired,
+    toggleStyleSettings: PropTypes.func.isRequired,
     languageDictionary: PropTypes.object.isRequired
   };
 
@@ -27,6 +29,7 @@ class App extends Component {
     this.props.fetchApplications();
     this.props.fetchConnections();
     this.props.getAccessLevel();
+    this.props.getStyleSettings();
   }
 
   getDictValue = (index, defaultValue) => {
@@ -38,9 +41,23 @@ class App extends Component {
     return val || defaultValue;
   };
 
+  onLogout = () => {
+    const appSettings = this.props.settings;
+    let logoutUrl;
+
+    if (appSettings.get('settings') && appSettings.get('settings').get('dict')) {
+      logoutUrl = appSettings.get('settings').get('dict').get('logoutUrl');
+    }
+
+    this.props.logout(logoutUrl);
+  };
+
   render() {
     const { settingsLoading } = this.props;
     const languageDictionary = this.props.languageDictionary ? this.props.languageDictionary.toJS() : {};
+    const settings = this.props.settings.get('settings') && this.props.settings.get('settings').toJS();
+    const renderCssToggle = !!(settings && settings.css && settings.altcss);
+
     if (settingsLoading) {
       return <LoadingPanel show={settingsLoading} />;
     }
@@ -50,9 +67,12 @@ class App extends Component {
           user={this.props.user}
           issuer={this.props.issuer}
           getDictValue={this.getDictValue}
-          onLogout={this.props.logout}
+          onLogout={this.onLogout}
+          onCssToggle={this.props.toggleStyleSettings}
           accessLevel={this.props.accessLevel.toJSON()}
+          styleSettings={this.props.styleSettings}
           languageDictionary={languageDictionary}
+          renderCssToggle={renderCssToggle}
         />
         <div className="container">
           <div className="row">
@@ -80,6 +100,7 @@ function select(state) {
     user: state.auth.get('user'),
     accessLevel: state.accessLevel.get('record'),
     settings: state.settings.get('record'),
+    styleSettings: state.styleSettings,
     settingsLoading: state.settings.get('loading'),
     languageDictionary: state.languageDictionary.get('record')
   };

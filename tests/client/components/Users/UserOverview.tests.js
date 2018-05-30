@@ -21,6 +21,7 @@ describe('#Client-Components-UserOverview', () => {
         userFields={[]}
         sortOrder={1}
         sortProperty={'username'}
+        settings={{}}
         languageDictionary={languageDictionary}
       />
     );

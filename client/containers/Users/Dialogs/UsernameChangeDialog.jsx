@@ -4,24 +4,31 @@ import connectContainer from 'redux-static';
 import { Error, Confirm } from 'auth0-extension-ui';
 
 import { userActions } from '../../../actions';
+import submitForm from '../../../actions/submitForm';
+import { useDisabledConnectionField, useUsernameField } from '../../../utils/useDefaultFields';
+import { getName, mapValues } from '../../../utils/display';
 import getDialogMessage from './getDialogMessage';
+import UserFieldsForm from '../../../components/Users/UserFieldsForm';
+import getErrorMessage from '../../../utils/getErrorMessage';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     usernameChange: state.usernameChange,
-    settings: state.settings,
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
+    connections: state.connections,
     languageDictionary: state.languageDictionary
   });
 
   static actionsToProps = {
+    submitForm,
     ...userActions
-  }
+  };
 
   static propTypes = {
     cancelUsernameChange: PropTypes.func.isRequired,
     changeUsername: PropTypes.func.isRequired,
     usernameChange: PropTypes.object.isRequired
-  }
+  };
 
   shouldComponentUpdate(nextProps) {
     return nextProps.languageDictionary !== this.props.languageDictionary ||
@@ -29,71 +36,63 @@ export default connectContainer(class extends Component {
   }
 
   onConfirm = () => {
-    this.props.changeUsername(this.refs.user.value, this.refs.username.value);
-  }
+    this.props.submitForm('change-username');
+  };
 
-  renderConnection(connection, userFields) {
-    const connectionField = _.find(userFields, field => field.property === 'connection');
+  onSubmit = (formData) => {
+    const languageDictionary = this.props.languageDictionary.get('record').toJS();
 
-    const displayConnection = !connectionField || (_.isBoolean(connectionField.edit) && connectionField.edit === true) || _.isObject(connectionField.edit);
-
-    const label = (connectionField && connectionField.label) || 'Connection';
-    return displayConnection ? <div className="form-group">
-      <label id="username-change-connection-label" className="col-xs-2 control-label">{label}</label>
-      <div className="col-xs-9">
-        <input type="text" readOnly="readonly" className="form-control" value={connection} />
-      </div>
-    </div> : <div></div>;
-  }
+    this.props.changeUsername(this.props.usernameChange.toJS().user.user_id, formData, languageDictionary);
+  };
 
   render() {
-    const { cancelUsernameChange } = this.props;
-    const { userId, connection, customField, userNameToChange, userName, error, requesting, loading } = this.props.usernameChange.toJS();
+    const { cancelUsernameChange, connections, settings } = this.props;
+    const { user, connection, error, requesting, loading } = this.props.usernameChange.toJS();
 
     if (!requesting) {
       return null;
     }
 
-    const defaultUsernameValue = customField ? customField.display(customField.user) : userNameToChange;
-
-    const userFields = _.get(this.props.settings.toJS(), 'record.settings.userFields', []);
+    const userFields = settings.userFields || [];
 
     const languageDictionary = this.props.languageDictionary.get('record').toJS();
-    const { preText, postText } = getDialogMessage(
-      languageDictionary.changeUsernameMessage, 'username',
-      {
-        preText: 'Do you really want to change the username for ',
-        postText: '?'
-      }
-    );
 
-    const usernameField = _.find(userFields, field => field.property === 'username');
-    const usernameLabel = (usernameField && usernameField.label) || 'Username';
+    const messageFormat = languageDictionary.changeUsernameMessage ||
+      'Do you really want to change the username for {username}?';
+    const message = getDialogMessage(messageFormat, 'username',
+      getName(user, userFields, languageDictionary));
+
+    const allowedFields = ['username', 'connection'];
+    const initialValues = mapValues(user, allowedFields, userFields, 'edit', languageDictionary);
+    const fields = _.cloneDeep(userFields) || [];
+    useUsernameField(true, fields, connections.get('records').toJS(), connection, initialValues);
+    useDisabledConnectionField(true, fields, connection);
+
+    const filteredFields = _.filter(fields,
+      field => _.includes(allowedFields, field.property));
+
+    const UserFieldsFormInstance = UserFieldsForm('change-username', this.onSubmit);
 
     return (
       <Confirm
         title={languageDictionary.changeUsernameTitle || 'Change Username?'}
         show={requesting}
         loading={loading}
+        confirmMessage={languageDictionary.dialogConfirmText}
+        cancelMessage={languageDictionary.dialogCancelText}
         onCancel={cancelUsernameChange}
-        languageDictionary={languageDictionary}
+        closeLabel={languageDictionary.closeButtonText}
         onConfirm={this.onConfirm}>
-        <Error message={error} />
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error, settings.errorTranslator)} />
         <p>
-          {preText}<strong>{userName}</strong>{postText}
+          {message}
         </p>
-        <div className="row">
-          <form className="form-horizontal col-xs-12" style={{ marginTop: '40px' }}>
-            { this.renderConnection(connection, userFields) }
-            <div className="form-group">
-              <label id="username-change-username-label" className="col-xs-2 control-label">Username</label>
-              <div className="col-xs-9">
-                <input ref="username" type="text" className="form-control" defaultValue={defaultUsernameValue} />
-              </div>
-            </div>
-            <input ref="user" type="hidden" readOnly="readonly" className="form-control" value={userId} />
-          </form>
-        </div>
+        <UserFieldsFormInstance
+          initialValues={initialValues}
+          isEditForm={true}
+          fields={filteredFields}
+          languageDictionary={languageDictionary}
+        />
       </Confirm>
     );
   }

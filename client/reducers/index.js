@@ -16,6 +16,7 @@ import { passwordChange } from './passwordChange';
 import { passwordReset } from './passwordReset';
 import { scripts } from './scripts';
 import { settings } from './settings';
+import { styleSettings } from './styleSettings';
 import { unblock } from './unblock';
 import { user } from './user';
 import { userCreate } from './userCreate';
@@ -45,6 +46,7 @@ export default combineReducers({
   passwordReset,
   scripts,
   settings,
+  styleSettings,
   unblock,
   user,
   userCreate,

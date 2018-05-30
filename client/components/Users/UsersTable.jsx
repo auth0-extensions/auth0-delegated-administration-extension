@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import {
@@ -13,16 +14,17 @@ import {
 } from 'auth0-extension-ui';
 
 import './UserTable.styles.css';
-import { getProperty } from '../../utils';
+import { getValueForType } from '../../utils/display';
 
 export default class UsersTable extends Component {
   static propTypes = {
-    users: React.PropTypes.array.isRequired,
-    loading: React.PropTypes.bool.isRequired,
-    userFields: React.PropTypes.array.isRequired,
-    onColumnSort: React.PropTypes.func.isRequired,
-    sortOrder: React.PropTypes.number.isRequired,
-    sortProperty: React.PropTypes.string.isRequired,
+    users: PropTypes.array.isRequired,
+    loading: PropTypes.bool.isRequired,
+    userFields: PropTypes.array.isRequired,
+    onColumnSort: PropTypes.func.isRequired,
+    sortOrder: PropTypes.number.isRequired,
+    sortProperty: PropTypes.string.isRequired,
+    languageDictionary: PropTypes.object
   };
 
   getListFields(props) {
@@ -30,23 +32,33 @@ export default class UsersTable extends Component {
     const defaultListFields = [
       {
         listOrder: 0,
-        listSize: '20%',
-        property: 'name',
-        label: 'Name',
-        display: (user, value) => (value || user.nickname || user.email || user.user_id),
+        listSize: '6%',
+        property: 'picture',
+        label: '',
+        display: (user) => user.picture || '',
         search: {
           sort: true
         }
       },
       {
         listOrder: 1,
-        listSize: '29%',
-        property: 'email',
-        label: 'Email',
-        display: (user, value) => value || 'N/A'
+        listSize: '20%',
+        property: 'name',
+        label: 'Name',
+        display: (user) => (user.nickname || user.email || user.user_id),
+        search: {
+          sort: true
+        }
       },
       {
         listOrder: 2,
+        listSize: '29%',
+        property: 'email',
+        label: 'Email',
+        display: (user) => user.email || 'N/A'
+      },
+      {
+        listOrder: 3,
         listSize: '15%',
         property: 'last_login_relative',
         sortProperty: 'last_login',
@@ -56,7 +68,7 @@ export default class UsersTable extends Component {
         }
       },
       {
-        listOrder: 3,
+        listOrder: 4,
         listSize: '15%',
         property: 'logins_count',
         label: 'Logins',
@@ -69,19 +81,19 @@ export default class UsersTable extends Component {
     const connectionField = _.find(userFields, { property: 'connection' });
     if (!connectionField) {
       defaultListFields.push({
-        listOrder: 4,
+        listOrder: 5,
         listSize: '25%',
         property: 'identities',
         label: 'Connection',
-        display: (user, value) => value[0].connection
+        display: (user) => user.identities[0].connection
       });
     } else if (_.isFunction(connectionField.display) || (_.isBoolean(connectionField.display) && connectionField.display === true)) {
       defaultListFields.push({
-        listOrder: 4,
+        listOrder: 5,
         listSize: '25%',
         property: 'identities',
         label: 'Connection',
-        display: (user, value) => (_.isFunction(connectionField.display) ? connectionField.display(user, value) : value[0].connection)
+        display: (user) => (_.isFunction(connectionField.display) ? connectionField.display(user) : user.identities[0].connection)
       });
     }
 
@@ -151,38 +163,11 @@ export default class UsersTable extends Component {
   componentWillReceiveProps(nextProps) {
     if (!_.isEqual(this.props.userFields, nextProps.userFields)) {
       const listFields = this.getListFields(nextProps);
-      
+
       this.setState({
         listFields
       });
     }
-  }
-
-  getValue(field, user, defaultValue) {
-    // First get the value
-    let value;
-    if (typeof field.property === 'function') value = field.property(user);
-    else if (field.property) value = getProperty(user, field.property);
-
-    // Now get the display value
-    const displayProperty = field.search && field.search.display ? field.search.display : field.display;
-    let display;
-    let displayFunction;
-    if (typeof displayProperty === 'function') displayFunction = displayProperty;
-    if (displayFunction) {
-      try {
-        display = displayFunction(user, value);
-      } catch(e) {
-        display = 'error';
-        console.error(`Error fetching value for ${user.user_id}'s ${field.label}: `, e.message);
-      }
-    }
-
-    if (!display && typeof value === 'object') {
-      display = JSON.stringify(value);
-    }
-
-    return display || value || defaultValue;
   }
 
   onColumnSort(property, sortOrder) {
@@ -193,26 +178,41 @@ export default class UsersTable extends Component {
     this.props.onColumnSort(sort);
   }
 
+  returnToSearch(event) {
+    if (event && event.key === 'Enter') {
+      event.target.click();
+    }
+  }
+
   render() {
-    const { users, sortProperty, sortOrder } = this.props;
+    const { users, loading, sortProperty, sortOrder } = this.props;
+
+    const languageDictionary = this.props.languageDictionary || {};
+    const labels = languageDictionary.labels || {};
 
     const listFields = this.state.listFields;
+
+    if (!users.length && !loading) {
+      return (
+        <label className="user-search-no-results" tabIndex="0" htmlFor="search-bar" onKeyUp={this.returnToSearch}>
+          {languageDictionary.userSearchNoResults || 'No users found by given parameters.'}
+        </label>
+      );
+    }
 
     return (
       <Table>
         <TableHeader>
-          <TableColumn width="6%"/>
           {
             listFields.map((field) => {
               const sort = _.isObject(field.search)
                 && (_.isBoolean(field.search.sort) && field.search.sort === true);
-
               if (sort) {
                 return (
                   <TableColumn key={field.property} width={field.listSize}>
                     <div className="table-column-div"
                          onClick={this.onColumnSort.bind(this, field.sortProperty || field.property, sortOrder)}>
-                      {field.label}
+                      {labels[field.property] || field.label}
                       {((field.sortProperty || field.property) === sortProperty) &&
                       <i className={sortOrder === -1 ? 'icon-budicon-462 icon' : 'icon-budicon-460 icon'}
                          aria-hidden="true"/>}
@@ -223,7 +223,7 @@ export default class UsersTable extends Component {
 
               return (
                 <TableColumn key={field.property} width={field.listSize}>
-                  {field.label}
+                  {labels[field.property] || field.label}
                 </TableColumn>
               );
             })
@@ -232,20 +232,30 @@ export default class UsersTable extends Component {
         <TableBody>
           {users.map(user =>
             <TableRow key={user.user_id}>
-              <TableCell>
-                <img className="img-circle" src={user.picture} alt={name} width="32"/>
-              </TableCell>
               {
                 listFields.map((field, index) => {
                   const key = `${user.user_id}_${field.property}`;
-                  if (index === 0) {
+                  if (field.property === 'picture') {
+                    return (
+                      <TableCell>
+                        <img
+                          className="img-circle"
+                          src={getValueForType('search', user, field, languageDictionary) || '(empty)'}
+                          alt={user.name || user.user_name || user.email}
+                          title={user.name || user.user_name || user.email}
+                          width="32"
+                        />
+                      </TableCell>
+                    );
+                  }
+                  if (field.property === 'name') {
                     return (
                       <TableRouteCell key={key} route={`/users/${user.user_id}`}>
-                        {this.getValue(field, user, '(empty)')}
+                        {getValueForType('search', user, field, languageDictionary) || '(empty)'}
                       </TableRouteCell>
                     );
                   }
-                  return <TableTextCell key={key}>{this.getValue(field, user)}</TableTextCell>;
+                  return <TableTextCell key={key}>{getValueForType('search', user, field, languageDictionary)}</TableTextCell>;
                 })
               }
             </TableRow>

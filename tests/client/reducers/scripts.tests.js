@@ -26,13 +26,21 @@ describe('scripts reducer', () => {
       scripts({}, {
         type: constants.FETCH_SCRIPT_REJECTED,
         meta: { name: 'settings' },
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
         settings: {
           loading: false,
-          error: 'An error occurred while loading the script: ERROR'
+          error: {
+            type: 'TEST',
+            message: 'ERROR',
+            status: 500
+          }
         }
       }
     );
@@ -83,13 +91,21 @@ describe('scripts reducer', () => {
       scripts({}, {
         type: constants.UPDATE_SCRIPT_REJECTED,
         meta: { name: 'settings' },
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
         settings: {
           loading: false,
-          error: 'An error occurred while saving the script: ERROR'
+          error: {
+            type: 'TEST',
+            message: 'ERROR',
+            status: 500
+          }
         }
       }
     );

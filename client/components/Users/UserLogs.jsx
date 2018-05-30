@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Error, LoadingPanel, Table, TableBody, TableIconCell, TableTextCell, TableHeader, TableColumn, TableRow } from 'auth0-extension-ui';
 import moment from 'moment';
+import getErrorMessage from '../../utils/getErrorMessage';
 
 export default class UserLogs extends Component {
   static propTypes = {
@@ -9,6 +10,7 @@ export default class UserLogs extends Component {
     error: PropTypes.string,
     loading: PropTypes.bool.isRequired,
     logs: PropTypes.object.isRequired,
+    settings: PropTypes.object.isRequired,
     languageDictionary: PropTypes.object
   }
 
@@ -17,7 +19,7 @@ export default class UserLogs extends Component {
   }
 
   render() {
-    const { error, loading } = this.props;
+    const { error, loading, settings } = this.props;
 
     if (!error && this.props.logs.size === 0) {
       return <div>There are no logs available for this user.</div>;
@@ -27,7 +29,7 @@ export default class UserLogs extends Component {
     const logs = this.props.logs.toJS();
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
-        <Error message={error} />
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error, settings.errorTranslator)} />
         <Table>
           <TableHeader>
             <TableColumn width="3%" />

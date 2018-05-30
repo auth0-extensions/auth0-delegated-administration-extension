@@ -6,8 +6,7 @@ const initialState = {
   error: null,
   loading: false,
   requesting: false,
-  userId: null,
-  userName: null
+  user: null
 };
 
 describe('block reducer', () => {
@@ -32,14 +31,16 @@ describe('block reducer', () => {
       {
         error: null,
         loading: false,
-        userId: 1,
-        userName: 'test@mail.com',
+        user: {
+          user_id: 1,
+          user_name: 'test@mail.com'
+        },
         requesting: true
       }
     );
   });
 
-  it('should handle REQUEST_BLOCK_USER', () => {
+  it('should handle REQUEST_BLOCK_USER 2', () => {
     expect(
       block(initialState, {
         type: constants.REQUEST_BLOCK_USER,
@@ -52,8 +53,10 @@ describe('block reducer', () => {
       {
         error: null,
         loading: false,
-        userId: 1,
-        userName: 'test@mail.com',
+        user: {
+          user_id: 1,
+          email: 'test@mail.com'
+        },
         requesting: true
       }
     );
@@ -79,8 +82,7 @@ describe('block reducer', () => {
         error: null,
         loading: true,
         requesting: false,
-        userId: null,
-        userName: null
+        user: null
       }
     );
   });
@@ -89,15 +91,22 @@ describe('block reducer', () => {
     expect(
       block(initialState, {
         type: constants.BLOCK_USER_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
         loading: false,
-        error: 'An error occured while blocking the user: ERROR',
+        error: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        },
         requesting: false,
-        userId: null,
-        userName: null
+        user: null
       }
     );
   });

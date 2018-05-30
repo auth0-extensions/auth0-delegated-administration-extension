@@ -2,6 +2,10 @@ import { configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-15';
 import { JSDOM } from 'jsdom';
 import auth0 from 'auth0-js';
+import chai from 'chai';
+import chaiMatch from 'chai-match';
+
+chai.use(chaiMatch);
 
 const jsdom = new JSDOM('<!doctype html><html><body></body></html>');
 const { window } = jsdom;

@@ -12,6 +12,7 @@ const initialState = {
   currentPage: 1,
   pages: 1,
   searchValue: '',
+  selectedFilter: '',
   sortProperty: 'last_login',
   sortOrder: -1
 };
@@ -42,6 +43,7 @@ describe('users reducer', () => {
         pages: 1,
         total: 0,
         searchValue: undefined,
+        selectedFilter: '',
         sortProperty: undefined,
         sortOrder: undefined
       }
@@ -74,6 +76,7 @@ describe('users reducer', () => {
         currentPage: 1,
         pages: 2,
         searchValue: 'value',
+        selectedFilter: '',
         sortProperty: 'email',
         sortOrder: 1
       }
@@ -84,17 +87,26 @@ describe('users reducer', () => {
     expect(
       users(initialState, {
         type: constants.FETCH_USERS_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
         loading: false,
-        error: 'An error occurred while retrieving list of users: ERROR',
+        error: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        },
         records: [],
         total: 0,
         currentPage: 1,
         pages: 1,
         searchValue: '',
+        selectedFilter: '',
         sortProperty: 'last_login',
         sortOrder: -1
       }
@@ -159,6 +171,7 @@ describe('users reducer', () => {
         currentPage: 1,
         pages: 1,
         searchValue: '',
+        selectedFilter: undefined,
         sortProperty: 'last_login',
         sortOrder: -1
       }

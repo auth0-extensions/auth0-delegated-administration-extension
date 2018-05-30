@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
+import { LoadingPanel, Confirm, Error } from 'auth0-extension-ui';
 
 import { login } from '../actions/auth';
-import { LoadingPanel, Confirm, Error } from 'auth0-extension-ui';
 
 class LoginContainer extends Component {
   static propTypes = {
@@ -19,17 +19,13 @@ class LoginContainer extends Component {
     if (this.props.auth.isAuthenticated) {
       this.props.push(this.props.auth.returnTo || '/users');
     } else if (!this.props.auth.isAuthenticating && !this.props.auth.error) {
-      if (this.props.location.query && this.props.location.query.locale) {
-        // reset the local storage for locale
-        localStorage.setItem('dae:locale', this.props.location.query.locale);
-      }
-
-      this.props.login(this.props.location.query.returnUrl, localStorage.getItem('dae:locale'));
+      // reset the local storage for locale
+      this.props.login(this.props.location.query.returnUrl, window.config.LOCALE || 'en');
     }
   }
 
   login() {
-    this.props.login(this.props.location.query.returnUrl, localStorage.getItem('dae:locale'));
+    this.props.login(this.props.location.query.returnUrl, window.config.LOCALE || 'en');
   }
 
   render() {

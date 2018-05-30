@@ -71,6 +71,7 @@ describe('#Client-Components-Logs-LogDialog', () => {
         loading={false}
         log={fromJS(log)}
         logId={log._id}
+        settings={{}}
         languageDictionary={languageDictionary}
       />
     );

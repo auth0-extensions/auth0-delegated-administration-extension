@@ -4,13 +4,15 @@ import { Error } from 'auth0-extension-ui';
 import { Modal } from 'react-bootstrap';
 
 import { userActions, scriptActions } from '../../../actions';
-import { UserFieldsChangeForm } from '../../../components/Users';
+import { UserFieldsChangeForm, ValidationError } from '../../../components/Users';
+import getErrorMessage from '../../../utils/getErrorMessage';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     fieldsChange: state.fieldsChange,
     userId: state.fieldsChange.toJS().userId,
-    languageDictionary: state.languageDictionary
+    languageDictionary: state.languageDictionary,
+    userForm: state.form
   });
 
   static actionsToProps = {
@@ -23,8 +25,10 @@ export default connectContainer(class extends Component {
     changeFields: PropTypes.func.isRequired,
     cancelChangeFields: PropTypes.func.isRequired,
     userFields: PropTypes.array.isRequired,
+    userForm: PropTypes.object.isRequired,
     userId: PropTypes.string.isRequired,
-    languageDictionary: PropTypes.object
+    languageDictionary: PropTypes.object,
+    errorTranslator: PropTypes.func
   };
 
   shouldComponentUpdate(nextProps) {
@@ -40,17 +44,16 @@ export default connectContainer(class extends Component {
       .uniq()
       .value();
 
-    this.props.changeFields(this.props.userId, _.pick(user, submitFields));
+    this.props.changeFields(this.props.userId, _.pick(user, submitFields), this.props.languageDictionary.get('record').toJS());
   }
 
   render() {
     const { error, loading, record } = this.props.fieldsChange.toJS();
-
     const languageDictionary = this.props.languageDictionary.get('record').toJS();
 
     return (
       <Modal show={record !== null} className="modal-overflow-visible" onHide={this.props.cancelChangeFields}>
-        <Modal.Header closeButton={loading} className="has-border">
+        <Modal.Header closeButton={!loading} className="has-border" closeLabel={languageDictionary.closeButtonText}>
           <Modal.Title>{languageDictionary.changeProfileDialogTitle || 'Change Profile'}</Modal.Title>
         </Modal.Header>
 
@@ -63,7 +66,12 @@ export default connectContainer(class extends Component {
           submitting={loading}
           languageDictionary={languageDictionary}
         >
-          <Error message={error} />
+          <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error, this.props.errorTranslator)} />
+          <ValidationError
+            userForm={this.props.userForm}
+            customFields={this.props.userFields || []}
+            errorMessage={languageDictionary.validationError}
+          />
         </UserFieldsChangeForm>
       </Modal>
     );

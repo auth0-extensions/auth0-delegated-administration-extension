@@ -6,8 +6,7 @@ const initialState = {
   error: null,
   loading: false,
   requesting: false,
-  userId: null,
-  userName: null
+  user: null
 };
 
 describe('User Delete reducer', () => {
@@ -33,8 +32,10 @@ describe('User Delete reducer', () => {
         error: null,
         loading: false,
         requesting: true,
-        userId: 1,
-        userName: 'user_name'
+        user: {
+          user_id: 1,
+          user_name: 'user_name'
+        }
       }
     );
   });
@@ -53,8 +54,10 @@ describe('User Delete reducer', () => {
         error: null,
         loading: false,
         requesting: true,
-        userId: 1,
-        userName: 'test@mail.com'
+        user: {
+          user_id: 1,
+          email: 'test@mail.com'
+        }
       }
     );
   });
@@ -79,8 +82,7 @@ describe('User Delete reducer', () => {
         error: null,
         loading: true,
         requesting: false,
-        userId: null,
-        userName: null
+        user: null
       }
     );
   });
@@ -89,15 +91,22 @@ describe('User Delete reducer', () => {
     expect(
       userDelete(initialState, {
         type: constants.DELETE_USER_REJECTED,
-        errorMessage: 'ERROR'
+        errorData: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        }
       }).toJSON()
     ).toEqual(
       {
-        error: 'An error occured while deleting the user: ERROR',
+        error: {
+          type: 'TEST',
+          message: 'ERROR',
+          status: 500
+        },
         loading: false,
         requesting: false,
-        userId: null,
-        userName: null
+        user: null
       }
     );
   });

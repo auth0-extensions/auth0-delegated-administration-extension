@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -27,6 +28,8 @@ export default function RequireAuthentication(InnerComponent) {
           this.props.push(`/login?returnUrl=${this.props.location.pathname}${this.props.location.search ? this.props.location.search : ''}`);
         }
       }
+
+      axios.defaults.headers.common['dae-locale'] = window.config.LOCALE;
     }
 
     render() {

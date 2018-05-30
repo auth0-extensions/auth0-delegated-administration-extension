@@ -21,10 +21,11 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
     options = options || {};
     const initialState = {
       passwordReset: fromJS({
-        userName: options.username,
+        user: { name: options.username, email: 'four@horseman.com' },
         error: null,
         requesting: true,
-        loading: false
+        loading: false,
+        connection: 'connA'
       }),
       languageDictionary: fromJS({
         record: languageDictionary || {}
@@ -33,10 +34,15 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
       connections: fromJS({
         records: [
           {
-            name: 'connA',
-            enabled_clients: [1, 2]
+            name: 'connA'
           }
         ]
+      }),
+      user: fromJS({
+        connection: {
+          name: 'connA',
+          enabled_clients: [ 1, 2 ]
+        }
       }),
       applications: fromJS({
         records: [
@@ -75,28 +81,27 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
 
   const checkConnectionLabel = (component, connectionLabel) => {
     if (connectionLabel) {
-      const label = document.querySelector('#password-reset-connection-label');
+      const label = document.querySelector('label[for=connection]');
       expect(label).to.not.be.null;
       expect(label.textContent).to.equal(connectionLabel);
     } else {
-      expect(document.querySelector('#password-reset-connection-label')).to.be.null;
+      expect(document.querySelector('label[for=connection]')).to.be.null;
     }
   };
 
   const checkEmailLabel = (component, emailLabel) => {
-    expect(document.querySelector('#password-reset-email-label')
+    expect(document.querySelector('label[for=email]')
       .textContent).to.equal(emailLabel);
   };
 
   const checkClientLabel = (component, passwordLabel) => {
-    expect(document.querySelector('#password-reset-client-label')
+    expect(document.querySelector('label[for=client]')
       .textContent).to.equal(passwordLabel);
   };
 
-  const checkConfirm = (component, title, languageDictionary) => {
+  const checkConfirm = (component, title) => {
     const confirm = component.find(Confirm);
     expect(confirm.length).to.equal(1);
-    expect(confirm.prop('languageDictionary')).to.deep.equal(languageDictionary);
     expect(confirm.prop('title')).to.deep.equal(title);
   };
 
@@ -107,8 +112,8 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
       ' user allowing them to choose a new password.');
     checkConnectionLabel(component, 'Connection');
     checkEmailLabel(component, 'Email');
-    checkClientLabel(component, 'Client');
-    checkConfirm(component, 'Reset Password?', {});
+    checkClientLabel(component, 'Client (required)');
+    checkConfirm(component, 'Reset Password?');
   });
 
   it('should render not applicable language dictionary', () => {
@@ -119,8 +124,8 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
       ' user allowing them to choose a new password.');
     checkConnectionLabel(component, 'Connection');
     checkEmailLabel(component, 'Email');
-    checkClientLabel(component, 'Client');
-    checkConfirm(component, 'Reset Password?', languageDictionary);
+    checkClientLabel(component, 'Client (required)');
+    checkConfirm(component, 'Reset Password?');
   });
 
   it('should render applicable language dictionary', () => {
@@ -131,7 +136,7 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
     const component = renderComponent({ username: 'bob' }, languageDictionary);
 
     checkText(component, 'Some pre message ', 'bob', ' ignore second {username}');
-    checkConfirm(component, 'Reset Password Title', languageDictionary);
+    checkConfirm(component, 'Reset Password Title');
   });
 
   it('should render applicable language dictionary spaces in username', () => {

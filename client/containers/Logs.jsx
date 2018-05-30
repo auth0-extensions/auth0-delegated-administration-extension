@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, ButtonToolbar } from 'react-bootstrap';
+import { Error, LoadingPanel, TableTotals } from 'auth0-extension-ui';
 
 import * as actions from '../actions/log';
 import LogDialog from '../components/Logs/LogDialog';
 import LogsTable from '../components/Logs/LogsTable';
-import { Error, LoadingPanel, TableTotals } from 'auth0-extension-ui';
 import TabsHeader from '../components/TabsHeader';
+import getErrorMessage from '../utils/getErrorMessage';
 
 class LogsContainer extends Component {
   static propTypes = {
@@ -17,6 +18,7 @@ class LogsContainer extends Component {
     log: PropTypes.object,
     accessLevel: PropTypes.object,
     logs: PropTypes.object.isRequired,
+    settings: PropTypes.object.isRequired,
     languageDictionary: PropTypes.object.isRequired
   };
 
@@ -51,7 +53,10 @@ class LogsContainer extends Component {
   }
 
   render() {
-    const { log, logs, accessLevel, languageDictionary } = this.props;
+    const { log, logs, accessLevel, languageDictionary, settings } = this.props;
+    const originalTitle = (settings.dict && settings.dict.title) || window.config.TITLE || 'User Management';
+    document.title = `${languageDictionary.userLogsTabTitle || 'Logs'} - ${originalTitle}`;
+
     return (
       <div>
         <TabsHeader role={accessLevel.role} languageDictionary={languageDictionary}/>
@@ -61,6 +66,7 @@ class LogsContainer extends Component {
           loading={log.loading}
           log={log.record}
           logId={log.id}
+          settings={settings}
           languageDictionary={languageDictionary}
         />
         <div className="row">
@@ -70,15 +76,16 @@ class LogsContainer extends Component {
         </div>
         <div className="row">
           <div className="col-xs-12 wrapper">
-            <Error message={logs.error} />
+            <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, logs.error, settings.errorTranslator)} />
+
             <LoadingPanel show={logs.loading}>
-              <LogsTable onOpen={this.props.fetchLog} loading={logs.loading} logs={logs.records} languageDictionary={languageDictionary} />
+              <LogsTable onOpen={this.props.fetchLog} loading={logs.loading} logs={logs.records} settings={settings} languageDictionary={languageDictionary} />
             </LoadingPanel>
           </div>
         </div>
         <div className="row">
           <div className="col-xs-12 wrapper">
-            <TableTotals currentCount={logs.records.size} totalCount={logs.total} />
+            <TableTotals currentCount={logs.records.size} totalCount={logs.total} textFormat={languageDictionary.tableTotalsTextFormat} />
             {this.createToolbar(true)}
           </div>
         </div>
@@ -102,6 +109,7 @@ function mapStateToProps(state) {
       error: state.log.get('error'),
       loading: state.log.get('loading')
     },
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     languageDictionary: state.languageDictionary.get('record').toJS()
   };
 }

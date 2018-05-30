@@ -9,23 +9,23 @@ const initialState = {
   record: { settings: { dict: { title: '', memberships: '' }, userFields: [], css: '' } }
 };
 
-const parseDisplay = (property, displayAttribute, display) => {
-  if (display !== undefined &&
-    _.isString(display) &&
-    display.startsWith('function')) {
+const parseFunction = (property, attribute, functionString) => {
+  if (functionString !== undefined &&
+    _.isString(functionString) &&
+    functionString.startsWith('function')) {
     try {
       // TODO: this is scary => what else can we do?
-      display = eval(`(${display})`);
+      functionString = eval(`(${functionString})`);
     } catch (error) {
-      console.error(`The ${displayAttribute} function for field ${property} throws an error`, error);
+      console.error(`The ${attribute} function for field ${property} throws an error`, error);
       // doing this because I couldn't get the tests to work when
       // passing back a function pointer for expect
       return eval('(function() { return "error"; })');
     }
   }
 
-  return display;
-};
+  return functionString;
+}
 
 const parseOptions = (options) => {
   // Parse options
@@ -46,10 +46,11 @@ const parseOptions = (options) => {
 
 const parseFieldSection = (property, sectionInfo, sectionName, inheritedDisplay) => {
   if (sectionInfo && _.isObject(sectionInfo)) {
-    const sectionDisplay = parseDisplay(property, `${sectionName}.display`, sectionInfo.display);
+    const sectionDisplay = parseFunction(property, `${sectionName}.display`, sectionInfo.display);
     const display = sectionDisplay !== undefined ? sectionDisplay : inheritedDisplay;
     if (display !== undefined) sectionInfo.display = display;
     if (sectionInfo.options) sectionInfo.options = parseOptions(sectionInfo.options);
+    if (sectionInfo.validationFunction) sectionInfo.validationFunction = parseFunction(property, `${sectionName}.validationFunction`, sectionInfo.validationFunction);
   }
 };
 
@@ -62,7 +63,7 @@ export const settings = createReducer(fromJS(initialState), { // eslint-disable-
   [constants.FETCH_SETTINGS_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occurred while loading the connections: ${action.errorMessage}`
+      error: action.errorData
     }),
   [constants.FETCH_SETTINGS_FULFILLED]: (state, action) => {
     const data = action.payload.data;
@@ -73,6 +74,9 @@ export const settings = createReducer(fromJS(initialState), { // eslint-disable-
         parseFieldSection(field.property, field.create, 'userField.create', field.display);
         parseFieldSection(field.property, field.search, 'userField.search', field.display);
       });
+    }
+    if (data.settings.errorTranslator) {
+      data.settings.errorTranslator = parseFunction('errorTranslator', 'errorTranslator', data.settings.errorTranslator);
     }
     return state.merge({
       loading: false,

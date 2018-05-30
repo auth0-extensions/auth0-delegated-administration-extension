@@ -16,6 +16,7 @@ describe('#Client-Components-UserDevices', () => {
         error={null}
         devices={fromJS(devices)}
         user={fromJS(user)}
+        settings={{}}
         languageDictionary={languageDictionary}
       />
     );

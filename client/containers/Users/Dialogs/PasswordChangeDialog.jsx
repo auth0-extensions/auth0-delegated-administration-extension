@@ -1,115 +1,102 @@
 import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import connectContainer from 'redux-static';
-
-import { userActions } from '../../../actions';
-import getDialogMessage from './getDialogMessage';
 import { Error, Confirm } from 'auth0-extension-ui';
 
-export default connectContainer(class extends Component {
+import submitForm from '../../../actions/submitForm';
+import { userActions } from '../../../actions';
+import getDialogMessage from './getDialogMessage';
+import { getName, mapValues } from '../../../utils/display';
+import {
+  usePasswordFields,
+  useDisabledConnectionField,
+  useDisabledEmailField
+} from '../../../utils/useDefaultFields';
+
+import UserFieldsForm from '../../../components/Users/UserFieldsForm';
+import getErrorMessage from '../../../utils/getErrorMessage';
+
+export default connectContainer(class PasswordChangeDialog extends Component {
   static stateToProps = (state) => ({
     passwordChange: state.passwordChange,
-    settings: state.settings,
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     languageDictionary: state.languageDictionary
   });
 
   static actionsToProps = {
+    submitForm,
     ...userActions
-  }
+  };
 
   static propTypes = {
     passwordChange: PropTypes.object.isRequired,
     changePassword: PropTypes.func.isRequired,
     cancelPasswordChange: PropTypes.func.isRequired
-  }
+  };
 
   shouldComponentUpdate(nextProps) {
     return nextProps.passwordChange !== this.props.passwordChange || nextProps.languageDictionary !== this.props.languageDictionary;
   }
 
   onConfirm = () => {
-    this.props.changePassword(this.refs.password.value, this.refs.repeatPassword.value);
-  }
+    this.props.submitForm('change-password');
+  };
 
+  onSubmit = (changeForm) => {
+    const languageDictionary = this.props.languageDictionary.get('record').toJS();
 
-  renderConnection(connection, userFields) {
-    const connectionField = _.find(userFields, field => field.property === 'connection');
-
-    const displayConnection = !connectionField || (_.isBoolean(connectionField.edit) && connectionField.edit === true) || _.isObject(connectionField.edit);
-
-    const label = (connectionField && connectionField.label) || 'Connection';
-
-    return displayConnection ? <div className="form-group">
-      <label id="password-change-connection-label" className="col-xs-2 control-label">{label}</label>
-      <div className="col-xs-9">
-        <input id="password-change-connection-input" type="text" readOnly="readonly" className="form-control" value={connection} />
-      </div>
-    </div> : <div></div>;
-  }
+    this.props.changePassword(changeForm, languageDictionary);
+  };
 
   render() {
-    const { cancelPasswordChange } = this.props;
-    const { connection, userEmail, userName, error, requesting, loading } = this.props.passwordChange.toJS();
+    const { cancelPasswordChange, settings } = this.props;
+    const { connection, user, error, requesting, loading } = this.props.passwordChange.toJS();
 
-    const userFields = _.get(this.props.settings.toJS(), 'record.settings.userFields', []);
+    const userFields = settings.userFields || [];
 
     if (!requesting) {
       return null;
     }
 
     const languageDictionary = this.props.languageDictionary.get('record').toJS();
-    const { preText, postText } = getDialogMessage(
-      languageDictionary.changePasswordMessage, 'username',
-      {
-        preText: 'Do you really want to reset the password for ',
-        postText: '? You\'ll need a safe way to communicate the new password to your user, never send the user this' +
-        ' new password in clear text.'
-      }
-    );
+    const messageFormat = languageDictionary.changePasswordMessage ||
+      'Do you really want to reset the password for {username}? ' +
+      'You\'ll need a safe way to communicate the new password to your user, never send the user this' +
+      ' new password in clear text.';
+    const message = getDialogMessage(messageFormat, 'username',
+      getName(user, userFields, languageDictionary));
 
-    const emailField = _.find(userFields, field => field.property === 'email');
-    const passwordField = _.find(userFields, field => field.property === 'password');
-    const repeatPasswordField = _.find(userFields, field => field.property === 'repeatPassword');
+    const fields = _.cloneDeep(userFields) || [];
+    usePasswordFields(true, fields);
+    useDisabledConnectionField(true, fields, connection);
+    useDisabledEmailField(true, fields);
 
-    const emailLabel = (emailField && emailField.label) || 'Email';
-    const passwordLabel = (passwordField && passwordField.label) || 'Password';
-    const repeatPasswordLabel = (repeatPasswordField && repeatPasswordField.label) || 'Repeat Password';
+    const allowedFields = ['email', 'connection', 'password', 'repeatPassword'];
+    const filteredFields = _.filter(fields,
+      field => _.includes(allowedFields, field.property));
+
+    const UserFieldsFormInstance = UserFieldsForm('change-password', this.onSubmit);
 
     return (
       <Confirm
         title={languageDictionary.changePasswordTitle || 'Change Password?'}
         show={requesting}
         loading={loading}
+        confirmMessage={languageDictionary.dialogConfirmText}
+        cancelMessage={languageDictionary.dialogCancelText}
         onCancel={cancelPasswordChange}
-        languageDictionary={languageDictionary}
+        closeLabel={languageDictionary.closeButtonText}
         onConfirm={this.onConfirm}>
-        <Error message={error} />
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error, settings.errorTranslator)} />
         <p>
-          {preText}<strong>{userName}</strong>{postText}
+          {message}
         </p>
-        <div className="row">
-          <form className="form-horizontal col-xs-12" style={{ marginTop: '40px' }}>
-            <div className="form-group">
-              <label id="password-change-email-label" className="col-xs-2 control-label">{emailLabel}</label>
-              <div className="col-xs-9">
-                <input type="text" readOnly="readonly" className="form-control" value={userEmail} />
-              </div>
-            </div>
-            { this.renderConnection(connection, userFields) }
-            <div className="form-group">
-              <label id="password-change-password-label" className="col-xs-2 control-label">{passwordLabel}</label>
-              <div className="col-xs-9">
-                <input id="password-change-password-input" type="password" ref="password" className="form-control" />
-              </div>
-            </div>
-            <div className="form-group">
-              <label id="password-change-repeat-password-label" className="col-xs-2 control-label">{repeatPasswordLabel}</label>
-              <div className="col-xs-9">
-                <input id="password-change-repeat-password-input" type="password" ref="repeatPassword" className="form-control" />
-              </div>
-            </div>
-          </form>
-        </div>
+        <UserFieldsFormInstance
+          initialValues={mapValues(user, allowedFields, filteredFields, 'edit', languageDictionary)}
+          isEditForm={true}
+          fields={filteredFields}
+          languageDictionary={languageDictionary}
+        />
       </Confirm>
     );
   }
