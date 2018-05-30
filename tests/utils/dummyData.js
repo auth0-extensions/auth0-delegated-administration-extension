@@ -110,6 +110,7 @@ export const defaultScripts = {
 };
 
 export const defaultConfig = {
+  AUTH0_RTA: 'auth0.auth0.com',
   AUTH0_DOMAIN: 'testing.local.com',
   AUTH0_CLIENT_ID: 'AUTH0_CLIENT_ID',
   AUTH0_CLIENT_SECRET: 'AUTH0_CLIENT_SECRET'

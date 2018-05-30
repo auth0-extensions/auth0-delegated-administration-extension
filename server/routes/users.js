@@ -124,6 +124,13 @@ export default (storage, scriptManager) => {
             user: req.user
           },
           payload: req.body,
+          defaultPayload: {
+            email: req.body.email,
+            username: req.body.username,
+            password: req.body.password,
+            connection: req.body.connection,
+            app_metadata: (req.body.memberships && req.body.memberships.length && { memberships: req.body.memberships }) || {}
+          },
           userFields
         };
 
@@ -142,6 +149,8 @@ export default (storage, scriptManager) => {
 
         return scriptManager.execute('create', createContext)
           .then((payload) => {
+            // need to preserve the original behavior for null create scripts
+            payload = payload || createContext.defaultPayload;
             if (!payload.email || payload.email.length === 0) {
               throw new ValidationError('The email address is required.');
             }
