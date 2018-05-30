@@ -40,6 +40,7 @@ describe('#users router', () => {
           },
         create:
           (data) => {
+            if (data.memberships) return Promise.reject(new Error('did not fix memberships'));
             defaultUsers.push(data);
             return Promise.resolve();
           },
@@ -1498,4 +1499,28 @@ describe('#users router', () => {
         });
     });
   });
+
+  describe('#create with no write hook', () => {
+    before(() => {
+      scriptManager.getCached = skipCache;
+      storage.data.scripts = _.cloneDeep(defaultScriptData.scripts);
+      storage.data.scripts.create = null;
+    });
+
+    it('create success', (done) => {
+      const id = defaultUsers.length;
+
+      request(app)
+        .post('/users')
+        .send({ password: 'pwd13', repeatPassword: 'pwd13', email: 'test@email.com', memberships: [] })
+        .expect(201)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(defaultUsers[id].password).to.equal('pwd13');
+          expect(defaultUsers[id].email).to.equal('test@email.com');
+          done();
+        });
+    });
+  });
+
 });
