@@ -147,6 +147,9 @@ export default (storage, scriptManager) => {
           return next(e);
         }
 
+        // Remove repeatPassword before trying to update the user, it has served its purpose
+        delete createContext.payload.repeatPassword;
+
         return scriptManager.execute('create', createContext)
           .then((payload) => {
             // need to preserve the original behavior for null create scripts
