@@ -6,7 +6,7 @@ import config from './config';
 export default (token, userId) =>
   new Promise((resolve, reject) => {
     request
-      .get(`https://${config('AUTH0_DOMAIN')}/api/v2/user-blocks/${userId}`)
+      .get(`https://${config('AUTH0_ISSUER_DOMAIN')}/api/v2/user-blocks/${userId}`)
       .set('Authorization', `Bearer ${token}`)
       .set('Content-Type', 'application/json')
       .end((err, res) => {

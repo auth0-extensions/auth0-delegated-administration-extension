@@ -1002,6 +1002,10 @@ describe('#users router', () => {
       storage.data.scripts.settings = settingsWithValidationUserFields;
 
       storage.data.scripts.create = ((ctx, callback) => {
+        if (ctx.payload.memberships) {
+          ctx.payload.app_metadata.memberships = ctx.payload.memberships;
+          delete ctx.payload.memberships;
+        }
         callback(null, ctx.payload);
       }).toString();
     });
@@ -1016,14 +1020,18 @@ describe('#users router', () => {
     };
 
     it('create user: pass validation', (done) => {
+      const targetUser = _.cloneDeep(newGoodUser);
+      targetUser.app_metadata.memberships = newGoodUser.memberships;
+      delete targetUser.memberships;
+      delete targetUser.repeatPassword;
       request(app)
         .post('/users')
         .send(newGoodUser)
         .expect(201)
-        .end((err) => {
+        .end((err, res) => {
           if (err) return done(err);
           const postedUser = defaultUsers[5];
-          expect(postedUser).to.deep.equal(newGoodUser);
+          expect(postedUser).to.deep.equal(targetUser);
           done();
         });
     });
