@@ -1,6 +1,6 @@
 {
-  "title": "Delegated Administration Dashboard",
-  "name": "auth0-delegated-admin",
+  "title": "Auth0 Roles Management",
+  "name": "auth0-roles-management",
   "version": "3.0.0",
   "author": "auth0",
   "useHashName": false,
