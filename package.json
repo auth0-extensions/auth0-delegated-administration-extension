@@ -1,7 +1,7 @@
 {
-  "name": "auth0-delegated-admin",
+  "name": "auth0-roles-management",
   "version": "3.0.0",
-  "description": "Delegated Administration Dashboard",
+  "description": "Auth0 Roles Management",
   "engines": {
     "node": "8.9"
   },

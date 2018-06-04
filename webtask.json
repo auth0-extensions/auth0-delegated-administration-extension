@@ -1,6 +1,6 @@
 {
-  "title": "Delegated Administration Dashboard",
-  "name": "auth0-delegated-admin",
+  "title": "Auth0 Roles Management",
+  "name": "auth0-roles-management",
   "version": "3.0.0",
   "author": "auth0",
   "useHashName": false,
@@ -10,7 +10,7 @@
   "logoUrl": "https://cdn.auth0.com/extensions/auth0-delegated-admin/assets/logo.svg",
   "initialUrlPath": "/",
   "docsUrl": "https://auth0.com/docs/extensions/delegated-admin",
-  "repository": "https://github.com/auth0-extensions/auth0-delegated-administration-extension",
+  "repository": "https://github.com/JustinMcNamara74/auth0-roles-management-extension",
   "keywords": [
     "auth0",
     "extension"
