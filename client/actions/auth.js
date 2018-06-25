@@ -12,16 +12,16 @@ const webAuth = new auth0.WebAuth({ // eslint-disable-line no-undef
   overrides: {
     __tenant: issuer.substr(8).split('.')[0],
     __token_issuer: issuer
-  }
+  },
+  scope: 'openid roles',
+  responseType: 'id_token',
+  redirectUri: `${window.config.BASE_URL}/login`
 });
 
 export function login(returnUrl, locale) {
   sessionStorage.setItem('delegated-admin:returnTo', returnUrl || '/users');
 
   webAuth.authorize({
-    responseType: 'id_token',
-    redirectUri: `${window.config.BASE_URL}/login`,
-    scope: 'openid roles',
     ui_locales: locale
   });
 
@@ -30,15 +30,25 @@ export function login(returnUrl, locale) {
   };
 }
 
-function isExpired(decodedToken) {
-  if (typeof decodedToken.exp === 'undefined') {
-    return true;
-  }
+/** Checks if a decoded token is expired **/
+function isTokenExpired(decodedToken) {
+  return isDateExpired(decodedToken.exp);
+}
 
+/** Checks if a given token exp is expired **/
+function isDateExpired(exp) {
+
+  // if there is no expiration date, return
+  if (typeof exp === 'undefined') return true;
+
+  // convert to date and store
   const d = new Date(0);
-  d.setUTCSeconds(decodedToken.exp);
+  d.setUTCSeconds(exp);
 
-  return !(d.valueOf() > (new Date().valueOf() + (1000)));
+  // check if date is expired
+  var isExpired = !(d.valueOf() > (new Date().valueOf() + (30)));
+
+  return isExpired;
 }
 
 export function logout(logoutUrl) {
@@ -60,71 +70,131 @@ export function logout(logoutUrl) {
   };
 }
 
+// calls checkSession to refresh idToken
+function refreshToken() {
+  return new Promise((resolve, reject) => {
+    // invoke check session to get a new token
+    webAuth.checkSession({},
+      function(err, result) {
+        if (err) { // there was an error
+          reject(err);
+        } else {  // we got a token
+          resolve(result);
+        }
+      }
+    );
+  });
+}
+
 const processTokens = (dispatch, apiToken, returnTo) => {
-  const decodedToken = jwtDecode(apiToken);
-  if (isExpired(decodedToken)) {
-    return;
-  }
 
-  axios.defaults.headers.common.Authorization = `Bearer ${apiToken}`;
-  axios.defaults.headers.common['dae-locale'] = window.config.LOCALE || 'en';
+  return new Promise((resolve, reject) => {
 
-  sessionStorage.setItem('delegated-admin:apiToken', apiToken);
-
-  dispatch({
-    type: constants.LOADED_TOKEN,
-    payload: {
-      token: apiToken
+    // check token expiration date
+    const decodedToken = jwtDecode(apiToken);
+    if (isTokenExpired(decodedToken)) {
+      return;
     }
-  });
 
-  dispatch({
-    type: constants.LOGIN_SUCCESS,
-    payload: {
-      token: apiToken,
-      decodedToken,
-      user: decodedToken,
-      returnTo
+    axios.defaults.headers.common.Authorization = `Bearer ${apiToken}`;
+    axios.defaults.headers.common['dae-locale'] = window.config.LOCALE || 'en';
+
+    sessionStorage.setItem('delegated-admin:apiToken:exp', decodedToken.exp);
+
+    // creates an interceptor to refresh token if needed
+    axios.interceptors.request.use((config) => {
+
+      // get token expiration from storage
+      const exp = sessionStorage.getItem('delegated-admin:apiToken:exp');
+
+      // if there is no token, or it is expired, try to get one
+      if (isDateExpired(exp)) {
+        return refreshToken().then((tokenResponse) => {
+          // we got one, store and load credentials
+          return processTokens(dispatch, tokenResponse.idToken).then(() => {
+            config.headers.Authorization = axios.defaults.headers.common.Authorization;
+            return Promise.resolve(config)
+          });
+        })
+          .catch(error => {
+            login(returnTo, window.config.LOCALE || 'en');
+            return Promise.reject(error);
+          })
+      } else {
+        // token is not expired, move on.
+        return config;
+      }
+    }, (error) => {
+      return Promise.reject(error);
+    });
+
+    axios.interceptors.response.use(response => response, (error) => {
+      const value = error.response;
+      if (value && value.status === 401 && value.data.message === 'TokenExpired') {
+        // renewToken performs authentication using username/password saved in sessionStorage/sessionStorage
+        return refreshToken().then((tokenResponse) => {
+          // we got one, store and load credentials
+          return processTokens(dispatch, tokenResponse.idToken).then(() => {
+            config.headers.Authorization = axios.defaults.headers.common.Authorization;
+            return axios.request(error.config);
+          });
+        });
+      }
+      return Promise.reject(error);
+    });
+
+    dispatch({
+      type: constants.LOADED_TOKEN,
+      payload: {
+        token: apiToken
+      }
+    });
+
+    dispatch({
+      type: constants.LOGIN_SUCCESS,
+      payload: {
+        token: apiToken,
+        decodedToken,
+        user: decodedToken,
+        returnTo
+      }
+    });
+
+    if (returnTo) {
+      dispatch(push(returnTo));
     }
-  });
 
-  if (returnTo) {
-    dispatch(push(returnTo));
-  }
+    resolve();
+
+  });
 };
 
 export function loadCredentials() {
   return (dispatch) => {
-    const token = sessionStorage.getItem('delegated-admin:apiToken');
-    if (token || window.location.hash) {
 
-      if (window.location.hash) {
-        dispatch({
-          type: constants.LOGIN_PENDING
-        });
+    if (window.location.hash) {
+      dispatch({
+        type: constants.LOGIN_PENDING
+      });
 
-        return webAuth.parseHash({
-          hash: window.location.hash
-        }, (err, hash) => {
-          if (err || !hash || !hash.idToken) {
-            /* Must have had hash, but didn't get an idToken in the hash */
-            console.error('login error: ', err);
-            return dispatch({
-              type: constants.LOGIN_FAILED,
-              payload: {
-                error: err && err.error ? `${err.error}: ${err.errorDescription}` : 'UnknownError: Unknown Error'
-              }
-            });
-          }
+      return webAuth.parseHash({
+        hash: window.location.hash
+      }, (err, hash) => {
+        if (err || !hash || !hash.idToken) {
+          /* Must have had hash, but didn't get an idToken in the hash */
+          console.error('login error: ', err);
+          return dispatch({
+            type: constants.LOGIN_FAILED,
+            payload: {
+              error: err && err.error ? `${err.error}: ${err.errorDescription}` : 'UnknownError: Unknown Error'
+            }
+          });
+        }
 
-          const returnTo = sessionStorage.getItem('delegated-admin:returnTo');
-          sessionStorage.removeItem('delegated-admin:returnTo');
-          return processTokens(dispatch, hash.idToken, returnTo);
-        });
-      }
-
-      /* There was no hash, so use the token from storage */
-      return processTokens(dispatch, token);
+        const returnTo = sessionStorage.getItem('delegated-admin:returnTo');
+        sessionStorage.removeItem('delegated-admin:returnTo');
+        return processTokens(dispatch, hash.idToken, returnTo);
+      });
     }
   };
 }

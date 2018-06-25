@@ -149,6 +149,10 @@ export default class UserActions extends Component {
       return null;
     }
 
+    /* Check if resending verification email option is enabled */
+    const falseTriggerEmailVerified = _.filter(this.props.userFields, field => field.property === 'email_verified' && field.edit === false);
+    if (falseTriggerEmailVerified.length > 0) return null;
+
     return (
       <MenuItem disabled={loading || false} onClick={this.resendVerificationEmail}>
         {this.state.languageDictionary.resendVerificationEmailMenuItemText || "Resend Verification Email"}

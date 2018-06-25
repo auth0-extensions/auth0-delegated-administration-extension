@@ -31,6 +31,7 @@ class Users extends Component {
     settings: PropTypes.object.isRequired,
     sortOrder: PropTypes.number.isRequired,
     sortProperty: PropTypes.string.isRequired,
+    searchValue: PropTypes.string,
     languageDictionary: PropTypes.object.isRequired
   };
 
@@ -83,6 +84,7 @@ class Users extends Component {
       settings,
       sortProperty,
       sortOrder,
+      searchValue,
       languageDictionary
     } = this.props;
 
@@ -122,6 +124,7 @@ class Users extends Component {
           userFields={userFields}
           sortProperty={sortProperty}
           sortOrder={sortOrder}
+          searchValue={searchValue}
           onColumnSort={this.onColumnSort}
           settings={settings}
           languageDictionary={languageDictionary}
@@ -159,6 +162,7 @@ function mapStateToProps(state) {
     pages: state.users.get('pages'),
     sortProperty: state.users.get('sortProperty'),
     sortOrder: state.users.get('sortOrder'),
+    searchValue: state.users.get('searchValue'),
     settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     languageDictionary: state.languageDictionary.get('record').toJS()
   };

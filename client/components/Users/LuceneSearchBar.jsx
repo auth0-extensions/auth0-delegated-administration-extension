@@ -8,7 +8,14 @@ export default class SearchBar extends Component {
     onReset: PropTypes.func.isRequired,
     onSearch: PropTypes.func.isRequired,
     languageDictionary: PropTypes.object,
+    searchValue: PropTypes.string,
     inputId: PropTypes.string
+  }
+
+  constructor (props) {
+    super(props);
+    this.state = {searchValue: props.searchValue}
+    this.handleChange = this.handleChange.bind(this);
   }
 
   onKeyPress = (e) => {
@@ -17,7 +24,12 @@ export default class SearchBar extends Component {
     }
   }
 
+  handleChange = (event) => {
+    this.setState({searchValue: event.target.value});
+  }
+
   onResetSearch = () => {
+    this.setState({searchValue: ''});
     findDOMNode(this.refs.search).value = '';
     this.props.onReset();
   }
@@ -48,7 +60,7 @@ export default class SearchBar extends Component {
               <input
                 className="user-input" type="text" ref="search"
                 placeholder={languageDictionary.searchBarPlaceholder || 'Search for users using the Lucene syntax'}
-                spellCheck="false" style={{ marginLeft: '10px' }} onKeyPress={this.onKeyPress} id={this.props.inputId || ''}
+                spellCheck="false" style={{ marginLeft: '10px' }} onChange={this.handleChange} onKeyPress={this.onKeyPress} value={this.state.searchValue} id={this.props.inputId || ''}
               />
             </span>
             <span className="controls pull-right">
