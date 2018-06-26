@@ -20,7 +20,7 @@ describe('#scripts', () => {
         filter: 'function(ctx, callback) { callback(null, ctx.user.name); }', // for successful executing
         create: '', // for writing
         memberships: 'function (ctx, callback) { callback(new Error("MembershipsError")); }', // for error return
-        settings: 'function (ctx, callback) { console.log(ctx); callback(); }' // for error catch
+        settings: 'function (ctx, callback) { console.log(ctx.user.name); callback(); }' // for error catch
       }
     };
     scriptmanager = new ScriptManager(storage);

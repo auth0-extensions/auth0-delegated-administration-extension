@@ -37,7 +37,6 @@ function isTokenExpired(decodedToken) {
 
 /** Checks if a given token exp is expired **/
 function isDateExpired(exp) {
-
   // if there is no expiration date, return
   if (typeof exp === 'undefined') return true;
 
@@ -46,7 +45,7 @@ function isDateExpired(exp) {
   d.setUTCSeconds(exp);
 
   // check if date is expired
-  var isExpired = !(d.valueOf() > (new Date().valueOf() + (30)));
+  const isExpired = !(d.valueOf() > (new Date().valueOf() + (30)));
 
   return isExpired;
 }
@@ -87,9 +86,7 @@ function refreshToken() {
 }
 
 const processTokens = (dispatch, apiToken, returnTo) => {
-
   return new Promise((resolve, reject) => {
-
     // check token expiration date
     const decodedToken = jwtDecode(apiToken);
     if (isTokenExpired(decodedToken)) {
@@ -103,7 +100,6 @@ const processTokens = (dispatch, apiToken, returnTo) => {
 
     // creates an interceptor to refresh token if needed
     axios.interceptors.request.use((config) => {
-
       // get token expiration from storage
       const exp = sessionStorage.getItem('delegated-admin:apiToken:exp');
 
@@ -113,20 +109,18 @@ const processTokens = (dispatch, apiToken, returnTo) => {
           // we got one, store and load credentials
           return processTokens(dispatch, tokenResponse.idToken).then(() => {
             config.headers.Authorization = axios.defaults.headers.common.Authorization;
-            return Promise.resolve(config)
+            return Promise.resolve(config);
           });
         })
-          .catch(error => {
+          .catch((error) => {
             login(returnTo, window.config.LOCALE || 'en');
             return Promise.reject(error);
-          })
-      } else {
-        // token is not expired, move on.
-        return config;
+          });
       }
-    }, (error) => {
-      return Promise.reject(error);
-    });
+
+      // token is not expired, move on.
+      return config;
+    }, error => Promise.reject(error));
 
     axios.interceptors.response.use(response => response, (error) => {
       const value = error.response;
@@ -135,7 +129,7 @@ const processTokens = (dispatch, apiToken, returnTo) => {
         return refreshToken().then((tokenResponse) => {
           // we got one, store and load credentials
           return processTokens(dispatch, tokenResponse.idToken).then(() => {
-            config.headers.Authorization = axios.defaults.headers.common.Authorization;
+            error.config.headers.Authorization = axios.defaults.headers.common.Authorization;
             return axios.request(error.config);
           });
         });
@@ -171,7 +165,6 @@ const processTokens = (dispatch, apiToken, returnTo) => {
 
 export function loadCredentials() {
   return (dispatch) => {
-
     if (window.location.hash) {
       dispatch({
         type: constants.LOGIN_PENDING
@@ -195,6 +188,12 @@ export function loadCredentials() {
         sessionStorage.removeItem('delegated-admin:returnTo');
         return processTokens(dispatch, hash.idToken, returnTo);
       });
+    }
+
+    const token = sessionStorage.getItem('delegated-admin:apiToken');
+    sessionStorage.removeItem('delegated-admin:apiToken');
+    if (token) {
+      return processTokens(dispatch, token);
     }
   };
 }
