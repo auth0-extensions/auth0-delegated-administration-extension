@@ -19,6 +19,7 @@ export default class UserOverview extends React.Component {
     userFields: PropTypes.array.isRequired,
     onColumnSort: PropTypes.func.isRequired,
     sortOrder: PropTypes.number.isRequired,
+    searchValue: PropTypes.string,
     sortProperty: PropTypes.string.isRequired,
     settings: PropTypes.object.isRequired,
     languageDictionary: PropTypes.object
@@ -41,7 +42,7 @@ export default class UserOverview extends React.Component {
 
     this.defaultFilter = _.find(this.searchOptions, { selected: true });
     this.state = {
-      searchValue: '',
+      searchValue: this.props.searchValue,
       selectedFilter: this.defaultFilter
     };
 
@@ -123,6 +124,7 @@ export default class UserOverview extends React.Component {
                   inputId="search-bar"
                   onReset={this.props.onReset}
                   onSearch={this.onSearch}
+                  searchValue={this.state.searchValue}
                   enabled={!loading}
                   languageDictionary={languageDictionary}
                 />
