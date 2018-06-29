@@ -44,6 +44,7 @@ module.exports = (cfg, storageProvider) => {
     baseUrl: config('PUBLIC_WT_URL'),
     webtaskUrl: config('PUBLIC_WT_URL'),
     clientName: 'Delegated Administration',
+    noAccessToken : true,
     urlPrefix: '/admins',
     sessionStorageKey: 'delegated-admin:apiToken',
     scopes: 'read:clients delete:clients read:connections read:users update:users delete:users create:users read:logs read:device_credentials update:device_credentials delete:device_credentials delete:guardian_enrollments'
