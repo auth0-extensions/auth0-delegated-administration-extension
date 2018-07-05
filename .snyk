@@ -1,0 +1,8 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.12.0
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:ms:20170412':
+    - auth0-extension-express-tools > express-jwt > jsonwebtoken > ms:
+        patched: '2018-07-05T07:51:45.528Z'
