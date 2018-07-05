@@ -14,7 +14,7 @@ const initialState = {
   user: null
 };
 
-export const auth = createReducer(fromJS(initialState), {
+export const auth = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
   [constants.LOGIN_PENDING]: (state) =>
     state.merge({
       ...initialState,
@@ -23,7 +23,7 @@ export const auth = createReducer(fromJS(initialState), {
   [constants.LOGIN_FAILED]: (state, action) =>
     state.merge({
       isAuthenticating: false,
-      error: action.payload.error || 'Unknown Error'
+      error: (action.payload && action.payload.error) || 'Unknown Error'
     }),
   [constants.LOGIN_SUCCESS]: (state, action) =>
     state.merge({
@@ -32,7 +32,8 @@ export const auth = createReducer(fromJS(initialState), {
       user: action.payload.user,
       token: action.payload.token,
       decodedToken: action.payload.decodedToken,
-      issuer: url.parse(action.payload.decodedToken.iss).hostname
+      issuer: url.parse(action.payload.decodedToken.iss).hostname,
+      returnTo: action.payload.returnTo
     }),
   [constants.LOGOUT_SUCCESS]: (state) =>
     state.merge({

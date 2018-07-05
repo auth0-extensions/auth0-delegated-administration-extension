@@ -1,43 +1,65 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import connectContainer from 'redux-static';
 
 import { userActions } from '../../../actions';
-import { Error, Confirm } from '../../../components/Dashboard';
-
+import { Error, Confirm } from 'auth0-extension-ui';
+import getDialogMessage from './getDialogMessage';
+import { getName } from '../../../utils/display';
+import getErrorMessage from '../../../utils/getErrorMessage';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
-    mfa: state.mfa
+    mfa: state.mfa,
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
+    languageDictionary: state.languageDictionary
   });
 
   static actionsToProps = {
     ...userActions
-  }
+  };
 
   static propTypes = {
     cancelRemoveMultiFactor: PropTypes.func.isRequired,
     removeMultiFactor: PropTypes.func.isRequired,
     mfa: PropTypes.object.isRequired
-  }
+  };
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.mfa !== this.props.mfa;
+    return nextProps.mfa !== this.props.mfa ||
+      nextProps.languageDictionary !== this.props.languageDictionary;
   }
 
   onConfirm = () => {
     this.props.removeMultiFactor();
-  }
+  };
 
   render() {
-    const { cancelRemoveMultiFactor } = this.props;
-    const { userName, error, requesting, loading } = this.props.mfa.toJS();
+    const { cancelRemoveMultiFactor, settings } = this.props;
+    const { user, error, requesting, loading } = this.props.mfa.toJS();
+
+    const userFields = settings.userFields || [];
+    const languageDictionary = this.props.languageDictionary.get('record').toJS();
+
+    const messageFormat = languageDictionary.removeMultiFactorMessage ||
+      'Do you really want to remove the multi factor authentication settings for {username}? '+
+      'This will allow the user to authenticate and reconfigure a new device.';
+    const message = getDialogMessage(messageFormat, 'username',
+      getName(user, userFields, languageDictionary));
 
     return (
-      <Confirm title="Remove Multi Factor Authentication?" show={requesting} loading={loading} onCancel={cancelRemoveMultiFactor} onConfirm={this.onConfirm}>
-        <Error message={error} />
+      <Confirm
+        title={languageDictionary.removeMultiFactorTitle || "Remove Multi Factor Authentication?" }
+        show={requesting}
+        loading={loading}
+        confirmMessage={languageDictionary.dialogConfirmText}
+        cancelMessage={languageDictionary.dialogCancelText}
+        onCancel={cancelRemoveMultiFactor}
+        closeLabel={languageDictionary.closeButtonText}
+        onConfirm={this.onConfirm}>
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error, settings.errorTranslator)} />
         <p>
-          Do you really want to remove the multi factor authentication settings for <strong>{userName}</strong>?
-          This will allow the user to authenticate and reconfigure a new device.
+          {message}
         </p>
       </Confirm>
     );

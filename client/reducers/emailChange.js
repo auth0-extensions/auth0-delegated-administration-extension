@@ -7,19 +7,15 @@ const initialState = {
   error: null,
   loading: false,
   requesting: false,
-  userId: null,
-  userName: null,
-  userEmail: null,
+  user: null,
   connection: null
 };
 
-export const emailChange = createReducer(fromJS(initialState), {
+export const emailChange = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
   [constants.REQUEST_EMAIL_CHANGE]: (state, action) =>
     state.merge({
       ...initialState,
-      userId: action.user.user_id,
-      userName: action.user.name || action.user.user_name || action.user.email,
-      userEmail: action.user.email,
+      user: action.user,
       connection: action.connection,
       requesting: true
     }),
@@ -27,14 +23,15 @@ export const emailChange = createReducer(fromJS(initialState), {
     state.merge({
       ...initialState
     }),
-  [constants.EMAIL_CHANGE_PENDING]: (state) =>
+  [constants.EMAIL_CHANGE_PENDING]: (state, action) =>
     state.merge({
-      loading: true
+      loading: true,
+      user: action.meta.user
     }),
   [constants.EMAIL_CHANGE_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occurred while changing the email: ${action.errorMessage}`
+      error: action.errorData
     }),
   [constants.EMAIL_CHANGE_FULFILLED]: (state) =>
     state.merge({

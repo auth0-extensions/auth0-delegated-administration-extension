@@ -7,15 +7,13 @@ const initialState = {
   error: null,
   loading: false,
   requesting: false,
-  userId: null,
-  userName: null
+  user: null
 };
 
-export const block = createReducer(fromJS(initialState), {
+export const block = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
   [constants.REQUEST_BLOCK_USER]: (state, action) =>
     state.merge({
-      userId: action.user.user_id,
-      userName: action.user.user_name || action.user.email,
+      user: action.user,
       requesting: true
     }),
   [constants.CANCEL_BLOCK_USER]: (state) =>
@@ -29,7 +27,7 @@ export const block = createReducer(fromJS(initialState), {
   [constants.BLOCK_USER_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occured while blocking the user: ${action.errorMessage}`
+      error: action.errorData
     }),
   [constants.BLOCK_USER_FULFILLED]: (state) =>
     state.merge({

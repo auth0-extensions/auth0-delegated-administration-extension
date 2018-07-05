@@ -7,20 +7,19 @@ const initialState = {
   error: null,
   loading: false,
   requesting: false,
-  userId: null,
-  userName: null,
+  user: null,
   provider: null
 };
 
-export const mfa = createReducer(fromJS(initialState), {
-  [constants.REQUEST_REMOVE_MULTIFACTOR]: (state, action) =>
-    state.merge({
+export const mfa = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
+  [constants.REQUEST_REMOVE_MULTIFACTOR]: (state, action) => {
+    return state.merge({
       ...initialState,
-      userId: action.user.user_id,
-      userName: action.user.user_name || action.user.email,
+      user: action.user,
       provider: action.provider,
       requesting: true
-    }),
+    });
+  },
   [constants.CANCEL_REMOVE_MULTIFACTOR]: (state) =>
     state.merge({
       ...initialState
@@ -32,7 +31,7 @@ export const mfa = createReducer(fromJS(initialState), {
   [constants.REMOVE_MULTIFACTOR_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occured while removing multi factor authentication for the user: ${action.errorMessage}`
+      error: action.errorData
     }),
   [constants.REMOVE_MULTIFACTOR_FULFILLED]: (state) =>
     state.merge({

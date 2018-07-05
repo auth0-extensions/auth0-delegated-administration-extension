@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { fromJS } from 'immutable';
 import * as constants from '../constants';
 import logTypes from '../utils/logTypes';
@@ -11,7 +10,7 @@ const initialState = {
   currentRecord: null
 };
 
-export const logs = createReducer(fromJS(initialState), {
+export const logs = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
   [constants.FETCH_LOGS_PENDING]: (state, action) =>
     state.merge({
       ...initialState,
@@ -21,7 +20,7 @@ export const logs = createReducer(fromJS(initialState), {
   [constants.FETCH_LOGS_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occured while loading the logs: ${action.errorMessage}`
+      error: action.errorData
     }),
   [constants.FETCH_LOGS_FULFILLED]: (state, action) => {
     const { data } = action.payload;
@@ -30,11 +29,11 @@ export const logs = createReducer(fromJS(initialState), {
       total: data.total,
       nextPage: action.meta.page + 1,
       records: state.get('records').concat(fromJS(data.logs.map(log => {
-        log.time_ago = moment(log.date).fromNow();
+        log.shortType = log.type;
         log.type = logTypes[log.type];
         if (!log.type) {
           log.type = {
-            event: 'Unknown Error',
+            // Don't do this, need to handle it elsewhere so language dictionary can do it: event: 'Unknown Event',
             icon: {
               name: '354',
               color: '#FFA500'

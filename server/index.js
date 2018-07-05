@@ -2,8 +2,9 @@ import path from 'path';
 import morgan from 'morgan';
 import Express from 'express';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import * as tools from 'auth0-extension-tools';
-import { middlewares } from 'auth0-extension-express-tools';
+import { routes } from 'auth0-extension-express-tools';
 
 import api from './routes/api';
 import hooks from './routes/hooks';
@@ -11,6 +12,7 @@ import meta from './routes/meta';
 import htmlRoute from './routes/html';
 import config from './lib/config';
 import logger from './lib/logger';
+import { errorHandler } from './lib/middlewares';
 
 module.exports = (cfg, storageProvider) => {
   config.setProvider(cfg);
@@ -34,15 +36,29 @@ module.exports = (cfg, storageProvider) => {
   app.use(bodyParser.urlencoded({ extended: false }));
 
   // Configure routes.
+  app.use(routes.dashboardAdmins({
+    secret: config('EXTENSION_SECRET'),
+    audience: 'urn:delegated-admin',
+    rta: config('AUTH0_RTA').replace('https://', ''),
+    domain: config('AUTH0_ISSUER_DOMAIN'),
+    baseUrl: config('PUBLIC_WT_URL'),
+    webtaskUrl: config('PUBLIC_WT_URL'),
+    clientName: 'Delegated Administration',
+    noAccessToken : true,
+    urlPrefix: '/admins',
+    sessionStorageKey: 'delegated-admin:apiToken',
+    scopes: 'read:clients delete:clients read:connections read:users update:users delete:users create:users read:logs read:device_credentials update:device_credentials delete:device_credentials delete:guardian_enrollments'
+  }));
+
   app.use('/api', api(storage));
   app.use('/app', Express.static(path.join(__dirname, '../dist')));
   app.use('/meta', meta());
   app.use('/.extensions', hooks());
 
   // Fallback to rendering HTML.
-  app.get('*', htmlRoute());
+  app.get('*', cookieParser(), htmlRoute());
 
   // Generic error handler.
-  app.use(middlewares.errorHandler(logger.error));
+  app.use(errorHandler(logger.error));
   return app;
 };

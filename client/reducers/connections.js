@@ -9,7 +9,7 @@ const initialState = {
   records: []
 };
 
-export const connections = createReducer(fromJS(initialState), {
+export const connections = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
   [constants.FETCH_CONNECTIONS_PENDING]: (state) =>
     state.merge({
       loading: true,
@@ -18,7 +18,7 @@ export const connections = createReducer(fromJS(initialState), {
   [constants.FETCH_CONNECTIONS_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occured while loading the connections: ${action.errorMessage}`
+      error: action.errorData
     }),
   [constants.FETCH_CONNECTIONS_FULFILLED]: (state, action) =>
     state.merge({

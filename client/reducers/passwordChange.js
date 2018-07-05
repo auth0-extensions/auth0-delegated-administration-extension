@@ -7,19 +7,15 @@ const initialState = {
   error: null,
   loading: false,
   requesting: false,
-  userId: null,
-  userName: null,
-  userEmail: null,
+  user: null,
   connection: null
 };
 
-export const passwordChange = createReducer(fromJS(initialState), {
+export const passwordChange = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
   [constants.REQUEST_PASSWORD_CHANGE]: (state, action) =>
     state.merge({
       ...initialState,
-      userId: action.user.user_id,
-      userName: action.user.name || action.user.user_name || action.user.email,
-      userEmail: action.user.email,
+      user: action.user,
       connection: action.connection,
       requesting: true
     }),
@@ -34,7 +30,7 @@ export const passwordChange = createReducer(fromJS(initialState), {
   [constants.PASSWORD_CHANGE_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occured while changing the password: ${action.errorMessage}`
+      error: action.errorData
     }),
   [constants.PASSWORD_CHANGE_FULFILLED]: (state) =>
     state.merge({

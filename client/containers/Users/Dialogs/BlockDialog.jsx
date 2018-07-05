@@ -1,43 +1,69 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import connectContainer from 'redux-static';
+import { Error, Confirm } from 'auth0-extension-ui';
 
 import { userActions } from '../../../actions';
-import { Error, Confirm } from '../../../components/Dashboard';
-
+import getDialogMessage from './getDialogMessage';
+import { getName } from '../../../utils/display';
+import getErrorMessage from '../../../utils/getErrorMessage';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
-    block: state.block
+    block: state.block,
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
+    languageDictionary: state.languageDictionary
   });
 
   static actionsToProps = {
     ...userActions
-  }
+  };
 
   static propTypes = {
     cancelBlockUser: PropTypes.func.isRequired,
     blockUser: PropTypes.func.isRequired,
-    block: PropTypes.object.isRequired
-  }
+    block: PropTypes.object.isRequired,
+    settings: PropTypes.object.isRequired,
+    languageDictionary: PropTypes.object
+  };
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.block !== this.props.block;
+    return nextProps.block !== this.props.block ||
+      nextProps.languageDictionary !== this.props.languageDictionary;
   }
 
   onConfirm = () => {
     this.props.blockUser();
-  }
+  };
 
   render() {
-    const { cancelBlockUser } = this.props;
-    const { userName, error, requesting, loading } = this.props.block.toJS();
+    const { cancelBlockUser, settings } = this.props;
+    const { user, error, requesting, loading } = this.props.block.toJS();
+
+    const userFields = settings.userFields || [];
+
+    const languageDictionary = this.props.languageDictionary.get('record').toJS();
+
+    const messageFormat = languageDictionary.blockDialogMessage ||
+      'Do you really want to block {username}? ' +
+      'After doing so the user will not be able to sign in anymore.';
+    const message = getDialogMessage(messageFormat, 'username',
+      getName(user, userFields, languageDictionary));
 
     return (
-      <Confirm title="Block User?" show={requesting} loading={loading} onCancel={cancelBlockUser} onConfirm={this.onConfirm}>
-        <Error message={error} />
+      <Confirm
+        title={languageDictionary.blockDialogTitle || 'Block User?'}
+        show={requesting} loading={loading}
+        confirmMessage={languageDictionary.dialogConfirmText}
+        cancelMessage={languageDictionary.dialogCancelText}
+        onCancel={cancelBlockUser}
+        onConfirm={this.onConfirm}
+        closeLabel={languageDictionary.closeButtonText}
+      >
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error, settings.errorTranslator)} />
+
         <p>
-          Do you really want to block <strong>{userName}</strong>?
-          After doing so the user will not be able to sign in anymore.
+          {message}
         </p>
       </Confirm>
     );

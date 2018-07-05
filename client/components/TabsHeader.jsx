@@ -1,18 +1,28 @@
 import React, { Component } from 'react';
-import { NavigationLink } from '../components/Dashboard';
+import PropTypes from 'prop-types';
+import { TabPane } from 'auth0-extension-ui';
 
 export default class TabsHeader extends Component {
   static propTypes = {
-    role: React.PropTypes.number
-  }
+    role: PropTypes.number,
+    languageDictionary: PropTypes.object
+  };
 
   render() {
     const isRoot = this.props.role === 2;
+
+    const languageDictionary = this.props.languageDictionary || {};
+
     return (
       <div className="widget-title title-with-nav-bars">
         <ul className="nav nav-tabs">
-          <NavigationLink title="Users" route="/users" icon="" />
-          {isRoot ? <NavigationLink title="Logs" route="/logs" icon="" /> : null}
+          <TabPane
+            title={languageDictionary.userUsersTabTitle || "Users"}
+            route="users" />
+          {isRoot ?
+            <TabPane
+              title={languageDictionary.userLogsTabTitle || "Logs"}
+              route="logs" /> : null}
         </ul>
       </div>
     );

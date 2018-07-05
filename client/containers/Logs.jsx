@@ -1,22 +1,26 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, ButtonToolbar } from 'react-bootstrap';
+import { Error, LoadingPanel, TableTotals } from 'auth0-extension-ui';
 
 import * as actions from '../actions/log';
 import LogDialog from '../components/Logs/LogDialog';
 import LogsTable from '../components/Logs/LogsTable';
-import { Error, LoadingPanel, TableTotals } from '../components/Dashboard';
 import TabsHeader from '../components/TabsHeader';
+import getErrorMessage from '../utils/getErrorMessage';
 
 class LogsContainer extends Component {
   static propTypes = {
-    clearLog: React.PropTypes.func.isRequired,
-    fetchLog: React.PropTypes.func.isRequired,
-    fetchLogs: React.PropTypes.func.isRequired,
-    log: React.PropTypes.object,
-    accessLevel: React.PropTypes.object,
-    logs: React.PropTypes.object.isRequired
-  }
+    clearLog: PropTypes.func.isRequired,
+    fetchLog: PropTypes.func.isRequired,
+    fetchLogs: PropTypes.func.isRequired,
+    log: PropTypes.object,
+    accessLevel: PropTypes.object,
+    logs: PropTypes.object.isRequired,
+    settings: PropTypes.object.isRequired,
+    languageDictionary: PropTypes.object.isRequired
+  };
 
   componentWillMount() {
     this.props.fetchLogs();
@@ -24,13 +28,14 @@ class LogsContainer extends Component {
 
   refresh = () => {
     this.props.fetchLogs();
-  }
+  };
 
   loadMore = () => {
     this.props.fetchLogs(this.props.logs.nextPage);
-  }
+  };
 
   createToolbar(isBottom: false) {
+    const languageDictionary = this.props.languageDictionary;
     if (isBottom && (!this.props.logs.records || this.props.logs.records.size <= 20)) {
       return <div></div>;
     }
@@ -38,26 +43,31 @@ class LogsContainer extends Component {
     return (
       <ButtonToolbar className="pull-right">
         <Button bsSize="small" onClick={this.refresh} disabled={this.props.logs.loading}>
-          <i className="icon icon-budicon-257"></i> Refresh
+          <i className="icon icon-budicon-257"></i> {languageDictionary.logsRefreshButtonText || 'Refresh'}
         </Button>
         <Button bsStyle="primary" bsSize="small" disabled={this.props.logs.loading} onClick={this.loadMore}>
-          <i className="icon icon-budicon-686"></i> Load More
+          <i className="icon icon-budicon-686"></i> {languageDictionary.logsLoadMoreButtonText || 'Load More'}
         </Button>
       </ButtonToolbar>
     );
   }
 
   render() {
-    const { log, logs, accessLevel } = this.props;
+    const { log, logs, accessLevel, languageDictionary, settings } = this.props;
+    const originalTitle = (settings.dict && settings.dict.title) || window.config.TITLE || 'User Management';
+    document.title = `${languageDictionary.userLogsTabTitle || 'Logs'} - ${originalTitle}`;
+
     return (
       <div>
-        <TabsHeader role={accessLevel.role} />
+        <TabsHeader role={accessLevel.role} languageDictionary={languageDictionary}/>
         <LogDialog
           onClose={this.props.clearLog}
           error={log.error}
           loading={log.loading}
           log={log.record}
           logId={log.id}
+          settings={settings}
+          languageDictionary={languageDictionary}
         />
         <div className="row">
           <div className="col-xs-12 wrapper">
@@ -66,15 +76,16 @@ class LogsContainer extends Component {
         </div>
         <div className="row">
           <div className="col-xs-12 wrapper">
-            <Error message={logs.error} />
+            <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, logs.error, settings.errorTranslator)} />
+
             <LoadingPanel show={logs.loading}>
-              <LogsTable onOpen={this.props.fetchLog} loading={logs.loading} logs={logs.records} />
+              <LogsTable onOpen={this.props.fetchLog} loading={logs.loading} logs={logs.records} settings={settings} languageDictionary={languageDictionary} />
             </LoadingPanel>
           </div>
         </div>
         <div className="row">
           <div className="col-xs-12 wrapper">
-            <TableTotals currentCount={logs.records.size} totalCount={logs.total} />
+            <TableTotals currentCount={logs.records.size} totalCount={logs.total} textFormat={languageDictionary.tableTotalsTextFormat} />
             {this.createToolbar(true)}
           </div>
         </div>
@@ -97,7 +108,9 @@ function mapStateToProps(state) {
       id: state.log.get('logId'),
       error: state.log.get('error'),
       loading: state.log.get('loading')
-    }
+    },
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
+    languageDictionary: state.languageDictionary.get('record').toJS()
   };
 }
 

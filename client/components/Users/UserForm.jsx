@@ -1,93 +1,92 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
+import { Button, Modal } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { reduxForm, formValueSelector } from 'redux-form';
 
-import createForm from '../../utils/createForm';
-import { InputText, InputCombo, MultiSelect } from '../../components/Dashboard';
+import UserCustomFormFields from './UserCustomFormFields';
+import * as useDefaultFields from '../../utils/useDefaultFields';
 
-export default createForm('user', class extends Component {
+class AddUserForm extends Component {
   static propTypes = {
-    fields: PropTypes.object.isRequired,
     initialValues: PropTypes.object,
     connections: PropTypes.array.isRequired,
     memberships: PropTypes.array.isRequired,
-    getDictValue: React.PropTypes.func
-  }
+    createMemberships: PropTypes.bool,
+    getDictValue: PropTypes.func,
+    hasSelectedConnection: PropTypes.string,
+    hasMembership: PropTypes.array,
+    onClose: PropTypes.func.isRequired,
+    handleSubmit: PropTypes.func.isRequired,
+    submitting: PropTypes.bool,
+    customFields: PropTypes.array,
+    customFieldGetter: PropTypes.func.isRequired,
+    languageDictionary: PropTypes.object,
+  };
 
-  static formFields = [
-    'email',
-    'username',
-    'password',
-    'repeatPassword',
-    'connection',
-    'memberships'
-  ];
-
-  renderUsername(connections, connectionField, usernameField) {
-    const selectedConnection = _.find(connections, (conn) => conn.name === connectionField.value);
-    const requireUsername = selectedConnection && selectedConnection.options ? selectedConnection.options.requires_username : false;
-    if (!requireUsername) {
-      return null;
-    }
-
-    return (
-      <div className="custom-field">
-        <InputText field={usernameField} fieldName="username" label="Username" ref="username" />
-      </div>
-    );
-  }
-
-  renderMemberships(membershipsField, memberships) {
-    if (!memberships || memberships.length <= 1) {
-      return null;
-    }
-
-    return (
-      <div className="custom-field">
-        <div className="form-group">
-          <label>{this.props.getDictValue('memberships', 'Memberships')}</label>
-          <MultiSelect
-            options={memberships.map(m => ({ value: m, label: m }))}
-            multi
-            {...membershipsField}
-          />
-        </div>
-      </div>
-    );
-  }
-
-  renderConnections(field, connections) {
-    if (!connections || connections.length <= 1) {
-      return null;
-    }
-
-    const options = connections.map(conn => ({ value: conn.name, text: conn.name }));
-
-    return (
-      <div className="custom-field">
-        <InputCombo options={options} field={field} fieldName="connection" label="Connection" onChange={this.onConnectionChange} />
-      </div>
-    );
-  }
 
   render() {
-    const connections = this.props.connections;
-    const { fields, memberships } = this.props;
+
+    const {
+      submitting,
+      customFields,
+      connections,
+      hasSelectedConnection,
+      initialValues,
+      hasMembership,
+      memberships,
+      createMemberships,
+      getDictValue
+    } = this.props;
+
+    const languageDictionary = this.props.languageDictionary || {};
+
+    /* First let's add field to the top if not in the list of fields */
+    const fields = _.cloneDeep(customFields) || [];
+    useDefaultFields.useConnectionsField(false, fields, connections, this.onConnectionsChange);
+    useDefaultFields.usePasswordFields(false, fields);
+    useDefaultFields.useUsernameField(false, fields, connections, hasSelectedConnection, initialValues);
+    useDefaultFields.useEmailField(false, fields);
+    useDefaultFields.useMembershipsField(false, fields, hasMembership, memberships, createMemberships, getDictValue);
+
+    const createFields = _.filter(fields, field => field.create);
 
     return (
-      <form className="create-user form-horizontal" style={{ marginTop: '30px' }}>
-        {this.renderMemberships(fields.memberships, memberships)}
-        <div className="custom-field">
-          <InputText field={fields.email} fieldName="email" label="Email" ref="email" />
-        </div>
-        {this.renderUsername(connections, fields.connection, fields.username)}
-        <div className="custom-field">
-          <InputText field={fields.password} fieldName="password" label="Password" type="password" ref="password" />
-        </div>
-        <div className="custom-field repeat-password">
-          <InputText field={fields.repeatPassword} fieldName="repeat-password" label="Repeat Password" type="password" ref="repeatPassword" />
-        </div>
-        {this.renderConnections(fields.connection, connections)}
-      </form>
+      <div>
+        <Modal.Body>
+          {this.props.children}
+          <div className="form-horizontal">
+            <UserCustomFormFields isEditForm={false} fields={createFields} languageDictionary={languageDictionary}/>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button bsSize="large" bsStyle="default" disabled={submitting} onClick={this.props.onClose}>
+            {languageDictionary.cancelButtonText || 'Cancel'}
+          </Button>
+          <Button bsSize="large" bsStyle="primary" disabled={submitting} onClick={this.props.handleSubmit}>
+            {languageDictionary.createButtonText || 'Create'}
+          </Button>
+        </Modal.Footer>
+      </div>
     );
   }
+}
+
+const reduxFormDecorator = reduxForm({
+  form: 'user'
 });
+
+// Decorate with connect to read form values
+const selector = formValueSelector('user');
+const connectDecorator = connect(state => {
+  const hasSelectedConnection = selector(state, 'connection');
+  const hasMembership = selector(state, 'memberships');
+
+  return {
+    hasSelectedConnection,
+    hasMembership
+  };
+});
+
+export default connectDecorator(reduxFormDecorator(AddUserForm));

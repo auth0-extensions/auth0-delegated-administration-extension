@@ -7,21 +7,15 @@ const initialState = {
   error: null,
   loading: false,
   requesting: false,
-  userId: null,
-  userName: null,
-  userEmail: null,
-  userNameToChange: null,
+  user: null,
   connection: null
 };
 
-export const usernameChange = createReducer(fromJS(initialState), {
+export const usernameChange = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
   [constants.REQUEST_USERNAME_CHANGE]: (state, action) =>
     state.merge({
       ...initialState,
-      userId: action.user.user_id,
-      userName: action.user.name || action.user.username || action.user.email,
-      userNameToChange: action.user.username,
-      userEmail: action.user.email,
+      user: action.user,
       connection: action.connection,
       requesting: true
     }),
@@ -29,14 +23,15 @@ export const usernameChange = createReducer(fromJS(initialState), {
     state.merge({
       ...initialState
     }),
-  [constants.USERNAME_CHANGE_PENDING]: (state) =>
+  [constants.USERNAME_CHANGE_PENDING]: (state, action) =>
     state.merge({
-      loading: true
+      loading: true,
+      user: action.meta.user
     }),
   [constants.USERNAME_CHANGE_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occurred while changing the username: ${action.errorMessage}`
+      error: action.errorData
     }),
   [constants.USERNAME_CHANGE_FULFILLED]: (state) =>
     state.merge({

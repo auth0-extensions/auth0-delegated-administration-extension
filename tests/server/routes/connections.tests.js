@@ -50,7 +50,7 @@ describe('#logs router', () => {
         .expect(200)
         .end((err, res) => {
           if (err) throw err;
-          expect(res.body).toEqual([ { name: 'conn-a' }, { name: 'conn-b' } ]);
+          expect(res.body).toEqual(defaultConnections.slice(0, 2));
           done();
         });
     });

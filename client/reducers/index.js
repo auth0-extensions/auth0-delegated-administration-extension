@@ -8,6 +8,7 @@ import { auth } from './auth';
 import { block } from './block';
 import { connections } from './connections';
 import { emailChange } from './emailChange';
+import { languageDictionary } from './languageDictionary';
 import { log } from './log';
 import { logs } from './logs';
 import { mfa } from './mfa';
@@ -15,10 +16,12 @@ import { passwordChange } from './passwordChange';
 import { passwordReset } from './passwordReset';
 import { scripts } from './scripts';
 import { settings } from './settings';
+import { styleSettings } from './styleSettings';
 import { unblock } from './unblock';
 import { user } from './user';
 import { userCreate } from './userCreate';
 import { userDelete } from './userDelete';
+import { fieldsChange } from './fieldsChange';
 import { usernameChange } from './usernameChange';
 import { users } from './users';
 import { verificationEmail } from './verificationEmail';
@@ -35,6 +38,7 @@ export default combineReducers({
   block,
   connections,
   emailChange,
+  languageDictionary,
   log,
   logs,
   mfa,
@@ -42,10 +46,12 @@ export default combineReducers({
   passwordReset,
   scripts,
   settings,
+  styleSettings,
   unblock,
   user,
   userCreate,
   userDelete,
+  fieldsChange,
   usernameChange,
   users,
   verificationEmail,

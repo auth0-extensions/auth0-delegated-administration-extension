@@ -9,7 +9,7 @@ const WEBPACK_PORT = 3001;
 
 // Override base configuration.
 let config = require('./config.base.js');
-config.devtool = 'eval-source-map';
+config.devtool = 'source-map';
 config.debug = true;
 config.entry = [
   'webpack-dev-server/client?http://' + WEBPACK_HOST + ':' + WEBPACK_PORT,

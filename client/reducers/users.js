@@ -8,31 +8,43 @@ const initialState = {
   loading: false,
   error: null,
   records: [],
-  total: 0
+  total: 0,
+  currentPage: 1,
+  pages: 1,
+  selectedFilter: '',
+  searchValue: '',
+  sortProperty: 'last_login',
+  sortOrder: -1
 };
 
-export const users = createReducer(fromJS(initialState), {
+export const users = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
   [constants.FETCH_USERS_PENDING]: (state, action) =>
     state.merge({
       ...initialState,
       loading: true,
-      records: action.meta.page === 0 ? [] : state.get('records')
+      records: action.meta.page === 0 ? [] : state.get('records'),
+      pages: action.meta.page === 0 ? 1 : state.get('pages'),
+      searchValue: action.meta.searchValue,
+      sortProperty: action.meta.sortProperty,
+      sortOrder: action.meta.sortOrder
     }),
   [constants.FETCH_USERS_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occurred while retrieving list of users: ${action.errorMessage}`
+      error: action.errorData
     }),
   [constants.FETCH_USERS_FULFILLED]: (state, action) => {
     const { data } = action.payload;
     return state.merge({
       loading: false,
       total: data.total,
+      pages: Math.ceil(data.total / 10),
       nextPage: action.meta.page + 1,
-      records: state.get('records').concat(fromJS(data.users.map(user => ({
+      selectedFilter: action.meta.selectedFilter,
+      records: fromJS(data.users.map(user => ({
         ...user,
         last_login_relative: user.last_login ? moment(user.last_login).fromNow() : 'Never'
-      }))))
+      })))
     });
   },
   [constants.BLOCK_USER_FULFILLED]: (state, action) =>
@@ -45,6 +57,6 @@ export const users = createReducer(fromJS(initialState), {
     ),
   [constants.REMOVE_MULTIFACTOR_FULFILLED]: (state, action) =>
     state.updateIn(
-      [ 'records', state.get('records').findIndex(p => p.get('user_id') === action.meta.userId), 'multifactor' ], (multifactor) => multifactor.splice(0, 1)
+      [ 'records', state.get('records').findIndex(p => p.get('user_id') === action.meta.userId), 'multifactor' ], (multifactor) => multifactor && multifactor.splice(0, 1)
     )
 });

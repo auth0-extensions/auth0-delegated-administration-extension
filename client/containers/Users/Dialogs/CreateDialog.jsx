@@ -1,52 +1,84 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import connectContainer from 'redux-static';
+import { Error } from 'auth0-extension-ui';
+import { Modal } from 'react-bootstrap';
 
-import { userActions } from '../../../actions';
-import { UserForm } from '../../../components/Users';
-import { Error, Confirm } from '../../../components/Dashboard';
+import { userActions, scriptActions } from '../../../actions';
+import { UserForm, ValidationError } from '../../../components/Users';
+import getErrorMessage from '../../../utils/getErrorMessage';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     userCreate: state.userCreate,
     accessLevel: state.accessLevel,
-    connections: state.connections
+    connections: state.connections,
+    languageDictionary: state.languageDictionary,
+    userForm: state.form
   });
 
   static actionsToProps = {
-    ...userActions
+    ...userActions,
+    ...scriptActions
   }
 
   static propTypes = {
     accessLevel: PropTypes.object.isRequired,
     connections: PropTypes.object.isRequired,
     userCreate: PropTypes.object.isRequired,
+    userForm: PropTypes.object.isRequired,
     createUser: PropTypes.func.isRequired,
     getDictValue: PropTypes.func.isRequired,
-    cancelCreateUser: PropTypes.func.isRequired
-  }
+    cancelCreateUser: PropTypes.func.isRequired,
+    userFields: PropTypes.array.isRequired,
+    errorTranslator: PropTypes.func,
+    languageDictionary: PropTypes.object
+  };
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.userCreate !== this.props.userCreate || nextProps.connections !== this.props.connections || nextProps.accessLevel !== this.props.accessLevel;
+    return nextProps.userCreate !== this.props.userCreate ||
+      nextProps.languageDictionary !== this.props.languageDictionary ||
+      nextProps.connections !== this.props.connections ||
+      nextProps.accessLevel !== this.props.accessLevel ||
+      nextProps.userFields !== this.props.userFields;
   }
 
   onSubmit = (user) => {
-    this.props.createUser(user);
-  }
-
-  onConfirm = () => {
-    this.refs.form.submit();
-  }
+    const languageDictionary = this.props.languageDictionary.get('record').toJS();
+    this.props.createUser(user, languageDictionary);
+  };
 
   render() {
     const { error, loading, record } = this.props.userCreate.toJS();
     const connections = this.props.connections.toJS();
     const accessLevel = this.props.accessLevel.get('record').toJS();
+    const languageDictionary = this.props.languageDictionary.get('record').toJS();
 
     return (
-      <Confirm title="Create User" show={record !== null} loading={loading} onCancel={this.props.cancelCreateUser} onConfirm={this.onConfirm}>
-        <Error message={error} />
-        <UserForm ref="form" connections={connections.records} initialValues={record} memberships={accessLevel.memberships} onSubmit={this.onSubmit} getDictValue={this.props.getDictValue} />
-      </Confirm>
+      <Modal show={record !== null} className="modal-overflow-visible" onHide={this.props.cancelCreateUser}>
+        <Modal.Header closeButton={!loading} className="has-border" closeLabel={languageDictionary.closeButtonText} >
+          <Modal.Title>{languageDictionary.createDialogTitle || 'Create User'}</Modal.Title>
+        </Modal.Header>
+
+        <UserForm
+          customFields={this.props.userFields || []}
+          customFieldGetter={field => field.create}
+          connections={connections.records} initialValues={record}
+          createMemberships={accessLevel.createMemberships}
+          memberships={accessLevel.memberships}
+          getDictValue={this.props.getDictValue}
+          onClose={this.props.cancelCreateUser}
+          onSubmit={this.onSubmit}
+          languageDictionary={languageDictionary}
+        >
+          <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error, this.props.errorTranslator)} />
+          <ValidationError
+            userForm={this.props.userForm}
+            customFields={this.props.userFields || []}
+            errorMessage={languageDictionary.validationError}
+          />
+        </UserForm>
+      </Modal>
     );
   }
 });

@@ -1,42 +1,67 @@
-import React, { Component, PropTypes } from 'react';
+import _ from 'lodash';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import connectContainer from 'redux-static';
+import { Error, Confirm } from 'auth0-extension-ui';
 
 import { userActions } from '../../../actions';
-import { Error, Confirm } from '../../../components/Dashboard';
+import getDialogMessage from './getDialogMessage';
+import { getName } from '../../../utils/display';
+import getErrorMessage from '../../../utils/getErrorMessage';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
-    unblock: state.unblock
+    unblock: state.unblock,
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
+    languageDictionary: state.languageDictionary
   });
 
   static actionsToProps = {
     ...userActions
-  }
+  };
 
   static propTypes = {
     cancelUnblockUser: PropTypes.func.isRequired,
     unblockUser: PropTypes.func.isRequired,
     unblock: PropTypes.object.isRequired
-  }
+  };
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.unblock !== this.props.unblock;
+    return nextProps.unblock !== this.props.unblock ||
+      nextProps.languageDictionary !== this.props.languageDictionary;
   }
 
   onConfirm = () => {
     this.props.unblockUser();
-  }
+  };
 
   render() {
-    const { cancelUnblockUser } = this.props;
-    const { userName, error, requesting, loading } = this.props.unblock.toJS();
+    const { cancelUnblockUser, settings } = this.props;
+    const { user, error, requesting, loading } = this.props.unblock.toJS();
+
+    const userFields = settings.userFields || [];
+
+    const languageDictionary = this.props.languageDictionary.get('record').toJS();
+
+    const messageFormat = languageDictionary.unblockDialogMessage ||
+      'Do you really want to unblock {username}? ' +
+      'After doing so the user will be able to sign in again.';
+    const message = getDialogMessage(messageFormat, 'username',
+      getName(user, userFields, languageDictionary));
 
     return (
-      <Confirm title="Unblock User?" show={requesting} loading={loading} onCancel={cancelUnblockUser} onConfirm={this.onConfirm}>
-        <Error message={error} />
+      <Confirm
+        title={languageDictionary.unblockDialogTitle || "Unblock User?"}
+        show={requesting}
+        loading={loading}
+        confirmMessage={languageDictionary.dialogConfirmText}
+        cancelMessage={languageDictionary.dialogCancelText}
+        onCancel={cancelUnblockUser}
+        closeLabel={languageDictionary.closeButtonText}
+        onConfirm={this.onConfirm}>
+        <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error, settings.errorTranslator)} />
         <p>
-          Do you really want to unblock <strong>{userName}</strong>?
-          After doing so the user will be able to sign in again.
+          {message}
         </p>
       </Confirm>
     );

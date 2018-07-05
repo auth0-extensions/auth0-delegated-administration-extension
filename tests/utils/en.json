@@ -1,0 +1,312 @@
+{
+  "loginsCountLabel": "Logins Count:",
+
+  "searchBarPlaceholder": "Search for users using the Lucene syntax",
+
+  "deviceNameColumnHeader": "Device",
+  "deviceNumberTokensColumnHeader": "# of Tokens/Public Keys",
+  "noDevicesMessage": "This user does not have any registered devices.",
+
+  "usersAndLogsMenuItemText": "Users & Logs",
+  "configurationMenuItemText": "Configuration",
+  "logoutMenuItemText": "Logout",
+  "toggleStyleSetDefault": "Switch to Default CSS",
+  "toggleStyleSetAlternative": "Switch to Alternative CSS",
+
+  "userUsersTabTitle": "Users",
+  "userLogsTabTitle": "Logs",
+  "userActionsButton": "Actions",
+
+  "logEventColumnHeader": "Event",
+  "logDescriptionColumnHeader": "Description",
+  "logDateColumnHeader": "Date",
+  "logConnectionColumnHeader": "Connection",
+  "logApplicationColumnHeader": "Application",
+
+  "logDialogTitleText": "Log",
+  "logDialogDefaultLogRecordText": "Log Record",
+  "logTableDefaultLogRecordDescription": "Log Description Override",
+  "noLogsMessage": "No logs found",
+
+  "cancelButtonText": "Cancel",
+  "updateButtonText": "Update",
+  "createButtonText": "Create",
+  "closeButtonText": "Close",
+  "momentLocale": "en",
+  "notApplicableLabel": "Not Applicable",
+
+  "blockUserMenuItemText": "Block User",
+  "changeEmailMenuItemText": "Change Email",
+  "changePasswordMenuItemText": "Change Password",
+  "deleteUserMenuItemText": "Delete User",
+  "changeFieldsMenuItemText": "Change Fields",
+  "removeMfaMenuItemText": "Remove MFA",
+  "resendVerificationEmailMenuItemText": "Resend Verification Email",
+  "resetPasswordMenuItemText": "Reset Password",
+  "changeUsernameMenuItemText": "Change Username",
+  "unblockUserMenuItemText": "Unblock User",
+
+  "blockDialogMessage": "Do you really want to block {username}? After doing so the user will not be able to log in anymore.",
+  "blockDialogTitle": "Block User?",
+
+  "createDialogTitle": "Create User",
+
+  "deleteDialogMessage": "Do you really want to delete {username}? This will completely remove the user and cannot be undone.",
+  "deleteDialogTitle": "Delete User?",
+
+  "changeEmailMessage": "Do you really want to change the email for {username}?",
+  "changeEmailTitle": "Change Email?",
+
+  "changeProfileDialogTitle": "Change Profile",
+
+  "changePasswordMessage": "Do you really want to change the password for {username}?  You'll need a safe way to communicate the new password to your user, never send the user this new password in clear text.",
+  "changePasswordTitle": "Change Password?",
+
+  "resetPasswordMessage": "Do you really want to reset the password for {username}?  This will send an email to the user allowing them to choose a new password.",
+  "resetPasswordTitle": "Reset Password?",
+
+  "removeMultiFactorMessage": "Do you really want to remove the multi factor authentication settings for {username}?  This will allow the user to authenticate and reconfigure a new device.",
+  "removeMultiFactorTitle": "Remove Multi Factor Authentication?",
+
+  "resendVerificationEmailMessage": "Do you really want to resend verification email to {username}?",
+  "resendVerificationEmailTitle": "Resend Verification Email?",
+
+  "unblockDialogMessage": "Do you really want to unblock {username}? After doing so the user will be able to sign in again.",
+  "unblockDialogTitle": "Unblock User?",
+
+  "changeUsernameMessage": "Do you really want to change the username for {username}?",
+  "changeUsernameTitle": "Change Username?",
+
+  "userUserInfoTabTitle": "User Info",
+  "userDevicesTabTitle": "Devices",
+  "userProfileTabTitle": "Profile",
+  "userTitle": "User Details",
+
+  "createUserButtonText": "Create User",
+  "usersTitle": "Users",
+
+  "loginErrorTitle": "Login Error",
+  "loginErrorButtonText": "Login",
+
+  "logsRefreshButtonText": "Refresh",
+  "logsLoadMoreButtonText": "Load More",
+
+  "requiredFieldLabel": "(required)",
+  "requiredErrorText": "required",
+
+  "errorTitle": "Oh, snap!",
+  "errors": {
+    "defaultErrorMessage": "Unknown Error",
+    "FETCH_ACCESS_LEVEL": { "default": "An error occurred while loading the settings: {message}" },
+    "FETCH_APPLICATIONS": { "default": "An error occurred while loading the applications: {message}" },
+    "BLOCK_USER": { "default": "An error occurred while blocking the user: {message}" },
+    "FETCH_CONNECTIONS": { "default": "An error occurred while loading the connections: {message}" },
+    "EMAIL_CHANGE": { "default": "An error occurred while changing the email: {message}" },
+    "FIELDS_CHANGE": { "default": "An error occurred while changing the users fields: {message}" },
+    "FETCH_LANGUAGE_DICTIONARY": { "default": "An error occurred while loading the language dictionary: {message}" },
+    "FETCH_LOG": { "default": "An error occurred while loading the log record: {message}" },
+    "FETCH_LOGS": { "default": "An error occurred while loading the logs list: {message}" },
+    "REMOVE_MULTIFACTOR": { "default": "An error occurred while removing multi factor authentication for the user: {message}" },
+    "PASSWORD_CHANGE": { "default": "An error occurred while changing the password: {message}" },
+    "PASSWORD_RESET": { "default": "An error occurred while resetting the password: {message}" },
+    "FETCH_SCRIPT": { "default": "An error occurred while loading the script: {message}" },
+    "UPDATE_SCRIPT": { "default": "An error occurred while saving the script: {message}" },
+    "FETCH_SETTINGS": { "default": "An error occurred while loading the settings: {message}" },
+    "UNBLOCK_USER": { "default": "An error occurred while unblocking the user: {message}" },
+    "FETCH_USER_LOGS": { "default": "An error occurred while loading the user logs: {message}" },
+    "FETCH_USER_DEVICES": { "default": "An error occurred while loading the user devices: {message}" },
+    "FETCH_USER": { "default": "An error occurred while loading the user: {message}" },
+    "CREATE_USER": { "default": "Some stinking create user error: {message}" },
+    "DELETE_USER": { "default": "An error occurred while deleting the user: {message}" },
+    "USERNAME_CHANGE": { "default": "An error occurred while changing the username: {message}" },
+    "FETCH_USERS": { "default": "An error occurred while loading the users list: {message}" },
+    "RESEND_VERIFICATION_EMAIL": { "default": "An error occurred while sending verification email: {message}" }
+  },
+  "searchBarInstructions": "To perform your search, press enter. You can also search for specific fields, eg: email:\"john@doe.com\".",
+  "searchBarReset": "Reset",
+  "paginationTextFormat": "Page {current} of {total}",
+  "tableTotalsTextFormat": "Showing {current} of {total}",
+
+  "createUsersButtonText": "Create User",
+  "validationError": "Validation Error",
+  "dialogConfirmText": "Confirm",
+  "dialogCancelText": "Cancel",
+  "yesLabel": "Yes",
+  "noLabel": "No",
+  "logTypes": {
+    "s": {
+      "event": "Success Login"
+    },
+    "ssa": {
+      "event": "Success Silent Auth"
+    },
+    "seacft": {
+      "event": "Success Exchange",
+      "description": "Authorization Code for Access Token"
+    },
+    "feacft": {
+      "event": "Failed Exchange",
+      "description": "Authorization Code for Access Token"
+    },
+    "f": {
+      "event": "Failed Login"
+    },
+    "fsa": {
+      "event": "Failed Silent Auth"
+    },
+    "w": {
+      "event": "Warnings During Login"
+    },
+    "du": {
+      "event": "Deleted User"
+    },
+    "fu": {
+      "event": "Failed Login (invalid email/username)"
+    },
+    "fp": {
+      "event": "Failed Login (wrong password)"
+    },
+    "fc": {
+      "event": "Failed by Connector"
+    },
+    "fco": {
+      "event": "Failed by CORS"
+    },
+    "con": {
+      "event": "Connector Online"
+    },
+    "coff": {
+      "event": "Connector Offline"
+    },
+    "fcpro": {
+      "event": "Failed Connector Provisioning"
+    },
+    "ss": {
+      "event": "Success Signup"
+    },
+    "fs": {
+      "event": "Failed Signup"
+    },
+    "cs": {
+      "event": "Code Sent"
+    },
+    "cls": {
+      "event": "Code/Link Sent"
+    },
+    "sv": {
+      "event": "Success Verification Email"
+    },
+    "fv": {
+      "event": "Failed Verification Email"
+    },
+    "scp": {
+      "event": "Success Change Password"
+    },
+    "fcp": {
+      "event": "Failed Change Password"
+    },
+    "sce": {
+      "event": "Success Change Email"
+    },
+    "fce": {
+      "event": "Failed Change Email"
+    },
+    "scu": {
+      "event": "Success Change Username"
+    },
+    "fcu": {
+      "event": "Failed Change Username"
+    },
+    "scpn": {
+      "event": "Success Change Phone Number"
+    },
+    "fcpn": {
+      "event": "Failed Change Phone Number"
+    },
+    "svr": {
+      "event": "Success Verification Email Request"
+    },
+    "fvr": {
+      "event": "Failed Verification Email Request"
+    },
+    "scpr": {
+      "event": "Success Change Password Request"
+    },
+    "fcpr": {
+      "event": "Failed Change Password Request"
+    },
+    "fn": {
+      "event": "Failed Sending Notification"
+    },
+    "sapi": {
+      "event": "API Operation"
+    },
+    "fapi": {
+      "event": "Failed API Operation"
+    },
+    "limit_wc": {
+      "event": "Blocked Account"
+    },
+    "limit_ui": {
+      "event": "Too Many Calls to /userinfo"
+    },
+    "api_limit": {
+      "event": "Rate Limit On API"
+    },
+    "sdu": {
+      "event": "Successful User Deletion"
+    },
+    "fdu": {
+      "event": "Failed User Deletion"
+    },
+    "seccft": {
+      "event": "Success Exchange (Client Credentials)"
+    },
+    "feccft": {
+      "event": "Failed Exchange (Client Credentials)"
+    },
+    "limit_mu": {
+      "event": "Blocked IP Address"
+    },
+    "slo": {
+      "event": "Success Logout"
+    },
+    "flo": {
+      "event": "Failed Logout"
+    },
+    "sd": {
+      "event": "Success Delegation"
+    },
+    "fd": {
+      "event": "Failed Delegation"
+    },
+    "gd_start_enroll": {
+      "event": "Enroll started",
+      "description": "Guardian - Start second factor enrollment"
+    },
+    "gd_enrollment_complete": {
+      "event": "Guardian enrollment complete",
+      "description": "Guardian - Enrollment complete"
+    },
+    "gd_auth_succeed": {
+      "event": "OTP Auth suceed",
+      "description": "Guardian - Second factor authentication succeed"
+    },
+    "gd_unenroll": {
+      "event": "Unenroll device account",
+      "description": "Guardian - Enrollment removed"
+    },
+    "sui": {
+      "event": "Users import",
+      "description": "Users import finished"
+    }
+  },
+  "labels": {
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "repeatPassword": "Confirm Password",
+    "username": "Username",
+    "app_metadata.city": "City"
+  }
+}

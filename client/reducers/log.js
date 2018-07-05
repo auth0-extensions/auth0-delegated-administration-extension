@@ -11,7 +11,7 @@ const initialState = {
   record: Map()
 };
 
-export const log = createReducer(fromJS(initialState), {
+export const log = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
   [constants.CLEAR_LOG]: (state) =>
     state.merge({
       ...initialState
@@ -25,7 +25,7 @@ export const log = createReducer(fromJS(initialState), {
   [constants.FETCH_LOG_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      error: `An error occured while loading the log record: ${action.errorMessage}`
+      error: action.errorData
     }),
   [constants.FETCH_LOG_FULFILLED]: (state, action) => {
     const { data } = action.payload;
@@ -36,7 +36,7 @@ export const log = createReducer(fromJS(initialState), {
     let logType = logTypes[data.log.type];
     if (!logType) {
       logType = {
-        event: 'Unknown Error',
+        // Don't do this, need to handle it elsewhere so language dictionary can do it: event: `Unknown Log Type: ${data.log.type}`,
         icon: {
           name: '354',
           color: '#FFA500'
@@ -44,6 +44,7 @@ export const log = createReducer(fromJS(initialState), {
       };
     }
 
+    data.log.shortType = data.log.type;
     data.log.type = logType.event;
 
     return state.merge({

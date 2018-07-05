@@ -1,22 +1,25 @@
 import _ from 'lodash';
 import { Router } from 'express';
 
+import multipartRequest from '../lib/multipartRequest';
+
 export default (scriptManager) => {
   const api = Router();
   api.get('/', (req, res, next) => {
-    req.auth0.connections.getAll({ fields: 'id,name,strategy,enabled_clients,options' })
-      .then(connections => {
+    multipartRequest(req.auth0, 'connections', { strategy: 'auth0', fields: 'id,name,strategy,options' })
+      .then((connections) => {
+        global.connections = connections.map(conn => ({ name: conn.name, id: conn.id }));
         const settingsContext = {
           request: {
             user: req.user
-          }
+          },
+          locale: req.headers['dae-locale']
         };
 
         return scriptManager.execute('settings', settingsContext)
-          .then(settings => {
+          .then((settings) => {
             let result = _.chain(connections)
-              .filter((conn) => conn.strategy === 'auth0')
-              .sortBy((conn) => conn.name.toLowerCase())
+              .sortBy(conn => conn.name.toLowerCase())
               .value();
 
             if (settings && settings.connections && Array.isArray(settings.connections) && settings.connections.length) {

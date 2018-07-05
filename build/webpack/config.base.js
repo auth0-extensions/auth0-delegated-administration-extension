@@ -8,7 +8,7 @@ module.exports = {
 
   // The application and the vendor libraries.
   entry: {
-    app: path.resolve(__dirname, '../../client/app.js'),
+    app: path.resolve(__dirname, '../../client/app.jsx'),
     vendors: [
       'axios',
       'bluebird',
@@ -74,8 +74,8 @@ module.exports = {
   plugins: [
     new webpack.NoErrorsPlugin(),
     new webpack.ProvidePlugin({
-      'React': 'react',
-      'Promise': 'imports?this=>global!exports?global.Promise!bluebird'
+      React: 'react',
+      Promise: 'bluebird'
     }),
     new webpack.DefinePlugin({
       __DEV__: JSON.stringify(process.env.NODE_ENV !== 'production'),
@@ -89,16 +89,14 @@ module.exports = {
   ],
 
   // Postcss configuration.
-  postcss: () => {
-    return [
-      require('postcss-simple-vars')(),
-      require('postcss-focus')(),
-      require('autoprefixer')({
-        browsers: [ 'last 2 versions', 'IE > 8' ]
-      }),
-      require('postcss-reporter')({
-        clearMessages: true
-      })
-    ];
-  }
+  postcss: () => [
+    require('postcss-simple-vars')(),
+    require('postcss-focus')(),
+    require('autoprefixer')({
+      browsers: [ 'last 2 versions', 'IE > 8' ]
+    }),
+    require('postcss-reporter')({
+      clearMessages: true
+    })
+  ]
 };
