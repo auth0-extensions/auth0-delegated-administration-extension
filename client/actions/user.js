@@ -175,11 +175,10 @@ export function fetchUser(userId) {
 /*
  * Get confirmation to remove MFA from a user.
  */
-export function requestRemoveMultiFactor(user, provider) {
+export function requestRemoveMultiFactor(user) {
   return {
     type: constants.REQUEST_REMOVE_MULTIFACTOR,
-    user,
-    provider
+    user
   };
 }
 
@@ -195,18 +194,17 @@ export function cancelRemoveMultiFactor() {
 /*
  * Remove multi factor from a user.
  */
-export function removeMultiFactor() {
-  return (dispatch, getState) => {
-    const { user: {user_id}, provider } = getState().mfa.toJS();
+export function removeMultiFactor(userId, provider) {
+  return (dispatch) => {
     dispatch({
       type: constants.REMOVE_MULTIFACTOR,
       payload: {
-        promise: axios.delete(`/api/users/${user_id}/multifactor`, provider)
+        promise: axios.delete(`/api/users/${userId}/multifactor/${provider}`)
       },
       meta: {
-        userId: user_id,
+        userId,
         onSuccess: () => {
-          dispatch(fetchUserDetail(user_id))
+          dispatch(fetchUserDetail(userId));
         }
       }
     });

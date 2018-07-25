@@ -241,7 +241,7 @@ export default class UserActions extends Component {
   }
 
   removeMfa = () => {
-    this.props.removeMfa(this.state.user, this.state.user.multifactor);
+    this.props.removeMfa(this.state.user);
   }
 
   render() {
