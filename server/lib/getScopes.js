@@ -4,11 +4,24 @@ import * as constants from '../constants';
 
 
 const getUserAccess = (user, type) => {
+  let namespace = null;
+
+  _.forEach(user, (val, key) => {
+    if (key.indexOf('https:') === 0 && key.indexOf('auth0-delegated-admin') > 0) {
+      namespace = key;
+    }
+  });
+
   const items = [
     user[type],
     user.app_metadata && user.app_metadata[type],
     user.app_metadata && user.app_metadata.authorization && user.app_metadata.authorization[type]
   ];
+
+  if (namespace) {
+    items.push(user[namespace][type]);
+  }
+
   return _(items)
     .flatten()
     .filter(item => item)
@@ -30,6 +43,8 @@ const checkRole = (data) => {
 };
 
 export default function(user) {
+  console.log(user);
+
   const roles = getUserAccess(user, 'roles');
   const permissions = getUserAccess(user, 'permissions');
   const userRole = checkRole(roles);
