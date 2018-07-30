@@ -300,9 +300,9 @@ export default (storage, scriptManager) => {
 
                   return res.json(data);
                 });
+            } else {
+              return res.json(data);
             }
-
-            return res.json(data);
           })
       )
       .catch((err) => {
@@ -530,18 +530,19 @@ export default (storage, scriptManager) => {
   /*
    * Remove MFA for the user.
    */
-  api.delete('/:id/multifactor', verifyUserAccess('remove:multifactor-provider', scriptManager), (req, res, next) => {
-    const providers = req.body.provider || [];
+  api.delete('/:id/multifactor/:provider', verifyUserAccess('remove:multifactor-provider', scriptManager), (req, res, next) => {
+    const provider = req.params.provider;
+    const userId = req.params.id;
 
-    Promise.map(providers, (provider) => {
-      if (provider !== 'guardian') {
-        return req.auth0.users.deleteMultifactorProvider({ id: req.params.id, provider });
-      }
-
-      return getApiToken(req).then(accessToken => removeGuardian(accessToken, req.params.id));
-    })
-      .then(() => res.sendStatus(204))
-      .catch(next);
+    if (provider !== 'guardian') {
+      req.auth0.users.deleteMultifactorProvider({ id: userId, provider })
+        .then(() => res.sendStatus(204))
+        .catch(next);
+    } else {
+      getApiToken(req).then(accessToken => removeGuardian(accessToken, userId))
+        .then(() => res.sendStatus(204))
+        .catch(next);
+    }
   });
 
   /*

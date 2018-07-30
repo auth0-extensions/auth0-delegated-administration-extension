@@ -1,11 +1,15 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import connectContainer from 'redux-static';
 
+import submitForm from '../../../actions/submitForm';
 import { userActions } from '../../../actions';
 import { Error, Confirm } from 'auth0-extension-ui';
+import { useMfaField } from '../../../utils/useDefaultFields';
+import UserFieldsForm from '../../../components/Users/UserFieldsForm';
+import { getName, mapValues } from '../../../utils/display';
 import getDialogMessage from './getDialogMessage';
-import { getName } from '../../../utils/display';
 import getErrorMessage from '../../../utils/getErrorMessage';
 
 export default connectContainer(class extends Component {
@@ -16,6 +20,7 @@ export default connectContainer(class extends Component {
   });
 
   static actionsToProps = {
+    submitForm,
     ...userActions
   };
 
@@ -31,13 +36,16 @@ export default connectContainer(class extends Component {
   }
 
   onConfirm = () => {
-    this.props.removeMultiFactor();
+    this.props.submitForm('remove-mfa');
+  };
+
+  onSubmit = (form) => {
+    this.props.removeMultiFactor(form.user_id, form.multifactor);
   };
 
   render() {
     const { cancelRemoveMultiFactor, settings } = this.props;
     const { user, error, requesting, loading } = this.props.mfa.toJS();
-
     const userFields = settings.userFields || [];
     const languageDictionary = this.props.languageDictionary.get('record').toJS();
 
@@ -46,6 +54,21 @@ export default connectContainer(class extends Component {
       'This will allow the user to authenticate and reconfigure a new device.';
     const message = getDialogMessage(messageFormat, 'username',
       getName(user, userFields, languageDictionary));
+
+    const fields = _.cloneDeep(userFields) || [];
+    const providers = user && user.multifactor ? user.multifactor : [];
+    useMfaField(true, fields, providers);
+
+    const allowedFields = [ 'user_id', 'multifactor' ];
+    const filteredFields = _.filter(fields,
+      field => _.includes(allowedFields, field.property));
+
+    const UserFieldsFormInstance = UserFieldsForm('remove-mfa', this.onSubmit.bind(this));
+
+    const initialValues = mapValues(user, allowedFields, filteredFields, 'edit', languageDictionary);
+    if (initialValues.multifactor) {
+      initialValues.multifactor = JSON.parse(initialValues.multifactor)[0];
+    }
 
     return (
       <Confirm
@@ -61,6 +84,12 @@ export default connectContainer(class extends Component {
         <p>
           {message}
         </p>
+        <UserFieldsFormInstance
+          initialValues={initialValues}
+          isEditForm={true}
+          fields={filteredFields}
+          languageDictionary={languageDictionary}
+        />
       </Confirm>
     );
   }
