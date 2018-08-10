@@ -43,8 +43,6 @@ const checkRole = (data) => {
 };
 
 export default function(user) {
-  console.log(user);
-
   const roles = getUserAccess(user, 'roles');
   const permissions = getUserAccess(user, 'permissions');
   const userRole = checkRole(roles);
