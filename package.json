@@ -50,7 +50,7 @@
       "superagent@1.2.0",
       "tough-cookie@2.2.2",
       "uuid@2.0.1",
-      "webtask-tools",
+      "webtask-tools@3.4.0",
       "winston@1.0.0"
     ],
     "settings": {
@@ -115,12 +115,12 @@
     "redux-thunk": "2.2.0",
     "request": "^2.34.0",
     "reselect": "^2.5.4",
-    "safe-eval": "^0.3.0",
+    "safe-eval": "^0.4.1",
     "semver": "^5.1.0",
     "string.prototype.endswith": "^0.2.0",
     "superagent": "^3.8.3",
     "uuid": "2.0.1",
-    "webtask-tools": "^3.1.0",
+    "webtask-tools": "^3.4.0",
     "winston": "^2.2.0"
   },
   "devDependencies": {
