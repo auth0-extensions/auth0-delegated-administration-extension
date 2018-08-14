@@ -58,7 +58,8 @@ describe('#Client-Components-UserInfo', () => {
       { title: 'Memberships', value: 'a, b' },
       { title: 'Signed Up', value: 'a day ago' },
       { title: 'Updated', value: 'a day ago' },
-      { title: 'Last Login', value: 'a day ago' }
+      { title: 'Last Login', value: 'a day ago' },
+      { title: 'Multifactor', value: 'guardian, google' }
     ], 'title');
 
     const user = {
@@ -74,7 +75,8 @@ describe('#Client-Components-UserInfo', () => {
       logins_count: 12,
       created_at: moment().add(-1, 'days'),
       updated_at: moment().add(-1, 'days'),
-      last_login: moment().add(-1, 'days')
+      last_login: moment().add(-1, 'days'),
+      multifactor: [ 'guardian', 'google' ]
     };
 
     const component = renderComponent(user, null, ['a', 'b']);
