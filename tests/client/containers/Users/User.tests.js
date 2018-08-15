@@ -50,6 +50,7 @@ describe('#Client-Containers-Users-User', () => {
       verificationEmail: basicUsername,
       block: basicUsername,
       unblock: basicUsername,
+      removeBlocks: basicUsername,
       mfa: basicUsername,
       applications: fromJS({ records: []}),
       connections: fromJS({ records: []}),
