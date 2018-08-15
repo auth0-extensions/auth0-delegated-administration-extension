@@ -286,11 +286,30 @@ export function requestUnblockUser(user) {
 }
 
 /*
+ * Get confirmation to remove user blocks.
+ */
+export function requestRemoveBlocks(user) {
+  return {
+    type: constants.REQUEST_REMOVE_BLOCKS,
+    user
+  };
+}
+
+/*
  * Cancel unblocking a user.
  */
 export function cancelUnblockUser() {
   return {
     type: constants.CANCEL_UNBLOCK_USER
+  };
+}
+
+/*
+ * Cancel removing user blocks.
+ */
+export function cancelRemoveBlocks() {
+  return {
+    type: constants.CANCEL_REMOVE_BLOCKS
   };
 }
 
@@ -304,6 +323,27 @@ export function unblockUser() {
       type: constants.UNBLOCK_USER,
       payload: {
         promise: axios.put(`/api/users/${userId}/unblock`)
+      },
+      meta: {
+        userId,
+        onSuccess: () => {
+          dispatch(fetchUserDetail(userId));
+        }
+      }
+    });
+  };
+}
+
+/*
+ * Unblock a user.
+ */
+export function removeUserBlocks() {
+  return (dispatch, getState) => {
+    const userId = getState().removeBlocks.get('user').get('user_id');
+    dispatch({
+      type: constants.REMOVE_BLOCKS,
+      payload: {
+        promise: axios.delete(`/api/users/${userId}/blocks`)
       },
       meta: {
         userId,

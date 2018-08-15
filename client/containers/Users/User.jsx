@@ -88,6 +88,7 @@ export default connectContainer(class extends Component {
                 removeMfa={this.props.requestRemoveMultiFactor}
                 blockUser={this.props.requestBlockUser}
                 unblockUser={this.props.requestUnblockUser}
+                removeBlocks={this.props.requestRemoveBlocks}
                 changeUsername={this.props.requestUsernameChange}
                 changeEmail={this.props.requestEmailChange}
                 resendVerificationEmail={this.props.requestResendVerificationEmail}
@@ -152,6 +153,7 @@ export default connectContainer(class extends Component {
         <dialogs.ResendVerificationEmailDialog />
         <dialogs.BlockDialog />
         <dialogs.UnblockDialog />
+        <dialogs.RemoveBlocksDialog />
         <dialogs.RemoveMultiFactorDialog />
       </div>
     );
