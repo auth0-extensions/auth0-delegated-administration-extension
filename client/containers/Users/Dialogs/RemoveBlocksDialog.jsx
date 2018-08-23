@@ -7,10 +7,11 @@ import { userActions } from '../../../actions';
 import getDialogMessage from './getDialogMessage';
 import { getName } from '../../../utils/display';
 import getErrorMessage from '../../../utils/getErrorMessage';
+import { removeBlockedIPs } from "../../../reducers/removeBlockedIPs";
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
-    removeBlocks: state.removeBlocks,
+    removeBlockedIPs: state.removeBlockedIPs,
     settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     languageDictionary: state.languageDictionary
   });
@@ -22,11 +23,11 @@ export default connectContainer(class extends Component {
   static propTypes = {
     cancelRemoveBlocks: PropTypes.func.isRequired,
     removeUserBlocks: PropTypes.func.isRequired,
-    removeBlocks: PropTypes.object.isRequired
+    removeBlockedIPs: PropTypes.object.isRequired
   };
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.removeBlocks !== this.props.removeBlocks ||
+    return nextProps.removeBlockedIPs !== this.props.removeBlockedIPs ||
       nextProps.languageDictionary !== this.props.languageDictionary;
   }
 
@@ -36,13 +37,13 @@ export default connectContainer(class extends Component {
 
   render() {
     const { cancelRemoveBlocks, settings } = this.props;
-    const { user, error, requesting, loading } = this.props.removeBlocks.toJS();
+    const { user, error, requesting, loading } = this.props.removeBlockedIPs.toJS();
 
     const userFields = settings.userFields || [];
 
     const languageDictionary = this.props.languageDictionary.get('record').toJS();
 
-    const messageFormat = languageDictionary.removeBlocksDialogMessage ||
+    const messageFormat = languageDictionary.removeBlockedIPsDialogMessage ||
       'Do you really want to remove all Anomaly Detection blocks from {username}? ' +
       'After doing so the user will be able to sign in again.';
     const message = getDialogMessage(messageFormat, 'username',
@@ -50,7 +51,7 @@ export default connectContainer(class extends Component {
 
     return (
       <Confirm
-        title={languageDictionary.removeBlocksDialogTitle || "Remove User Blocks?"}
+        title={languageDictionary.removeBlockedIPsDialogTitle || 'Remove all blocked IPs?'}
         show={requesting}
         loading={loading}
         confirmMessage={languageDictionary.dialogConfirmText}

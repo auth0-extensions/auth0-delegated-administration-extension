@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { MenuItem, DropdownButton } from 'react-bootstrap';
 import _ from 'lodash';
+import { removeBlockedIPs } from "../../reducers/removeBlockedIPs";
 
 export default class UserActions extends Component {
   static propTypes = {
@@ -16,7 +17,7 @@ export default class UserActions extends Component {
     resendVerificationEmail: PropTypes.func.isRequired,
     resetPassword: PropTypes.func.isRequired,
     unblockUser: PropTypes.func.isRequired,
-    removeBlocks: PropTypes.func.isRequired,
+    removeBlockedIPs: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
     role: PropTypes.number.isRequired,
     userFields: PropTypes.array.isRequired,
@@ -192,8 +193,8 @@ export default class UserActions extends Component {
   getUserBlocksAction = (user, loading) => {
     if (user.blocked_for && user.blocked_for.length) {
       return (
-        <MenuItem disabled={loading || false} onClick={this.removeBlocks}>
-          {this.state.languageDictionary.removeUserBlocksMenuItemText || "Unblock for all IPs"}
+        <MenuItem disabled={loading || false} onClick={this.removeBlockedIPs}>
+          {this.state.languageDictionary.removeBlockedIPsMenuItemText || "Unblock for all IPs"}
         </MenuItem>
       );
     }
@@ -253,8 +254,8 @@ export default class UserActions extends Component {
     this.props.unblockUser(this.state.user);
   }
 
-  removeBlocks = () => {
-    this.props.removeBlocks(this.state.user);
+  removeBlockedIPs = () => {
+    this.props.removeBlockedIPs(this.state.user);
   }
 
   removeMfa = () => {

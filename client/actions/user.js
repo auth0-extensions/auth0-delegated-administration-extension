@@ -5,6 +5,7 @@ import * as constants from '../constants';
 import { fetchUserLogs } from './userLog';
 import { fetchUserDevices } from './userDevice';
 import { getAccessLevel } from './auth';
+import { removeBlockedIPs } from "../reducers/removeBlockedIPs";
 
 const addRequiredTextParam = (url, languageDictionary) => {
   languageDictionary = languageDictionary || {};
@@ -288,9 +289,9 @@ export function requestUnblockUser(user) {
 /*
  * Get confirmation to remove user blocks.
  */
-export function requestRemoveBlocks(user) {
+export function requestRemoveBlockedIPs(user) {
   return {
-    type: constants.REQUEST_REMOVE_BLOCKS,
+    type: constants.REQUEST_REMOVE_BLOCKED_IPS,
     user
   };
 }
@@ -309,7 +310,7 @@ export function cancelUnblockUser() {
  */
 export function cancelRemoveBlocks() {
   return {
-    type: constants.CANCEL_REMOVE_BLOCKS
+    type: constants.CANCEL_REMOVE_BLOCKED_IPS
   };
 }
 
@@ -339,9 +340,9 @@ export function unblockUser() {
  */
 export function removeUserBlocks() {
   return (dispatch, getState) => {
-    const userId = getState().removeBlocks.get('user').get('user_id');
+    const userId = getState().removeBlockedIPs.get('user').get('user_id');
     dispatch({
-      type: constants.REMOVE_BLOCKS,
+      type: constants.REMOVE_BLOCKED_IPS,
       payload: {
         promise: axios.delete(`/api/users/${userId}/blocks`)
       },

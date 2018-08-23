@@ -55,7 +55,7 @@ export const users = createReducer(fromJS(initialState), { // eslint-disable-lin
     state.updateIn(
       [ 'records', state.get('records').findIndex(p => p.get('user_id') === action.meta.userId), 'blocked' ], () => false
     ),
-  [constants.REMOVE_BLOCKS_FULFILLED]: (state, action) =>
+  [constants.REMOVE_BLOCKED_IPS_FULFILLED]: (state, action) =>
     state.updateIn(
       [ 'records', state.get('records').findIndex(p => p.get('user_id') === action.meta.userId), 'blocked_for' ], () => []
     ),

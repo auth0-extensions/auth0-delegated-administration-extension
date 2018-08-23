@@ -18,7 +18,7 @@ import { scripts } from './scripts';
 import { settings } from './settings';
 import { styleSettings } from './styleSettings';
 import { unblock } from './unblock';
-import { removeBlocks } from './removeBlocks';
+import { removeBlockedIPs } from './removeBlockedIPs';
 import { user } from './user';
 import { userCreate } from './userCreate';
 import { userDelete } from './userDelete';
@@ -49,7 +49,7 @@ export default combineReducers({
   settings,
   styleSettings,
   unblock,
-  removeBlocks,
+  removeBlockedIPs,
   user,
   userCreate,
   userDelete,

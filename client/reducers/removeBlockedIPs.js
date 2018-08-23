@@ -10,26 +10,26 @@ const initialState = {
   user: null
 };
 
-export const removeBlocks = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
-  [constants.REQUEST_REMOVE_BLOCKS]: (state, action) =>
+export const removeBlockedIPs = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
+  [constants.REQUEST_REMOVE_BLOCKED_IPS]: (state, action) =>
     state.merge({
       user: action.user,
       requesting: true
     }),
-  [constants.CANCEL_REMOVE_BLOCKS]: (state) =>
+  [constants.CANCEL_REMOVE_BLOCKED_IPS]: (state) =>
     state.merge({
       ...initialState
     }),
-  [constants.REMOVE_BLOCKS_PENDING]: (state) =>
+  [constants.REMOVE_BLOCKED_IPS_PENDING]: (state) =>
     state.merge({
       loading: true
     }),
-  [constants.REMOVE_BLOCKS_REJECTED]: (state, action) =>
+  [constants.REMOVE_BLOCKED_IPS_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
       error: action.errorData
     }),
-  [constants.REMOVE_BLOCKS_FULFILLED]: (state) =>
+  [constants.REMOVE_BLOCKED_IPS_FULFILLED]: (state) =>
     state.merge({
       ...initialState
     })

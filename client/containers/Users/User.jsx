@@ -13,6 +13,7 @@ import LogsTable from '../../components/Logs/LogsTable';
 import { UserActions, UserDevices, UserHeader, UserProfile, UserInfo } from '../../components/Users';
 
 import getUserDatabaseConnections from '../../selectors/getUserDatabaseConnections';
+import { removeBlockedIPs } from "../../reducers/removeBlockedIPs";
 
 export default connectContainer(class extends Component {
   static stateToProps = state => ({
@@ -88,7 +89,7 @@ export default connectContainer(class extends Component {
                 removeMfa={this.props.requestRemoveMultiFactor}
                 blockUser={this.props.requestBlockUser}
                 unblockUser={this.props.requestUnblockUser}
-                removeBlocks={this.props.requestRemoveBlocks}
+                removeBlockedIPs={this.props.requestRemoveBlockedIPs}
                 changeUsername={this.props.requestUsernameChange}
                 changeEmail={this.props.requestEmailChange}
                 resendVerificationEmail={this.props.requestResendVerificationEmail}

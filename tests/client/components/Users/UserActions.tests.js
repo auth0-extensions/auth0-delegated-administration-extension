@@ -17,7 +17,7 @@ describe('#Client-Components-UserActions', () => {
   const resetPassword = () => 'resetPassword';
   const changeUsername = () => 'changeUsername';
   const unblockUser = () => 'unblockUser';
-  const removeBlocks = () => 'removeBlocks';
+  const removeBlockedIPs = () => 'removeBlockedIPs';
 
   const renderComponent = (user, languageDictionary) => {
     return shallow(
@@ -33,7 +33,7 @@ describe('#Client-Components-UserActions', () => {
         resendVerificationEmail={resendVerificationEmail}
         resetPassword={resetPassword}
         unblockUser={unblockUser}
-        removeBlocks={removeBlocks}
+        removeBlockedIPs={removeBlockedIPs}
         user={fromJS(user)}
         userFields={[
           {
@@ -112,7 +112,7 @@ describe('#Client-Components-UserActions', () => {
     const Component = renderComponent({ username: 'bill', multifactor: ['guardian'], blocked_for: [ 'some stuff' ] });
     const targets = {
       "Block User": blockUser(),
-      "Unblock for all IPs": removeBlocks(),
+      "Unblock for all IPs": removeBlockedIPs(),
       "Change Email": changeEmail(),
       "Change Password": changePassword(),
       "Delete User": deleteUser(),
