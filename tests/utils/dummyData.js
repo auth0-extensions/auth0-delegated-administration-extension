@@ -105,8 +105,23 @@ export const defaultScripts = {
       };
       callback(null, result);
     }).toString(),
-  settings_no_connections: "function (ctx, callback) { var result = { dict: { title: ctx.request.user.email + ' dashboard', memberships: 'Groups' }, css: 'http://localhost:3001/app/default.css' }; callback(null, result);}",
-  settings_invalid_connection: "function (ctx, callback) { var result = { connections: ['conn-x'], dict: { title: ctx.request.user.email + ' dashboard', memberships: 'Groups' }, css: 'http://localhost:3001/app/default.css' }; callback(null, result);}"
+  settings_no_connections: (
+    function (ctx, callback) {
+      var result = {
+        dict: { title: ctx.request.user.email + ' dashboard', memberships: 'Groups' },
+        css: 'http://localhost:3001/app/default.css'
+      };
+      callback(null, result);
+    }).toString(),
+  settings_invalid_connection: (
+    function (ctx, callback) {
+      var result = {
+        connections: ['conn-x'],
+        dict: { title: ctx.request.user.email + ' dashboard', memberships: 'Groups' },
+        css: 'http://localhost:3001/app/default.css'
+      };
+      callback(null, result);
+    }).toString()
 };
 
 export const defaultConfig = {

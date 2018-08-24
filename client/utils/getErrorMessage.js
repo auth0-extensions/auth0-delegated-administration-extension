@@ -16,6 +16,7 @@ const defaultMessages = {
   UPDATE_SCRIPT: { default: 'An error occurred while saving the script: {message}' },
   FETCH_SETTINGS: { default: 'An error occurred while loading the settings: {message}' },
   UNBLOCK_USER: { default: 'An error occurred while unblocking the user: {message}' },
+  REMOVE_BLOCKS: { default: 'An error occurred while removing anomaly blocks: {message}' },
   FETCH_USER_LOGS: { default: 'An error occurred while loading the user logs: {message}' },
   FETCH_USER_DEVICES: { default: 'An error occurred while loading the user devices: {message}' },
   FETCH_USER: { default: 'An error occurred while loading the user: {message}' },

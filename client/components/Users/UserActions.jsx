@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { MenuItem, DropdownButton } from 'react-bootstrap';
 import _ from 'lodash';
+import { removeBlockedIPs } from "../../reducers/removeBlockedIPs";
 
 export default class UserActions extends Component {
   static propTypes = {
@@ -16,6 +17,7 @@ export default class UserActions extends Component {
     resendVerificationEmail: PropTypes.func.isRequired,
     resetPassword: PropTypes.func.isRequired,
     unblockUser: PropTypes.func.isRequired,
+    removeBlockedIPs: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
     role: PropTypes.number.isRequired,
     userFields: PropTypes.array.isRequired,
@@ -188,6 +190,18 @@ export default class UserActions extends Component {
     );
   }
 
+  getUserBlocksAction = (user, loading) => {
+    if (user.blocked_for && user.blocked_for.length) {
+      return (
+        <MenuItem disabled={loading || false} onClick={this.removeBlockedIPs}>
+          {this.state.languageDictionary.removeBlockedIPsMenuItemText || "Unblock for all IPs"}
+        </MenuItem>
+      );
+    }
+
+    return null;
+  }
+
   deleteUser = () => {
     this.props.deleteUser(this.state.user);
   }
@@ -240,6 +254,10 @@ export default class UserActions extends Component {
     this.props.unblockUser(this.state.user);
   }
 
+  removeBlockedIPs = () => {
+    this.props.removeBlockedIPs(this.state.user);
+  }
+
   removeMfa = () => {
     this.props.removeMfa(this.state.user);
   }
@@ -256,6 +274,7 @@ export default class UserActions extends Component {
       <DropdownButton bsStyle="success" title={buttonTitle} id="user-actions">
         {this.getMultifactorAction(this.state.user, this.state.loading)}
         {this.getBlockedAction(this.state.user, this.state.loading)}
+        {this.getUserBlocksAction(this.state.user, this.state.loading)}
         {this.getResetPasswordAction(this.state.user, this.state.loading)}
         {this.getResendEmailVerificationAction(this.state.user, this.state.loading)}
         {this.getChangeUsernameAction(this.state.user, this.state.loading)}

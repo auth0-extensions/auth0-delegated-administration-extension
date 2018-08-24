@@ -17,6 +17,7 @@ describe('#Client-Components-UserActions', () => {
   const resetPassword = () => 'resetPassword';
   const changeUsername = () => 'changeUsername';
   const unblockUser = () => 'unblockUser';
+  const removeBlockedIPs = () => 'removeBlockedIPs';
 
   const renderComponent = (user, languageDictionary) => {
     return shallow(
@@ -32,6 +33,7 @@ describe('#Client-Components-UserActions', () => {
         resendVerificationEmail={resendVerificationEmail}
         resetPassword={resetPassword}
         unblockUser={unblockUser}
+        removeBlockedIPs={removeBlockedIPs}
         user={fromJS(user)}
         userFields={[
           {
@@ -91,6 +93,26 @@ describe('#Client-Components-UserActions', () => {
     const Component = renderComponent({ username: 'bill', multifactor: ['guardian'], blocked: true });
     const targets = {
       "Unblock User": unblockUser(),
+      "Change Email": changeEmail(),
+      "Change Password": changePassword(),
+      "Delete User": deleteUser(),
+      "Change Profile": changeFields(),
+      "Remove MFA": removeMfa(),
+      "Resend Verification Email": resendVerificationEmail(),
+      "Reset Password": resetPassword(),
+      "Change Username": changeUsername()
+    };
+
+    expect(Component.length).to.be.greaterThan(0);
+    const menuItems = Component.find('MenuItem');
+    checkMenuItems(menuItems, targets);
+  });
+
+  it('should render removeBlocks', () => {
+    const Component = renderComponent({ username: 'bill', multifactor: ['guardian'], blocked_for: [ 'some stuff' ] });
+    const targets = {
+      "Block User": blockUser(),
+      "Unblock for all IPs": removeBlockedIPs(),
       "Change Email": changeEmail(),
       "Change Password": changePassword(),
       "Delete User": deleteUser(),

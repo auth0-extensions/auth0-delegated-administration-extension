@@ -9,7 +9,7 @@ import config from '../lib/config';
 import logger from '../lib/logger';
 import { verifyUserAccess } from '../lib/middlewares';
 import { removeGuardian, requestGuardianEnrollments } from '../lib/removeGuardian';
-import requestUserBlocks from '../lib/userBlocks';
+import { requestUserBlocks, removeUserBlocks } from '../lib/userBlocks';
 import getApiToken from '../lib/getApiToken';
 import getConnectionIdByName from '../lib/getConnectionIdByName';
 
@@ -559,6 +559,16 @@ export default (storage, scriptManager) => {
    */
   api.put('/:id/unblock', verifyUserAccess('unblock:user', scriptManager), (req, res, next) => {
     req.auth0.users.update({ id: req.params.id }, { blocked: false })
+      .then(() => res.sendStatus(204))
+      .catch(next);
+  });
+
+  /*
+   * Remove anomaly blocks.
+   */
+  api.delete('/:id/blocks', verifyUserAccess('unblock:user', scriptManager), (req, res, next) => {
+    getApiToken(req)
+      .then(token => removeUserBlocks(token, req.params.id))
       .then(() => res.sendStatus(204))
       .catch(next);
   });

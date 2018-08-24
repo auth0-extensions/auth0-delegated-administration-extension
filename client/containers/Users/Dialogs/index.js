@@ -8,4 +8,5 @@ export PasswordResetDialog from './PasswordResetDialog';
 export RemoveMultiFactorDialog from './RemoveMultiFactorDialog';
 export ResendVerificationEmailDialog from './ResendVerificationEmailDialog';
 export UnblockDialog from './UnblockDialog';
+export RemoveBlocksDialog from './RemoveBlocksDialog';
 export UsernameChangeDialog from './UsernameChangeDialog';
