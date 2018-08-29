@@ -55,6 +55,11 @@
       "webtask-tools@3.4.0",
       "winston@1.0.0"
     ],
+    "excluded": [
+      "safe-eval",
+      "express-conditional-middleware",
+      "pino"
+    ],
     "settings": {
       "WARN_DB_SIZE": 409600,
       "MAX_MULTISELECT_USERS": 5,
