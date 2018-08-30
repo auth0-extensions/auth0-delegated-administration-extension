@@ -190,8 +190,6 @@ export default (storage, scriptManager) => {
 
     scriptManager.execute('filter', filterContext)
       .then((filter) => {
-        const searchEngine = filter && filter.searchEngine;
-        const defaultEngine = (config('AUTH0_RTA').replace('https://', '') !== 'auth0.auth0.com') ? 'v2' : 'v3';
         const filterQuery = (filter && typeof filter.query !== 'undefined') ? filter.query : filter;
         const options = {
           sort,
@@ -200,7 +198,7 @@ export default (storage, scriptManager) => {
           page: req.query.page || 0,
           include_totals: true,
           fields: 'user_id,username,name,email,identities,picture,last_login,logins_count,multifactor,blocked,app_metadata,user_metadata',
-          search_engine: searchEngine || (config('SEARCH_ENGINE') !== 'default' && config('SEARCH_ENGINE')) || defaultEngine
+          search_engine: (config('AUTH0_RTA').replace('https://', '') !== 'auth0.auth0.com') ? 'v2' : 'v3'
         };
 
         return req.auth0.users.getAll(options);
