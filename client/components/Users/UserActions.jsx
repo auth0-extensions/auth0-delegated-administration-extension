@@ -95,6 +95,10 @@ export default class UserActions extends Component {
       return null;
     }
 
+    /* Check if settings are disabling the editing of password */
+    const falsePasswordEditFields = _.filter(this.props.userFields, field => field.property === 'password' && field.edit === false);
+    if (falsePasswordEditFields.length > 0) return null;
+
     return (
       <MenuItem disabled={loading || false} onClick={this.resetPassword}>
         {this.state.languageDictionary.resetPasswordMenuItemText || 'Reset Password'}
@@ -106,6 +110,10 @@ export default class UserActions extends Component {
     if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
       return null;
     }
+
+    /* Check if settings are disabling the editing of password */
+    const falsePasswordEditFields = _.filter(this.props.userFields, field => field.property === 'password' && field.edit === false);
+    if (falsePasswordEditFields.length > 0) return null;
 
     return (
       <MenuItem disabled={loading || false} onClick={this.changePassword}>
