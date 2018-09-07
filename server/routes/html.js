@@ -89,12 +89,14 @@ export default () => {
     const clientVersion = process.env.CLIENT_VERSION;
     if (clientVersion) {
       const cdnPath = config('CDN_PATH') || '//cdn.auth0.com/extensions/auth0-delegated-admin/assets';
+      const favIcon = config('FAVICON_PATH') || 'https://cdn.auth0.com/styleguide/4.6.13/lib/logos/img/favicon.png';
       return res.send(ejs.render(template, {
         config: settings,
         assets: {
           customCss: config('CUSTOM_CSS'),
           version: clientVersion,
-          cdnPath: cdnPath
+          cdnPath: cdnPath,
+          favIcon: favIcon
         }
       }));
     }
