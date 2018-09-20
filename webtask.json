@@ -35,6 +35,11 @@
       "example": "https://cdn.fabrikam.com/static/extensions/theme/fabrikam.css",
       "required": false
     },
+    "FAVICON_PATH": {
+      "description": "Path to custom favicon",
+      "example": "https://cdn.fabrikam.com/static/extensions/theme/favicon.png",
+      "required": false
+    },
     "FEDERATED_LOGOUT": {
       "description": "Also sign out from the IDP when users logout?",
       "type": "select",
