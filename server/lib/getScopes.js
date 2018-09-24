@@ -4,14 +4,18 @@ import * as constants from '../constants';
 
 
 const getUserAccess = (user, type) => {
+  const claim = _.find(user, (val, key) => _.startsWith(key, 'https:') && _.endsWith(key, 'auth0-delegated-admin'));
+
   const items = [
     user[type],
     user.app_metadata && user.app_metadata[type],
-    user.app_metadata && user.app_metadata.authorization && user.app_metadata.authorization[type]
+    user.app_metadata && user.app_metadata.authorization && user.app_metadata.authorization[type],
+    claim && claim[type]
   ];
+
   return _(items)
     .flatten()
-    .filter(item => item)
+    .compact()
     .uniq()
     .value();
 };
