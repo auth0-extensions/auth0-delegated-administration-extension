@@ -19,7 +19,7 @@ describe('#Client-Components-UserActions', () => {
   const unblockUser = () => 'unblockUser';
   const removeBlockedIPs = () => 'removeBlockedIPs';
 
-  const renderComponent = (user, languageDictionary) => {
+  const renderComponent = (user, languageDictionary, userFields = [{ edit: true }]) => {
     return shallow(
       <UserActions
         blockUser={blockUser}
@@ -35,11 +35,7 @@ describe('#Client-Components-UserActions', () => {
         unblockUser={unblockUser}
         removeBlockedIPs={removeBlockedIPs}
         user={fromJS(user)}
-        userFields={[
-          {
-            edit: true
-          }
-        ]}
+        userFields={userFields}
         languageDictionary={languageDictionary}
       />
     );
@@ -121,6 +117,24 @@ describe('#Client-Components-UserActions', () => {
       "Resend Verification Email": resendVerificationEmail(),
       "Reset Password": resetPassword(),
       "Change Username": changeUsername()
+    };
+
+    expect(Component.length).to.be.greaterThan(0);
+    const menuItems = Component.find('MenuItem');
+    checkMenuItems(menuItems, targets);
+  });
+
+  it('should not render change password, email and username, if those fields are disabled in userFields', () => {
+    const userFields = [
+      { property: 'password', edit: false },
+      { property: 'email', edit: false },
+      { property: 'username', edit: false }
+    ];
+    const Component = renderComponent({ username: 'bill' }, {}, userFields);
+    const targets = {
+      "Block User": blockUser(),
+      "Delete User": deleteUser(),
+      "Resend Verification Email": resendVerificationEmail()
     };
 
     expect(Component.length).to.be.greaterThan(0);
