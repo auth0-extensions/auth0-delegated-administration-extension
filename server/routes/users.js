@@ -289,7 +289,7 @@ export default (storage, scriptManager) => {
               }))
           .then((accessToken) => {
             if (data.user.multifactor && data.user.multifactor.indexOf('guardian') >= 0) {
-              requestGuardianEnrollments(accessToken, req.params.id)
+              return requestGuardianEnrollments(accessToken, req.params.id)
                 .then((enrollments) => {
                   if (!enrollments || !enrollments.length) {
                     data.user.multifactor = data.user.multifactor.filter(item => item !== 'guardian');

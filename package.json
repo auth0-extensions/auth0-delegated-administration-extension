@@ -17,7 +17,9 @@
     "test:watch": "cross-env NODE_ENV=test mocha --require ignore-styles tests/mocha.js './tests/**/*.tests.js' --watch",
     "test:pre": "npm run test:clean && npm run lint:js",
     "test:clean": "rimraf ./coverage && rimraf ./.nyc_output",
-    "extension:size": "cross-env NODE_ENV=production webpack -p --config ./build/extension/webpack.config.js --json > ./build/extension/bundle-size.json && node ./build/extension/bundle-size.js"
+    "extension:size": "cross-env NODE_ENV=production webpack -p --config ./build/extension/webpack.config.js --json > ./build/extension/bundle-size.json && node ./build/extension/bundle-size.js",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "keywords": [
     "auth0"
@@ -33,24 +35,30 @@
       "boom@3.2.2",
       "cookie-parser@1.3.5",
       "ejs@2.3.1",
-      "express@4.14.0",
+      "express@4.16.3",
       "iconv-lite@0.4.10",
       "inert@4.0.1",
       "joi@9.0.4",
       "jsonwebtoken@7.1.9",
       "jwks-rsa@1.1.1",
-      "lodash@3.10.1",
+      "lodash@4.8.2",
       "lru-memoizer@1.10.0",
       "moment@2.11.2",
       "morgan@1.5.3",
       "node-uuid@1.4.3",
       "mime-db@1.10.0",
+      "qs@6.5.2",
       "request@2.67.0",
-      "superagent@1.2.0",
+      "superagent@3.8.3",
       "tough-cookie@2.2.2",
       "uuid@2.0.1",
-      "webtask-tools",
+      "webtask-tools@3.4.0",
       "winston@1.0.0"
+    ],
+    "excluded": [
+      "safe-eval",
+      "express-conditional-middleware",
+      "pino"
     ],
     "settings": {
       "WARN_DB_SIZE": 409600,
@@ -84,22 +92,23 @@
     "cookie-parser": "^1.4.3",
     "ejs": "^2.4.2",
     "expect": "^1.20.2",
-    "express": "4.14.0",
+    "express": "^4.16.3",
     "express-jwt": "^3.4.0",
     "glob": "^7.0.3",
     "history": "^2.1.2",
     "immutable": "^3.8.1",
     "json-loader": "^0.5.4",
-    "jsonwebtoken": "^7.1.7",
+    "jsonwebtoken": "^8.3.0",
     "jwks-rsa": "^1.1.0",
     "jwt-decode": "^2.0.1",
-    "lodash": "^3.10.1",
-    "lru-memoizer": "1.10.0",
+    "lodash": "^4.8.2",
+    "lru-memoizer": "1.11.2",
     "moment": "^2.13.0",
     "morgan": "^1.7.0",
     "ms": "^0.7.1",
     "nconf": "^0.8.4",
     "prop-types": "^15.6.0",
+    "qs": "^6.5.2",
     "react": "15.6.1",
     "react-codemirror": "^0.2.6",
     "react-dom": "15.6.1",
@@ -113,13 +122,14 @@
     "redux-thunk": "2.2.0",
     "request": "^2.34.0",
     "reselect": "^2.5.4",
-    "safe-eval": "^0.3.0",
+    "safe-eval": "^0.4.1",
     "semver": "^5.1.0",
     "string.prototype.endswith": "^0.2.0",
-    "superagent": "1.2.0",
+    "superagent": "^3.8.3",
     "uuid": "2.0.1",
-    "webtask-tools": "^3.1.0",
-    "winston": "^2.2.0"
+    "webtask-tools": "^3.4.0",
+    "winston": "^2.2.0",
+    "snyk": "^1.88.1"
   },
   "devDependencies": {
     "auth0-extensions-cli": "~1.0.9",
@@ -197,5 +207,6 @@
     ],
     "sourceMap": true,
     "instrument": true
-  }
+  },
+  "snyk": true
 }
