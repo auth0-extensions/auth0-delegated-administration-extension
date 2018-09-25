@@ -69,6 +69,8 @@ export default class UserInfo extends Component {
 
     let customDisplayFieldProperties = _(customDisplayFields).groupBy(field => field.property).value();
 
+    const mfaDefaultDisplay = (user) => user.multifactor.join(', ');
+
     const defaultFields = [
       { title: 'User ID', property: 'user_id' },
       { title: 'Name', property: 'name' },
@@ -79,6 +81,7 @@ export default class UserInfo extends Component {
       { title: 'Last IP', property: 'last_ip' },
       { title: 'Logins Count', property: 'logins_count' },
       { title: 'Memberships', property: 'currentMemberships' },
+      { title: 'Multifactor', property: 'multifactor', display: mfaDefaultDisplay },
       { title: 'Signed Up', property: 'created_at', type: 'elapsedTime' },
       { title: 'Updated', property: 'updated_at', type: 'elapsedTime' },
       { title: 'Last Login', property: 'last_login', type: 'elapsedTime' }
