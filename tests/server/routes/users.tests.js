@@ -19,7 +19,7 @@ describe('#users router', () => {
     req.auth0 = {
       users: {
         getAll: (options) => {
-          if (options.q && options.q.startsWith('(user_id:"1")')) {
+          if (options.q && options.q.startsWith('(user_id:1)')) {
             return Promise.resolve({
               users: _.filter(defaultUsers, user => user.user_id === 1)
             });

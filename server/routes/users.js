@@ -180,10 +180,14 @@ export default (storage, scriptManager) => {
       }
     };
 
+    const searchEngine = (config('AUTH0_RTA').replace('https://', '') !== 'auth0.auth0.com') ? 'v2' : 'v3';
+    const quoteChar = searchEngine === 'v2' ? '"' : '';
     let searchQuery = req.query.search;
+
     if (req.query.filterBy && req.query.filterBy.length > 0) {
-      searchQuery = `${req.query.filterBy}:"${req.query.search}"`;
+      searchQuery = `${req.query.filterBy}:${quoteChar}${req.query.search}${quoteChar}`;
     }
+
     const sort = req.query.sortProperty && req.query.sortOrder
       ? `${req.query.sortProperty}:${req.query.sortOrder}`
       : 'last_login:-1';
@@ -198,7 +202,7 @@ export default (storage, scriptManager) => {
           page: req.query.page || 0,
           include_totals: true,
           fields: 'user_id,username,name,email,identities,picture,last_login,logins_count,multifactor,blocked,app_metadata,user_metadata',
-          search_engine: (config('AUTH0_RTA').replace('https://', '') !== 'auth0.auth0.com') ? 'v2' : 'v3'
+          search_engine: searchEngine
         };
 
         return req.auth0.users.getAll(options);
