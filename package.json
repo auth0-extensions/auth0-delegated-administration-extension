@@ -52,7 +52,7 @@
       "superagent@3.8.3",
       "tough-cookie@2.2.2",
       "uuid@2.0.1",
-      "webtask-tools@3.4.0",
+      "webtask-tools",
       "winston@1.0.0"
     ],
     "excluded": [
