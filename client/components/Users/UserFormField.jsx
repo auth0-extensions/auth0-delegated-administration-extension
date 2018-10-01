@@ -39,7 +39,8 @@ export default class UserFormField extends Component {
     switch (componentName) {
       case 'InputCombo': {
         const additionalOptions = {
-          options: field.options ? _.map(field.options, option => ({ value: option.value, text: option.label })) : null
+          options: field.options ? _.map(field.options, option => ({ value: option.value, text: option.label })) : null,
+          placeholder: 'Please select...'
         };
         if (validate) additionalOptions.validate = validate;
         return (this.getFieldComponent(field, InputCombo, additionalOptions));
