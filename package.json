@@ -74,7 +74,7 @@
     "auth0": "^2.8.0",
     "auth0-extension-express-tools": "1.1.8",
     "auth0-extension-tools": "1.3.3",
-    "auth0-extension-ui": "~1.1.6",
+    "auth0-extension-ui": "^1.1.9",
     "auth0-js": "^9.6.0",
     "axios": "^0.14.0",
     "babel": "6.23.0",
@@ -124,12 +124,12 @@
     "reselect": "^2.5.4",
     "safe-eval": "^0.4.1",
     "semver": "^5.1.0",
+    "snyk": "^1.88.1",
     "string.prototype.endswith": "^0.2.0",
     "superagent": "^3.8.3",
     "uuid": "2.0.1",
     "webtask-tools": "^3.4.0",
-    "winston": "^2.2.0",
-    "snyk": "^1.88.1"
+    "winston": "^2.2.0"
   },
   "devDependencies": {
     "auth0-extensions-cli": "~1.0.9",

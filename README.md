@@ -1,4 +1,5 @@
 # Auth0 Delegated Administration Extension
+[![CircleCI](https://circleci.com/gh/auth0-extensions/auth0-delegated-administration-extension.svg?style=svg)](https://circleci.com/gh/auth0-extensions/auth0-delegated-administration-extension)
 
 ## Running in Production
 
