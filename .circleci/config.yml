@@ -33,5 +33,10 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
         
-      # run tests!
-      - run: yarn test --ignore-engines
+      - run: 
+          name: test
+          command: yarn test --ignore-engines
+
+      - run:
+          name: build
+          command: yarn run build --ignore-engines
