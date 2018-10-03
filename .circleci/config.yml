@@ -62,14 +62,16 @@ jobs:
           name: Simulate Deploy
           command: ls ./dist
       
-
+      - run:
+          name: Compress files
+          command: tar -zcvf assets.tar.gz dist/
       # Get version from package.json using jq (comes with cibuilds/base)
       # Create a github release with that version
       - run:
           name: Publish Release on GitHub
           command: |
             VERSION=$(cat dist/webtask.json | jq .version -r)
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./dist/
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./assets.tar.gz
 
 workflows:
   version: 2
