@@ -70,7 +70,7 @@ workflows:
       - build_and_test:
           filters:
             tags:
-              only: *semverRegex
+              only: /^v.*/
       - deploy:
           requires:
             - build_and_test
@@ -78,5 +78,5 @@ workflows:
             branches:
               ignore: /.*/
             tags:
-              only: *semverRegex
+              only: /^v.*/
 
