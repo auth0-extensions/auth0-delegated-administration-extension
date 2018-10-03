@@ -59,7 +59,7 @@ jobs:
 
       - run:
           name: Simulate Deploy
-          command: ls ./dist
+          command: ls
       
       # Get version from package.json using jq (comes with cibuilds/base)
       # Create a github release with that version
