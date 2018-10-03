@@ -8,8 +8,7 @@ references:
   workspace_root: &workspace_root
     ~/repo
 
-  container_config: &container_config
-    working_directory: *workspace_root
+  node_container: &node_container
     docker:
       - image: circleci/node:6.11
 
@@ -19,7 +18,8 @@ references:
 
 jobs:
   build_and_test:
-    <<: *container_config
+    working_directory: *workspace_root
+    <<: *node_container
 
     steps:
       - checkout
@@ -51,6 +51,7 @@ jobs:
             - dist/*
 
   deploy:
+    working_directory: *workspace_root
     docker:
       - image: cibuilds/github:0.12
 
@@ -66,7 +67,7 @@ jobs:
       - run:
           name: Publish Release on GitHub
           command: |
-            VERSION=$(cat package.json | jq .version)
+            VERSION=$(cat dist/webtask.json | jq .version)
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./dist/
 
 workflows:
