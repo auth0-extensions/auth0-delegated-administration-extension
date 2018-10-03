@@ -70,8 +70,8 @@ jobs:
       - run:
           name: Publish Release on GitHub
           command: |
-            VERSION=$(cat dist/webtask.json | jq .version -r)
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./assets.tar.gz
+            VERSION=v$(cat dist/webtask.json | jq .version -r)
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -n ${VERSION} -delete ${VERSION} ./assets.tar.gz
 
 workflows:
   version: 2
