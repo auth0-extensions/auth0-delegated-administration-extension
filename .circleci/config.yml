@@ -71,11 +71,24 @@ jobs:
 
 workflows:
   version: 2
+  build_and_test:
+    jobs:
+      - build_and_test:
+          filters:
+            branches:
+              ignore: master
+
   build_test_and_deploy:
     jobs:
-      - build_and_test
-      - deploy:
+      - build_and_test:
+          filters:
+            branches:
+              only: master
+      - hold:
           type: approval
           requires:
             - build_and_test
+      - deploy:
+          requires:
+            - hold
 
