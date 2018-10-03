@@ -38,6 +38,9 @@ jobs:
       - run: yarn install --ignore-engines
       - run: yarn test --ignore-engines
       - run: yarn build --ignore-engines
+  
+      - store_artifacts:
+          path: ./dist
 
       - save_cache:
           name: Save yarn packages to cache
@@ -55,9 +58,6 @@ jobs:
     <<: *container_config
     steps:
       - *attach_workspace
-  
-      - store_artifacts:
-          path: ./dist
 
       - run:
           name: Simulate Deploy
