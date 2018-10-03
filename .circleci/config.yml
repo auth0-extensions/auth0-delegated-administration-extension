@@ -5,11 +5,6 @@
 version: 2
 
 references:
-
-  # Semver full regex: https://rgxdb.com/r/40OZ1HN5
-  semverRegex: &semverRegex
-    /(?<=^[Vv]|^)(?:(?<major>(?:0|[1-9](?:(?:0|[1-9])+)*))[.](?<minor>(?:0|[1-9](?:(?:0|[1-9])+)*))[.](?<patch>(?:0|[1-9](?:(?:0|[1-9])+)*))(?:-(?<prerelease>(?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:0|[1-9](?:(?:0|[1-9])+)*))(?:[.](?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:0|[1-9](?:(?:0|[1-9])+)*)))*))?(?:[+](?<build>(?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:(?:0|[1-9])+))(?:[.](?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:(?:0|[1-9])+)))*))?)$/
-
   workspace_root: &workspace_root
     ~/repo
 
@@ -25,6 +20,7 @@ references:
 jobs:
   build_and_test:
     <<: *container_config
+
     steps:
       - checkout
 
@@ -55,28 +51,31 @@ jobs:
             - dist/*
 
   deploy:
-    <<: *container_config
+    docker:
+      - image: cibuilds/github:0.12
+
     steps:
       - *attach_workspace
 
       - run:
           name: Simulate Deploy
           command: ls ./dist
+      
+      # Get version from package.json using jq (comes with cibuilds/base)
+      # Create a github release with that version
+      - run:
+          name: Publish Release on GitHub
+          command: |
+            VERSION=$(cat package.json | jq .version)
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./dist/
 
 workflows:
   version: 2
   build_test_and_deploy:
     jobs:
       - build_and_test:
-          filters:
-            tags:
-              only: /^v.*/
       - deploy:
+          type: approval
           requires:
             - build_and_test
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
 
