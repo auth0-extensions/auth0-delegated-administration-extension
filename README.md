@@ -6,7 +6,7 @@
 ```bash
 npm install
 npm run client:build
-npm run server:prod
+npm run serve:prod
 ```
 
 ## Running in Development
@@ -21,20 +21,22 @@ yarn run serve:dev
 
 ### Configuration
 
-Update the configuration file under `./server/config.json`:
+Create the configuration file under `./server/config.json`:
 
 ```json
 {
   "EXTENSION_CLIENT_ID": "SPA_CLIENT_ID",
-  "EXTENSION_SECRET": "Random secret",
-  "WT_URL": "http://localhost:3001",
-  "PUBLIC_WT_URL": "http://localhost:3001",
+  "EXTENSION_SECRET": "SPA_CLIENT_SECRET",
+  "WT_URL": "http://localhost:3000",
+  "PUBLIC_WT_URL": "http://localhost:3000",
   "AUTH0_RTA": "https://auth0.auth0.com",
   "AUTH0_DOMAIN": "{tenant-name.region}.auth0.com",
-  "AUTH0_CLIENT_ID": "GENERIC_CLIENT_ID",
-  "AUTH0_CLIENT_SECRET": "GENERIC_CLIENT_SECRET"
+  "AUTH0_CLIENT_ID": "GLOBAL_CLIENT_ID",
+  "AUTH0_CLIENT_SECRET": "GLOBAL_CLIENT_SECRET"
 }
 ```
+
+Global client values can be found here: https://manage.auth0.com/#/tenant/advanced
 
 As you can see, there are 2 clients involved here.
 
@@ -57,7 +59,7 @@ You can install real extension and use automatically created client in local con
 This extension allows end users to login, not dashboard administrators. This means that we need to secure this extension in the same way that we secure other applications in Auth0.
 
  1. Create a "Single Page Application" in Clients
- 2. Put `http://localhost:3001/login` as an `Allowed Callback URL`.
+ 2. Put `http://localhost:3000/login` as an `Allowed Callback URL`.
  3. Add the Client ID to the `EXTENSION_CLIENT_ID` setting.
  4. Then in the Client, under Advanced Settings, OAuth2 change the value from `HS256` to `RS256`.
  5. Choose a connection (eg: DB connection) and only enable that one in your Client (Connections tab).
