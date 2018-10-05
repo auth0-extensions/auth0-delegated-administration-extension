@@ -27,6 +27,8 @@ Update the configuration file under `./server/config.json`:
 {
   "EXTENSION_CLIENT_ID": "SPA_CLIENT_ID",
   "EXTENSION_SECRET": "Random secret",
+  "WT_URL": "http://localhost:3001",
+  "PUBLIC_WT_URL": "http://localhost:3001",
   "AUTH0_RTA": "https://auth0.auth0.com",
   "AUTH0_DOMAIN": "{tenant-name.region}.auth0.com",
   "AUTH0_CLIENT_ID": "GENERIC_CLIENT_ID",
@@ -55,7 +57,7 @@ You can install real extension and use automatically created client in local con
 This extension allows end users to login, not dashboard administrators. This means that we need to secure this extension in the same way that we secure other applications in Auth0.
 
  1. Create a "Single Page Application" in Clients
- 2. Put `http://localhost:3000/login` as an `Allowed Callback URL`.
+ 2. Put `http://localhost:3001/login` as an `Allowed Callback URL`.
  3. Add the Client ID to the `EXTENSION_CLIENT_ID` setting.
  4. Then in the Client, under Advanced Settings, OAuth2 change the value from `HS256` to `RS256`.
  5. Choose a connection (eg: DB connection) and only enable that one in your Client (Connections tab).
