@@ -63,7 +63,7 @@ jobs:
 
       - run:
           name: Setup dependencies
-          command: apk add --update --no-cache --virtual build-dependencies && \
+          command: apk add --update --no-cache --virtual build-dependencies
                    apk add --update --no-cache \
                    ruby
       
