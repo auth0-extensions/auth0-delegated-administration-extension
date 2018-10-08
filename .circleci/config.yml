@@ -63,9 +63,7 @@ jobs:
 
       - run:
           name: Setup dependencies
-          command: apk add --update --no-cache --virtual build-dependencies
-                   apk add --update --no-cache \
-                   ruby
+          command: apk add --update --no-cache ruby
       
       - run:
           name: Simulate Deploy
@@ -75,6 +73,7 @@ jobs:
           name: Compress files
           command: tar -zcvf assets.tar.gz dist/
 
+      # Install Chandler for pulling release notes from changelogs: https://github.com/mattbrictson/chandler
       - run:
           name: Install Chandler
           command: gem install chandler
