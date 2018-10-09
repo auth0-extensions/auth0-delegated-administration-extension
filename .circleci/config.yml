@@ -60,6 +60,8 @@ jobs:
           BUNDLE_SILENCE_ROOT_WARNING: true
 
     steps:
+      - checkout
+      
       - *attach_workspace
 
       - run:
