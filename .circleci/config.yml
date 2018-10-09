@@ -55,7 +55,7 @@ jobs:
     docker:
       - image: cibuilds/github:0.12
         environment:
-          RUBY_VERSION: 2.4.3
+          RUBY_VERSION: 2.5
           BUNDLE_SILENCE_ROOT_WARNING: true
 
     steps:
