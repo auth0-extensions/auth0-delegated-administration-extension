@@ -63,7 +63,7 @@ jobs:
 
       - run:
           name: Setup dependencies
-          command: apk add --update --no-cache ruby ruby-ri ruby-irb ruby-rdoc
+          command: apk add --update --no-cache ruby ruby-irb ruby-rdoc
       
       # Install Chandler for pulling release notes from changelogs: https://github.com/mattbrictson/chandler
       - run:
