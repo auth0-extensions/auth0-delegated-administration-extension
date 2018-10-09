@@ -65,6 +65,11 @@ jobs:
           name: Setup dependencies
           command: apk add --update --no-cache ruby
       
+      # Install Chandler for pulling release notes from changelogs: https://github.com/mattbrictson/chandler
+      - run:
+          name: Install Chandler
+          command: gem install rdoc chandler
+
       - run:
           name: Simulate Deploy
           command: ls ./dist
@@ -72,11 +77,6 @@ jobs:
       - run:
           name: Compress files
           command: tar -zcvf assets.tar.gz dist/
-
-      # Install Chandler for pulling release notes from changelogs: https://github.com/mattbrictson/chandler
-      - run:
-          name: Install Chandler
-          command: gem install chandler
 
       # Get version from package.json using jq (comes with cibuilds/base)
       # Create a github release using the CHANGELOG.md that matches the version number as the content
