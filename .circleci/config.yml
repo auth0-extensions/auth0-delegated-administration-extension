@@ -49,6 +49,7 @@ jobs:
           root: *workspace_root
           paths:
             - dist/*
+            - ./CHANGELOG.md
 
   deploy:
     working_directory: *workspace_root
