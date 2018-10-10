@@ -25,14 +25,14 @@ Update the configuration file under `./server/config.json`:
 
 ```json
 {
- "EXTENSION_CLIENT_ID": "SPA_CLIENT_ID",
- "EXTENSION_SECRET": "SPA_CLIENT_SECRET",
- "WT_URL": "http://localhost:3001",
- "PUBLIC_WT_URL": "http://localhost:3001",
- "AUTH0_RTA": "https://auth0.auth0.com",
- "AUTH0_DOMAIN": "{tenant-name.region}.auth0.com",
- "AUTH0_CLIENT_ID": "GENERIC_CLIENT_ID",
- "AUTH0_CLIENT_SECRET": "GENERIC_CLIENT_SECRET"
+  "EXTENSION_CLIENT_ID": "SPA_CLIENT_ID",
+  "EXTENSION_SECRET": "Random Secret",
+  "WT_URL": "http://localhost:3001",
+  "PUBLIC_WT_URL": "http://localhost:3001",
+  "AUTH0_RTA": "https://auth0.auth0.com",
+  "AUTH0_DOMAIN": "{tenant-name.region}.auth0.com",
+  "AUTH0_CLIENT_ID": "GENERIC_CLIENT_ID",
+  "AUTH0_CLIENT_SECRET": "GENERIC_CLIENT_SECRET"
 }
 ```
 
@@ -56,7 +56,7 @@ This client will be used to interact with the Management API (eg: load users, ..
 
 **Client for End Users**
 
-Relevant properties for this section: `EXTENSION_CLIENT_ID` and `EXTENSION_SECRET`
+Relevant properties for this section: `EXTENSION_CLIENT_ID`.
 
 This extension allows end users to login, not dashboard administrators. This means that we need to secure this extension in the same way that we secure other applications in Auth0.
 
