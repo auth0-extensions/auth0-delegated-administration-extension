@@ -14,10 +14,12 @@ class UserFieldsChangeForm extends Component {
     handleSubmit: PropTypes.func.isRequired,
     submitting: PropTypes.bool,
     customFields: PropTypes.array,
-    languageDictionary: PropTypes.object
+    languageDictionary: PropTypes.object,
+    loading: PropTypes.bool,
   };
 
   render() {
+
     const fields = this.props.customFields || [];
 
     if (fields.length === 0) return null;
@@ -28,6 +30,8 @@ class UserFieldsChangeForm extends Component {
     const filteredCustomFields = _.filter(fields, field => !_.includes(ignoreFields, field.property) && field.edit);
 
     if (filteredCustomFields.length === 0) return null;
+
+    const { loading } = this.props;
 
     return (
       <div>
@@ -40,11 +44,11 @@ class UserFieldsChangeForm extends Component {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button bsSize="large" bsStyle="default" disabled={this.props.submitting} onClick={this.props.onClose}>
+          <Button bsSize="large" bsStyle="default" disabled={loading} onClick={this.props.onClose}>
             {languageDictionary.cancelButtonText || 'Cancel'}
           </Button>
-          <Button bsSize="large" bsStyle="primary" disabled={this.props.submitting} onClick={this.props.handleSubmit}>
-            {languageDictionary.updateButtonText || 'Update'}
+          <Button bsSize="large" bsStyle="primary" disabled={loading} onClick={this.props.handleSubmit}>
+           {loading ? languageDictionary.savingText || 'Saving....' : languageDictionary.updateButtonText || 'Update'}
           </Button>
         </Modal.Footer>
       </div>
