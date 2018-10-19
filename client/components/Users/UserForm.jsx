@@ -23,6 +23,7 @@ class AddUserForm extends Component {
     customFields: PropTypes.array,
     customFieldGetter: PropTypes.func.isRequired,
     languageDictionary: PropTypes.object,
+    loading: PropTypes.bool,
   };
 
 
@@ -37,9 +38,10 @@ class AddUserForm extends Component {
       hasMembership,
       memberships,
       createMemberships,
-      getDictValue
+      getDictValue,
+      loading,
     } = this.props;
-
+     
     const languageDictionary = this.props.languageDictionary || {};
 
     /* First let's add field to the top if not in the list of fields */
@@ -61,11 +63,11 @@ class AddUserForm extends Component {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button bsSize="large" bsStyle="default" disabled={submitting} onClick={this.props.onClose}>
+          <Button bsSize="large" bsStyle="default" disabled={loading} onClick={this.props.onClose}>
             {languageDictionary.cancelButtonText || 'Cancel'}
           </Button>
-          <Button bsSize="large" bsStyle="primary" disabled={submitting} onClick={this.props.handleSubmit}>
-            {languageDictionary.createButtonText || 'Create'}
+          <Button bsSize="large" bsStyle="primary" disabled={loading} onClick={this.props.handleSubmit}>
+           {loading ? languageDictionary.savingText || 'Saving....' : languageDictionary.createButtonText || 'Create'}
           </Button>
         </Modal.Footer>
       </div>

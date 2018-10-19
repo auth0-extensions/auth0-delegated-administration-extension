@@ -63,7 +63,7 @@ export default connectContainer(class extends Component {
           initialValues={record}
           onClose={this.props.cancelChangeFields}
           onSubmit={this.onSubmit}
-          submitting={loading}
+          loading={loading}
           languageDictionary={languageDictionary}
         >
           <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error, this.props.errorTranslator)} />
