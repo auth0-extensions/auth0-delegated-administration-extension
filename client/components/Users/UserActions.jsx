@@ -221,6 +221,7 @@ export default class UserActions extends Component {
   }
 
   changeFields = () => {
+    // TODO: run edit.display || display here
     this.props.changeFields(this.state.user);
   }
 
