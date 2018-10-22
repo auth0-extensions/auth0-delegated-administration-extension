@@ -68,7 +68,7 @@ export default class UserFormField extends Component {
             displayLabelOnly: field.displayLabelOnly
         };
         if (validate) additionalOptions.validate = validate;
-            return (this.getFieldComponent(field, VirtualizedSelect, additionalOptions));
+        return (this.getFieldComponent(field, VirtualizedSelect, additionalOptions));
       }
       default: {
         const additionalOptions = {
