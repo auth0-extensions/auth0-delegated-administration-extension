@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { InputText, InputCombo, Multiselect, Select } from 'auth0-extension-ui';
+import { InputText, InputCombo, Multiselect, Select, VirtualizedSelect } from 'auth0-extension-ui';
 import { Field } from 'redux-form';
 
 import requiredValidationFunction from '../../utils/requiredValidationFunction';
@@ -60,6 +60,15 @@ export default class UserFormField extends Component {
         };
         if (validate) additionalOptions.validate = validate;
         return (this.getFieldComponent(field, Select, additionalOptions));
+      }
+      case 'InputVirtualizedSelect': {
+        const additionalOptions = {
+          options: field.options,
+          multi: field.multi,
+          displayLabelOnly: field.displayLabelOnly
+        };
+        if (validate) additionalOptions.validate = validate;
+        return (this.getFieldComponent(field, VirtualizedSelect, additionalOptions));
       }
       default: {
         const additionalOptions = {
