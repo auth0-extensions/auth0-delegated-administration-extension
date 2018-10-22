@@ -63,9 +63,9 @@ export default class UserFormField extends Component {
       }
       case 'InputVirtualizedSelect': {
         const additionalOptions = {
-            options: field.options,
-            multi: field.multi,
-            displayLabelOnly: field.displayLabelOnly
+          options: field.options,
+          multi: field.multi,
+          displayLabelOnly: field.displayLabelOnly
         };
         if (validate) additionalOptions.validate = validate;
         return (this.getFieldComponent(field, VirtualizedSelect, additionalOptions));
