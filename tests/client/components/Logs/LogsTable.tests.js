@@ -74,7 +74,7 @@ describe('#Client-Components-Logs-LogsTable', () => {
     expect(header.length).to.equal(1);
     const columns = header.find(TableColumn);
     expect(columns.length).to.equal(6);
-    expect(columns.at(0).childAt(0).text()).to.equal('');
+    expect(columns.at(0).children().length).to.equal(0);
     expect(columns.at(1).childAt(0).text()).to.equal('Event');
     expect(columns.at(2).childAt(0).text()).to.equal('Description');
     expect(columns.at(3).childAt(0).text()).to.equal('Date');
@@ -126,7 +126,7 @@ describe('#Client-Components-Logs-LogsTable', () => {
     expect(header.length).to.equal(1);
     const columns = header.find(TableColumn);
     expect(columns.length).to.equal(6);
-    expect(columns.at(0).childAt(0).text()).to.equal('');
+    expect(columns.at(0).children().length).to.equal(0);
     expect(columns.at(1).childAt(0).text()).to.equal('Event');
     expect(columns.at(2).childAt(0).text()).to.equal('Description');
     expect(columns.at(3).childAt(0).text()).to.equal('Date');
@@ -180,7 +180,7 @@ describe('#Client-Components-Logs-LogsTable', () => {
     expect(header.length).to.equal(1);
     const columns = header.find(TableColumn);
     expect(columns.length).to.equal(6);
-    expect(columns.at(0).childAt(0).text()).to.equal('');
+    expect(columns.at(0).children().length).to.equal(0);
     expect(columns.at(1).childAt(0).text()).to.equal('EventHeader');
     expect(columns.at(2).childAt(0).text()).to.equal('DescriptionHeader');
     expect(columns.at(3).childAt(0).text()).to.equal('DateHeader');

@@ -101,7 +101,7 @@ export default class UserActions extends Component {
     }
 
     /* Check if settings are disabling the editing of password */
-    const falsePasswordEditFields = _.filter(this.props.userFields, field => field.property === 'reset_password' && field.edit === false);
+    const falsePasswordEditFields = _.filter(this.props.userFields, field => field.property === 'resetPassword' && field.edit === false);
     if (falsePasswordEditFields.length > 0) return null;
 
     return (

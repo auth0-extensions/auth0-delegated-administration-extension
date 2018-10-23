@@ -128,11 +128,31 @@ describe('#Client-Components-UserActions', () => {
     const userFields = [
       { property: 'password', edit: false },
       { property: 'email', edit: false },
-      { property: 'username', edit: false }
+      { property: 'username', edit: false },
+      { property: 'delete', edit: false }
     ];
     const Component = renderComponent({ username: 'bill' }, {}, userFields);
     const targets = {
       "Block User": blockUser(),
+      "Reset Password": resetPassword(),
+      "Resend Verification Email": resendVerificationEmail()
+    };
+
+    expect(Component.length).to.be.greaterThan(0);
+    const menuItems = Component.find('MenuItem');
+    checkMenuItems(menuItems, targets);
+  });
+
+  it('should not render reset password, if disabled in userFields', () => {
+    const userFields = [
+      { property: 'resetPassword', edit: false }
+    ];
+    const Component = renderComponent({ username: 'bill' }, {}, userFields);
+    const targets = {
+      "Block User": blockUser(),
+      "Change Email": changeEmail(),
+      "Change Username": changeUsername(),
+      "Change Password": changePassword(),
       "Delete User": deleteUser(),
       "Resend Verification Email": resendVerificationEmail()
     };

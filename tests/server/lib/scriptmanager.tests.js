@@ -17,13 +17,17 @@ describe('#scripts', () => {
     data = {
       scripts: {
         access: 'This is access script', // for reading
-        filter: 'function(ctx, callback) { callback(null, ctx.user.name); }', // for successful executing
+        filter: 'function(ctx, callback) { ctx.log("carlos here"); callback(null, ctx.user.name); }', // for
+        // successful
+        // executing
         create: '', // for writing
         memberships: 'function (ctx, callback) { callback(new Error("MembershipsError")); }', // for error return
         settings: 'function (ctx, callback) { console.log(ctx.user.name); callback(); }' // for error catch
       }
     };
     scriptmanager = new ScriptManager(storage);
+    const skipCache = name => scriptmanager.get(name);
+    scriptmanager.getCached = skipCache;
   });
 
   describe('#ScriptManager', () => {
@@ -44,11 +48,13 @@ describe('#scripts', () => {
       scriptmanager.execute('filter', conext).then(result => {
         expect(result).toEqual('PassedTest');
         done();
+      }).catch(e => {
+        done(e)
       });
     });
 
     it('should execute script and return error', (done) => {
-      scriptmanager.execute('memberships', {}).catch(error => {
+      scriptmanager.execute('memberships', {}).then(() => done('bad then')).catch(error => {
         expect(error.message).toEqual('MembershipsError');
         done();
       });
