@@ -101,8 +101,9 @@ export default class UserActions extends Component {
     }
 
     /* Check if settings are disabling the editing of password */
-    const falsePasswordEditFields = _.filter(this.props.userFields, field => field.property === 'resetPassword' && field.edit === false);
-    if (falsePasswordEditFields.length > 0) return null;
+    const falsePasswordEditFields = _.filter(this.props.userFields, field => field.property === 'password' && field.edit === false);
+    const trueResetPasswordEditFields = _.filter(this.props.userFields, field => field.property === 'resetPassword' && field.edit === true);
+    if (falsePasswordEditFields.length > 0 && trueResetPasswordEditFields.length <= 0) return null;
 
     return (
       <MenuItem disabled={loading || false} onClick={this.resetPassword}>

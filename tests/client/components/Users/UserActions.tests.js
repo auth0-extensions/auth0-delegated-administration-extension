@@ -134,7 +134,6 @@ describe('#Client-Components-UserActions', () => {
     const Component = renderComponent({ username: 'bill' }, {}, userFields);
     const targets = {
       "Block User": blockUser(),
-      "Reset Password": resetPassword(),
       "Resend Verification Email": resendVerificationEmail()
     };
 
@@ -145,14 +144,16 @@ describe('#Client-Components-UserActions', () => {
 
   it('should not render reset password, if disabled in userFields', () => {
     const userFields = [
-      { property: 'resetPassword', edit: false }
+      { property: 'password', edit: false },
+      { property: 'resetPassword', edit: true }
     ];
     const Component = renderComponent({ username: 'bill' }, {}, userFields);
     const targets = {
       "Block User": blockUser(),
       "Change Email": changeEmail(),
       "Change Username": changeUsername(),
-      "Change Password": changePassword(),
+      "Reset Password": resetPassword(),
+      "Change Profile": changeFields(),
       "Delete User": deleteUser(),
       "Resend Verification Email": resendVerificationEmail()
     };
