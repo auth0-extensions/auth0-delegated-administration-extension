@@ -31,9 +31,9 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - npm-dependencies-
 
-      - run: npm install --ignore-engines
-      - run: npm test --ignore-engines
-      - run: npm build --ignore-engines
+      - run: npm install
+      - run: npm test
+      - run: npm run build
   
       - store_artifacts:
           path: ./dist
