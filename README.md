@@ -14,7 +14,7 @@ npm run server:prod
 To run the extension:
 
 ```bash
-npm install --production=false --ignore-engines
+npm install
 npm run build
 npm run serve:dev
 ```
