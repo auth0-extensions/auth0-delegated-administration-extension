@@ -221,7 +221,23 @@ export default class UserActions extends Component {
   }
 
   changeFields = () => {
-    this.props.changeFields(this.state.user);
+    const languageDictionary = this.props.languageDictionary;
+    const ignoreFields = [ 'username', 'memberships', 'connection', 'password', 'email', 'repeatPassword' ];
+    const customFields = _.filter(this.props.userFields, field =>
+      !_.includes(ignoreFields, field.property) && field.edit && _.isFunction(field.edit.display));
+    const user = Object.assign({}, this.state.user);
+
+    _.each(customFields, field => {
+      try {
+        _.update(user, field.property, (value) => field.edit.display(this.state.user, value, languageDictionary));
+      } catch (e) {
+        /* Swallow eval errors */
+        console.log(`Could not display ${field.property} because: ${e.message}`);
+      }
+
+    });
+
+    this.props.changeFields(user);
   }
 
   resetPassword = () => {
