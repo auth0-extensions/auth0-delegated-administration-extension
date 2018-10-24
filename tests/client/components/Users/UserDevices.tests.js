@@ -38,9 +38,9 @@ describe('#Client-Components-UserDevices', () => {
     expect(header.length).to.equal(1);
     const columns = header.find(TableColumn);
     expect(columns.length).to.equal(3);
-    expect(columns.filterWhere(element =>
+    expect(columns.filterWhere(element => element.children().length === 1 &&
       element.childAt(0).text() === 'Device').length).to.equal(1);
-    expect(columns.filterWhere(element =>
+    expect(columns.filterWhere(element => element.children().length === 1 &&
       element.childAt(0).text() === '# of Tokens/Public Keys').length).to.equal(1);
 
     /* Test the rows */
@@ -88,9 +88,9 @@ describe('#Client-Components-UserDevices', () => {
     expect(header.length).to.equal(1);
     const columns = header.find(TableColumn);
     expect(columns.length).to.equal(3);
-    expect(columns.filterWhere(element =>
+    expect(columns.filterWhere(element => element.children().length === 1 &&
       element.childAt(0).text() === 'Device').length).to.equal(1);
-    expect(columns.filterWhere(element =>
+    expect(columns.filterWhere(element => element.children().length === 1 &&
       element.childAt(0).text() === '# of Tokens/Public Keys').length).to.equal(1);
 
     /* Test the rows */
@@ -143,9 +143,9 @@ describe('#Client-Components-UserDevices', () => {
     expect(header.length).to.equal(1);
     const columns = header.find(TableColumn);
     expect(columns.length).to.equal(3);
-    expect(columns.filterWhere(element =>
+    expect(columns.filterWhere(element => element.children().length === 1 &&
       element.childAt(0).text() === 'DeviceColumnHeader').length).to.equal(1);
-    expect(columns.filterWhere(element =>
+    expect(columns.filterWhere(element => element.children().length === 1 &&
       element.childAt(0).text() === 'DeviceNumberTokensColumnHeader').length).to.equal(1);
   });
 
