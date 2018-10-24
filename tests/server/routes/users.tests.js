@@ -271,7 +271,6 @@ describe('#users router', () => {
         .expect('Content-Type', /json/)
         .expect(200)
         .end((err, res) => {
-          console.log(err, res);
           if (err) return done(err);
           const targetUsers = _.orderBy(_.cloneDeep(userData), ['user_id'], ['desc']);
           userData.push(userFour);
