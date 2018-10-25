@@ -14,9 +14,9 @@ npm run server:prod
 To run the extension:
 
 ```bash
-yarn install --production=false --ignore-engines
-yarn run build
-yarn run serve:dev
+npm install
+npm run build
+npm run serve:dev
 ```
 
 ### Configuration
