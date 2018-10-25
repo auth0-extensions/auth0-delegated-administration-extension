@@ -12,6 +12,8 @@ import users from '../../../server/routes/users';
 import ScriptManager from '../../../server/lib/scriptmanager';
 import { user, defaultUsers, defaultScripts, defaultConfig } from '../../utils/dummyData';
 
+let userData = {};
+
 describe('#users router', () => {
   config.setProvider((key) => defaultConfig[key], null);
 
@@ -21,46 +23,42 @@ describe('#users router', () => {
         getAll: (options) => {
           if (options.q && options.q.startsWith('(user_id:1)')) {
             return Promise.resolve({
-              users: _.filter(defaultUsers, user => user.user_id === 1)
+              users: _.filter(userData, user => user.user_id === 1)
             });
           }
           if (options.sort) {
             const sortParts = options.sort.split(':');
             const order = sortParts[1] < 0 ? 'desc' : 'asc';
             return Promise.resolve({
-              users: _.sortByOrder(defaultUsers, [sortParts[0]], [order])
+              users: _.orderBy(userData, [sortParts[0]], [order])
             });
           }
-          return Promise.resolve({ users: defaultUsers })
+          return Promise.resolve({ users: userData })
         },
-        get:
-          (options) => {
-            const id = parseInt(options.id, 10) - 1;
-            return Promise.resolve(defaultUsers[id]);
-          },
-        create:
-          (data) => {
-            if (data.memberships) return Promise.reject(new Error('did not fix memberships'));
-            defaultUsers.push(data);
-            return Promise.resolve();
-          },
-        delete:
-          () => {
-            defaultUsers.pop();
-            return Promise.resolve();
-          },
-        update:
-          (options, data) => {
-            if (!data || Object.keys(data).length === 0) Promise.reject(new Error('can not pass empty data'));
-            const id = parseInt(options.id, 10) - 1;
-            if (data.email) defaultUsers[id].email = data.email;
-            if (data.username) defaultUsers[id].username = data.username;
-            if (data.password) defaultUsers[id].password = data.password;
-            if (data.blocked !== undefined) defaultUsers[id].blocked = data.blocked;
-            if (data.app_metadata) _.assign(defaultUsers[id].app_metadata, data.app_metadata);
-            if (data.user_metadata) _.assign(defaultUsers[id].user_metadata, data.user_metadata);
-            return Promise.resolve();
-          },
+        get: (options) => {
+          const id = parseInt(options.id, 10) - 1;
+          return Promise.resolve(userData[id]);
+        },
+        create: (data) => {
+          if (data.memberships) return Promise.reject(new Error('did not fix memberships'));
+          userData.push(data);
+          return Promise.resolve();
+        },
+        delete: () => {
+          userData.pop();
+          return Promise.resolve();
+        },
+        update: (options, data) => {
+          if (!data || Object.keys(data).length === 0) Promise.reject(new Error('can not pass empty data'));
+          const id = parseInt(options.id, 10) - 1;
+          if (data.email) userData[id].email = data.email;
+          if (data.username) userData[id].username = data.username;
+          if (data.password) userData[id].password = data.password;
+          if (data.blocked !== undefined) userData[id].blocked = data.blocked;
+          if (data.app_metadata) _.assign(userData[id].app_metadata, data.app_metadata);
+          if (data.user_metadata) _.assign(userData[id].user_metadata, data.user_metadata);
+          return Promise.resolve();
+        },
         deleteMultifactorProvider:
           (options) => options.provider !== 'badProvider' ?
             Promise.resolve() :
@@ -248,6 +246,10 @@ describe('#users router', () => {
     scriptManager.getCached = oldGetCached;
   });
 
+  beforeEach(() => {
+    userData = _.cloneDeep(defaultUsers);
+  });
+
   describe('#List', () => {
     it('should return "access denied" error', (done) => {
       request(app)
@@ -261,8 +263,8 @@ describe('#users router', () => {
     });
 
     it('should return list of users', (done) => {
-      const userFive = defaultUsers.pop();
-      const userFour = defaultUsers.pop();
+      const userFive = userData.pop();
+      const userFour = userData.pop();
 
       request(app)
         .get('/users?sortProperty=user_id&sortOrder=-1')
@@ -270,9 +272,9 @@ describe('#users router', () => {
         .expect(200)
         .end((err, res) => {
           if (err) return done(err);
-          const targetUsers = _.sortByOrder(_.cloneDeep(defaultUsers), ['user_id'], ['desc']);
-          defaultUsers.push(userFour);
-          defaultUsers.push(userFive);
+          const targetUsers = _.orderBy(_.cloneDeep(userData), ['user_id'], ['desc']);
+          userData.push(userFour);
+          userData.push(userFive);
           expect(res.body).to.deep.equal({ users: targetUsers });
 
           done();
@@ -286,7 +288,7 @@ describe('#users router', () => {
         .expect('Content-Type', /json/)
         .end((err, res) => {
           if (err) return done(err);
-          expect(res.body).to.deep.equal({ users: [defaultUsers[0]] });
+          expect(res.body).to.deep.equal({ users: [userData[0]] });
           done();
         });
     });
@@ -383,8 +385,8 @@ describe('#users router', () => {
         .expect(201)
         .end((err) => {
           if (err) return done(err);
-          expect(defaultUsers[5].email).to.equal(newUser.email);
-          expect(defaultUsers[5].app_metadata.department).to.equal(newUser.memberships[0]);
+          expect(userData[5].email).to.equal(newUser.email);
+          expect(userData[5].app_metadata.department).to.equal(newUser.memberships[0]);
           done();
         });
     });
@@ -444,12 +446,13 @@ describe('#users router', () => {
 
   describe('#Delete', () => {
     it('should remove user', (done) => {
+      userData[4].app_metadata.department = 'deptA';
       request(app)
-        .delete('/users/6')
+        .delete('/users/5')
         .expect(204)
         .end((err) => {
           if (err) return done(err);
-          expect(defaultUsers[5]).to.equal(undefined);
+          expect(userData[4]).to.equal(undefined);
           done();
         });
     });
@@ -488,7 +491,7 @@ describe('#users router', () => {
         .expect(204)
         .end((err) => {
           if (err) return done(err);
-          expect(defaultUsers[0].password).to.equal('password');
+          expect(userData[0].password).to.equal('password');
           done();
         });
     });
@@ -525,7 +528,7 @@ describe('#users router', () => {
         .expect(204)
         .end((err) => {
           if (err) return done(err);
-          expect(defaultUsers[0].username).to.equal('name');
+          expect(userData[0].username).to.equal('name');
           done();
         });
     });
@@ -550,7 +553,7 @@ describe('#users router', () => {
         .expect(204)
         .end((err) => {
           if (err) return done(err);
-          expect(defaultUsers[0].email).to.equal('new-user1@example.com');
+          expect(userData[0].email).to.equal('new-user1@example.com');
           done();
         });
     });
@@ -620,7 +623,7 @@ describe('#users router', () => {
         .expect(204)
         .end((err) => {
           if (err) return done(err);
-          expect(defaultUsers[0].blocked).to.equal(true);
+          expect(userData[0].blocked).to.equal(true);
           done();
         });
     });
@@ -643,7 +646,7 @@ describe('#users router', () => {
         .expect(204)
         .end((err) => {
           if (err) return done(err);
-          expect(defaultUsers[0].blocked).to.equal(false);
+          expect(userData[0].blocked).to.equal(false);
           done();
         });
     });
@@ -841,7 +844,7 @@ describe('#users router', () => {
         .expect(204)
         .end((err) => {
           if (err) return done(err);
-          expect(defaultUsers[0].app_metadata.someNewKey).to.equal('someNewValue');
+          expect(userData[0].app_metadata.someNewKey).to.equal('someNewValue');
           done();
         });
     });
@@ -897,7 +900,7 @@ describe('#users router', () => {
         .expect(204)
         .end((err) => {
           if (err) return done(err);
-          expect(defaultUsers[0].password).to.equal('pwd1');
+          expect(userData[0].password).to.equal('pwd1');
           done();
         });
     });
@@ -910,7 +913,7 @@ describe('#users router', () => {
         .end((err, res) => {
           if (res.error.text) console.log(res.error.text);
           if (err) return done(err);
-          expect(defaultUsers[0].email).to.equal('new-user2@example.com');
+          expect(userData[0].email).to.equal('new-user2@example.com');
           done();
         });
     });
@@ -922,7 +925,7 @@ describe('#users router', () => {
         .expect(204)
         .end((err) => {
           if (err) return done(err);
-          expect(defaultUsers[0].username).to.equal('name2');
+          expect(userData[0].username).to.equal('name2');
           done();
         });
     });
@@ -1023,7 +1026,7 @@ describe('#users router', () => {
         .expect(201)
         .end((err, res) => {
           if (err) return done(err);
-          const postedUser = defaultUsers[5];
+          const postedUser = userData[5];
           expect(postedUser).to.deep.equal(targetUser);
           done();
         });
@@ -1155,7 +1158,7 @@ describe('#users router', () => {
     });
 
     it('change profile: required', (done) => {
-      defaultUsers[0] = newGoodUser;
+      userData[0] = newGoodUser;
 
       request(app)
         .patch(`/users/1`)
@@ -1171,7 +1174,7 @@ describe('#users router', () => {
     });
 
     it('change profile: required, languageDictionary', (done) => {
-      defaultUsers[0] = newGoodUser;
+      userData[0] = newGoodUser;
 
       request(app)
         .patch(`/users/1?requiredErrorText=requiredtext`)
@@ -1187,7 +1190,7 @@ describe('#users router', () => {
     });
 
     it('change profile: fail validation: validationFunction', (done) => {
-      defaultUsers[0] = newGoodUser;
+      userData[0] = newGoodUser;
 
       request(app)
         .patch(`/users/1`)
@@ -1203,7 +1206,7 @@ describe('#users router', () => {
     });
 
     it('change profile: fail validation: not an option', (done) => {
-      defaultUsers[0] = newGoodUser;
+      userData[0] = newGoodUser;
 
       request(app)
         .patch(`/users/1`)
@@ -1219,8 +1222,8 @@ describe('#users router', () => {
     });
 
     it('change profile: pass validation', (done) => {
-      defaultUsers[0] = newGoodUser;
-      defaultUsers[0].user_metadata = {};
+      userData[0] = newGoodUser;
+      userData[0].user_metadata = {};
 
       request(app)
         .patch(`/users/1`)
@@ -1229,8 +1232,8 @@ describe('#users router', () => {
         .end((err, res) => {
           if (res.error.text) console.log(res.error.text);
           if (err) return done(err);
-          expect(defaultUsers[0].user_metadata.custom).to.equal('good value');
-          expect(defaultUsers[0].user_metadata.custom2).to.equal('good value');
+          expect(userData[0].user_metadata.custom).to.equal('good value');
+          expect(userData[0].user_metadata.custom2).to.equal('good value');
           done();
         });
     });
@@ -1260,7 +1263,7 @@ describe('#users router', () => {
     };
 
     const testEditFail = (property, user, regexObject, done, requiredText) => {
-      defaultUsers[0] = newGoodUser;
+      userData[0] = newGoodUser;
 
       const url = `/users/1/${mapPropertyToEndpoint[property]}${requiredText ? `?requiredErrorText=${requiredText}` : ''}`;
       request(app)
@@ -1281,7 +1284,7 @@ describe('#users router', () => {
     };
 
     const testEditPass = (property, user, done) => {
-      defaultUsers[0] = newGoodUser;
+      userData[0] = newGoodUser;
 
       const url = `/users/1/${mapPropertyToEndpoint[property]}`;
       request(app)
@@ -1480,8 +1483,8 @@ describe('#users router', () => {
         .expect(204)
         .end((err, res) => {
           if (err) return done(err);
-          expect(defaultUsers[0].password).to.equal('pwd13');
-          expect(defaultUsers[0].app_metadata.passwordReset).to.equal('just now');
+          expect(userData[0].password).to.equal('pwd13');
+          expect(userData[0].app_metadata.passwordReset).to.equal('just now');
           done();
         });
     });
@@ -1493,7 +1496,7 @@ describe('#users router', () => {
         .expect(204)
         .end((err, res) => {
           if (err) return done(err);
-          const user = defaultUsers[0];
+          const user = userData[0];
           expect(user.password).to.equal('pwd13');
           expect(user.app_metadata.someKey).to.equal(undefined);
           done();
@@ -1509,7 +1512,7 @@ describe('#users router', () => {
     });
 
     it('create success', (done) => {
-      const id = defaultUsers.length;
+      const id = userData.length;
 
       request(app)
         .post('/users')
@@ -1517,8 +1520,8 @@ describe('#users router', () => {
         .expect(201)
         .end((err, res) => {
           if (err) return done(err);
-          expect(defaultUsers[id].password).to.equal('pwd13');
-          expect(defaultUsers[id].email).to.equal('test@email.com');
+          expect(userData[id].password).to.equal('pwd13');
+          expect(userData[id].email).to.equal('test@email.com');
           done();
         });
     });

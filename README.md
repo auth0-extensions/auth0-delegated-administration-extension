@@ -14,9 +14,9 @@ npm run server:prod
 To run the extension:
 
 ```bash
-yarn install --production=false --ignore-engines
-yarn run build
-yarn run serve:dev
+npm install
+npm run build
+npm run serve:dev
 ```
 
 ### Configuration
@@ -26,7 +26,7 @@ Update the configuration file under `./server/config.json`:
 ```json
 {
   "EXTENSION_CLIENT_ID": "SPA_CLIENT_ID",
-  "EXTENSION_SECRET": "Random secret",
+  "EXTENSION_SECRET": "Random Secret",
   "WT_URL": "http://localhost:3001",
   "PUBLIC_WT_URL": "http://localhost:3001",
   "AUTH0_RTA": "https://auth0.auth0.com",
@@ -40,7 +40,12 @@ As you can see, there are 2 clients involved here.
 
 **Management API Client**
 
-First you'll need to create a "Non Interactive Client" and add the details in `AUTH0_DOMAIN` / `AUTH0_CLIENT_ID` and `AUTH0_CLIENT_SECRET`. Then go to [APIs](https://manage.auth0.com/#/apis) and add the "Non Interactive Client" there with the following scopes:
+
+Relevant properties for this section: `AUTH0_CLIENT_ID` and `AUTH0_CLIENT_SECRET`
+
+To get this client setup quickly, install the Delegated Admin Extension on the [dashboard](https://manage.auth0.com/#/extensions). This will create a generic auth0-delegated-admin client/application. Grab the client and secret for this app to populate the config values.
+
+You may also create this client manually by going to [APIs](https://manage.auth0.com/#/apis) and add the "Non Interactive Client" there with the following scopes:
 
 ```
 read:clients delete:clients read:connections read:users update:users delete:users create:users read:logs read:device_credentials update:device_credentials delete:device_credentials delete:guardian_enrollments
@@ -48,11 +53,10 @@ read:clients delete:clients read:connections read:users update:users delete:user
 
 This client will be used to interact with the Management API (eg: load users, ....).
 
-> Note: When installing this as a real extension it will be done automatically.
-
-You can install real extension and use automatically created client in local configuration.
 
 **Client for End Users**
+
+Relevant properties for this section: `EXTENSION_CLIENT_ID`.
 
 This extension allows end users to login, not dashboard administrators. This means that we need to secure this extension in the same way that we secure other applications in Auth0.
 

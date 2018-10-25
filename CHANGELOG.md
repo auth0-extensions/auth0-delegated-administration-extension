@@ -1,3 +1,31 @@
+# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [3.4.0] - 2018-10-25
+
+### Added
+- Ability to remove menu items from the User Details action menu. #133
+
+### Changed
+- Added `value` as second argument of userField display function. #132
+- Fixed userField edit.display function. #132
+- Builds are now done on node 8. #134
+
+## [3.3.0] - 2018-10-22
+
+### Added
+- Add `InputVirtualizedSelect` input component for custom fields. #131
+
+
+## [3.2.2] - 2018-10-9
+
+### Changed
+- Dropdown select fields will show a placeholder that lets the user know that they need to select an option, even if its one option that exist. #124
+
+
 ## [3.0.0] - 2018-06-04
 
 ### Changes

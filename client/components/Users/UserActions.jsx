@@ -68,11 +68,16 @@ export default class UserActions extends Component {
     }
   }
 
-  getDeleteAction = (user, loading) => (
-    <MenuItem disabled={loading || false} onClick={this.deleteUser}>
-      {this.state.languageDictionary.deleteUserMenuItemText || 'Delete User'}
-    </MenuItem>
-  )
+  getDeleteAction = (user, loading) => {
+    const deleteField = _.filter(this.props.userFields, field => field.property === 'delete' && field.edit === false);
+    if (deleteField.length > 0) return null;
+
+    return (
+      <MenuItem disabled={loading || false} onClick={this.deleteUser}>
+        {this.state.languageDictionary.deleteUserMenuItemText || 'Delete User'}
+      </MenuItem>
+    );
+  }
 
   getChangeFieldsAction = (user, loading) => {
     if (!this.props.userFields || !this.props.userFields.length) {
@@ -97,7 +102,8 @@ export default class UserActions extends Component {
 
     /* Check if settings are disabling the editing of password */
     const falsePasswordEditFields = _.filter(this.props.userFields, field => field.property === 'password' && field.edit === false);
-    if (falsePasswordEditFields.length > 0) return null;
+    const trueResetPasswordEditFields = _.filter(this.props.userFields, field => field.property === 'resetPassword' && field.edit === true);
+    if (falsePasswordEditFields.length > 0 && trueResetPasswordEditFields.length <= 0) return null;
 
     return (
       <MenuItem disabled={loading || false} onClick={this.resetPassword}>
@@ -215,7 +221,23 @@ export default class UserActions extends Component {
   }
 
   changeFields = () => {
-    this.props.changeFields(this.state.user);
+    const languageDictionary = this.props.languageDictionary;
+    const ignoreFields = [ 'username', 'memberships', 'connection', 'password', 'email', 'repeatPassword' ];
+    const customFields = _.filter(this.props.userFields, field =>
+      !_.includes(ignoreFields, field.property) && field.edit && _.isFunction(field.edit.display));
+    const user = Object.assign({}, this.state.user);
+
+    _.each(customFields, field => {
+      try {
+        _.update(user, field.property, (value) => field.edit.display(this.state.user, value, languageDictionary));
+      } catch (e) {
+        /* Swallow eval errors */
+        console.log(`Could not display ${field.property} because: ${e.message}`);
+      }
+
+    });
+
+    this.props.changeFields(user);
   }
 
   resetPassword = () => {

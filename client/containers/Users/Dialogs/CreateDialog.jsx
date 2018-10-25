@@ -69,6 +69,7 @@ export default connectContainer(class extends Component {
           getDictValue={this.props.getDictValue}
           onClose={this.props.cancelCreateUser}
           onSubmit={this.onSubmit}
+          loading={loading}
           languageDictionary={languageDictionary}
         >
           <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error, this.props.errorTranslator)} />
