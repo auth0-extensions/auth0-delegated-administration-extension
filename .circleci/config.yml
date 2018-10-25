@@ -31,8 +31,14 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - npm-dependencies-
 
+      - run: sudo npm install -g codecov
+
       - run: npm install
+      
       - run: npm test
+      - run: npm run coverage
+      - run: codecov
+
       - run: npm run build
   
       - store_artifacts:
