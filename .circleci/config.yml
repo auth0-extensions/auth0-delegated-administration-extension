@@ -34,8 +34,6 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - npm-dependencies-
 
-      - run: sudo npm install -g codecov
-
       - run:
           name: Install Code Climate Test Reporter
           command: |
@@ -51,10 +49,6 @@ jobs:
             ./cc-test-reporter before-build
             yarn test
             ./cc-test-reporter after-build --exit-code $?
-
-      - run: npm run coverage
-
-      - run: codecov
 
       - run: npm run build
   
