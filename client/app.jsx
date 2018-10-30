@@ -18,6 +18,12 @@ import * as constants from './constants';
 function methodWithLongArg(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p){
   console.log('test');
 }
+
+
+function moreMethodWithLongArg(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p){
+  const test = a ? b ? c ? d : e : f : g;
+  console.log(test);
+}
 // Make axios aware of the base path.
 axios.defaults.baseURL = window.config.BASE_URL;
 
