@@ -12,7 +12,7 @@ const req = {
   originalUrl: '/login'
 };
 
-describe('# /html', () => {
+describe.only('# /html', () => {
   process.env.CLIENT_VERSION = '1.0';
 
   it('should return html with default values', (done) => {
