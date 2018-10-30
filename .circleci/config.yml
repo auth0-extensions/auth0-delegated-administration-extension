@@ -41,18 +41,15 @@ jobs:
 
       - run: npm install      
 
+      # code climate requires before-build and after-build to be executed around test
       - run:
           name: Run Tests
           command: |
-            yarn test
-      
-      # code climate requires before-build and after-build to be executed around coverage generation
-      - run:
-          name: Run Coverage
-          command: |
             ./cc-test-reporter before-build
-            npm run coverage
+            yarn test
             ./cc-test-reporter after-build --exit-code $?
+
+      - run: npm run coverage
 
       - run: codecov
 

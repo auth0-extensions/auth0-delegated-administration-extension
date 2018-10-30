@@ -14,3 +14,4 @@ dist
 # coverage output
 coverage.lcov
 .nyc_output
+coverage/
