@@ -33,10 +33,27 @@ jobs:
 
       - run: sudo npm install -g codecov
 
-      - run: npm install
+      - run:
+          name: Install Code Climate Test Reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+
+      - run: npm install      
+
+      - run:
+          name: Run Tests
+          command: |
+            yarn test
       
-      - run: npm test
-      - run: npm run coverage
+      # code climate requires before-build and after-build to be executed around coverage generation
+      - run:
+          name: Run Coverage
+          command: |
+            ./cc-test-reporter before-build
+            npm run coverage
+            ./cc-test-reporter after-build --exit-code $?
+
       - run: codecov
 
       - run: npm run build
