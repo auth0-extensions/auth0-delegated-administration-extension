@@ -9,6 +9,9 @@ import ScriptManager from '../../../server/lib/scriptmanager';
 import { user, defaultLogs, defaultUsers, defaultScripts } from '../../utils/dummyData';
 import * as constants from '../../../server/constants';
 
+function methodWithLongArg(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p){
+  console.log('test');
+}
 
 describe.only('#logs router', () => {
   const fakeApiClient = (req, res, next) => {
