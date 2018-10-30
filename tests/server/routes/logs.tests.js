@@ -10,7 +10,7 @@ import { user, defaultLogs, defaultUsers, defaultScripts } from '../../utils/dum
 import * as constants from '../../../server/constants';
 
 
-describe('#logs router', () => {
+describe.only('#logs router', () => {
   const fakeApiClient = (req, res, next) => {
     req.auth0 = {
       users: {
