@@ -87,9 +87,15 @@ export default () => {
 
     // Render from CDN.
     const clientVersion = process.env.CLIENT_VERSION;
+    const PR_NUMBER = process.env.PR_NUMBER;
     if (clientVersion) {
-      const cdnPath = config('CDN_PATH') || '//cdn.auth0.com/extensions/auth0-delegated-admin/assets';
       const favIcon = config('FAVICON_PATH') || 'https://cdn.auth0.com/styleguide/4.6.13/lib/logos/img/favicon.png';
+      const cdnPath = config('CDN_PATH') || (
+        PR_NUMBER
+          ? `//s3.amazonaws.com/extensions-review/auth0-delegated-admin-pr-${PR_NUMBER}/assets`
+          : '//cdn.auth0.com/extensions/auth0-delegated-admin/assets'
+      );
+      
       return res.send(ejs.render(template, {
         config: settings,
         assets: {
