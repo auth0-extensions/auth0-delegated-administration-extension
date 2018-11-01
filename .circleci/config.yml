@@ -50,7 +50,7 @@ jobs:
             yarn test
             ./cc-test-reporter after-build --exit-code $?
 
-      - run: npm run build
+      - run: PR_NUMBER=${CIRCLE_PR_NUMBER:-${CIRCLE_PULL_REQUEST##*/}} npm run build
   
       - store_artifacts:
           path: ./dist
@@ -129,6 +129,12 @@ workflows:
   build_and_test:
     jobs:
       - build_and_test:
+          filters:
+            branches:
+                ignore: master
+      - deploy_review_app:
+          requires:
+            - build_and_test
           filters:
             branches:
                 ignore: master
