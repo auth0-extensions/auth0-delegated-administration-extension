@@ -78,11 +78,11 @@ jobs:
           name: Install awscli
           command: sudo pip install awscli
       - run:
-          name: Deploy assets to S3
-          command: aws s3 sync ./dist s3://extensions-review/auth0-delegated-admin-pr-"${CIRCLE_PR_NUMBER:-${CIRCLE_PULL_REQUEST##*/}}/assets" --delete
-      - run:
-          name: Deploy extension bundle to S3
-          command: aws s3 sync ./dist s3://extensions-review/auth0-delegated-admin-pr-"${CIRCLE_PR_NUMBER:-${CIRCLE_PULL_REQUEST##*/}}" --delete --exclude="*" --include="auth0-delegated-admin.extension.*.js"
+          name: Upload assets to S3
+          command: |
+            EXT_NAME=$(cat dist/webtask.json | jq .name -r)
+            aws s3 sync ./dist s3://extensions-review/"$EXT_NAME"-pr-"${CIRCLE_PR_NUMBER:-${CIRCLE_PULL_REQUEST##*/}}/assets" --delete
+            aws s3 sync ./dist s3://extensions-review/"$EXT_NAME"-pr-"${CIRCLE_PR_NUMBER:-${CIRCLE_PULL_REQUEST##*/}}" --delete --exclude="*" --include="$EXT_NAME.extension.*.js"
 
   deploy:
     working_directory: *workspace_root
