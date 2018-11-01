@@ -67,6 +67,23 @@ jobs:
             - dist/*
             - ./CHANGELOG.md
 
+  deploy_review_app:
+    working_directory: *workspace_root
+    docker:
+      - image: circleci/python:2.7-jessie
+
+    steps:
+      - *attach_workspace
+      - run:
+          name: Install awscli
+          command: sudo pip install awscli
+      - run:
+          name: Deploy assets to S3
+          command: aws s3 sync ./dist s3://extensions-review/auth0-delegated-admin-pr-"${CIRCLE_PR_NUMBER:-${CIRCLE_PULL_REQUEST##*/}}/assets" --delete
+      - run:
+          name: Deploy extension bundle to S3
+          command: aws s3 sync ./dist s3://extensions-review/auth0-delegated-admin-pr-"${CIRCLE_PR_NUMBER:-${CIRCLE_PULL_REQUEST##*/}}" --delete --exclude="*" --include="auth0-delegated-admin.extension.*.js"
+
   deploy:
     working_directory: *workspace_root
     docker:
