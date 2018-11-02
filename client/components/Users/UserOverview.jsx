@@ -102,7 +102,7 @@ export default class UserOverview extends React.Component {
         <div className="row">
           <div className="col-xs-12">
             <label className="hidden-label" htmlFor="search-bar">
-              {languageDictionary.searchBarPlaceholder || 'Search for users using the Lucene syntax'}
+              {languageDictionary.searchBarPlaceholder || 'PRPRPR - - - Search for users using the Lucene syntax'}
             </label>
 
             {(searchOptions.length > 0) ? (
