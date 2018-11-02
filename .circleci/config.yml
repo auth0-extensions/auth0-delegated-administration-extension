@@ -50,7 +50,7 @@ jobs:
             yarn test
             ./cc-test-reporter after-build --exit-code $?
 
-      - run: npm run build
+      - run: PR_NUMBER=${CIRCLE_PR_NUMBER:-${CIRCLE_PULL_REQUEST##*/}} npm run build
   
       - store_artifacts:
           path: ./dist
@@ -66,6 +66,23 @@ jobs:
           paths:
             - dist/*
             - ./CHANGELOG.md
+
+  deploy_review_app:
+    working_directory: *workspace_root
+    docker:
+      - image: circleci/python:2.7-jessie
+
+    steps:
+      - *attach_workspace
+      - run:
+          name: Install awscli
+          command: sudo pip install awscli
+      - run:
+          name: Upload assets to S3
+          command: |
+            EXT_NAME=$(cat dist/webtask.json | jq .name -r)
+            aws s3 sync ./dist s3://extensions-review/"$EXT_NAME"-pr-"${CIRCLE_PR_NUMBER:-${CIRCLE_PULL_REQUEST##*/}}/assets" --delete
+            aws s3 sync ./dist s3://extensions-review/"$EXT_NAME"-pr-"${CIRCLE_PR_NUMBER:-${CIRCLE_PULL_REQUEST##*/}}" --delete --exclude="*" --include="$EXT_NAME.extension.*.js"
 
   deploy:
     working_directory: *workspace_root
@@ -112,6 +129,12 @@ workflows:
   build_and_test:
     jobs:
       - build_and_test:
+          filters:
+            branches:
+                ignore: master
+      - deploy_review_app:
+          requires:
+            - build_and_test
           filters:
             branches:
                 ignore: master
