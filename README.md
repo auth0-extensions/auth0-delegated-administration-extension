@@ -8,7 +8,7 @@
 ```bash
 npm install
 npm run client:build
-npm run server:prod
+npm run serve:prod
 ```
 
 ## Running in Development
@@ -23,7 +23,7 @@ npm run serve:dev
 
 ### Configuration
 
-Update the configuration file under `./server/config.json`:
+Create the configuration file under `./server/config.json`:
 
 ```json
 {
