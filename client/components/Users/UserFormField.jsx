@@ -70,6 +70,17 @@ export default class UserFormField extends Component {
         if (validate) additionalOptions.validate = validate;
         return (this.getFieldComponent(field, VirtualizedSelect, additionalOptions));
       }
+      case 'SearchSelect': {
+        const component = field.multi ? Multiselect : Select;
+        const additionalOptions = {
+          loadOptions: field.loadOptions,
+          multi: field.multi,
+          displayLabelOnly: field.displayLabelOnly
+        };
+
+        if (validate) additionalOptions.validate = validate;
+        return (this.getFieldComponent(field, component, additionalOptions));
+      }
       default: {
         const additionalOptions = {
           disabled: field.disabled || false

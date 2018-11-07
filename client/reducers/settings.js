@@ -50,6 +50,7 @@ const parseFieldSection = (property, sectionInfo, sectionName, inheritedDisplay)
     const display = sectionDisplay !== undefined ? sectionDisplay : inheritedDisplay;
     if (display !== undefined) sectionInfo.display = display;
     if (sectionInfo.options) sectionInfo.options = parseOptions(sectionInfo.options);
+    if (sectionInfo.loadOptions) sectionInfo.loadOptions = parseFunction(property, `${sectionName}.loadOptions`, sectionInfo.loadOptions);
     if (sectionInfo.validationFunction) sectionInfo.validationFunction = parseFunction(property, `${sectionName}.validationFunction`, sectionInfo.validationFunction);
   }
 };
