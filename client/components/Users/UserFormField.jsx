@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 import _ from 'lodash';
 import { InputText, InputCombo, Multiselect, Select, VirtualizedSelect } from 'auth0-extension-ui';
 import { Field } from 'redux-form';
@@ -73,7 +74,7 @@ export default class UserFormField extends Component {
       case 'SearchSelect': {
         const component = field.multi ? Multiselect : Select;
         const additionalOptions = {
-          loadOptions: field.loadOptions,
+          loadOptions: (input, callback) => field.loadOptions(axios, input, callback),
           multi: field.multi,
           displayLabelOnly: field.displayLabelOnly
         };

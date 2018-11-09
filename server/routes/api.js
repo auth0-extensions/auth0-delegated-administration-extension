@@ -11,6 +11,7 @@ import ScriptManager from '../lib/scriptmanager';
 import getScopes from '../lib/getScopes';
 import * as constants from '../constants';
 
+import customEndpoints from './customEndpoints';
 import applications from './applications';
 import connections from './connections';
 import scripts from './scripts';
@@ -114,6 +115,7 @@ export default (storage) => {
     const permission = (req.method.toLowerCase() === 'get') ? constants.AUDITOR_PERMISSION : constants.USER_PERMISSION;
     return requireScope(permission)(req, res, next);
   });
+  api.use('/custom', managementApiClient, customEndpoints(scriptManager));
   api.use('/applications', managementApiClient, applications());
   api.use('/connections', managementApiClient, connections(scriptManager));
   api.use('/scripts', requireScope(constants.ADMIN_PERMISSION), scripts(storage, scriptManager));
@@ -134,5 +136,4 @@ export default (storage) => {
   });
 
   return api;
-}
-;
+};

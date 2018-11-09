@@ -30,6 +30,21 @@ export default class ScriptManager {
         maxAge: cacheAge
       })
     );
+    this.getEndpointCached = Promise.promisify(
+      memoizer({
+        load: (name, method, callback) => {
+          this.getEndpoint(name, method)
+            .then((script) => {
+              callback(null, script);
+              return null;
+            })
+            .catch(callback);
+        },
+        hash: name => name,
+        max: 100,
+        maxAge: cacheAge
+      })
+    );
   }
 
   get(name) {
@@ -43,14 +58,26 @@ export default class ScriptManager {
       });
   }
 
-  save(name, script) {
+  getEndpoint(name, method) {
     return this.storage.read()
       .then((data) => {
-        if (!data.scripts) {
-          data.scripts = {};
+        if (!data || !data.endpoints || !data.endpoints[name] || data.endpoints[name].method.toUpperCase() !== method) {
+          return null;
         }
 
-        data.scripts[name] = script;
+        return data.endpoints[name].handler;
+      });
+  }
+
+  save(name, script, type) {
+    type = type === 'endpoints' ? type : 'scripts';
+    return this.storage.read()
+      .then((data) => {
+        if (!data[type]) {
+          data[type] = {};
+        }
+
+        data[type][name] = script;
         return data;
       })
       .then(data => this.storage.write(data));
@@ -111,6 +138,36 @@ export default class ScriptManager {
             });
           } catch (err) {
             logger.error(`Failed to compile Delegated Admin hook (${name}): "${err}"`);
+            reject(parseScriptError(err, name));
+          }
+        });
+      });
+  }
+
+  callEndpoint(req) {
+    const method = req.method.toUpperCase();
+    const name = req.params.name;
+
+    return this.getEndpointCached(name, method)
+      .then((script) => {
+        if (!script) {
+          return null;
+        }
+
+        logger.debug(`Executing Delegated Admin custom endpoint: ${method} ${name}`);
+        return new Promise((resolve, reject) => {
+          try {
+            const func = safeEval(script, { require: this.dynamicRequire });
+            func(req, (err, res) => {
+              if (err) {
+                logger.error(`Failed to execute Delegated custom endpoint (${method} ${name}): "${err}"`);
+                reject(parseScriptError(err, name));
+              } else {
+                resolve({ status: res.status || 200, body: res.body || res });
+              }
+            });
+          } catch (err) {
+            logger.error(`Failed to compile Delegated Admin custom endpoint (${method} ${name}): "${err}"`);
             reject(parseScriptError(err, name));
           }
         });
