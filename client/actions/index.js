@@ -6,3 +6,4 @@ export * as userActions from './user';
 export * as userLogActions from './userLog';
 export * as userDeviceActions from './userDevice';
 export * as scriptActions from './script';
+export * as customEndpointActions from './customEndpoint';

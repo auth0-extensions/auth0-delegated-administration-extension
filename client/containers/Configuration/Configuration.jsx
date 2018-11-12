@@ -3,7 +3,7 @@ import { LoadingPanel, Error, Json } from 'auth0-extension-ui';
 
 import connectContainer from 'redux-static';
 import { Tabs, Tab } from 'react-bootstrap';
-import { scriptActions } from '../../actions';
+import { scriptActions, customEndpointActions } from '../../actions';
 
 import Editor from '../../components/Editor';
 import './Configuration.css';
@@ -12,19 +12,24 @@ import getErrorMessage from '../../utils/getErrorMessage';
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     scripts: state.scripts,
+    endpoints: state.customEndpoints,
     settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     languageDictionary: state.languageDictionary && state.languageDictionary.get('record').toJS()
   });
 
   static actionsToProps = {
-    ...scriptActions
+    ...scriptActions,
+    ...customEndpointActions
   }
 
   static propTypes = {
     scripts: PropTypes.object.isRequired,
+    endpoints: PropTypes.object.isRequired,
     settings: PropTypes.object.isRequired,
     fetchScript: PropTypes.func.isRequired,
+    fetchEndpoints: PropTypes.func.isRequired,
     updateScript: PropTypes.func.isRequired,
+    updateEndpoint: PropTypes.func.isRequired,
     languageDictionary: PropTypes.object
   }
 
@@ -42,7 +47,7 @@ export default connectContainer(class extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return this.props.scripts !== nextProps.scripts;
+    return this.props.scripts !== nextProps.scripts || this.props.endpoints !== nextProps.endpoints;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -59,6 +64,18 @@ export default connectContainer(class extends Component {
         code
       });
     }
+
+    if (nextProps.endpoints) {
+      const code = this.state.code;
+      const endpoints = nextProps.endpoints.toJS();
+      if (!code.endpoints) {
+        code.endpoints = endpoints.records && endpoints.records.getOptions.handler;
+      }
+
+      this.setState({
+        code
+      });
+    }
   }
 
   componentWillMount = () => {
@@ -67,10 +84,15 @@ export default connectContainer(class extends Component {
     this.props.fetchScript('create');
     this.props.fetchScript('memberships');
     this.props.fetchScript('settings');
+    this.props.fetchEndpoints();
   };
 
   saveScript = (name) => () => {
     this.props.updateScript(name, this.state.code[name]);
+  };
+
+  saveEndpoints = () => () => {
+    this.props.updateEndpoint('getOptions', 'getOptions', 'GET', this.state.code.endpoints);
   };
 
   onEditorChanged = (name) => (value) => {
@@ -84,6 +106,7 @@ export default connectContainer(class extends Component {
 
   render() {
     const code = this.state.code;
+    const endpoints = this.props.endpoints.toJS();
     const scripts = this.props.scripts.toJS();
     const { languageDictionary, settings } = this.props;
     const originalTitle = (settings.dict && settings.dict.title) || window.config.TITLE || 'User Management';
@@ -185,6 +208,23 @@ export default connectContainer(class extends Component {
                   />
                   <div className="save-config">
                     <button onClick={this.saveScript('settings')} className="btn btn-success">
+                      Save Settings Query
+                    </button>
+                  </div>
+                </LoadingPanel>
+              </Tab>
+              <Tab eventKey={6} title={<span>Custom Endpoints</span>}>
+                <LoadingPanel show={endpoints && endpoints.loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
+                  <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, endpoints && endpoints.error)} />
+                  <p>
+                    Custom Endpoints will be here
+                  </p>
+                  <Editor
+                    value={code.endpoints || ''}
+                    onChange={this.onEditorChanged('endpoints')}
+                  />
+                  <div className="save-config">
+                    <button onClick={this.saveEndpoints()} className="btn btn-success">
                       Save Settings Query
                     </button>
                   </div>

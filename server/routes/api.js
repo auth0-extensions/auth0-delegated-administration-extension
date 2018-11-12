@@ -12,6 +12,7 @@ import getScopes from '../lib/getScopes';
 import * as constants from '../constants';
 
 import customEndpoints from './customEndpoints';
+import customEndpointsManagement from './customEndpointsManagement';
 import applications from './applications';
 import connections from './connections';
 import scripts from './scripts';
@@ -116,6 +117,7 @@ export default (storage) => {
     return requireScope(permission)(req, res, next);
   });
   api.use('/custom', managementApiClient, customEndpoints(scriptManager));
+  api.use('/customEndpoints', requireScope(constants.ADMIN_PERMISSION), customEndpointsManagement(scriptManager));
   api.use('/applications', managementApiClient, applications());
   api.use('/connections', managementApiClient, connections(scriptManager));
   api.use('/scripts', requireScope(constants.ADMIN_PERMISSION), scripts(storage, scriptManager));

@@ -1,7 +1,7 @@
 import Promise from 'bluebird';
 import safeEval from 'safe-eval';
 import memoizer from 'lru-memoizer';
-import { ArgumentError } from 'auth0-extension-tools';
+import { ArgumentError, NotFoundError } from 'auth0-extension-tools';
 
 import logger from './logger';
 import parseScriptError from './errors/parseScriptError';
@@ -69,15 +69,78 @@ export default class ScriptManager {
       });
   }
 
-  save(name, script, type) {
-    type = type === 'endpoints' ? type : 'scripts';
+  getAllEndpoints() {
     return this.storage.read()
       .then((data) => {
-        if (!data[type]) {
-          data[type] = {};
+        return data && data.endpoints || null;
+      });
+  }
+
+  createEndpoint(name, method, handler) {
+    return this.storage.read()
+      .then((data) => {
+        if (!data.endpoints) {
+          data.endpoints = {};
         }
 
-        data[type][name] = script;
+        if (data.endpoints[name]) {
+          return Promise.reject(new ArgumentError(`Endpoint with name "${name}" already exists`));
+        }
+
+        data.endpoints[name] = { method, handler };
+        return data;
+      })
+      .then(data => this.storage.write(data));
+  }
+
+  updateEndpoint(oldName, newName, method, handler) {
+    return this.storage.read()
+      .then((data) => {
+        if (!data.endpoints || !data.endpoints[oldName]) {
+          return Promise.reject(new NotFoundError(`Endpoint "${oldName}" not found`));
+        }
+
+        if (newName !== oldName) {
+          data.endpoints[newName] = {
+            method: data.endpoints[oldName].method,
+            handler: data.endpoints[oldName].handler
+          };
+
+          data.endpoints[oldName] = null;
+          delete data.endpoints[oldName];
+        }
+
+        data.endpoints[newName].method = method || data.endpoints[newName].method;
+        data.endpoints[newName].handler = handler || data.endpoints[newName].handler;
+
+        return data;
+      })
+      .then(data => this.storage.write(data));
+  }
+
+  deleteEndpoint(name) {
+    return this.storage.read()
+      .then((data) => {
+        if (!data.endpoints || !data.endpoints[name]) {
+          return Promise.reject(new NotFoundError(`Endpoint "${name}" not found`));
+        }
+
+        data.endpoints[name] = null;
+        delete data.endpoints[name];
+
+        return data;
+      })
+      .then(data => this.storage.write(data));
+  }
+
+  save(name, script) {
+    return this.storage.read()
+      .then((data) => {
+        if (!data.scripts) {
+          data.scripts = {};
+        }
+
+        data.scripts[name] = script;
         return data;
       })
       .then(data => this.storage.write(data));
