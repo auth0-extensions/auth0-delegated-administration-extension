@@ -97,6 +97,11 @@ export default class Header extends Component {
             {languageDictionary.configurationMenuItemText || 'Configuration'}
           </Link>
         </li>
+        <li role="presentation">
+          <Link to="/custom-endpoints" onFocus={this.showOnFocus} onBlur={this.hideOnBlur}>
+            {languageDictionary.customEndpointsMenuItemText || 'Custom Endpoints'}
+          </Link>
+        </li>
         {this.renderCssSwitcher(languageDictionary)}
         <li role="presentation">
           <a role="menuitem" onClick={this.props.onLogout} onFocus={this.showOnFocus} onBlur={this.hideOnBlur} onKeyUp={this.onKeyUp} tabIndex="0">

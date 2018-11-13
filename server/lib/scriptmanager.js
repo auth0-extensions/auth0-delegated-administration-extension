@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import Promise from 'bluebird';
 import safeEval from 'safe-eval';
 import memoizer from 'lru-memoizer';
@@ -61,72 +62,60 @@ export default class ScriptManager {
   getEndpoint(name, method) {
     return this.storage.read()
       .then((data) => {
-        if (!data || !data.endpoints || !data.endpoints[name] || data.endpoints[name].method.toUpperCase() !== method) {
+        if (!data || !data.endpoints) {
           return null;
         }
 
-        return data.endpoints[name].handler;
+        return _.find(data.endpoints, { name, method });
       });
   }
 
   getAllEndpoints() {
     return this.storage.read()
-      .then((data) => {
-        return data && data.endpoints || null;
-      });
+      .then(data => (data && data.endpoints) || null);
   }
 
   createEndpoint(name, method, handler) {
     return this.storage.read()
       .then((data) => {
         if (!data.endpoints) {
-          data.endpoints = {};
+          data.endpoints = [];
         }
 
-        if (data.endpoints[name]) {
+        if (_.find(data.endpoints, { name })) {
           return Promise.reject(new ArgumentError(`Endpoint with name "${name}" already exists`));
         }
 
-        data.endpoints[name] = { method, handler };
+        data.endpoints.push({ name, method, handler });
         return data;
       })
       .then(data => this.storage.write(data));
   }
 
-  updateEndpoint(oldName, newName, method, handler) {
+  updateEndpoint(id, name, method, handler) {
     return this.storage.read()
       .then((data) => {
-        if (!data.endpoints || !data.endpoints[oldName]) {
-          return Promise.reject(new NotFoundError(`Endpoint "${oldName}" not found`));
-        }
-
-        if (newName !== oldName) {
-          data.endpoints[newName] = {
-            method: data.endpoints[oldName].method,
-            handler: data.endpoints[oldName].handler
-          };
-
-          data.endpoints[oldName] = null;
-          delete data.endpoints[oldName];
-        }
-
-        data.endpoints[newName].method = method || data.endpoints[newName].method;
-        data.endpoints[newName].handler = handler || data.endpoints[newName].handler;
-
-        return data;
-      })
-      .then(data => this.storage.write(data));
-  }
-
-  deleteEndpoint(name) {
-    return this.storage.read()
-      .then((data) => {
-        if (!data.endpoints || !data.endpoints[name]) {
+        if (!data.endpoints || !data.endpoints[id]) {
           return Promise.reject(new NotFoundError(`Endpoint "${name}" not found`));
         }
 
-        data.endpoints[name] = null;
-        delete data.endpoints[name];
+        data.endpoints[id].name = name || data.endpoints[id].name;
+        data.endpoints[id].method = method || data.endpoints[id].method;
+        data.endpoints[id].handler = handler || data.endpoints[id].handler;
+
+        return data;
+      })
+      .then(data => this.storage.write(data));
+  }
+
+  deleteEndpoint(id) {
+    return this.storage.read()
+      .then((data) => {
+        if (!data.endpoints || !data.endpoints[id]) {
+          return Promise.reject(new NotFoundError('Endpoint not found'));
+        }
+
+        data.splice(id, 1);
 
         return data;
       })

@@ -3,20 +3,15 @@ import { Router } from 'express';
 export default (scriptManager) => {
   const app = Router();
 
-  app.get('/', (req, res, next) => {
-    return scriptManager.getAllEndpoints()
-      .then((endpoints) => {
-        return res.json(endpoints);
-      })
-      .catch(err => next(err));
-  });
+  app.get('/', (req, res, next) =>
+    scriptManager.getAllEndpoints()
+      .then(endpoints => res.json(endpoints))
+      .catch(err => next(err)));
 
   app.post('/', (req, res, next) => {
     const { name, method, handler } = req.body;
     return scriptManager.createEndpoint(name, method, handler)
-      .then(() => {
-        return res.status(201).json({ method, handler });
-      })
+      .then(() => res.status(201).send())
       .catch(err => next(err));
   });
 
@@ -24,9 +19,7 @@ export default (scriptManager) => {
     const { name, method, handler } = req.body;
     const oldName = req.params.oldName;
     return scriptManager.updateEndpoint(oldName, name, method, handler)
-      .then(() => {
-        return res.json({ method, handler });
-      })
+      .then(() => res.status(200).send())
       .catch(err => next(err));
   });
 

@@ -89,7 +89,7 @@ ReactDOM.render(
 
 // Show the developer tools.
 if (process.env.NODE_ENV !== 'production') {
-  const showDevTools = require('./showDevTools'); // eslint-disable-line global-require
-
-  showDevTools(store);
+  // const showDevTools = require('./showDevTools'); // eslint-disable-line global-require
+  //
+  // showDevTools(store);
 }

@@ -1,29 +1,29 @@
 import axios from 'axios';
 import * as constants from '../constants';
-import { getAppSettings } from './auth';
 
 export function fetchEndpoints() {
   return {
     type: constants.FETCH_CUSTOM_ENDPOINTS,
     payload: {
-      promise: axios.get(`/api/customEndpoints`, {
+      promise: axios.get('/api/customEndpoints', {
         responseType: 'json'
       })
     }
   };
 }
 
-export function createEndpoint(name, method, handler) {
+export function createEndpoint(name, method, handler, onSuccess) {
   return (dispatch) => {
     dispatch({
       type: constants.CREATE_CUSTOM_ENDPOINT,
       meta: {
         name,
         method,
-        handler
+        handler,
+        onSuccess
       },
       payload: {
-        promise: axios.post(`/api/customEndpoints`, { name, method, handler }, {
+        promise: axios.post('/api/customEndpoints', { name, method, handler }, {
           responseType: 'json'
         })
       }
@@ -31,17 +31,18 @@ export function createEndpoint(name, method, handler) {
   };
 }
 
-export function updateEndpoint(oldName, name, method, handler) {
+export function updateEndpoint(id, name, method, handler, onSuccess) {
   return (dispatch) => {
     dispatch({
       type: constants.UPDATE_CUSTOM_ENDPOINT,
       meta: {
         name,
         method,
-        handler
+        handler,
+        onSuccess
       },
       payload: {
-        promise: axios.put(`/api/customEndpoints/${oldName}`, { name, method, handler }, {
+        promise: axios.put(`/api/customEndpoints/${id}`, { name, method, handler }, {
           responseType: 'json'
         })
       }
@@ -49,12 +50,13 @@ export function updateEndpoint(oldName, name, method, handler) {
   };
 }
 
-export function deleteEndpoint(name) {
+export function deleteEndpoint(name, onSuccess) {
   return (dispatch) => {
     dispatch({
       type: constants.DELETE_CUSTOM_ENDPOINT,
       meta: {
-        name
+        name,
+        onSuccess
       },
       payload: {
         promise: axios.delete(`/api/customEndpoints/${name}`, { }, {
