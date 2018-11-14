@@ -33,8 +33,8 @@ export default class ScriptManager {
     );
     this.getEndpointCached = Promise.promisify(
       memoizer({
-        load: (name, method, callback) => {
-          this.getEndpoint(name, method)
+        load: (name, callback) => {
+          this.getEndpoint(name)
             .then((script) => {
               callback(null, script);
               return null;
@@ -59,14 +59,14 @@ export default class ScriptManager {
       });
   }
 
-  getEndpoint(name, method) {
+  getEndpoint(name) {
     return this.storage.read()
       .then((data) => {
         if (!data || !data.endpoints) {
           return null;
         }
 
-        return _.find(data.endpoints, { name, method });
+        return _.find(data.endpoints, { name });
       });
   }
 
@@ -75,37 +75,36 @@ export default class ScriptManager {
       .then(data => (data && data.endpoints) || null);
   }
 
-  createEndpoint(name, method, handler) {
+  saveEndpoint(id, name, handler) {
     return this.storage.read()
       .then((data) => {
         if (!data.endpoints) {
           data.endpoints = [];
         }
 
-        if (_.find(data.endpoints, { name })) {
-          return Promise.reject(new ArgumentError(`Endpoint with name "${name}" already exists`));
+        const existing = _.findIndex(data.endpoints, { name });
+
+        if (!id) {
+          if (data.endpoints.length >= process.env.MAX_CUSTOM_ENDPOINTS) {
+            return Promise.reject(new ArgumentError(`You cannot create more than ${process.env.MAX_CUSTOM_ENDPOINTS} endpoints`));
+          }
+
+          if (existing >= 0) {
+            return Promise.reject(new ArgumentError(`Endpoint with name "${name}" already exists`));
+          }
+
+          data.endpoints.push({ name, handler });
+        } else {
+          if (existing >= 0 && existing !== id) {
+            return Promise.reject(new ArgumentError(`Endpoint with name "${name}" already exists`));
+          }
+
+          data.endpoints[id].name = name || data.endpoints[id].name;
+          data.endpoints[id].handler = handler || data.endpoints[id].handler;
         }
 
-        data.endpoints.push({ name, method, handler });
-        return data;
-      })
-      .then(data => this.storage.write(data));
-  }
-
-  updateEndpoint(id, name, method, handler) {
-    return this.storage.read()
-      .then((data) => {
-        if (!data.endpoints || !data.endpoints[id]) {
-          return Promise.reject(new NotFoundError(`Endpoint "${name}" not found`));
-        }
-
-        data.endpoints[id].name = name || data.endpoints[id].name;
-        data.endpoints[id].method = method || data.endpoints[id].method;
-        data.endpoints[id].handler = handler || data.endpoints[id].handler;
-
-        return data;
-      })
-      .then(data => this.storage.write(data));
+        return this.storage.write(data);
+      });
   }
 
   deleteEndpoint(id) {
@@ -115,11 +114,10 @@ export default class ScriptManager {
           return Promise.reject(new NotFoundError('Endpoint not found'));
         }
 
-        data.splice(id, 1);
+        data.endpoints.splice(id, 1);
 
-        return data;
-      })
-      .then(data => this.storage.write(data));
+        return this.storage.write(data);
+      });
   }
 
   save(name, script) {
@@ -197,29 +195,28 @@ export default class ScriptManager {
   }
 
   callEndpoint(req) {
-    const method = req.method.toUpperCase();
     const name = req.params.name;
 
-    return this.getEndpointCached(name, method)
+    return this.getEndpointCached(name)
       .then((script) => {
         if (!script) {
           return null;
         }
 
-        logger.debug(`Executing Delegated Admin custom endpoint: ${method} ${name}`);
+        logger.debug(`Executing Delegated Admin custom endpoint: ${name}`);
         return new Promise((resolve, reject) => {
           try {
             const func = safeEval(script, { require: this.dynamicRequire });
             func(req, (err, res) => {
               if (err) {
-                logger.error(`Failed to execute Delegated custom endpoint (${method} ${name}): "${err}"`);
+                logger.error(`Failed to execute Delegated custom endpoint (${name}): "${err}"`);
                 reject(parseScriptError(err, name));
               } else {
                 resolve({ status: res.status || 200, body: res.body || res });
               }
             });
           } catch (err) {
-            logger.error(`Failed to compile Delegated Admin custom endpoint (${method} ${name}): "${err}"`);
+            logger.error(`Failed to compile Delegated Admin custom endpoint (${name}): "${err}"`);
             reject(parseScriptError(err, name));
           }
         });

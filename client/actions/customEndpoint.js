@@ -12,18 +12,17 @@ export function fetchEndpoints() {
   };
 }
 
-export function createEndpoint(name, method, handler, onSuccess) {
+export function createEndpoint(name, handler, onSuccess) {
   return (dispatch) => {
     dispatch({
       type: constants.CREATE_CUSTOM_ENDPOINT,
       meta: {
         name,
-        method,
         handler,
         onSuccess
       },
       payload: {
-        promise: axios.post('/api/customEndpoints', { name, method, handler }, {
+        promise: axios.post('/api/customEndpoints', { name, handler }, {
           responseType: 'json'
         })
       }
@@ -31,18 +30,17 @@ export function createEndpoint(name, method, handler, onSuccess) {
   };
 }
 
-export function updateEndpoint(id, name, method, handler, onSuccess) {
+export function updateEndpoint(id, name, handler, onSuccess) {
   return (dispatch) => {
     dispatch({
       type: constants.UPDATE_CUSTOM_ENDPOINT,
       meta: {
         name,
-        method,
         handler,
         onSuccess
       },
       payload: {
-        promise: axios.put(`/api/customEndpoints/${id}`, { name, method, handler }, {
+        promise: axios.put(`/api/customEndpoints/${id}`, { name, handler }, {
           responseType: 'json'
         })
       }

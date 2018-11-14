@@ -82,7 +82,8 @@ export default () => {
       TITLE: config('TITLE'),
       FEDERATED_LOGOUT: config('FEDERATED_LOGOUT') === 'true',
       AUTH0_MANAGE_URL: config('AUTH0_MANAGE_URL') || 'https://manage.auth0.com',
-      LOCALE: locale
+      LOCALE: locale,
+      MAX_CUSTOM_ENDPOINTS: process.env.MAX_CUSTOM_ENDPOINTS || 5
     };
 
     // Render from CDN.
@@ -95,7 +96,7 @@ export default () => {
           ? `//s3.amazonaws.com/extensions-review/auth0-delegated-admin-pr-${PR_NUMBER}/assets`
           : '//cdn.auth0.com/extensions/auth0-delegated-admin/assets'
       );
-      
+
       return res.send(ejs.render(template, {
         config: settings,
         assets: {

@@ -9,27 +9,24 @@ export default (scriptManager) => {
       .catch(err => next(err)));
 
   app.post('/', (req, res, next) => {
-    const { name, method, handler } = req.body;
-    return scriptManager.createEndpoint(name, method, handler)
+    const { name, handler } = req.body;
+    return scriptManager.saveEndpoint(null, name, handler)
       .then(() => res.status(201).send())
       .catch(err => next(err));
   });
 
-  app.put('/:oldName', (req, res, next) => {
-    const { name, method, handler } = req.body;
-    const oldName = req.params.oldName;
-    return scriptManager.updateEndpoint(oldName, name, method, handler)
+  app.put('/:id', (req, res, next) => {
+    const { name, handler } = req.body;
+    const id = parseInt(req.params.id, 10);
+    return scriptManager.saveEndpoint(id, name, handler)
       .then(() => res.status(200).send())
       .catch(err => next(err));
   });
 
-  app.delete('/:name', (req, res, next) => {
-    const name = req.params.name;
-
-    return scriptManager.deleteEndpoint(name)
+  app.delete('/:id', (req, res, next) =>
+    scriptManager.deleteEndpoint(req.params.id)
       .then(() => res.status(204).send())
-      .catch(err => next(err));
-  });
+      .catch(err => next(err)));
 
   return app;
 };

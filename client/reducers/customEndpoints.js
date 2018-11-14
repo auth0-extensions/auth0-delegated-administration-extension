@@ -18,26 +18,26 @@ export const customEndpoints = createReducer(fromJS({ }), { // eslint-disable-li
       .merge(fromJS({ loading: true, error: null })),
   [constants.CREATE_CUSTOM_ENDPOINT_REJECTED]: (state, action) =>
     state
-      .merge(fromJS({ loading: true, error: action.errorData })),
+      .merge(fromJS({ loading: false, error: action.errorData })),
   [constants.CREATE_CUSTOM_ENDPOINT_FULFILLED]: state =>
     state
-      .merge(fromJS({ loading: false })),
+      .merge(fromJS({ loading: true })),
   [constants.UPDATE_CUSTOM_ENDPOINT_PENDING]: state =>
     state
       .merge(fromJS({ loading: true, error: null })),
   [constants.UPDATE_CUSTOM_ENDPOINT_REJECTED]: (state, action) =>
     state
-      .merge(fromJS({ loading: true, error: action.errorData })),
+      .merge(fromJS({ loading: false, error: action.errorData })),
   [constants.UPDATE_CUSTOM_ENDPOINT_FULFILLED]: state =>
     state
-      .merge(fromJS({ loading: false })),
+      .merge(fromJS({ loading: true })),
   [constants.DELETE_CUSTOM_ENDPOINT_PENDING]: state =>
     state
       .merge(fromJS({ loading: true, error: null })),
   [constants.DELETE_CUSTOM_ENDPOINT_REJECTED]: (state, action) =>
     state
-      .merge(fromJS({ loading: true, error: action.errorData })),
+      .merge(fromJS({ loading: false, error: action.errorData })),
   [constants.DELETE_CUSTOM_ENDPOINT_FULFILLED]: state =>
     state
-      .merge(fromJS({ loading: false }))
+      .merge(fromJS({ loading: true }))
 });

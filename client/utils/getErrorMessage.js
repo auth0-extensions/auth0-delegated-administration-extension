@@ -24,7 +24,11 @@ const defaultMessages = {
   DELETE_USER: { default: 'An error occurred while deleting the user: {message}' },
   USERNAME_CHANGE: { default: 'An error occurred while changing the username: {message}' },
   FETCH_USERS: { default: 'An error occurred while loading the users list: {message}' },
-  RESEND_VERIFICATION_EMAIL: { default: 'An error occurred while sending verification email: {message}' }
+  RESEND_VERIFICATION_EMAIL: { default: 'An error occurred while sending verification email: {message}' },
+  FETCH_CUSTOM_ENDPOINTS: { default: 'An error occurred while loading custom endpoints: {message}' },
+  CREATE_CUSTOM_ENDPOINT: { default: 'An error occurred while creating custom endpoint: {message}' },
+  UPDATE_CUSTOM_ENDPOINT: { default: 'An error occurred while updating custom endpoint: {message}' },
+  DELETE_CUSTOM_ENDPOINT: { default: 'An error occurred while deleting custom endpoint: {message}' }
 };
 
 export default (languageDictionary, error, translator) => {
