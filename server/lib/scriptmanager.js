@@ -84,7 +84,7 @@ export default class ScriptManager {
 
         const existing = _.findIndex(data.endpoints, { name });
 
-        if (!id) {
+        if (id === null) {
           if (data.endpoints.length >= process.env.MAX_CUSTOM_ENDPOINTS) {
             return Promise.reject(new ArgumentError(`You cannot create more than ${process.env.MAX_CUSTOM_ENDPOINTS} endpoints`));
           }
