@@ -9,7 +9,7 @@ import ScriptManager from '../../../server/lib/scriptmanager';
 import { user, defaultConnections, defaultScripts } from '../../utils/dummyData';
 
 
-describe('#logs router', () => {
+describe('#connections router', () => {
   const fakeApiClient = (req, res, next) => {
     req.auth0 = {
       connections: {
@@ -34,9 +34,9 @@ describe('#logs router', () => {
     }
   };
 
-  const scriptManager = new ScriptManager(storage, 1);
-
   const app = express();
+  const scriptManager = new ScriptManager(storage);
+  scriptManager.getCached = (type, name) => scriptManager.get(type, name);
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));

@@ -23,16 +23,34 @@ describe('#scripts', () => {
         create: '', // for writing
         memberships: 'function (ctx, callback) { callback(new Error("MembershipsError")); }', // for error return
         settings: 'function (ctx, callback) { console.log(ctx.user.name); callback(); }' // for error catch
-      }
+      },
+      endpoints: [
+        {
+          name: 'get-something',
+          handler: 'something'
+        },
+        {
+          name: 'get-query',
+          handler: 'function (req, callback) { callback(null, req.query); }'
+        },
+        {
+          name: 'get-error',
+          handler: 'function (req, callback) { callback(new Error("error")); }'
+        },
+        {
+          name: 'broken',
+          handler: 'not gonna work'
+        }
+      ]
     };
     scriptmanager = new ScriptManager(storage);
-    const skipCache = name => scriptmanager.get(name);
+    const skipCache = (type, name) => scriptmanager.get(type, name);
     scriptmanager.getCached = skipCache;
   });
 
   describe('#ScriptManager', () => {
     it('should return text of script', (done) => {
-      scriptmanager.get('access').then(script => {
+      scriptmanager.get('scripts', 'access').then(script => {
         expect(script).toEqual('This is access script');
         done();
       });
@@ -77,7 +95,7 @@ describe('#scripts', () => {
     it('should return null if there is no data', (done) => {
       data = {};
 
-      scriptmanager.get('access').then(script => {
+      scriptmanager.get('scripts', 'access').then(script => {
         expect(script).toEqual(null);
         done();
       });
@@ -86,7 +104,7 @@ describe('#scripts', () => {
     it('should return null if trying to get nonexistent script', (done) => {
       data = {};
 
-      scriptmanager.get('filter').then(result => {
+      scriptmanager.get('scripts', 'filter').then(result => {
         expect(result).toEqual(null);
         done();
       });
@@ -167,6 +185,100 @@ describe('#scripts', () => {
         expect(manager).toEqual(null);
       }).toThrow(/Must provide a storage object/);
       done();
+    });
+
+    it('should return list of endpoints', (done) => {
+      scriptmanager.getAllEndpoints()
+        .then((endpoints) => {
+          expect(endpoints.length).toEqual(4);
+          expect(endpoints[0].name).toEqual('get-something');
+          expect(endpoints[1].name).toEqual('get-query');
+          expect(endpoints[2].name).toEqual('get-error');
+          expect(endpoints[3].name).toEqual('broken');
+          done();
+        })
+        .catch(e => done(e));
+    });
+
+    it('should return text of endpoint', (done) => {
+      scriptmanager.get('endpoints', 'get-something')
+        .then((endpoint) => {
+          expect(endpoint).toEqual('something');
+          done();
+        })
+        .catch(e => done(e));
+    });
+
+    it('should call endpoint and return result', (done) => {
+      const req = {
+        query: 'unicorn!',
+        params: {
+          name: 'get-query'
+        }
+      };
+      scriptmanager.callEndpoint(req)
+        .then((result) => {
+          expect(result.status).toEqual(200);
+          expect(result.body).toEqual('unicorn!');
+          done();
+        })
+        .catch(e => done(e));
+    });
+
+    it('should call endpoint and return error', (done) => {
+      const req = {
+        params: {
+          name: 'get-error'
+        }
+      };
+      scriptmanager.callEndpoint(req)
+        .then(() => done('bad then'))
+        .catch((error) => {
+          expect(error.message).toEqual('error');
+          done();
+        });
+    });
+
+    it('should call endpoint and catch error', (done) => {
+      const req = {
+        params: {
+          name: 'broken'
+        }
+      };
+      scriptmanager.callEndpoint(req)
+        .catch((error) => {
+          expect(error.name).toEqual('ValidationError');
+          done();
+        });
+    });
+
+    it('should add new endpoint', (done) => {
+      scriptmanager.saveEndpoint(null, 'new-endpoint', 'new-handler')
+        .then(() => {
+          expect(data.endpoints.length).toEqual(5);
+          expect(data.endpoints[4].name).toEqual('new-endpoint');
+          expect(data.endpoints[4].handler).toEqual('new-handler');
+          done();
+        });
+    });
+
+    it('should update existing endpoint', (done) => {
+      scriptmanager.saveEndpoint(0, 'updated-endpoint', 'updated-handler')
+        .then(() => {
+          expect(data.endpoints.length).toEqual(4);
+          expect(data.endpoints[0].name).toEqual('updated-endpoint');
+          expect(data.endpoints[0].handler).toEqual('updated-handler');
+          done();
+        });
+    });
+
+    it('should remove endpoint', (done) => {
+      scriptmanager.deleteEndpoint(0)
+        .then(() => {
+          expect(data.endpoints.length).toEqual(3);
+          expect(data.endpoints[0].name).toEqual('get-query');
+          done();
+        });
     });
   });
 });

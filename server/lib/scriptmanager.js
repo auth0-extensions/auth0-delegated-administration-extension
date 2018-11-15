@@ -18,55 +18,34 @@ export default class ScriptManager {
     this.storage = storage;
     this.getCached = Promise.promisify(
       memoizer({
-        load: (name, callback) => {
-          this.get(name)
+        load: (type, name, callback) => {
+          this.get(type, name)
             .then((script) => {
               callback(null, script);
               return null;
             })
             .catch(callback);
         },
-        hash: name => name,
-        max: 100,
-        maxAge: cacheAge
-      })
-    );
-    this.getEndpointCached = Promise.promisify(
-      memoizer({
-        load: (name, callback) => {
-          this.getEndpoint(name)
-            .then((script) => {
-              callback(null, script);
-              return null;
-            })
-            .catch(callback);
-        },
-        hash: name => name,
+        hash: (type, name) => type + name,
         max: 100,
         maxAge: cacheAge
       })
     );
   }
 
-  get(name) {
+  get(type, name) {
     return this.storage.read()
       .then((data) => {
-        if (!data || !data.scripts) {
+        if (!data || !data[type]) {
           return null;
+        }
+
+        if (type === 'endpoints') {
+          const endpoint = _.find(data.endpoints, { name });
+          return endpoint && endpoint.handler;
         }
 
         return data.scripts[name];
-      });
-  }
-
-  getEndpoint(name) {
-    return this.storage.read()
-      .then((data) => {
-        if (!data || !data.endpoints) {
-          return null;
-        }
-
-        return _.find(data.endpoints, { name });
       });
   }
 
@@ -168,7 +147,7 @@ export default class ScriptManager {
   }
 
   execute(name, ctx) {
-    return this.getCached(name)
+    return this.getCached('scripts', name)
       .then((script) => {
         if (!script) {
           return null;
@@ -187,7 +166,7 @@ export default class ScriptManager {
               }
             });
           } catch (err) {
-            logger.error(`Failed to compile Delegated Admin hook (${name}): "${err}"`);
+            logger.error(`Failed to compile Delegated Admin hook (${name}): "${err}, ${script}"`);
             reject(parseScriptError(err, name));
           }
         });
@@ -197,7 +176,7 @@ export default class ScriptManager {
   callEndpoint(req) {
     const name = req.params.name;
 
-    return this.getEndpointCached(name)
+    return this.getCached('endpoints', name)
       .then((script) => {
         if (!script) {
           return null;

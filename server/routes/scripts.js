@@ -10,7 +10,7 @@ export default (storage, scriptManager) => {
       return next(new ValidationError(`Invalid script name: ${req.params.name}`));
     }
 
-    return scriptManager.get(req.params.name)
+    return scriptManager.get('scripts', req.params.name)
       .then(data => res.json({ script: data }))
       .catch(next);
   });

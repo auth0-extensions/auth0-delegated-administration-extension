@@ -65,11 +65,12 @@ describe('#Client-Components-Header', () => {
     expect(logoutLink.text()).to.equal(text);
   };
 
-  const checkForAdminMenuItems = (component, usersAndLogsText, configurationText) => {
+  const checkForAdminMenuItems = (component, usersAndLogsText, configurationText, endpointsText) => {
     const links = component.find(Link);
-    expect(links.length).to.equal(2);
+    expect(links.length).to.equal(3);
     expect(links.at(0).childAt(0).text()).to.equal(usersAndLogsText);
     expect(links.at(1).childAt(0).text()).to.equal(configurationText);
+    expect(links.at(2).childAt(0).text()).to.equal(endpointsText);
   };
 
   const checkForCssToggleMenuItem = (component, text) => {
@@ -89,7 +90,7 @@ describe('#Client-Components-Header', () => {
     expect(component.length).to.be.greaterThan(0);
 
     checkLogoutMenuItem(component, 'Logout');
-    checkForAdminMenuItems(component, 'Users & Logs', 'Configuration');
+    checkForAdminMenuItems(component, 'Users & Logs', 'Configuration', 'Custom Endpoints');
   });
 
   it('should render non-admin', () => {
@@ -183,6 +184,7 @@ describe('#Client-Components-Header', () => {
     const languageDictionary = {
       usersAndLogsMenuItemText: 'usersAndLogs',
       configurationMenuItemText: 'configurationText',
+      customEndpointsMenuItemText: 'customEndpointsText',
       logoutMenuItemText: 'logoutText'
     };
 
@@ -196,7 +198,7 @@ describe('#Client-Components-Header', () => {
 
     checkMenuLabel(component, 'menuName');
     checkLogoutMenuItem(component, 'logoutText');
-    checkForAdminMenuItems(component, 'usersAndLogs', 'configurationText');
+    checkForAdminMenuItems(component, 'usersAndLogs', 'configurationText', 'customEndpointsText');
   });
 
   it('should render non-admin languageDictionary', () => {

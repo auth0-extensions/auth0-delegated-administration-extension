@@ -92,15 +92,15 @@ describe('#users router', () => {
   };
 
   const storage = {
-    read: () => Promise.resolve(storage.data),
+    read: () => Promise.resolve(storage.data)
   };
 
   const scriptManager = new ScriptManager(storage);
   const oldGetCached = scriptManager.getCached;
-  const skipCache = name => scriptManager.get(name);
+  const skipCache = (type, name) => scriptManager.get(type, name);
   const settingsWithUserFields = ((ctx, callback) => {
     var result = {
-      connections: ['conn-a', 'conn-b'],
+      connections: [ 'conn-a', 'conn-b' ],
       dict: {
         title: ctx.request.user.email + ' dashboard',
         memberships: 'Groups'
@@ -108,8 +108,8 @@ describe('#users router', () => {
       css: 'http://localhost:3001/app/default.css',
       userFields: [
         {
-          property: "email",
-          label: "Email"
+          property: 'email',
+          label: 'Email'
         }
       ]
     };

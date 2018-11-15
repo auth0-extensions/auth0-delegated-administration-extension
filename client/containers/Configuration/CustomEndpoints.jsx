@@ -6,7 +6,6 @@ import { Tabs, Tab } from 'react-bootstrap';
 import { customEndpointActions } from '../../actions';
 
 import EndpointForm from '../../components/EndpointForm';
-import './Configuration.css';
 import getErrorMessage from '../../utils/getErrorMessage';
 
 const defaultHandler = (
@@ -77,7 +76,7 @@ export default connectContainer(class extends Component {
       <Tab key={id} eventKey={id} title={name || 'New Endpoint'}>
         <EndpointForm
           id={id}
-          name={name || 'new-endpoint'}
+          name={name || ''}
           handler={handler || defaultHandler}
           isNew={isNew}
           activeTab={this.state.activeTab}
@@ -101,20 +100,18 @@ export default connectContainer(class extends Component {
     return (
       <div className="endpoints">
         <div className="row content-header">
-          <div className="col-xs-12 user-table-content">
+          <div className="col-xs-12 custom-endpoints-content">
             <h2>Custom Endpoints</h2>
             <p>This page allows you to fine tune the behavior of the Delegated Administration dashboard. More information and examples of hooks are available <a href="https://auth0.com/docs/extensions/delegated-admin">on the documentation page</a>.</p>
           </div>
         </div>
-        <div className="row endpoints-tabs">
-          <div className="col-xs-12">
-            <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
-              <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error)} />
-              <Tabs defaultActiveKey={this.state.activeTab} animation={false} onSelect={this.handleSelect} id="endpoints-tabs" >
-                {records ? records.map(this.renderTab) : ''}
-              </Tabs>
-            </LoadingPanel>
-          </div>
+        <div className="custom-endpoints-tabs">
+          <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
+            <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error)} />
+            <Tabs defaultActiveKey={this.state.activeTab} animation={false} onSelect={this.handleSelect} id="endpoints-tabs" >
+              {records ? records.map(this.renderTab) : ''}
+            </Tabs>
+          </LoadingPanel>
         </div>
       </div>
     );

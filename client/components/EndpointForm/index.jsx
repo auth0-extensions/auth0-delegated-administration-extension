@@ -40,7 +40,7 @@ export default class EndpointTab extends Component {
 
   onChange = type => (value) => {
     this.setState({
-      [type]: (value.target && value.target.value) || value
+      [type]: value.target ? value.target.value : value
     });
   };
 
@@ -60,34 +60,17 @@ export default class EndpointTab extends Component {
 
   render() {
     const { isNew } = this.props;
+    const input = { required: true, value: this.state.name, onChange: this.onChange('name') };
 
     return (
       <form onSubmit={this.onSave} >
-        <div className="col-xs-12">
-          <div className="col-xs-3">Path: </div>
-          <div className="col-xs-9">{`${window.config.BASE_URL}/api/custom/${this.state.name}`} </div>
+        <div className="col-xs-3">Path: </div>
+        <div className="col-xs-9">{`${window.config.BASE_URL}/api/custom/${this.state.name}`} </div>
+        <div className="endpoint-name">
+          <InputText name="endpoint-name" label="Name:" placeholder="new-endpoint" input={input} />
         </div>
-        <div className="col-xs-12">
-          <InputText
-            name="name"
-            label="Name"
-            placeholder="new-endpoint"
-            input={{
-              type: 'text',
-              required: true,
-              value: this.state.name,
-              onChange: this.onChange('name')
-            }}
-          />
-        </div>
-        <div className="col-xs-12">
-          <Editor
-            name="handler"
-            value={this.state.handler}
-            onChange={this.onChange('handler')}
-          />
-        </div>
-        <div className="endpoints-control col-xs-12">
+        <Editor name="handler" value={this.state.handler} onChange={this.onChange('handler')} />
+        <div className="endpoints-control">
           <button type="submit" className="btn btn-success pull-right">{isNew ? 'Create' : 'Update'} Endpoint</button>
           {isNew ? '' : <button type="reset" onClick={this.onDelete} className="btn btn-danger pull-right">Remove</button>}
         </div>

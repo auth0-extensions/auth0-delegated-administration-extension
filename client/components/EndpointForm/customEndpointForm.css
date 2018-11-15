@@ -1,3 +1,15 @@
 .endpoints-control .btn {
     margin-left: 10px;
 }
+
+.endpoint-name label {
+    margin-top: 10px;
+}
+
+.endpoint-name input {
+    margin: 5px 0 5px 0;
+}
+
+.endpoint-name .col-xs-9 {
+    padding: 0;
+}

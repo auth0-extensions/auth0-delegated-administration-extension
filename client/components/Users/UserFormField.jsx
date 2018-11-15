@@ -37,59 +37,70 @@ export default class UserFormField extends Component {
       validate.push((value, values, context) => field.validationFunction(value, values, context, this.props.languageDictionary || {}));
     }
 
+    let additionalOptions = {};
+    let component;
+
     switch (componentName) {
       case 'InputCombo': {
-        const additionalOptions = {
+        component = InputCombo;
+        additionalOptions = {
           options: field.options ? _.map(field.options, option => ({ value: option.value, text: option.label })) : null
         };
         if (validate) additionalOptions.validate = validate;
-        return (this.getFieldComponent(field, InputCombo, additionalOptions));
+        break;
       }
       case 'InputMultiCombo': {
-        const additionalOptions = {
+        component = Multiselect;
+        additionalOptions = {
           loadOptions: (input, callback) => callback(null, { options: field.options || [], complete: true }),
           multi: true,
           displayLabelOnly: field.displayLabelOnly
         };
         if (validate) additionalOptions.validate = validate;
-        return (this.getFieldComponent(field, Multiselect, additionalOptions));
+        break;
       }
       case 'InputSelectCombo': {
-        const additionalOptions = {
+        component = Select;
+        additionalOptions = {
           loadOptions: (input, callback) => callback(null, { options: field.options || [], complete: true }),
           multi: false
         };
         if (validate) additionalOptions.validate = validate;
-        return (this.getFieldComponent(field, Select, additionalOptions));
+        break;
       }
       case 'InputVirtualizedSelect': {
-        const additionalOptions = {
+        component = VirtualizedSelect;
+        additionalOptions = {
           options: field.options,
           multi: field.multi,
           displayLabelOnly: field.displayLabelOnly
         };
         if (validate) additionalOptions.validate = validate;
-        return (this.getFieldComponent(field, VirtualizedSelect, additionalOptions));
+        break;
       }
-      case 'SearchSelect': {
-        const component = field.multi ? Multiselect : Select;
-        const additionalOptions = {
+      case 'DynamicSelect': {
+        component = field.multi ? Multiselect : Select;
+        additionalOptions = {
           loadOptions: (input, callback) => field.loadOptions(axios, input, callback),
           multi: field.multi,
           displayLabelOnly: field.displayLabelOnly
         };
-
         if (validate) additionalOptions.validate = validate;
-        return (this.getFieldComponent(field, component, additionalOptions));
+
+        break;
       }
       default: {
-        const additionalOptions = {
+        component = InputText;
+        additionalOptions = {
           disabled: field.disabled || false
         };
         if (validate) additionalOptions.validate = validate;
-        return (this.getFieldComponent(field, InputText, additionalOptions));
+
+        break;
       }
     }
+
+    return (this.getFieldComponent(field, component, additionalOptions));
   }
 
   render() {
