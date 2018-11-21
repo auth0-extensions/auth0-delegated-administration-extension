@@ -47,7 +47,7 @@ jobs:
           name: Run Tests
           command: |
             ./cc-test-reporter before-build
-            yarn test
+            npm run test
             ./cc-test-reporter after-build --exit-code $?
 
       - run: PR_NUMBER=${CIRCLE_PR_NUMBER:-${CIRCLE_PULL_REQUEST##*/}} npm run build
