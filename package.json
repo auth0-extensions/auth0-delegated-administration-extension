@@ -1,6 +1,6 @@
 {
   "name": "auth0-delegated-admin",
-  "version": "3.5.0",
+  "version": "3.4.0",
   "description": "Delegated Administration Dashboard",
   "engines": {
     "node": ">8.9"
@@ -103,7 +103,7 @@
     "jwt-decode": "^2.0.1",
     "lodash": "^4.8.2",
     "lru-memoizer": "1.11.2",
-    "moment": "^2.22.2",
+    "moment": "^2.13.0",
     "morgan": "^1.7.0",
     "ms": "^0.7.1",
     "nconf": "^0.8.4",
