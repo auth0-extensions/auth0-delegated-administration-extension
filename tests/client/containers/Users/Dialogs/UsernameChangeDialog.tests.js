@@ -27,7 +27,9 @@ describe('#Client-Containers-Users-Dialogs-UsernameChangeDialog', () => {
         loading: false,
         connection: 'connA'
       }),
-      connections: fromJS({ records: [{ name: 'connA', options: { requires_username: true }}]}),
+      connections: fromJS({
+        records: options.connections || [ { name: 'connA', options: { requires_username: true } }, { name: 'connB' } ]
+      }),
       languageDictionary: fromJS({
         record: languageDictionary || {}
       }),
@@ -86,6 +88,19 @@ describe('#Client-Containers-Users-Dialogs-UsernameChangeDialog', () => {
     checkConfirm(component, 'Change Username?');
   });
 
+  it('should render without connection field', () => {
+    const component = renderComponent(
+      {
+        username: 'bill',
+        connections: [ { name: 'connA', options: { requires_username: true } } ]
+      });
+
+    checkText(component, 'Do you really want to change the username for ', 'bill', '?');
+    checkConnectionLabel(component);
+    checkUsernameLabel(component, 'Username (required)');
+    checkConfirm(component, 'Change Username?');
+  });
+
   it('should render not applicable language dictionary', () => {
     const component = renderComponent({ username: 'bill' }, { someKey: 'someValue' });
 
@@ -109,7 +124,7 @@ describe('#Client-Containers-Users-Dialogs-UsernameChangeDialog', () => {
     const languageDictionary = {
       changeUsernameMessage: 'Some other message {   username    }something else'
     };
-    const component = renderComponent({username:'sally'}, languageDictionary);
+    const component = renderComponent({ username: 'sally' }, languageDictionary);
 
     checkText(component, 'Some other message ', 'sally', 'something else');
   });
@@ -118,7 +133,7 @@ describe('#Client-Containers-Users-Dialogs-UsernameChangeDialog', () => {
     const languageDictionary = {
       changeUsernameMessage: 'no username included: '
     };
-    const component = renderComponent({username:'john'}, languageDictionary);
+    const component = renderComponent({ username: 'john' }, languageDictionary);
 
     checkText(component, 'no username included: ', 'john', '');
   });
@@ -142,7 +157,7 @@ describe('#Client-Containers-Users-Dialogs-UsernameChangeDialog', () => {
         }
       }
     };
-    const component = renderComponent({username:'john', settings});
+    const component = renderComponent({ username: 'john', settings });
     checkConnectionLabel(component);
 
   });
@@ -166,7 +181,7 @@ describe('#Client-Containers-Users-Dialogs-UsernameChangeDialog', () => {
         }
       }
     };
-    const component = renderComponent({username:'john', settings});
+    const component = renderComponent({ username: 'bill', settings });
     checkConnectionLabel(component, 'ConnectionLabel');
 
   });
@@ -189,8 +204,7 @@ describe('#Client-Containers-Users-Dialogs-UsernameChangeDialog', () => {
         }
       }
     };
-    const component = renderComponent({username:'john', settings});
+    const component = renderComponent({ username: 'bill', settings });
     checkConnectionLabel(component, 'Connection');
-
   });
 });

@@ -97,7 +97,7 @@ export const useMfaField = (isEditField, fields, providers, onProviderChange) =>
 export const useDisabledConnectionField = (isEditField, fields, connection, connections) => {
   const type = isEditField ? 'edit' : 'create';
 
-  if (!connection || !connections || connections.size < 2) {
+  if (!connection || !connections || connections.length < 2) {
     return _.remove(fields, { property: 'connection' });
   }
 

@@ -70,7 +70,7 @@ export default connectContainer(class PasswordChangeDialog extends Component {
 
     const fields = _.cloneDeep(userFields) || [];
     usePasswordFields(true, fields);
-    useDisabledConnectionField(true, fields, connection, connections.get('records'));
+    useDisabledConnectionField(true, fields, connection, connections.get('records').toJS());
     useDisabledEmailField(true, fields);
 
     const allowedFields = ['email', 'connection', 'password', 'repeatPassword'];

@@ -329,6 +329,7 @@ describe('Client-Utils-useDefaultFields', () => {
 
   describe('#useDisabledConnectionField', () => {
     const connection = 'connA';
+    const connections = [ 'connA', 'connB' ];
     const standardTarget = (type) => ({
       property: 'connection',
       label: 'Connection',
@@ -342,7 +343,15 @@ describe('Client-Utils-useDefaultFields', () => {
       const fields = [];
       const target = [standardTarget('edit')];
 
-      useDefaultFields.useDisabledConnectionField(true, fields, connection);
+      useDefaultFields.useDisabledConnectionField(true, fields, connection, connections);
+      expect(fields).to.deep.equal(target);
+    });
+
+    it('empty array population with single connection', () => {
+      const fields = [];
+      const target = [];
+
+      useDefaultFields.useDisabledConnectionField(true, fields, connection, [ 'connA' ]);
       expect(fields).to.deep.equal(target);
     });
 
@@ -365,7 +374,7 @@ describe('Client-Utils-useDefaultFields', () => {
       }];
       const target = [standardTarget('create')];
 
-      useDefaultFields.useDisabledConnectionField(false, fields, connection);
+      useDefaultFields.useDisabledConnectionField(false, fields, connection, connections);
       expect(fields).to.deep.equal(target);
     });
 
@@ -380,7 +389,7 @@ describe('Client-Utils-useDefaultFields', () => {
       }];
       const target = [_.assign({}, standardTarget('create'), { label: 'ConnectionsLabel' })];
 
-      useDefaultFields.useDisabledConnectionField(false, fields, connection);
+      useDefaultFields.useDisabledConnectionField(false, fields, connection, connections);
       expect(fields).to.deep.equal(target);
     });
 
@@ -392,7 +401,7 @@ describe('Client-Utils-useDefaultFields', () => {
       }];
       const target = [];
 
-      useDefaultFields.useDisabledConnectionField(true, fields, connection);
+      useDefaultFields.useDisabledConnectionField(true, fields, connection, connections);
       expect(fields).to.deep.equal(target);
     });
 

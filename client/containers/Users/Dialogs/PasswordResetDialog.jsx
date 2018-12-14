@@ -74,7 +74,7 @@ export default connectContainer(class extends Component {
 
     const fields = _.cloneDeep(userFields) || [];
     useClientField(true, fields, this.props.appsForConnection.toJS());
-    useDisabledConnectionField(true, fields, connection, connections.get('records'));
+    useDisabledConnectionField(true, fields, connection, connections.get('records').toJS());
     useDisabledEmailField(true, fields);
 
     const allowedFields = ['email', 'client', 'connection'];
