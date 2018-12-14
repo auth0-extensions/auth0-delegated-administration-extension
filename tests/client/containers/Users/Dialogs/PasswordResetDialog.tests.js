@@ -32,11 +32,7 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
       }),
       settings: fromJS(options.settings || {}),
       connections: fromJS({
-        records: [
-          {
-            name: 'connA'
-          }
-        ]
+        records: options.connections || [ { name: 'connA' }, { name: 'connB' } ]
       }),
       user: fromJS({
         connection: {
@@ -111,6 +107,17 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
     checkText(component, 'Do you really want to reset the password for ', 'bill', '? This will send an email to the' +
       ' user allowing them to choose a new password.');
     checkConnectionLabel(component, 'Connection');
+    checkEmailLabel(component, 'Email');
+    checkClientLabel(component, 'Client (required)');
+    checkConfirm(component, 'Reset Password?');
+  });
+
+  it('should render without connection field', () => {
+    const component = renderComponent({ username: 'bill', connections: [ { name: 'connA' } ] });
+
+    checkText(component, 'Do you really want to reset the password for ', 'bill', '? This will send an email to the' +
+      ' user allowing them to choose a new password.');
+    checkConnectionLabel(component);
     checkEmailLabel(component, 'Email');
     checkClientLabel(component, 'Client (required)');
     checkConfirm(component, 'Reset Password?');

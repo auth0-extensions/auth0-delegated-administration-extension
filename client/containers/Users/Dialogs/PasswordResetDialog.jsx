@@ -20,6 +20,7 @@ import getErrorMessage from '../../../utils/getErrorMessage';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
+    connections: state.connections,
     passwordReset: state.passwordReset,
     appsForConnection: getAppsForConnection(state),
     settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
@@ -34,6 +35,7 @@ export default connectContainer(class extends Component {
   static propTypes = {
     cancelPasswordReset: PropTypes.func.isRequired,
     resetPassword: PropTypes.func.isRequired,
+    connections: PropTypes.object.isRequired,
     passwordReset: PropTypes.object.isRequired,
     appsForConnection: PropTypes.object
   };
@@ -54,7 +56,7 @@ export default connectContainer(class extends Component {
   };
 
   render() {
-    const { cancelPasswordReset, settings } = this.props;
+    const { cancelPasswordReset, settings, connections } = this.props;
     const { connection, user, error, requesting, loading } = this.props.passwordReset.toJS();
 
     if (!requesting) {
@@ -72,7 +74,7 @@ export default connectContainer(class extends Component {
 
     const fields = _.cloneDeep(userFields) || [];
     useClientField(true, fields, this.props.appsForConnection.toJS());
-    useDisabledConnectionField(true, fields, connection);
+    useDisabledConnectionField(true, fields, connection, connections.get('records').toJS());
     useDisabledEmailField(true, fields);
 
     const allowedFields = ['email', 'client', 'connection'];

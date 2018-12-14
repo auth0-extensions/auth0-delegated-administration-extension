@@ -267,6 +267,8 @@ export default (storage, scriptManager) => {
           return data;
         }
 
+        data.user.connection = name;
+
         return getConnectionIdByName(req.auth0, name)
           .then((connectionId) => {
             if (connectionId) {

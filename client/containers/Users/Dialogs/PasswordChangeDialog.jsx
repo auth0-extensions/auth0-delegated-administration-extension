@@ -18,6 +18,7 @@ import getErrorMessage from '../../../utils/getErrorMessage';
 
 export default connectContainer(class PasswordChangeDialog extends Component {
   static stateToProps = (state) => ({
+    connections: state.connections,
     passwordChange: state.passwordChange,
     settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     languageDictionary: state.languageDictionary
@@ -29,6 +30,7 @@ export default connectContainer(class PasswordChangeDialog extends Component {
   };
 
   static propTypes = {
+    connections: PropTypes.object.isRequired,
     passwordChange: PropTypes.object.isRequired,
     changePassword: PropTypes.func.isRequired,
     cancelPasswordChange: PropTypes.func.isRequired
@@ -49,7 +51,7 @@ export default connectContainer(class PasswordChangeDialog extends Component {
   };
 
   render() {
-    const { cancelPasswordChange, settings } = this.props;
+    const { cancelPasswordChange, settings, connections } = this.props;
     const { connection, user, error, requesting, loading } = this.props.passwordChange.toJS();
 
     const userFields = settings.userFields || [];
@@ -68,7 +70,7 @@ export default connectContainer(class PasswordChangeDialog extends Component {
 
     const fields = _.cloneDeep(userFields) || [];
     usePasswordFields(true, fields);
-    useDisabledConnectionField(true, fields, connection);
+    useDisabledConnectionField(true, fields, connection, connections.get('records').toJS());
     useDisabledEmailField(true, fields);
 
     const allowedFields = ['email', 'connection', 'password', 'repeatPassword'];
