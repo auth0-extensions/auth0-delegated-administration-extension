@@ -26,7 +26,7 @@ export default () => {
     </head>
     <body>
       <div id="app"></div>
-      <script src="https://cdn.auth0.com/js/auth0/8.10.1/auth0.min.js"></script>
+      <script src="https://cdn.auth0.com/js/auth0/9.8.2/auth0.min.js"></script>
       <script type="text/javascript" src="//cdn.auth0.com/manage/v0.3.1672/js/bundle.js"></script>
       <script type="text/javascript">window.config = <%- JSON.stringify(config) %>;</script>
       <% if (assets.vendors) { %><script type="text/javascript" src="/app/<%= assets.vendors %>"></script><% } %>
@@ -95,7 +95,7 @@ export default () => {
           ? `//s3.amazonaws.com/extensions-review/auth0-delegated-admin-pr-${PR_NUMBER}/assets`
           : '//cdn.auth0.com/extensions/auth0-delegated-admin/assets'
       );
-      
+
       return res.send(ejs.render(template, {
         config: settings,
         assets: {
