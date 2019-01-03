@@ -15,6 +15,7 @@ import getErrorMessage from '../../../utils/getErrorMessage';
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
+    connections: state.connections,
     emailChange: state.emailChange,
     settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     languageDictionary: state.languageDictionary
@@ -28,6 +29,7 @@ export default connectContainer(class extends Component {
   static propTypes = {
     cancelEmailChange: PropTypes.func.isRequired,
     changeEmail: PropTypes.func.isRequired,
+    connections: PropTypes.object.isRequired,
     emailChange: PropTypes.object.isRequired
   };
 
@@ -47,7 +49,7 @@ export default connectContainer(class extends Component {
   };
 
   render() {
-    const { cancelEmailChange, settings } = this.props;
+    const { cancelEmailChange, settings, connections } = this.props;
     const { user, connection, error, requesting, loading } = this.props.emailChange.toJS();
 
     const userFields = settings.userFields || [];
@@ -61,7 +63,7 @@ export default connectContainer(class extends Component {
 
     const fields = _.cloneDeep(userFields) || [];
     useEmailField(true, fields);
-    useDisabledConnectionField(true, fields, connection);
+    useDisabledConnectionField(true, fields, connection, connections.get('records').toJS());
 
     const allowedFields = ['email', 'connection'];
     const filteredFields = _.filter(fields,

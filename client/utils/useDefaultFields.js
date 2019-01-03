@@ -94,9 +94,10 @@ export const useMfaField = (isEditField, fields, providers, onProviderChange) =>
   return applyDefaults(type, fields, 'multifactor', defaults);
 };
 
-export const useDisabledConnectionField = (isEditField, fields, connection) => {
+export const useDisabledConnectionField = (isEditField, fields, connection, connections) => {
   const type = isEditField ? 'edit' : 'create';
-  if (!connection) {
+
+  if (!connection || !connections || connections.length < 2) {
     return _.remove(fields, { property: 'connection' });
   }
 
