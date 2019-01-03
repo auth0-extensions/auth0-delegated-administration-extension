@@ -27,6 +27,9 @@ describe('#Client-Containers-Users-Dialogs-PasswordChangeDialog', () => {
         requesting: true,
         loading: false
       }),
+      connections: fromJS({
+        records: options.connections || [ { name: 'connA' }, { name: 'connB' } ]
+      }),
       languageDictionary: fromJS({
         record: languageDictionary || {}
       }),
