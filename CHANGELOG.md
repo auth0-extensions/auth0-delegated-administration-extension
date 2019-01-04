@@ -4,11 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## [3.4.1] - 2019-01-04
 
 ### Fixed
 - `Connection` field will be hidden, if there is only one connection. #155
 - `Connection` field now properly showing connection name, if there are more than one connection.
+- default `returnTo` path for auth
+
+### Changed
+- update to `auth0.js v9.8.2`
 
 ## [3.4.0] - 2018-10-25
 
