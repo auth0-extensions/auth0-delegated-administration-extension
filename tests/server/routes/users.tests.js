@@ -60,7 +60,7 @@ describe('#users router', () => {
           return Promise.resolve();
         },
         deleteMultifactorProvider:
-          (options) => options.provider !== 'badProvider' ?
+          (options) => options.provider === 'duo' ?
             Promise.resolve() :
             Promise.reject(new Error('bad provider'))
       },
@@ -595,19 +595,31 @@ describe('#users router', () => {
   });
 
   describe('#Remove MFA', () => {
-    it('should remove MFA', (done) => {
+    it('should remove duo MFA', (done) => {
+      request(app)
+        .delete('/users/1/multifactor/duo')
+        .expect(204)
+        .end(err => done(err));
+    });
+
+    it('should remove guardian MFA', (done) => {
+      nock(domain)
+        .get('/api/v2/users/1/enrollments')
+        .reply(200, [ { id: 'pid01' } ]);
+
+      nock(domain)
+        .delete('/api/v2/guardian/enrollments/pid01')
+        .reply(200);
+
       request(app)
         .delete('/users/1/multifactor/provider')
         .expect(204)
-        .end((err) => {
-          if (err) return done(err);
-          done();
-        });
+        .end(err => done(err));
     });
 
     it('should return "access denied" error', (done) => {
       request(app)
-        .delete('/users/5/multifactor/provider')
+        .delete('/users/5/multifactor/duo')
         .expect(400)
         .end((err) => {
           if (err) return done(err);
@@ -821,10 +833,14 @@ describe('#users router', () => {
         });
     });
 
-    it('should return "bad request" error bad provider', (done) => {
+    it('should do nothing if there are no enrollments to remove', (done) => {
+      nock(domain)
+        .get('/api/v2/users/1/enrollments')
+        .reply(200);
+
       request(app)
         .del('/users/1/multifactor/badProvider')
-        .expect(500)
+        .expect(204)
         .end((err) => {
           if (err) return done(err);
           done();
