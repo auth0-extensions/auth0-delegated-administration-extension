@@ -538,7 +538,7 @@ export default (storage, scriptManager) => {
     const provider = req.params.provider;
     const userId = req.params.id;
 
-    if (provider !== 'guardian') {
+    if (provider === 'duo' || provider === 'google-authenticator') {
       req.auth0.users.deleteMultifactorProvider({ id: userId, provider })
         .then(() => res.sendStatus(204))
         .catch(next);
