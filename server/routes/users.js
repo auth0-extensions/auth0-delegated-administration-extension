@@ -3,7 +3,7 @@ import auth0 from 'auth0';
 import request from 'request';
 import Promise from 'bluebird';
 import { Router } from 'express';
-import { ArgumentError, ValidationError } from 'auth0-extension-tools';
+import { ArgumentError, ValidationError, UnauthorizedError } from 'auth0-extension-tools';
 
 import config from '../lib/config';
 import logger from '../lib/logger';
@@ -133,6 +133,11 @@ export default (storage, scriptManager) => {
           },
           userFields
         };
+
+        const canCreateUser = settings.canCreateUser !== undefined ? settings.canCreateUser: true;
+        if (canCreateUser === false) {
+          return next(new UnauthorizedError('Create user is forbidden'));
+        }
 
         const repeatPasswordField = _.find(userFields, { property: 'repeatPassword' });
         if (!repeatPasswordField) {

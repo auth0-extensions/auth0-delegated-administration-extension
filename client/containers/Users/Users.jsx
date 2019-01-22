@@ -89,6 +89,7 @@ class Users extends Component {
     } = this.props;
 
     const userFields = (settings && settings.userFields) || [];
+    const showCreateUser = settings.canCreateUser !== undefined ? settings.canCreateUser: true;
     const role = accessLevel.get('record').get('role');
     const originalTitle = (settings.dict && settings.dict.title) || window.config.TITLE || 'User Management';
     document.title = `${languageDictionary.userUsersTabTitle || 'Users'} - ${originalTitle}`;
@@ -101,7 +102,7 @@ class Users extends Component {
         <div className="row content-header">
           <div className="col-xs-12 user-table-content">
             <h1>{languageDictionary.usersTitle || 'Users'}</h1>
-            {(connections.length && role > 0) ?
+            {(connections.length && role > 0 && showCreateUser) ?
               <button id="create-user-button" className="btn btn-success pull-right new" onClick={this.createUser}>
                 <i className="icon-budicon-473"></i>
                 {languageDictionary.createUserButtonText || 'Create User'}
