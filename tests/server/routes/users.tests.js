@@ -230,6 +230,25 @@ describe('#users router', () => {
     callback(null, result);
   }).toString();
 
+  const settingsWithUserCreateDisabled = ((ctx, callback) => {
+    var result = {
+      connections: ['conn-a', 'conn-b'],
+      dict: {
+        title: ctx.request.user.email + ' dashboard',
+        memberships: 'Groups'
+      },
+      css: 'http://localhost:3001/app/default.css',
+      userFields: [
+        {
+          property: "email",
+          label: "Email"
+        }
+      ],
+      canCreateUser: false
+    };
+    callback(null, result);
+  }).toString();
+
   const app = express();
 
   app.use(bodyParser.json());
@@ -442,6 +461,24 @@ describe('#users router', () => {
           done();
         });
     });
+
+    it('should return "Unauthorized error"', (done) => {
+      const newUser = {
+        email: 'user7@example.com',
+        memberships: ['deptC']
+      };
+      scriptManager.getCached = skipCache;
+      storage.data.scripts.settings = settingsWithUserCreateDisabled;
+
+      request(app)
+        .post('/users')
+        .send(newUser)
+        .expect(401)
+        .end((err) => {
+          if (err) return done(err);
+          done();
+        });
+    })
   });
 
   describe('#Delete', () => {
