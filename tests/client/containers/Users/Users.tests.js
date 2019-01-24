@@ -27,7 +27,7 @@ class UsersWrapper extends Component {
 
 describe('#Client-Containers-Users-Users', () => {
 
-  const renderComponent = (languageDictionary) => {
+  const renderComponent = (languageDictionary, settings = {}) => {
     const initialState = {
       connections: fromJS({ records: [{name: 'connA'}]}),
       accessLevel: fromJS({ record: { role: 1 } }),
@@ -54,7 +54,7 @@ describe('#Client-Containers-Users-Users', () => {
       languageDictionary: fromJS({
         record: languageDictionary || {}
       }),
-      settings: fromJS({ record: { settings: {} } })
+      settings: fromJS({ record: { settings: settings || {} } })
     };
     return wrapperMount(
       <Provider store={fakeStore(initialState)}>
@@ -97,6 +97,11 @@ describe('#Client-Containers-Users-Users', () => {
     expect(buttonObject.text()).to.equal(createButtonText);
   };
 
+  const checkCreateUserButtonMissing = (component) => {
+    const buttonObject = component.find('#create-user-button');
+    expect(buttonObject.length).to.equal(0);
+  };
+
   it('should render', () => {
     const component = renderComponent();
 
@@ -123,5 +128,17 @@ describe('#Client-Containers-Users-Users', () => {
     checkAllComponentsForLanguageDictionary(component, languageDictionary);
     checkCreateButtonText(component, 'Create User Text');
     checkTitle(component, 'Users Title');
+  });
+
+  it('should not show "Create User" button', () => {
+    const languageDictionary = {
+      createUserButtonText: 'Create User Text',
+      usersTitle: 'Users Title'
+    };
+    const component = renderComponent(languageDictionary, {
+      canCreateUser: false
+    });
+
+    checkCreateUserButtonMissing(component);
   });
 });
