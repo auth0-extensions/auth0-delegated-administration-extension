@@ -117,7 +117,8 @@ export default (storage, scriptManager) => {
 
     scriptManager.execute('settings', settingsContext)
       .then((settings) => {
-        const userFields = settings && settings.userFields;
+        settings = settings || {};
+        const userFields = settings.userFields;
         const createContext = {
           method: 'create',
           request: {
