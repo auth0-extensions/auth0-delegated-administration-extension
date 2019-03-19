@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.5.0] - Unreleased
 
 ### Added
-- New role - `Delegated Admin - Logsgazer`. Users with this role have access to users management and logs, but don't have access to the extension configuration.
+- New role - `Delegated Admin - Operator`. Users with this role have access to users management and logs, but don't have access to the extension configuration.
 
 ### Fixed
 - Fixed bug which doesn't allow to override client field for `reset password` action
