@@ -4,10 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## [3.5.0] - Unreleased
 
 ### Added
-- `canCreateUser` property added to the `settings` hook. It is `true` by default. #157
+- New role - `Delegated Admin - Logsgazer`. Users with this role have access to users management and logs, but don't have access to the extension configuration.
+
+### Fixed
+- Fixed bug which doesn't allow to override client field for `reset password` action
 
 ## [3.4.5] - 2019-02-21
 

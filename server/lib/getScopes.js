@@ -34,7 +34,7 @@ const checkRole = (data) => {
   return accessLevel;
 };
 
-export default function(user) {
+export default function (user) {
   const roles = getUserAccess(user, 'roles');
   const permissions = getUserAccess(user, 'permissions');
   const userRole = checkRole(roles);
@@ -56,4 +56,4 @@ export default function(user) {
   }
 
   return permissions;
-};
+}

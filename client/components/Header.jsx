@@ -118,7 +118,7 @@ export default class Header extends Component {
   render() {
     const { user, issuer, accessLevel } = this.props;
     const languageDictionary = this.props.languageDictionary || {};
-    const isAdmin = accessLevel.role === 2;
+    const isAdmin = accessLevel.role === 3;
     return (
       <header className="dashboard-header">
         <nav title="header" role="navigation" className="navbar navbar-default">
