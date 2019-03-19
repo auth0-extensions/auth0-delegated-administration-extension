@@ -9,7 +9,7 @@ export default class TabsHeader extends Component {
   };
 
   render() {
-    const isRoot = this.props.role === 2;
+    const hasLogsAccess = this.props.role >= 2;
 
     const languageDictionary = this.props.languageDictionary || {};
 
@@ -19,7 +19,7 @@ export default class TabsHeader extends Component {
           <TabPane
             title={languageDictionary.userUsersTabTitle || "Users"}
             route="users" />
-          {isRoot ?
+          {hasLogsAccess ?
             <TabPane
               title={languageDictionary.userLogsTabTitle || "Logs"}
               route="logs" /> : null}

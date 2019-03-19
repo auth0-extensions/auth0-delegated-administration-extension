@@ -123,7 +123,7 @@ describe('# /me', () => {
 
   it('check role 2', (done) => {
     const newUser = _.cloneDeep(user);
-    newUser.scope += ` ${constants.ADMIN_PERMISSION}`;
+    newUser.scope += ` ${constants.OPERATOR_PERMISSION}`;
     const app = initServer(undefined, newUser);
     request(app)
       .get('/me')
@@ -134,6 +134,23 @@ describe('# /me', () => {
         }
 
         expect(res.body.role).toEqual(2);
+        return done();
+      });
+  });
+
+  it('check role 3', (done) => {
+    const newUser = _.cloneDeep(user);
+    newUser.scope += ` ${constants.ADMIN_PERMISSION}`;
+    const app = initServer(undefined, newUser);
+    request(app)
+      .get('/me')
+      .expect(200)
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+
+        expect(res.body.role).toEqual(3);
         return done();
       });
   });

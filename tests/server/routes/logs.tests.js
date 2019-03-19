@@ -69,8 +69,8 @@ describe('#logs router', () => {
         });
     });
 
-    it('should return list of logs', (done) => {
-      user.scope = constants.ADMIN_PERMISSION;
+    it('should return list of logs for advanced user', (done) => {
+      user.scope = constants.OPERATOR_PERMISSION;
 
       const result = request(app)
         .get('/logs');
@@ -98,7 +98,9 @@ describe('#logs router', () => {
         });
     });
 
-    it('should return log record for admin', (done) => {
+    it('should return log record for advanced user', (done) => {
+      user.scope = constants.OPERATOR_PERMISSION;
+
       request(app)
         .get('/logs/2')
         .expect('Content-Type', /json/)

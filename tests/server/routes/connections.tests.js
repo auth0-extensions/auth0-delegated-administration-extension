@@ -9,7 +9,7 @@ import ScriptManager from '../../../server/lib/scriptmanager';
 import { user, defaultConnections, defaultScripts } from '../../utils/dummyData';
 
 
-describe('#logs router', () => {
+describe('#connections router', () => {
   const fakeApiClient = (req, res, next) => {
     req.auth0 = {
       connections: {

@@ -7,7 +7,7 @@ import * as constants from '../constants';
 
 export default (scriptManager) => {
   const api = Router();
-  api.get('/', requireScope(constants.ADMIN_PERMISSION), (req, res, next) => {
+  api.get('/', requireScope(constants.OPERATOR_PERMISSION), (req, res, next) => {
     req.auth0.logs
       .getAll({
         q: 'NOT type: sapi AND NOT type:fapi',
@@ -28,7 +28,7 @@ export default (scriptManager) => {
           return Promise.reject(new Error('Invalid log record.'));
         }
 
-        if (req.user.scope.indexOf(constants.ADMIN_PERMISSION) >= 0) {
+        if (req.user.scope.indexOf(constants.OPERATOR_PERMISSION) >= 0) {
           return log;
         }
 

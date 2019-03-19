@@ -84,12 +84,21 @@ describe('#Client-Components-Header', () => {
   };
 
   it('should render admin', () => {
-    const component = renderComponent({ accessLevel: { role: 2 } });
+    const component = renderComponent({ accessLevel: { role: 3 } });
 
     expect(component.length).to.be.greaterThan(0);
 
     checkLogoutMenuItem(component, 'Logout');
     checkForAdminMenuItems(component, 'Users & Logs', 'Configuration');
+  });
+
+  it('should render logs-user', () => {
+    const component = renderComponent({ accessLevel: { role: 2 } });
+
+    expect(component.length).to.be.greaterThan(0);
+
+    checkLogoutMenuItem(component, 'Logout');
+    checkForNoAdminMenuItems(component);
   });
 
   it('should render non-admin', () => {
@@ -187,7 +196,7 @@ describe('#Client-Components-Header', () => {
     };
 
     const component = renderComponent({
-      accessLevel: { role: 2 },
+      accessLevel: { role: 3 },
       languageDictionary,
       getDictValue: () => 'menuName'
     });
