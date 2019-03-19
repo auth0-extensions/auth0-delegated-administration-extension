@@ -99,14 +99,15 @@ describe('#logs router', () => {
     });
 
     it('should return log record for advanced user', (done) => {
-      user.scope = constants.USER_PERMISSION;
+      user.scope = constants.LOGSUSER_PERMISSION;
 
       request(app)
         .get('/logs/2')
-        .expect('Content-Type', /text/)
-        .expect(400)
-        .end((err) => {
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end((err, res) => {
           if (err) throw err;
+          expect(res.body).toEqual({ log: defaultLogs[1] });
           done();
         });
     });
