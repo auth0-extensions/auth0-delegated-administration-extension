@@ -379,5 +379,274 @@ export default {
       name: '299',
       color: 'green'
     }
+  },
+  fcoa: {
+    event: 'Failed cross-origin authentication',
+    icon: {
+      name: '311',
+      color: '#A93F3F'
+    }
+  },
+  fcph: {
+    event: 'Failed Post Change Password Hook',
+    icon: {
+      name: '311',
+      color: '#A93F3F'
+    }
+  },
+  feoobft: {
+    event: 'Failed Exchange',
+    description: 'Failed exchange of Password and OOB Challenge for Access Token',
+    icon: {
+      name: '311',
+      color: '#A93F3F'
+    }
+  },
+  feotpft: {
+    event: 'Failed Exchange',
+    description: 'Failed exchange of Password and OTP Challenge for Access Token',
+    icon: {
+      name: '311',
+      color: '#A93F3F'
+    }
+  },
+  fepft: {
+    event: 'Failed Exchange',
+    description: 'Failed exchange of Password for Access Token',
+    icon: {
+      name: '311',
+      color: '#A93F3F'
+    }
+  },
+  fercft: {
+    event: 'Failed Exchange',
+    description: 'Failed Exchange of Password and MFA Recovery code for Access Token',
+    icon: {
+      name: '311',
+      color: '#A93F3F'
+    }
+  },
+  fertft: {
+    event: 'Failed Exchange',
+    description: 'Failed Exchange of Refresh Token for Access Token',
+    icon: {
+      name: '311',
+      color: '#A93F3F'
+    }
+  },
+  fui: {
+    event: 'Failed users import',
+    description: 'Failed to import users',
+    icon: {
+      name: '311',
+      color: '#A93F3F'
+    }
+  },
+  gd_auth_failed: {
+    event: 'OTP Auth failed',
+    description: 'One-time password authentication failed.',
+    icon: {
+      name: '311',
+      color: '#A93F3F'
+    }
+  },
+  gd_auth_rejected: {
+    event: 'OTP Auth rejected',
+    description: 'One-time password authentication rejected.',
+    icon: {
+      name: '311',
+      color: '#A93F3F'
+    }
+  },
+  gd_module_switch: {
+    event: 'Module switch',
+    icon: {
+      name: '354',
+      color: '#FFA500'
+    }
+  },
+  gd_otp_rate_limit_exceed: {
+    event: 'Too many failures',
+    icon: {
+      name: '311',
+      color: '#A93F3F'
+    }
+  },
+  gd_recovery_failed: {
+    event: 'Recovery failed',
+    description: 'Multi-factor recovery code failed.',
+    icon: {
+      name: '311',
+      color: '#A93F3F'
+    }
+  },
+  gd_recovery_rate_limit_exceed: {
+    event: 'Too many failures',
+    description: 'Multi-factor recovery code has failed too many times.',
+    icon: {
+      name: '311',
+      color: '#A93F3F'
+    }
+  },
+  gd_recovery_succeed: {
+    event: 'Recovery success',
+    description: 'Multi-factor recovery code succeeded authorization.',
+    icon: {
+      name: '312',
+      color: 'green'
+    }
+  },
+  gd_send_pn: {
+    event: 'Push notification sent',
+    description: 'Push notification for MFA sent successfully sent.',
+    icon: {
+      name: '312',
+      color: 'green'
+    }
+  },
+  gd_send_sms: {
+    event: 'SMS Sent',
+    description: 'SMS for MFA sent successfully sent.',
+    icon: {
+      name: '312',
+      color: 'green'
+    }
+  },
+  gd_start_auth: {
+    event: 'Second factor started',
+    description: 'Second factor authentication event started for MFA.',
+    icon: {
+      name: '312',
+      color: 'green'
+    }
+  },
+  gd_tenant_update: {
+    event: 'Guardian tenant update',
+    icon: {
+      name: '312',
+      color: 'green'
+    }
+  },
+  gd_update_device_account: {
+    event: 'Update device account',
+    description: 'Device used for second factor authentication has been updated.',
+    icon: {
+      name: '312',
+      color: 'green'
+    }
+  },
+  gd_user_delete: {
+    event: 'User delete',
+    description: 'Deleted multi-factor user account.',
+    icon: {
+      name: '312',
+      color: 'green'
+    }
+  },
+  limit_delegation: {
+    event: 'Too Many Calls to /delegation',
+    description: 'Rate limit exceeded to /delegation endpoint',
+    icon: {
+      name: '311',
+      color: '#A93F3F'
+    }
+  },
+  pwd_leak: {
+    event: 'Breached password',
+    description: 'Someone attempted to login with a leaked password.',
+    icon: {
+      name: '311',
+      color: '#A93F3F'
+    }
+  },
+  scoa: {
+    event: 'Success cross-origin authentication',
+    icon: {
+      name: '312',
+      color: 'green'
+    }
+  },
+  scph: {
+    event: 'Success Post Change Password Hook',
+    icon: {
+      name: '312',
+      color: 'green'
+    }
+  },
+  seoobft: {
+    event: 'Success Exchange',
+    description: 'Successful exchange of Password and OOB Challenge for Access Token',
+    icon: {
+      name: '312',
+      color: 'green'
+    }
+  },
+  seotpft: {
+    event: 'Success Exchange',
+    description: 'Successful exchange of Password and OTP Challenge for Access Token',
+    icon: {
+      name: '312',
+      color: 'green'
+    }
+  },
+  sepft: {
+    event: 'Success Exchange',
+    description: 'Successful exchange of Password for Access Token',
+    icon: {
+      name: '312',
+      color: 'green'
+    }
+  },
+  sercft: {
+    event: 'Success Exchange',
+    description: 'Successful exchange of Password and MFA Recovery code for Access Token',
+    icon: {
+      name: '312',
+      color: 'green'
+    }
+  },
+  sertft: {
+    event: 'Success Exchange',
+    description: 'Successful exchange of Refresh Token for Access Token',
+    icon: {
+      name: '312',
+      color: 'green'
+    }
+  },
+  sys_os_update_end: {
+    event: 'Auth0 OS Update Ended',
+    icon: {
+      name: '312',
+      color: 'green'
+    }
+  },
+  sys_os_update_start: {
+    event: 'Auth0 OS Update Started',
+    icon: {
+      name: '312',
+      color: 'green'
+    }
+  },
+  sys_update_end: {
+    event: 'Auth0 Update Ended',
+    icon: {
+      name: '312',
+      color: 'green'
+    }
+  },
+  sys_update_start: {
+    event: 'Auth0 Update Started',
+    icon: {
+      name: '312',
+      color: 'green'
+    }
+  },
+  ublkdu: {
+    event: 'User login block released',
+    description: 'User block setup by anomaly detection has been released',
+    icon: {
+      name: '312',
+      color: 'green'
+    }
   }
 };

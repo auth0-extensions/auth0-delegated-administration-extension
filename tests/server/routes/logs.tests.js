@@ -69,8 +69,8 @@ describe('#logs router', () => {
         });
     });
 
-    it('should return list of logs', (done) => {
-      user.scope = constants.ADMIN_PERMISSION;
+    it('should return list of logs for advanced user', (done) => {
+      user.scope = constants.LOGSUSER_PERMISSION;
 
       const result = request(app)
         .get('/logs');
@@ -98,14 +98,15 @@ describe('#logs router', () => {
         });
     });
 
-    it('should return log record for admin', (done) => {
+    it('should return log record for advanced user', (done) => {
+      user.scope = constants.USER_PERMISSION;
+
       request(app)
         .get('/logs/2')
-        .expect('Content-Type', /json/)
-        .expect(200)
-        .end((err, res) => {
+        .expect('Content-Type', /text/)
+        .expect(400)
+        .end((err) => {
           if (err) throw err;
-          expect(res.body).toEqual({ log: defaultLogs[1] });
           done();
         });
     });

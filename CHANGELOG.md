@@ -9,6 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `canCreateUser` property added to the `settings` hook. It is `true` by default. #157
 
+## [3.4.5] - 2019-02-21
+
+### Added
+- Added new log types
+
+## [3.4.4] - 2019-02-11
+
+### Fixed
+- Create user with empty `settings query` bug fixed.
+
+## [3.4.3] - 2019-01-24
+
+### Added
+- `canCreateUser` property added to the `settings` hook. It is `true` by default.
+
 ## [3.4.2] - 2019-01-17
 
 ### Fixed
