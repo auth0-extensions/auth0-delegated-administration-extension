@@ -9,7 +9,7 @@ export default (scriptManager) => {
 
     if (req.user.scope.indexOf(constants.ADMIN_PERMISSION) >= 0) {
       role = 3;
-    } else if (req.user.scope.indexOf(constants.LOGSUSER_PERMISSION) >= 0) {
+    } else if (req.user.scope.indexOf(constants.OPERATOR_PERMISSION) >= 0) {
       role = 2;
     } else if (req.user.scope.indexOf(constants.USER_PERMISSION) >= 0) {
       role = 1;

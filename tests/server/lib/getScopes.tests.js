@@ -26,7 +26,7 @@ const admins = {
   }
 };
 
-const adminScopes = [ constants.AUDITOR_PERMISSION, constants.USER_PERMISSION, constants.LOGSUSER_PERMISSION, constants.ADMIN_PERMISSION ];
+const adminScopes = [ constants.AUDITOR_PERMISSION, constants.USER_PERMISSION, constants.OPERATOR_PERMISSION, constants.ADMIN_PERMISSION ];
 
 
 describe('getScopes', () => {

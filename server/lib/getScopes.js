@@ -28,7 +28,7 @@ const checkRole = (data) => {
 
   if (parsedData.indexOf(constants.AUDITOR_ROLE_NAME) >= 0) accessLevel = constants.AUDITOR_ACCESS_LEVEL;
   if (parsedData.indexOf(constants.USER_ROLE_NAME) >= 0) accessLevel = constants.USER_ACCESS_LEVEL;
-  if (parsedData.indexOf(constants.LOGSUSER_ROLE_NAME) >= 0) accessLevel = constants.LOGSUSER_ACCESS_LEVEL;
+  if (parsedData.indexOf(constants.OPERATOR_ROLE_NAME) >= 0) accessLevel = constants.OPERATOR_ACCESS_LEVEL;
   if (parsedData.indexOf(constants.ADMIN_ROLE_NAME) >= 0) accessLevel = constants.ADMIN_ACCESS_LEVEL;
 
   return accessLevel;
@@ -47,8 +47,8 @@ export default function (user) {
     permissions.push(constants.USER_PERMISSION);
   }
 
-  if (userRole >= constants.LOGSUSER_ACCESS_LEVEL && permissions.indexOf(constants.LOGSUSER_PERMISSION) < 0) {
-    permissions.push(constants.LOGSUSER_PERMISSION);
+  if (userRole >= constants.OPERATOR_ACCESS_LEVEL && permissions.indexOf(constants.OPERATOR_PERMISSION) < 0) {
+    permissions.push(constants.OPERATOR_PERMISSION);
   }
 
   if (userRole === constants.ADMIN_ACCESS_LEVEL && permissions.indexOf(constants.ADMIN_PERMISSION) < 0) {

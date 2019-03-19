@@ -123,7 +123,7 @@ describe('# /me', () => {
 
   it('check role 2', (done) => {
     const newUser = _.cloneDeep(user);
-    newUser.scope += ` ${constants.LOGSUSER_PERMISSION}`;
+    newUser.scope += ` ${constants.OPERATOR_PERMISSION}`;
     const app = initServer(undefined, newUser);
     request(app)
       .get('/me')
