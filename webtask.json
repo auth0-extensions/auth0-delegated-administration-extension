@@ -40,6 +40,11 @@
       "example": "https://cdn.fabrikam.com/static/extensions/theme/favicon.png",
       "required": false
     },
+    "AUTH0_ISSUER_DOMAIN": {
+      "description": "Custom domain",
+      "example": "https://example.com",
+      "required": false
+    },
     "FEDERATED_LOGOUT": {
       "description": "Also sign out from the IDP when users logout?",
       "type": "select",

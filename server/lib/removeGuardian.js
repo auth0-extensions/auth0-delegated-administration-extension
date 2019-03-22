@@ -10,7 +10,7 @@ const requestClearGuardian = (token, enrollmentId) =>
     }
 
     return request
-      .del(`https://${config('AUTH0_ISSUER_DOMAIN')}/api/v2/guardian/enrollments/${enrollmentId}`)
+      .del(`https://${config('AUTH0_DOMAIN')}/api/v2/guardian/enrollments/${enrollmentId}`)
       .set('Authorization', `Bearer ${token}`)
       .set('Content-Type', 'application/json')
       .end((err) => {
@@ -25,7 +25,7 @@ const requestClearGuardian = (token, enrollmentId) =>
 export const requestGuardianEnrollments = (token, userId) =>
   new Promise((resolve, reject) => {
     request
-      .get(`https://${config('AUTH0_ISSUER_DOMAIN')}/api/v2/users/${userId}/enrollments`)
+      .get(`https://${config('AUTH0_DOMAIN')}/api/v2/users/${userId}/enrollments`)
       .set('Authorization', `Bearer ${token}`)
       .set('Content-Type', 'application/json')
       .end((err, res) => {

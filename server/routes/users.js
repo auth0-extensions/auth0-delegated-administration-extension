@@ -511,7 +511,7 @@ export default (storage, scriptManager) => {
     getApiToken(req)
       .then((accessToken) => {
         const options = {
-          uri: `https://${config('AUTH0_ISSUER_DOMAIN')}/api/v2/users/${encodeURIComponent(req.params.id)}/logs`,
+          uri: `https://${config('AUTH0_DOMAIN')}/api/v2/users/${encodeURIComponent(req.params.id)}/logs`,
           qs: {
             include_totals: true
           },

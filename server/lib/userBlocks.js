@@ -6,7 +6,7 @@ import config from './config';
 export const requestUserBlocks = (token, userId) =>
   new Promise((resolve, reject) => {
     request
-      .get(`https://${config('AUTH0_ISSUER_DOMAIN')}/api/v2/user-blocks/${userId}`)
+      .get(`https://${config('AUTH0_DOMAIN')}/api/v2/user-blocks/${userId}`)
       .set('Authorization', `Bearer ${token}`)
       .set('Content-Type', 'application/json')
       .end((err, res) => {
@@ -22,7 +22,7 @@ export const requestUserBlocks = (token, userId) =>
 export const removeUserBlocks = (token, userId) =>
   new Promise((resolve, reject) => {
     request
-      .del(`https://${config('AUTH0_ISSUER_DOMAIN')}/api/v2/user-blocks/${userId}`)
+      .del(`https://${config('AUTH0_DOMAIN')}/api/v2/user-blocks/${userId}`)
       .set('Authorization', `Bearer ${token}`)
       .set('Content-Type', 'application/json')
       .end((err, res) => {

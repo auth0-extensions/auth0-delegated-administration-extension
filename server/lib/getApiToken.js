@@ -8,5 +8,5 @@ export default (req) => {
     return new Promise(resolve => resolve(req.user.access_token));
   }
 
-  return managementApi.getAccessTokenCached(config('AUTH0_ISSUER_DOMAIN'), config('AUTH0_CLIENT_ID'), config('AUTH0_CLIENT_SECRET'));
+  return managementApi.getAccessTokenCached(config('AUTH0_DOMAIN'), config('AUTH0_CLIENT_ID'), config('AUTH0_CLIENT_SECRET'));
 }
