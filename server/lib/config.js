@@ -6,7 +6,7 @@ const daeConfig = function (key) {
   }
 
   if (key === 'IS_APPLIANCE') {
-    return config('AUTH0_RTA') && config('AUTH0_RTA').replace('https://', '') === 'auth0.auth0.com';
+    return config('AUTH0_RTA') && config('AUTH0_RTA').replace('https://', '') !== 'auth0.auth0.com';
   }
 
   return config(key);
