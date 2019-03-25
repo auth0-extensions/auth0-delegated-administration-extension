@@ -68,7 +68,7 @@ export default (storage) => {
 
   // Allow end users to authenticate.
   api.use(middlewares.authenticateUsers.optional({
-    domain: config('AUTH0_ISSUER_DOMAIN'),
+    domain: config('AUTH0_CUSTOM_DOMAIN'),
     audience: config('EXTENSION_CLIENT_ID'),
     credentialsRequired: false,
     onLoginSuccess: (req, res, next) => {

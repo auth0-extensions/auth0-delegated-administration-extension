@@ -365,7 +365,7 @@ export default (storage, scriptManager) => {
    */
   api.post('/:id/password-reset', verifyUserAccess('reset:password', scriptManager), (req, res, next) => {
     const client = new auth0.AuthenticationClient({
-      domain: config('AUTH0_ISSUER_DOMAIN'),
+      domain: config('AUTH0_DOMAIN'),
       clientId: config('AUTH0_CLIENT_ID')
     });
 
