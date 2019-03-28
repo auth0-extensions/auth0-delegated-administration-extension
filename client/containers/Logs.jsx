@@ -34,7 +34,7 @@ class LogsContainer extends Component {
     this.props.fetchLogs(this.props.logs.nextPage);
   };
 
-  createToolbar(isBottom: false) {
+  createToolbar(isBottom = false) {
     const languageDictionary = this.props.languageDictionary;
     if (isBottom && (!this.props.logs.records || this.props.logs.records.size <= 20)) {
       return <div></div>;
