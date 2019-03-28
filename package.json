@@ -132,7 +132,7 @@
     "winston": "^2.2.0"
   },
   "devDependencies": {
-    "auth0-extensions-cli": "~1.0.9",
+    "auth0-extensions-cli": "github:auth0-extensions/auth0-extensions-cli#4.0",
     "autoprefixer": "^6.5.1",
     "babel-eslint": "7.2.3",
     "babel-loader": "7.0.0",
