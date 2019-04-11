@@ -86,6 +86,7 @@ jobs:
 
   deploy_review_app:
     working_directory: *workspace_root
+    <<: *node_container
 
     steps:
       - *attach_workspace
