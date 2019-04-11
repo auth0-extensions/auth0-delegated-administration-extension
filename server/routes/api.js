@@ -21,7 +21,7 @@ import users from './users';
 export default (storage) => {
   const scriptManager = new ScriptManager(storage);
   const managementApiClient = middlewares.managementApiClient({
-    domain: config('AUTH0_ISSUER_DOMAIN'),
+    domain: config('AUTH0_DOMAIN'),
     clientId: config('AUTH0_CLIENT_ID'),
     clientSecret: config('AUTH0_CLIENT_SECRET')
   });
@@ -47,13 +47,13 @@ export default (storage) => {
     if (!token) console.error('no token found');
 
     const promise = tools.managementApi.getClient({
-      domain: config('AUTH0_ISSUER_DOMAIN'),
+      domain: config('AUTH0_DOMAIN'),
       clientId: config('AUTH0_CLIENT_ID'),
       clientSecret: config('AUTH0_CLIENT_SECRET')
     })
       .then(auth0 =>
         auth0.users.get({ id: user.sub })
-          .then(userData => {
+          .then((userData) => {
             _.assign(user, userData);
             user.token = token;
             global.daeUser[user.sub] = user;
@@ -68,7 +68,7 @@ export default (storage) => {
 
   // Allow end users to authenticate.
   api.use(middlewares.authenticateUsers.optional({
-    domain: config('AUTH0_ISSUER_DOMAIN'),
+    domain: config('AUTH0_CUSTOM_DOMAIN'),
     audience: config('EXTENSION_CLIENT_ID'),
     credentialsRequired: false,
     onLoginSuccess: (req, res, next) => {
@@ -80,7 +80,6 @@ export default (storage) => {
           return next();
         })
         .catch(next);
-
     }
   }));
 
@@ -95,7 +94,7 @@ export default (storage) => {
       return addExtraUserInfo(getToken(req), req.user)
         .then((user) => {
           currentRequest.user = user;
-          currentRequest.user.scope = [constants.AUDITOR_PERMISSION, constants.USER_PERMISSION, constants.ADMIN_PERMISSION];
+          currentRequest.user.scope = [ constants.AUDITOR_PERMISSION, constants.USER_PERMISSION, constants.OPERATOR_PERMISSION, constants.ADMIN_PERMISSION ];
           return next();
         })
         .catch(next);

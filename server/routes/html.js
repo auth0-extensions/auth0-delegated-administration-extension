@@ -74,7 +74,8 @@ export default () => {
 
     const settings = {
       AUTH0_DOMAIN: config('AUTH0_DOMAIN'),
-      AUTH0_TOKEN_ISSUER: `https://${config('AUTH0_ISSUER_DOMAIN')}/`,
+      AUTH0_CUSTOM_DOMAIN: config('AUTH0_CUSTOM_DOMAIN'),
+      IS_APPLIANCE: config('IS_APPLIANCE'),
       AUTH0_CLIENT_ID: config('EXTENSION_CLIENT_ID'),
       EXTEND_URL: config('EXTEND_URL'),
       BASE_URL: urlHelpers.getBaseUrl(req),
