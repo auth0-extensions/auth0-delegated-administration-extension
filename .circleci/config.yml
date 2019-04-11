@@ -82,7 +82,6 @@ jobs:
           command: |
             npm install -g auth0-extensions-cli
       
-      - run
 
   deploy_review_app:
     working_directory: *workspace_root
