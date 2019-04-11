@@ -5,8 +5,7 @@
 version: 2
 
 references:
-  workspace_root: &workspace_root
-    ~/repo
+  workspace_root: &workspace_root ~/repo
 
   node_container: &node_container
     docker:
@@ -20,7 +19,7 @@ jobs:
   build_and_test:
     environment:
       CC_TEST_REPORTER_ID: 707f5959816d898ffc7176d49d2cd4f6b200c697460965a77d7af28ffdcf5cb6
-    
+
     working_directory: *workspace_root
     <<: *node_container
 
@@ -30,9 +29,9 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - npm-dependencies-{{ checksum "package-lock.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - npm-dependencies-
+            - npm-dependencies-{{ checksum "package-lock.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - npm-dependencies-
 
       - run:
           name: Install Code Climate Test Reporter
@@ -40,7 +39,7 @@ jobs:
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
 
-      - run: npm install      
+      - run: npm install
 
       # code climate requires before-build and after-build to be executed around test
       - run:
@@ -50,8 +49,13 @@ jobs:
             npm run test
             ./cc-test-reporter after-build --exit-code $?
 
-      - run: PR_NUMBER=${CIRCLE_PR_NUMBER:-${CIRCLE_PULL_REQUEST##*/}} npm run build
-  
+      - run: 
+          name: Build and Package
+          command: |
+            npm run build
+            npm run package
+
+
       - store_artifacts:
           path: ./dist
 
@@ -67,22 +71,27 @@ jobs:
             - dist/*
             - ./CHANGELOG.md
 
+  deploy: &deploy
+    working_directory: *workspace_root
+
+    steps:
+      - *attach_workspace
+
+      - run:
+          name: Install A0-ext CLI tools
+          command: |
+            npm install -g auth0-extensions-cli
+      
+      - run
+
   deploy_review_app:
     working_directory: *workspace_root
-    docker:
-      - image: circleci/python:2.7-jessie
 
     steps:
       - *attach_workspace
       - run:
-          name: Install awscli
-          command: sudo pip install awscli
-      - run:
-          name: Upload assets to S3
-          command: |
-            EXT_NAME=$(cat dist/webtask.json | jq .name -r)
-            aws s3 sync ./dist s3://extensions-review/"$EXT_NAME"-pr-"${CIRCLE_PR_NUMBER:-${CIRCLE_PULL_REQUEST##*/}}/assets" --delete
-            aws s3 sync ./dist s3://extensions-review/"$EXT_NAME"-pr-"${CIRCLE_PR_NUMBER:-${CIRCLE_PULL_REQUEST##*/}}" --delete --exclude="*" --include="$EXT_NAME.extension.*.js"
+          name: Deploy
+          command: npm run deploy --url 
 
   deploy:
     working_directory: *workspace_root
@@ -94,13 +103,13 @@ jobs:
 
     steps:
       - checkout
-      
+
       - *attach_workspace
 
       - run:
           name: Setup dependencies
           command: apk add --update --no-cache ruby ruby-irb ruby-rdoc
-      
+
       # Install Chandler for pulling release notes from changelogs: https://github.com/mattbrictson/chandler
       - run:
           name: Install Chandler
@@ -109,7 +118,7 @@ jobs:
       - run:
           name: Simulate Deploy
           command: ls ./dist
-      
+
       - run:
           name: Compress files
           command: tar -zcvf assets.tar.gz dist/
@@ -131,13 +140,14 @@ workflows:
       - build_and_test:
           filters:
             branches:
-                ignore: master
+              ignore: master
       - deploy_review_app:
           requires:
             - build_and_test
           filters:
             branches:
-                ignore: master
+              ignore: master
+          context: dev
   build_test_and_deploy:
     jobs:
       - build_and_test:
@@ -145,7 +155,7 @@ workflows:
             tags:
               only: /^v.*/
             branches:
-                only: master
+              only: master
       - deploy:
           requires:
             - build_and_test
@@ -154,4 +164,4 @@ workflows:
               ignore: /.*/
             tags:
               only: /^v.*/
-
+          context: prod
