@@ -40,11 +40,11 @@ module.exports = (cfg, storageProvider) => {
     secret: config('EXTENSION_SECRET'),
     audience: 'urn:delegated-admin',
     rta: config('AUTH0_RTA').replace('https://', ''),
-    domain: config('AUTH0_ISSUER_DOMAIN'),
+    domain: config('AUTH0_DOMAIN'),
     baseUrl: config('PUBLIC_WT_URL'),
     webtaskUrl: config('PUBLIC_WT_URL'),
     clientName: 'Delegated Administration',
-    noAccessToken : true,
+    noAccessToken: true,
     urlPrefix: '/admins',
     sessionStorageKey: 'delegated-admin:apiToken',
     scopes: 'read:clients delete:clients read:connections read:users update:users delete:users create:users read:logs read:device_credentials update:device_credentials delete:device_credentials delete:guardian_enrollments'

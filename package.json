@@ -1,6 +1,6 @@
 {
   "name": "auth0-delegated-admin",
-  "version": "3.5.0",
+  "version": "3.6.0",
   "description": "This extension allows non-dashboard administrators to manage (a subset of) users.",
   "engines": {
     "node": ">8.9"
@@ -11,7 +11,7 @@
     "validate": "a0-ext validate ./package.json",
     "package": "a0-ext package --client ./dist/client/ --out ./dist",
     "build": "npm run validate && npm run clean && npm run client:build && npm run extension:build && npm run package",
-    "deploy": "a0-ext deploy --package ./dist/package.zip",
+    "deploy": "a0-ext deploy --package ./dist/package.zip --url http://0.0.0.0:3000/api/extensions",
     "client:build": "a0-ext build:client ./client/app.jsx ./dist/client",
     "extension:build": "a0-ext build:server ./webtask.js ./dist && cp ./dist/auth0-delegated-admin.extension.$npm_package_version.js ./build/bundle.js && cp ./webtask.json ./dist/webtask.json",
     "serve:dev": "cross-env NODE_ENV=development nodemon -e js --ignore assets/app/ --ignore build/webpack/ --ignore client/ --ignore server/data.json --ignore node_modules/ ./build/webpack/server.js",
@@ -25,9 +25,11 @@
     "prepare": "npm run snyk-protect"
   },
   "keywords": [
-    "auth0"
+    "auth0",
+    "extension"
   ],
-  "author": "Sandrino Di Mattia",
+  "author": "Auth0",
+  "repository": "https://github.com/auth0-extensions/auth0-delegated-administration-extension",
   "license": "MIT",
   "dependencies": {
     "async": "^1.5.2",
@@ -89,7 +91,7 @@
     "@babel/polyfill": "^7.0.0",
     "@babel/preset-env": "^7.2.0",
     "@babel/register": "^7.0.0",
-    "auth0-extensions-cli": "github:auth0-extensions/auth0-extensions-cli",
+    "auth0-extensions-cli": "^4.0.0",
     "autoprefixer": "^6.5.1",
     "babel-eslint": "7.1.1",
     "babel-loader": "^8.0.4",

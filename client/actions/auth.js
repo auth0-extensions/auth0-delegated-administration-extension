@@ -4,19 +4,22 @@ import { push } from 'react-router-redux';
 
 import * as constants from '../constants';
 
-const issuer = window.config.AUTH0_TOKEN_ISSUER || `https://${window.config.AUTH0_DOMAIN}/`;
-
-const webAuth = new auth0.WebAuth({ // eslint-disable-line no-undef
-  domain: window.config.AUTH0_DOMAIN,
+const webAuthOptions = {
+  domain: window.config.AUTH0_CUSTOM_DOMAIN || window.config.AUTH0_DOMAIN,
   clientID: window.config.AUTH0_CLIENT_ID,
-  overrides: {
-    __tenant: issuer.substr(8).split('.')[0],
-    __token_issuer: issuer
-  },
   scope: 'openid roles',
   responseType: 'id_token',
   redirectUri: `${window.config.BASE_URL}/login`
-});
+};
+
+if (window.config.IS_APPLIANCE) {
+  webAuthOptions.overrides = {
+    __tenant: window.config.AUTH0_DOMAIN.split('.')[0],
+    __token_issuer: `https://${window.config.AUTH0_DOMAIN}/`
+  };
+}
+
+const webAuth = new auth0.WebAuth(webAuthOptions); // eslint-disable-line no-undef
 
 export function login(returnUrl, locale) {
   sessionStorage.setItem('delegated-admin:returnTo', returnUrl || '/users');
