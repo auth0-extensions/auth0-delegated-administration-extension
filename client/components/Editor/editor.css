@@ -324,7 +324,7 @@ span.CodeMirror-selectedtext { background: none; }
 
 .cm-s-default.CodeMirror {
   background-color: darken(#263238, 5%);
-  transition background-color: 0.3s ease-in-out
+  transition: background-color 0.3s ease-in-out
 }
 
 .cm-s-default.CodeMirror-focused {

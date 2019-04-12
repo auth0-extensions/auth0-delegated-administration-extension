@@ -1,14 +1,25 @@
 const path = require('path');
 const nconf = require('nconf');
-
 const logger = require('./server/lib/logger');
 
-// Initialize babel.
-require('babel-core/register')({
-  ignore: /node_modules/,
-  sourceMaps: !(process.env.NODE_ENV === 'production')
+// eslint-disable-next-line import/no-extraneous-dependencies
+require('@babel/register')({
+  ignore: [ /node_modules/ ],
+  sourceMaps: !(process.env.NODE_ENV === 'production'),
+  plugins: [
+    '@babel/plugin-proposal-export-default-from',
+    '@babel/plugin-proposal-object-rest-spread'
+  ],
+  presets: [
+    [ '@babel/env', {
+      targets: {
+        node: 'current'
+      }
+    } ]
+  ]
 });
-require('babel-polyfill');
+// eslint-disable-next-line import/no-extraneous-dependencies
+require('@babel/polyfill');
 
 // Handle uncaught.
 process.on('uncaughtException', (err) => {
@@ -21,21 +32,20 @@ nconf
   .env()
   .file(path.join(__dirname, './server/config.json'))
   .defaults({
-    DATA_CACHE_MAX_AGE: 1000 * 10,
     NODE_ENV: 'development',
     HOSTING_ENV: 'default',
-    PORT: 3000,
-    TITLE: 'User Management'
+    PORT: 3001,
+    WT_URL: 'http://localhost:3000'
   });
 
 // Start the server.
 const app = require('./server')((key) => nconf.get(key), null);
-
 const port = nconf.get('PORT');
+
 app.listen(port, (error) => {
   if (error) {
     logger.error(error);
   } else {
-    logger.info(`Express listening on http://localhost:${port}`);
+    logger.info(`Listening on http://localhost:${port}.`);
   }
 });

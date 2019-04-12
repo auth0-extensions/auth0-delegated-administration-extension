@@ -86,7 +86,7 @@ describe('#Client-Components-Users-UserFormField', () => {
       expect(field.prop('validate').length).to.deep.equal(validation.length);
       field.prop('validate').forEach(func => expect(func).a('function'));
     } else {
-      expect(!field.prop('validate') || field.prop('validate').length === 0).to.be.truthy;
+      expect(!field.prop('validate') || field.prop('validate').length === 0).to.be.true;
     }
   };
 
