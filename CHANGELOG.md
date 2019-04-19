@@ -1,64 +1,82 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.2] - 2019-04-20
+
+### Updated
+
+- Build, deploy and release process update.
 
 ## [3.6.1] - 2019-04-19
 
 ### Fixed
+
 - `PUBLIC_WT_URL` generation fixed for specific clusters
 
 ## [3.6.0] - 2019-04-01
 
 ### Added
+
 - Custom domains support
 
 ## [3.5.0] - 2019-03-20
 
 ### Added
+
 - New role - `Delegated Admin - Operator`. Users with this role have access to users management and logs, but don't have access to the extension configuration.
 
 ### Fixed
+
 - Fixed bug which doesn't allow to override client field for `reset password` action
 
 ## [3.4.5] - 2019-02-21
 
 ### Added
+
 - Added new log types
 
 ## [3.4.4] - 2019-02-11
 
 ### Fixed
+
 - Create user with empty `settings query` bug fixed.
 
 ## [3.4.3] - 2019-01-24
 
 ### Added
+
 - `canCreateUser` property added to the `settings` hook. It is `true` by default.
 
 ## [3.4.2] - 2019-01-17
 
 ### Fixed
+
 - `Remove MFA` for `any` provider.
 
 ## [3.4.1] - 2019-01-04
 
 ### Fixed
+
 - `Connection` field will be hidden, if there is only one connection. #155
 - `Connection` field now properly showing connection name, if there are more than one connection.
 - default `returnTo` path for auth
 
 ### Changed
+
 - update to `auth0.js v9.8.2`
 
 ## [3.4.0] - 2018-10-25
 
 ### Added
+
 - Ability to remove menu items from the User Details action menu. #133
 
 ### Changed
+
 - Added `value` as second argument of userField display function. #132
 - Fixed userField edit.display function. #132
 - Builds are now done on node 8. #134
@@ -66,14 +84,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.3.0] - 2018-10-22
 
 ### Added
-- Add `InputVirtualizedSelect` input component for custom fields. #131
 
+- Add `InputVirtualizedSelect` input component for custom fields. #131
 
 ## [3.2.2] - 2018-10-9
 
 ### Changed
-- Dropdown select fields will show a placeholder that lets the user know that they need to select an option, even if its one option that exist. #124
 
+- Dropdown select fields will show a placeholder that lets the user know that they need to select an option, even if its one option that exist. #124
 
 ## [3.0.0] - 2018-06-04
 
@@ -97,51 +115,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changes
 
- - Added new audit log types
- - Fixed unknown logtype message
-
+- Added new audit log types
+- Fixed unknown logtype message
 
 ## [2.4.6] - 2017-09-07
 
 ### Changes
 
- - Removed `group` scope when authenticating
+- Removed `group` scope when authenticating
 
 ## [2.4.4] - 2017-06-15
 
 ### Changes
 
- - Added option to use federated logout
- - Fixed issue with hooks that seemed to call `require(.)`
+- Added option to use federated logout
+- Fixed issue with hooks that seemed to call `require(.)`
 
 ## [2.4.3] - 2017-06-06
 
 ### Changes
 
- - Update auth0.js and make it use the v2 logout endpoint
+- Update auth0.js and make it use the v2 logout endpoint
 
 ## [2.4.2] - 2017-06-06
 
 ### Fixed
 
- - Improve logout in Auth0
+- Improve logout in Auth0
 
 ## [2.4.1] - 2017-05-30
 
 ### Fixed
 
- - Issue with extension startup
+- Issue with extension startup
 
 ## [2.4.0] - 2017-05-30
 
 ### Fixed
 
- - Always show user actions, also when database connections are not available
+- Always show user actions, also when database connections are not available
 
 ### Changes
 
- - Added users pagination.
- - Create user by default with memberships in app_metadata in case the Create script is not available.
+- Added users pagination.
+- Create user by default with memberships in app_metadata in case the Create script is not available.
 
 ## [2.3.4] - 2017-01-20
 
