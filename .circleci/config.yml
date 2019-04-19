@@ -49,12 +49,11 @@ jobs:
             npm run test
             ./cc-test-reporter after-build --exit-code $?
 
-      - run: 
+      - run:
           name: Build and Package
           command: |
             npm run build
             npm run package
-
 
       - store_artifacts:
           path: ./dist
@@ -71,8 +70,9 @@ jobs:
             - dist/*
             - ./CHANGELOG.md
 
-  deploy: &deploy
+  deploy:
     working_directory: *workspace_root
+    <<: *node_container
 
     steps:
       - *attach_workspace
@@ -82,7 +82,12 @@ jobs:
           command: |
             npm install -g auth0-extensions-cli
 
-  deploy:
+      - run:
+          name: Deploy
+          command: |
+            a0-ext deploy --url https://auth0-extensions-api.herokuapp.com --token ${DEPLOY_TOKEN}
+
+  release:
     working_directory: *workspace_root
     docker:
       - image: cibuilds/github:0.12
@@ -104,14 +109,6 @@ jobs:
           name: Install Chandler
           command: gem install chandler
 
-      - run:
-          name: Simulate Deploy
-          command: ls ./dist
-
-      - run:
-          name: Compress files
-          command: tar -zcvf assets.tar.gz dist/
-
       # Get version from package.json using jq (comes with cibuilds/base)
       # Create a github release using the CHANGELOG.md that matches the version number as the content
       # Uploads the asset to the release
@@ -120,10 +117,34 @@ jobs:
           command: |
             VERSION=v$(cat dist/webtask.json | jq .version -r)
             chandler push ${VERSION}
-            ghr -t ${CHANDLER_GITHUB_API_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} ${VERSION} ./assets.tar.gz
+            ghr -t ${CHANDLER_GITHUB_API_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} ${VERSION} ./package.zip
 
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build_and_test
+  build_test_and_deploy:
+    jobs:
+      - build_and_test:
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              only: master
+      - deploy:
+          requires:
+            - build_and_test
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+      - release:
+          requires:
+            - deploy
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
