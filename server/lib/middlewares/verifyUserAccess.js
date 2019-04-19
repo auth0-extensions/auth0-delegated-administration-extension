@@ -2,7 +2,7 @@ import Promise from 'bluebird';
 import { NotFoundError } from 'auth0-extension-tools';
 
 
-module.exports = (action, scriptManager) => (req, res, next) =>
+export default (action, scriptManager) => (req, res, next) =>
   req.auth0.users.get({ id: req.params.id })
     .then(user => {
       if (!user) {

@@ -14,7 +14,7 @@ import config from './lib/config';
 import logger from './lib/logger';
 import { errorHandler } from './lib/middlewares';
 
-module.exports = (cfg, storageProvider) => {
+export default function (cfg, storageProvider) {
   config.setProvider(cfg);
 
   const storage = storageProvider
