@@ -80,7 +80,7 @@ jobs:
       - run:
           name: Install A0-ext CLI tools
           command: |
-            npm install -g auth0-extensions-cli
+            sudo npm install -g auth0-extensions-cli
 
       - run:
           name: Deploy
