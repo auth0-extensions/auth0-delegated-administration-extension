@@ -85,7 +85,7 @@ jobs:
       - run:
           name: Deploy
           command: |
-            a0-ext deploy --url https://auth0-extensions-api.herokuapp.com --apiKey ${DEPLOY_TOKEN}
+            a0-ext deploy --url https://auth0-extensions-api.herokuapp.com/api/extensions --apiKey ${DEPLOY_TOKEN}
 
   release:
     working_directory: *workspace_root
