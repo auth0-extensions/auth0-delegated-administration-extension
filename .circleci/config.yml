@@ -56,7 +56,7 @@ jobs:
             npm run package
 
       - store_artifacts:
-          path: ./dist
+          path: ./dist/package.zip
 
       - save_cache:
           name: Save npm packages to cache
