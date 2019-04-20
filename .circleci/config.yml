@@ -68,6 +68,7 @@ jobs:
           root: *workspace_root
           paths:
             - dist/*
+            - ./package.json
             - ./CHANGELOG.md
 
   deploy:
@@ -115,9 +116,9 @@ jobs:
       - run:
           name: Create Github Release
           command: |
-            VERSION=v$(cat dist/webtask.json | jq .version -r)
+            VERSION=v$(cat ./package.json | jq .version -r)
             chandler push ${VERSION}
-            ghr -t ${CHANDLER_GITHUB_API_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} ${VERSION} ./package.zip
+            ghr -t ${CHANDLER_GITHUB_API_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} ${VERSION} ./dist/package.zip
 
 workflows:
   version: 2
