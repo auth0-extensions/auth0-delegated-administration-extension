@@ -300,12 +300,16 @@ export default (storage, scriptManager) => {
                 return accessToken;
               }))
           .then((accessToken) => {
-            if (data.user.multifactor && data.user.multifactor.indexOf('guardian') >= 0) {
+            const checkGuardian = !!data.user.multifactor_last_modified
+              || (data.user.multifactor && data.user.multifactor.indexOf('guardian') >= 0);
+            if (checkGuardian) {
               return requestGuardianEnrollments(accessToken, req.params.id)
                 .then((enrollments) => {
-                  if (!enrollments || !enrollments.length) {
+                  if (data.user.multifactor && (!enrollments || !enrollments.length)) {
                     data.user.multifactor = data.user.multifactor.filter(item => item !== 'guardian');
                     data.user.multifactor = data.user.multifactor.length ? data.user.multifactor : null;
+                  } else if (!data.user.multifactor && enrollments) {
+                    data.user.multifactor = [ 'guardian' ];
                   }
 
                   return res.json(data);

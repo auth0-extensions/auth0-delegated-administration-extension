@@ -352,6 +352,10 @@ describe('#users router', () => {
 
     it('should return user`s record 3', (done) => {
       nock(domain)
+        .get('/api/v2/users/3/enrollments')
+        .reply(200, []);
+
+      nock(domain)
         .get(/user-blocks\/3/)
         .reply(200, { blocked_for: [ 'yummy' ] });
 
@@ -386,6 +390,28 @@ describe('#users router', () => {
         .expect(400)
         .end((err) => {
           if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should return user with guardian mfa', (done) => {
+      nock(domain)
+        .get(/user-blocks\/3/)
+        .reply(200, { blocked_for: [ ] });
+
+      nock(domain)
+        .get('/api/v2/users/3/enrollments')
+        .reply(200, [ { id: 'pid01' } ]);
+
+      request(app)
+        .get('/users/3')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.body.user.email).to.equal('user3@example.com');
+          expect(res.body.user.multifactor).to.be.an('array');
+          expect(res.body.user.multifactor[0]).to.equal('guardian');
           done();
         });
     });

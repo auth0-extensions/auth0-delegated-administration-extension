@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Build, deploy and release process update.
 
+## [3.6.2] - 2019-04-25
+
+### Fixed
+- `Remove MFA` for unconfirmed enrollments
+
 ## [3.6.1] - 2019-04-19
 
 ### Fixed
