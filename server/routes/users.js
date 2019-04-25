@@ -308,7 +308,7 @@ export default (storage, scriptManager) => {
                   if (data.user.multifactor && (!enrollments || !enrollments.length)) {
                     data.user.multifactor = data.user.multifactor.filter(item => item !== 'guardian');
                     data.user.multifactor = data.user.multifactor.length ? data.user.multifactor : null;
-                  } else if (enrollments && !data.user.multifactor) {
+                  } else if (!data.user.multifactor && enrollments) {
                     data.user.multifactor = [ 'guardian' ];
                   }
 
