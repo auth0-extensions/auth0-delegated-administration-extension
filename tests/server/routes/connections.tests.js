@@ -50,7 +50,7 @@ describe('#connections router', () => {
         .expect(200)
         .end((err, res) => {
           if (err) throw err;
-          expect(res.body).toEqual(defaultConnections.slice(0, 2));
+          expect(res.body.length).toEqual(2);
           done();
         });
     });
@@ -78,7 +78,7 @@ describe('#connections router', () => {
         .expect(200)
         .end((err, res) => {
           if (err) throw err;
-          expect(res.body).toEqual(defaultConnections);
+          expect(res.body.length).toEqual(defaultConnections.length);
           done();
         });
     });
@@ -92,7 +92,31 @@ describe('#connections router', () => {
         .expect(200)
         .end((err, res) => {
           if (err) throw err;
-          expect(res.body).toEqual(defaultConnections);
+          expect(res.body.length).toEqual(defaultConnections.length);
+          done();
+        });
+    });
+
+    it('should return connections only with expected fields', (done) => {
+      storage.data = {};
+
+      request(app)
+        .get('/connections')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end((err, res) => {
+          if (err) throw err;
+
+          res.body.forEach(client => {
+            expect(Object.keys(client).length).toExist().toBeGreaterThanOrEqualTo(3).toBeLessThanOrEqualTo(4);
+            expect(client).toIncludeKeys([ 'id', 'name', 'strategy' ]);
+
+            const options = client.options;
+            if (options) {
+              expect(Object.keys(options)).toEqual([ 'requires_username' ]);
+            }
+          });
+
           done();
         });
     });

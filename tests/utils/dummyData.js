@@ -21,9 +21,17 @@ export const defaultUsers = [
 ];
 
 export const defaultConnections = [
-  { name: 'conn-a', strategy: 'auth0' },
-  { name: 'conn-b', strategy: 'auth0' },
-  { name: 'conn-c', strategy: 'auth0' }
+  { id: '1', name: 'conn-a', strategy: 'auth0', options: { requires_username: false } },
+  { id: '2', name: 'conn-b', strategy: 'auth0', options: { requires_username: true, blah_blah: 'dummy' } },
+  { id: '3', name: 'conn-c', strategy: 'auth0', options: { requires_username: false, blah_blah: 'dummy' } },
+  { id: '4', name: 'conn-c', strategy: 'auth0' }
+];
+
+export const defaultApplications = [
+  { client_id: '1', name: 'client-1', app_type: 'spa', someprop: 'dummy' },
+  { client_id: '2', name: 'client-2', app_type: 'regular_web', callbacks: 'https://callback' },
+  { client_id: '3', name: 'client-3', app_type: 'native' },
+  { client_id: '4', name: 'client-4', app_type: 'm2m' }
 ];
 
 export const defaultScripts = {

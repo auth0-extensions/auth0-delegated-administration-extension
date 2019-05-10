@@ -29,6 +29,14 @@ export default (scriptManager) => {
             return result;
           });
       })
+      // need to filter out everything except:
+      //  id, name, options.requires_username
+      .then(connections => connections.map(conn => ({
+        id: conn.id,
+        name: conn.name,
+        strategy: conn.strategy,
+        options: conn.options ? { requires_username: conn.options.requires_username } : null
+      })))
       .then(connections => res.json(connections))
       .catch(next);
   });
