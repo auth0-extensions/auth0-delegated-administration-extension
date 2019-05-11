@@ -24,6 +24,15 @@ jobs:
     <<: *node_container
 
     steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - npm-dependencies-{{ checksum "package-lock.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - npm-dependencies-
+
       - run:
           name: Install FOSSA
           command: |
@@ -34,15 +43,6 @@ jobs:
           command: |
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
-
-      - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - npm-dependencies-{{ checksum "package-lock.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - npm-dependencies-
 
       - run: npm install
 
