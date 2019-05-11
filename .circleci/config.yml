@@ -26,7 +26,6 @@ jobs:
     steps:
       - checkout
 
-      # Download and cache dependencies
       - restore_cache:
           keys:
             - npm-dependencies-{{ checksum "package-lock.json" }}
