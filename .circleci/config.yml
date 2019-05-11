@@ -52,6 +52,9 @@ jobs:
       - run:
           name: FOSSA Analyze
           command: fossa analyze
+      - run:
+          name: FOSSA Test
+          command: fossa test
 
       # code climate requires before-build and after-build to be executed around test
       - run:
