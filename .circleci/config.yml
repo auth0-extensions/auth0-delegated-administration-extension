@@ -46,6 +46,11 @@ jobs:
 
       - run: npm install
 
+      - run:
+        command: fossa init
+      - run:
+        command: fossa analyze
+
       # code climate requires before-build and after-build to be executed around test
       - run:
           name: Run Tests
