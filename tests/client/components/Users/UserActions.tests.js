@@ -142,7 +142,7 @@ describe('#Client-Components-UserActions', () => {
     checkMenuItems(menuItems, targets);
   });
 
-  it('should not render reset password, if disabled in userFields', () => {
+  it.only('should not render reset password, if disabled in userFields', () => {
     const userFields = [
       { property: 'password', edit: false },
       { property: 'resetPassword', edit: true }
@@ -153,7 +153,6 @@ describe('#Client-Components-UserActions', () => {
       "Change Email": changeEmail(),
       "Change Username": changeUsername(),
       "Reset Password": resetPassword(),
-      "Change Profile": changeFields(),
       "Delete User": deleteUser(),
       "Resend Verification Email": resendVerificationEmail()
     };
