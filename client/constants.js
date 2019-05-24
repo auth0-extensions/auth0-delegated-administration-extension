@@ -250,3 +250,6 @@ export const FETCH_LANGUAGE_DICTIONARY_FULFILLED = 'FETCH_LANGUAGE_DICTIONARY_FU
 
 // Access level constants
 export const SUPER_ADMIN = 2;
+
+// The list of reserved user fields that must not be rendered in the custom fields edit form
+export const RESERVED_USER_FIELDS = [ 'username', 'memberships', 'connection', 'password', 'email', 'repeatPassword', 'resetPassword' ];

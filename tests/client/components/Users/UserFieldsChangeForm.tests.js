@@ -73,7 +73,12 @@ describe('#Client-Components-UserFieldsChangeForm', () => {
   });
 
   it('should not render if the custom fields dont edit', () => {
-    const provider = renderComponent({}, [{ property: 'do.not.edit.me', edit: false }, { property: 'do.not.edit.me.either' }]);
+    const provider = renderComponent({}, [ { property: 'do.not.edit.me', edit: false }, { property: 'do.not.edit.me.either' } ]);
+    checkForm(provider, false);
+  });
+
+  it('should not render reserved fields', () => {
+    const provider = renderComponent({}, [ { property: 'password' } ]);
     checkForm(provider, false);
   });
 

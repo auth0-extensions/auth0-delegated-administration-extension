@@ -6,6 +6,8 @@ import { reduxForm } from 'redux-form';
 
 import UserCustomFormFields from './UserCustomFormFields';
 
+import { RESERVED_USER_FIELDS } from '../../constants';
+
 class UserFieldsChangeForm extends Component {
   static propTypes = {
     initialValues: PropTypes.object,
@@ -15,19 +17,17 @@ class UserFieldsChangeForm extends Component {
     submitting: PropTypes.bool,
     customFields: PropTypes.array,
     languageDictionary: PropTypes.object,
-    loading: PropTypes.bool,
+    loading: PropTypes.bool
   };
 
   render() {
-
     const fields = this.props.customFields || [];
 
     if (fields.length === 0) return null;
 
     const languageDictionary = this.props.languageDictionary || {};
 
-    const ignoreFields = [ 'username', 'memberships', 'connection', 'password', 'email', 'repeatPassword' ];
-    const filteredCustomFields = _.filter(fields, field => !_.includes(ignoreFields, field.property) && field.edit);
+    const filteredCustomFields = _.filter(fields, field => !_.includes(RESERVED_USER_FIELDS, field.property) && field.edit);
 
     if (filteredCustomFields.length === 0) return null;
 
@@ -48,7 +48,7 @@ class UserFieldsChangeForm extends Component {
             {languageDictionary.cancelButtonText || 'Cancel'}
           </Button>
           <Button bsSize="large" bsStyle="primary" disabled={loading} onClick={this.props.handleSubmit}>
-           {loading ? languageDictionary.savingText || 'Saving....' : languageDictionary.updateButtonText || 'Update'}
+            {loading ? languageDictionary.savingText || 'Saving....' : languageDictionary.updateButtonText || 'Update'}
           </Button>
         </Modal.Footer>
       </div>
