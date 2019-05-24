@@ -142,7 +142,7 @@ describe('#Client-Components-UserActions', () => {
     checkMenuItems(menuItems, targets);
   });
 
-  it.only('should not render reset password, if disabled in userFields', () => {
+  it('should not render reset password, if disabled in userFields', () => {
     const userFields = [
       { property: 'password', edit: false },
       { property: 'resetPassword', edit: true }
