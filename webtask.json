@@ -1,7 +1,7 @@
 {
   "title": "Delegated Administration Dashboard",
   "name": "auth0-delegated-admin",
-  "version": "3.6.2",
+  "version": "3.6.3",
   "author": "auth0",
   "useHashName": false,
   "description": "This extension allows non-dashboard administrators to manage (a subset of) users.",
