@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { MenuItem, DropdownButton } from 'react-bootstrap';
 import _ from 'lodash';
 import { removeBlockedIPs } from "../../reducers/removeBlockedIPs";
+import { RESERVED_USER_FIELDS } from '../../constants';
 
 export default class UserActions extends Component {
   static propTypes = {
@@ -85,7 +86,7 @@ export default class UserActions extends Component {
     }
 
     /* Only display this if there are editable fields */
-    const fieldsWithEdit = _.filter(this.props.userFields, field => field.edit);
+    const fieldsWithEdit = _.filter(this.props.userFields, field => !_.includes(RESERVED_USER_FIELDS, field.property) && field.edit);
     if (fieldsWithEdit.length <= 0) return null;
 
     return (

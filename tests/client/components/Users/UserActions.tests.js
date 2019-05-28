@@ -153,7 +153,6 @@ describe('#Client-Components-UserActions', () => {
       "Change Email": changeEmail(),
       "Change Username": changeUsername(),
       "Reset Password": resetPassword(),
-      "Change Profile": changeFields(),
       "Delete User": deleteUser(),
       "Resend Verification Email": resendVerificationEmail()
     };
