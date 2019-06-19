@@ -13,8 +13,8 @@ const initialState = {
   pages: 1,
   searchValue: '',
   selectedFilter: '',
-  sortProperty: 'last_login',
-  sortOrder: -1
+  sortProperty: 'name',
+  sortOrder: 1
 };
 
 describe('users reducer', () => {
@@ -107,8 +107,8 @@ describe('users reducer', () => {
         pages: 1,
         searchValue: '',
         selectedFilter: '',
-        sortProperty: 'last_login',
-        sortOrder: -1
+        sortProperty: 'name',
+        sortOrder: 1
       }
     );
   });
@@ -172,8 +172,8 @@ describe('users reducer', () => {
         pages: 1,
         searchValue: '',
         selectedFilter: undefined,
-        sortProperty: 'last_login',
-        sortOrder: -1
+        sortProperty: 'name',
+        sortOrder: 1
       }
     );
   });

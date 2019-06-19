@@ -13,8 +13,8 @@ const initialState = {
   pages: 1,
   selectedFilter: '',
   searchValue: '',
-  sortProperty: 'last_login',
-  sortOrder: -1
+  sortProperty: 'name',
+  sortOrder: 1
 };
 
 export const users = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export

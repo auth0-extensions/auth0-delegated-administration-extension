@@ -196,7 +196,7 @@ export default (storage, scriptManager) => {
 
     const sort = req.query.sortProperty && req.query.sortOrder
       ? `${req.query.sortProperty}:${req.query.sortOrder}`
-      : 'last_login:-1';
+      : 'name:1';
 
     scriptManager.execute('filter', filterContext)
       .then((filter) => {
