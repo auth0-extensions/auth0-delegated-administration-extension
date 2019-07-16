@@ -39,8 +39,8 @@ const userLogs = createReducer(fromJS(initialState.logs), {
   [constants.FETCH_USER_LOGS_FULFILLED]: (state, action) =>
     state.merge({
       loading: false,
-      records: fromJS(typeof action.payload.data.logs !== 'undefined' ?
-        action.payload.data.logs.map(log => {
+      records: fromJS(typeof action.payload.data !== 'undefined' ?
+        action.payload.data.map(log => {
           log.time_ago = moment(log.date).fromNow();
           log.shortType = log.type;
           log.type = logTypes[log.type];

@@ -90,27 +90,24 @@ describe('logs reducer', () => {
       logs(initialState, {
         type: constants.FETCH_LOGS_FULFILLED,
         payload: {
-          data: {
-            total: 100,
-            logs: [
-              {
-                _id: '49559553682563810286559514517590841916612030849441857538',
-                client_name: 'My App',
-                connection: 'Username-Password-Authentication',
-                date: '2016-09-26T13:03:50.703Z',
-                type: 'custom_type',
-                user_name: 'test@mail.com'
-              },
-              {
-                _id: '49559553682563810286559514516535449676088458549131214850',
-                client_name: 'My App',
-                connection: 'Username-Password-Authentication',
-                date: '2016-09-26T13:03:36.005Z',
-                type: 's',
-                user_name: 'test@mail.com'
-              }
-            ]
-          }
+          data: [
+            {
+              _id: '49559553682563810286559514517590841916612030849441857538',
+              client_name: 'My App',
+              connection: 'Username-Password-Authentication',
+              date: '2016-09-26T13:03:50.703Z',
+              type: 'custom_type',
+              user_name: 'test@mail.com'
+            },
+            {
+              _id: '49559553682563810286559514516535449676088458549131214850',
+              client_name: 'My App',
+              connection: 'Username-Password-Authentication',
+              date: '2016-09-26T13:03:36.005Z',
+              type: 's',
+              user_name: 'test@mail.com'
+            }
+          ]
         },
         meta: {
           page: 1
@@ -133,7 +130,7 @@ describe('logs reducer', () => {
                 color: '#FFA500'
               }
             },
-            user_name: 'test@mail.com',
+            user_name: 'test@mail.com'
           },
           {
             _id: '49559553682563810286559514516535449676088458549131214850',
@@ -148,11 +145,10 @@ describe('logs reducer', () => {
                 color: 'green'
               }
             },
-            user_name: 'test@mail.com',
+            user_name: 'test@mail.com'
           }
         ],
         currentRecord: null,
-        total: 100,
         nextPage: 2
       }
     );
