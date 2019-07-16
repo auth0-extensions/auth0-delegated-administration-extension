@@ -1,6 +1,6 @@
 {
   "name": "auth0-delegated-admin",
-  "version": "3.6.4",
+  "version": "4.0.0",
   "description": "This extension allows non-dashboard administrators to manage (a subset of) users.",
   "engines": {
     "node": ">8.9"
