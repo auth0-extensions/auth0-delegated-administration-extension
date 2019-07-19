@@ -91,7 +91,7 @@
     "@babel/polyfill": "^7.0.0",
     "@babel/preset-env": "^7.2.0",
     "@babel/register": "^7.0.0",
-    "auth0-extensions-cli": "^4.0.1",
+    "auth0-extensions-cli": "^4.0.3",
     "autoprefixer": "^6.5.1",
     "babel-eslint": "7.1.1",
     "babel-loader": "^8.0.4",
