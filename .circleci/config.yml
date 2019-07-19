@@ -4,24 +4,16 @@
 #
 version: 2
 
-references:
-  workspace_root: &workspace_root ~/repo
-
-  node_container: &node_container
-    docker:
-      - image: circleci/node:8.9
-
-  attach_workspace: &attach_workspace
-    attach_workspace:
-      at: *workspace_root
+defaults: &defaults
+  working_directory: ~/repo
+  docker:
+    - image: auth0extensions/ci-node:extensions
 
 jobs:
   build_and_test:
+    <<: *defaults
     environment:
       CC_TEST_REPORTER_ID: 707f5959816d898ffc7176d49d2cd4f6b200c697460965a77d7af28ffdcf5cb6
-
-    working_directory: *workspace_root
-    <<: *node_container
 
     steps:
       - checkout
@@ -37,17 +29,11 @@ jobs:
           command: |
             curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | bash
 
-      - run:
-          name: Install Code Climate Test Reporter
-          command: |
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
-
       - run: npm install
 
-      - run:
-          name: FOSSA Init
-          command: fossa init
+      # - run:
+      #     name: FOSSA Init
+      #     command: fossa init
       # - run:
           # name: FOSSA Analyze
           # command: fossa analyze
@@ -80,59 +66,18 @@ jobs:
 
       - persist_to_workspace:
           root: *workspace_root
-          paths:
-            - dist/*
-            - ./package.json
-            - ./CHANGELOG.md
+          paths: .
 
   deploy:
-    working_directory: *workspace_root
-    <<: *node_container
-
+    <<: *defaults
     steps:
-      - *attach_workspace
-
-      - run:
-          name: Install A0-ext CLI tools
-          command: |
-            sudo npm install -g auth0-extensions-cli
+      - attach_workspace:
+          at: ~/repo
 
       - run:
           name: Deploy
           command: |
             a0-ext deploy --url https://auth0-extensions-api.herokuapp.com/api/extensions --apiKey ${DEPLOY_TOKEN}
-
-  release:
-    working_directory: *workspace_root
-    docker:
-      - image: cibuilds/github:0.12
-        environment:
-          RUBY_VERSION: 2.5
-          BUNDLE_SILENCE_ROOT_WARNING: true
-
-    steps:
-      - checkout
-
-      - *attach_workspace
-
-      - run:
-          name: Setup dependencies
-          command: apk add --update --no-cache ruby ruby-irb ruby-rdoc
-
-      # Install Chandler for pulling release notes from changelogs: https://github.com/mattbrictson/chandler
-      - run:
-          name: Install Chandler
-          command: gem install chandler
-
-      # Get version from package.json using jq (comes with cibuilds/base)
-      # Create a github release using the CHANGELOG.md that matches the version number as the content
-      # Uploads the asset to the release
-      - run:
-          name: Create Github Release
-          command: |
-            VERSION=v$(cat ./package.json | jq .version -r)
-            chandler push ${VERSION}
-            ghr -t ${CHANDLER_GITHUB_API_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} ${VERSION} ./dist/package.zip
 
 workflows:
   version: 2
@@ -150,14 +95,6 @@ workflows:
       - deploy:
           requires:
             - build_and_test
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
-      - release:
-          requires:
-            - deploy
           filters:
             branches:
               ignore: /.*/
