@@ -4,8 +4,11 @@
 #
 version: 2
 
+references:
+  workspace_root: &workspace_root ~/repo
+
 defaults: &defaults
-  working_directory: ~/repo
+  working_directory: *workspace_root
   docker:
     - image: auth0extensions/ci-node:extensions
 
@@ -35,11 +38,11 @@ jobs:
       #     name: FOSSA Init
       #     command: fossa init
       # - run:
-          # name: FOSSA Analyze
-          # command: fossa analyze
+      # name: FOSSA Analyze
+      # command: fossa analyze
       # - run:
-          # name: FOSSA Test
-          # command: fossa test
+      # name: FOSSA Test
+      # command: fossa test
 
       # code climate requires before-build and after-build to be executed around test
       - run:
@@ -72,7 +75,7 @@ jobs:
     <<: *defaults
     steps:
       - attach_workspace:
-          at: ~/repo
+          at: *workspace_root
 
       - run:
           name: Deploy
