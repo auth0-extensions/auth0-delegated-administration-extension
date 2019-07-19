@@ -100,26 +100,24 @@ describe('user reducer', () => {
       user(initialState, {
         type: constants.FETCH_USER_LOGS_FULFILLED,
         payload: {
-          data: {
-            logs: [
-              {
-                _id: '49559553682563810286559514517590841916612030849441857538',
-                client_name: 'My App',
-                connection: 'Username-Password-Authentication',
-                date: '2016-09-26T13:03:50.703Z',
-                type: 's',
-                user_name: 'test@mail.com'
-              },
-              {
-                _id: '49559553682563810286559514516535449676088458549131214850',
-                client_name: 'My App',
-                connection: 'Username-Password-Authentication',
-                date: '2016-09-26T13:03:36.005Z',
-                type: 's',
-                user_name: 'test@mail.com'
-              }
-            ]
-          }
+          data: [
+            {
+              _id: '49559553682563810286559514517590841916612030849441857538',
+              client_name: 'My App',
+              connection: 'Username-Password-Authentication',
+              date: '2016-09-26T13:03:50.703Z',
+              type: 's',
+              user_name: 'test@mail.com'
+            },
+            {
+              _id: '49559553682563810286559514516535449676088458549131214850',
+              client_name: 'My App',
+              connection: 'Username-Password-Authentication',
+              date: '2016-09-26T13:03:36.005Z',
+              type: 's',
+              user_name: 'test@mail.com'
+            }
+          ]
         }
       }).toJSON()
     ).toEqual(
@@ -182,26 +180,24 @@ describe('user reducer', () => {
       user(initialState, {
         type: constants.FETCH_USER_LOGS_FULFILLED,
         payload: {
-          data: {
-            logs: [
-              {
-                _id: '49559553682563810286559514517590841916612030849441857538',
-                client_name: 'My App',
-                connection: 'Username-Password-Authentication',
-                date: '2016-09-26T13:03:50.703Z',
-                type: 's',
-                user_name: 'test@mail.com'
-              },
-              {
-                _id: '49559553682563810286559514516535449676088458549131214850',
-                client_name: 'My App',
-                connection: 'Username-Password-Authentication',
-                date: '2016-09-26T13:03:36.005Z',
-                type: 'custom_type',
-                user_name: 'test@mail.com'
-              }
-            ]
-          }
+          data: [
+            {
+              _id: '49559553682563810286559514517590841916612030849441857538',
+              client_name: 'My App',
+              connection: 'Username-Password-Authentication',
+              date: '2016-09-26T13:03:50.703Z',
+              type: 's',
+              user_name: 'test@mail.com'
+            },
+            {
+              _id: '49559553682563810286559514516535449676088458549131214850',
+              client_name: 'My App',
+              connection: 'Username-Password-Authentication',
+              date: '2016-09-26T13:03:36.005Z',
+              type: 'custom_type',
+              user_name: 'test@mail.com'
+            }
+          ]
         }
       }).toJSON()
     ).toEqual(
@@ -264,7 +260,7 @@ describe('user reducer', () => {
       user(initialState, {
         type: constants.FETCH_USER_LOGS_FULFILLED,
         payload: {
-          data: {}
+          data: []
         }
       }).toJSON()
     ).toEqual(

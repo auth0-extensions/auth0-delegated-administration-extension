@@ -26,9 +26,8 @@ export const logs = createReducer(fromJS(initialState), { // eslint-disable-line
     const { data } = action.payload;
     return state.merge({
       loading: false,
-      total: data.total,
       nextPage: action.meta.page + 1,
-      records: state.get('records').concat(fromJS(data.logs.map(log => {
+      records: state.get('records').concat(fromJS(data.map(log => {
         log.shortType = log.type;
         log.type = logTypes[log.type];
         if (!log.type) {

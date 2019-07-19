@@ -11,7 +11,6 @@ export default (scriptManager) => {
     req.auth0.logs
       .getAll({
         q: 'NOT type: sapi AND NOT type:fapi',
-        include_totals: true,
         sort: 'date:-1',
         per_page: 20,
         page: req.query.page || 0,

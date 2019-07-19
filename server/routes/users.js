@@ -516,9 +516,6 @@ export default (storage, scriptManager) => {
       .then((accessToken) => {
         const options = {
           uri: `https://${config('AUTH0_DOMAIN')}/api/v2/users/${encodeURIComponent(req.params.id)}/logs`,
-          qs: {
-            include_totals: true
-          },
           headers: {
             authorization: `Bearer ${accessToken}`
           },
