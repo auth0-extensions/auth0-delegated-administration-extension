@@ -60,8 +60,8 @@
         }
       ]
     },
-    "ALLOW_IDP_INITIATED_SIGNON": {
-      "description": "AlloW IdP-Initiated Single Sign-On?",
+    "IDP_INITIATED_SIGNON": {
+      "description": "Allow IdP-Initiated Single Sign-On?",
       "type": "select",
       "allowMultiple": false,
       "options": [

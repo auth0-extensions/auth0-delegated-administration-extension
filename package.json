@@ -183,6 +183,21 @@
             "text": "Yes"
           }
         ]
+      },
+      "IDP_INITIATED_SIGNON": {
+        "description": "Allow IdP-Initiated Single Sign-On?",
+        "type": "select",
+        "allowMultiple": false,
+        "options": [
+          {
+            "value": "false",
+            "text": "No"
+          },
+          {
+            "value": "true",
+            "text": "Yes"
+          }
+        ]
       }
     },
     "externals": [

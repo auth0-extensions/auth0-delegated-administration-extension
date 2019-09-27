@@ -82,6 +82,7 @@ export default () => {
       BASE_PATH: `${basePath}${locale}/`,
       TITLE: config('TITLE'),
       FEDERATED_LOGOUT: config('FEDERATED_LOGOUT') === 'true',
+      IDP_INITIATED_SIGNON: config('IDP_INITIATED_SIGNON') === 'true',
       AUTH0_MANAGE_URL: config('AUTH0_MANAGE_URL') || 'https://manage.auth0.com',
       LOCALE: locale
     };
