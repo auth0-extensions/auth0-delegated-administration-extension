@@ -174,7 +174,8 @@ export function loadCredentials() {
       });
 
       return webAuth.parseHash({
-        hash: window.location.hash
+        hash: window.location.hash,
+        __enableIdPInitiatedLogin: window.config.ALLOW_IDP_INITIATED_SIGNON
       }, (err, hash) => {
         if (err || !hash || !hash.idToken) {
           /* Must have had hash, but didn't get an idToken in the hash */
