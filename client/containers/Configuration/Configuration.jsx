@@ -172,12 +172,12 @@ export default connectContainer(class extends Component {
                   </div>
                 </LoadingPanel>
               </Tab>
-              <Tab eventKey={5} title={code.settings && code.settings.length ? <span>Settings Query</span> : <i>Settings Query</i>}>
+              <Tab eventKey={5} title={code.settings && code.settings.length ? <span>Settings Query Hook</span> : <i>Settings Query Hook</i>}>
                 <LoadingPanel show={scripts.settings && scripts.settings.loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
                   <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, scripts.settings && scripts.settings.error)} />
                   <p>
-                    With the <strong>settings query</strong> you can control the title and the look-and-feel of the
-                    dashboard after the user has logged in?
+                    With the <strong>settings query hook</strong> you can control the title and the look-and-feel of the
+                    dashboard after the user has logged in.
                   </p>
                   <Editor
                     value={code.settings || ''}
@@ -185,7 +185,7 @@ export default connectContainer(class extends Component {
                   />
                   <div className="save-config">
                     <button onClick={this.saveScript('settings')} className="btn btn-success">
-                      Save Settings Query
+                      Save Settings Query Hook
                     </button>
                   </div>
                 </LoadingPanel>
