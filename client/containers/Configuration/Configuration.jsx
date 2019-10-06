@@ -154,11 +154,11 @@ export default connectContainer(class extends Component {
                   </div>
                 </LoadingPanel>
               </Tab>
-              <Tab eventKey={4} title={code.memberships && code.memberships.length ? <span>Memberships Hook</span> : <i>Memberships Hook</i>}>
+              <Tab eventKey={4} title={code.memberships && code.memberships.length ? <span>Memberships Query Hook</span> : <i>Memberships Query Hook</i>}>
                 <LoadingPanel show={scripts.memberships && scripts.memberships.loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
                   <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, scripts.memberships && scripts.memberships.error)} />
                   <p>
-                    With the <strong>membership query</strong> you can specify in which groups the current user can
+                    With the <strong>memberships query hook</strong> you can specify in which groups the current user can
                     create new users. Only in their own department? Or other departments also?
                   </p>
                   <Editor
