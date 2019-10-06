@@ -167,7 +167,7 @@ export default connectContainer(class extends Component {
                   />
                   <div className="save-config">
                     <button onClick={this.saveScript('memberships')} className="btn btn-success">
-                      Save Memberships Query
+                      Save Memberships Query Hook
                     </button>
                   </div>
                 </LoadingPanel>
