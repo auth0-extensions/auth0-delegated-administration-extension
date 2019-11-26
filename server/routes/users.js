@@ -374,7 +374,7 @@ export default (storage, scriptManager) => {
     });
 
     const user = req.targetUser;
-    const data = { email: user.email, connection: req.body.connection, client_id: req.body.clientId };
+    const data = { email: user.email, connection: req.body.connection };
     return client.requestChangePasswordEmail(data)
       .then(() => res.sendStatus(204))
       .catch(next);

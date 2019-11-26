@@ -90,11 +90,6 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
       .textContent).to.equal(emailLabel);
   };
 
-  const checkClientLabel = (component, passwordLabel) => {
-    expect(document.querySelector('label[for=client]')
-      .textContent).to.equal(passwordLabel);
-  };
-
   const checkConfirm = (component, title) => {
     const confirm = component.find(Confirm);
     expect(confirm.length).to.equal(1);
@@ -108,7 +103,6 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
       ' user allowing them to choose a new password.');
     checkConnectionLabel(component, 'Connection');
     checkEmailLabel(component, 'Email');
-    checkClientLabel(component, 'Client (required)');
     checkConfirm(component, 'Reset Password?');
   });
 
@@ -119,7 +113,6 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
       ' user allowing them to choose a new password.');
     checkConnectionLabel(component);
     checkEmailLabel(component, 'Email');
-    checkClientLabel(component, 'Client (required)');
     checkConfirm(component, 'Reset Password?');
   });
 
@@ -131,7 +124,6 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
       ' user allowing them to choose a new password.');
     checkConnectionLabel(component, 'Connection');
     checkEmailLabel(component, 'Email');
-    checkClientLabel(component, 'Client (required)');
     checkConfirm(component, 'Reset Password?');
   });
 
@@ -209,7 +201,6 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
     const component = renderComponent({ username: 'john', settings });
     checkConnectionLabel(component, 'ConnectionLabel');
     checkEmailLabel(component, 'EmailLabel');
-    checkClientLabel(component, 'ClientLabel');
   });
 
   it('should handle null label name in user fields', () => {
@@ -236,6 +227,5 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
     const component = renderComponent({ username: 'john', settings });
     checkConnectionLabel(component, 'Connection');
     checkEmailLabel(component, 'Email');
-    checkClientLabel(component, 'Client');
   });
 });
