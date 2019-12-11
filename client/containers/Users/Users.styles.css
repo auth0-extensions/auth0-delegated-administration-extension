@@ -123,6 +123,14 @@
     overflow-y: visible;
 }
 
+.modal .modal-dialog {
+    overflow: visible;
+}
+
+.modal .modal-dialog .modal-content {
+    overflow: visible;
+}
+
 button.new {
     margin-top: 28px;
 }
