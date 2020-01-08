@@ -12,7 +12,7 @@ const webAuthOptions = {
   redirectUri: `${window.config.BASE_URL}/login`
 };
 
-if (window.config.IS_APPLIANCE) {
+if (window.config.IS_APPLIANCE && window.config.LEGACY_CUSTOM_DOMAIN) {
   webAuthOptions.overrides = {
     __tenant: window.config.AUTH0_DOMAIN.split('.')[0],
     __token_issuer: `https://${window.config.AUTH0_DOMAIN}/`
