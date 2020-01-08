@@ -171,7 +171,7 @@ export const useClientField = (isEditField, fields, clients) => {
     [type]: {
       type: 'select',
       component: 'InputCombo',
-      required: true,
+      required: false,
       options: clients.map(option => ({ value: option.client_id, label: option.name}))
     }
   };
