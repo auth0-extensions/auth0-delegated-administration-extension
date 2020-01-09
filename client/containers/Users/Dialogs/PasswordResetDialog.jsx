@@ -6,9 +6,11 @@ import { Error, Confirm } from 'auth0-extension-ui';
 
 import submitForm from '../../../actions/submitForm';
 import { userActions } from '../../../actions';
+import getAppsForConnection from '../../../selectors/getAppsForConnection';
 import getDialogMessage from './getDialogMessage';
 import { getName, mapValues } from '../../../utils/display';
 import {
+  useClientField,
   useDisabledConnectionField,
   useDisabledEmailField
 } from '../../../utils/useDefaultFields';
@@ -20,6 +22,7 @@ export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     connections: state.connections,
     passwordReset: state.passwordReset,
+    appsForConnection: getAppsForConnection(state),
     settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     languageDictionary: state.languageDictionary
   });
@@ -33,12 +36,15 @@ export default connectContainer(class extends Component {
     cancelPasswordReset: PropTypes.func.isRequired,
     resetPassword: PropTypes.func.isRequired,
     connections: PropTypes.object.isRequired,
-    passwordReset: PropTypes.object.isRequired
+    passwordReset: PropTypes.object.isRequired,
+    appsForConnection: PropTypes.object
   };
 
   shouldComponentUpdate(nextProps) {
     return nextProps.passwordReset !== this.props.passwordReset ||
-      nextProps.languageDictionary !== this.props.languageDictionary
+      nextProps.languageDictionary !== this.props.languageDictionary ||
+      // nextProps.settings !== this.props.settings ||
+      nextProps.appsForConnection !== this.props.appsForConnection;
   }
 
   onConfirm = () => {
@@ -67,10 +73,11 @@ export default connectContainer(class extends Component {
       getName(user, userFields, languageDictionary));
 
     const fields = _.cloneDeep(userFields) || [];
+    useClientField(true, fields, this.props.appsForConnection.toJS());
     useDisabledConnectionField(true, fields, connection, connections.get('records').toJS());
     useDisabledEmailField(true, fields);
 
-    const allowedFields = ['email', 'connection'];
+    const allowedFields = ['email', 'client', 'connection'];
     const filteredFields = _.filter(fields,
       field => _.includes(allowedFields, field.property));
 
@@ -91,7 +98,7 @@ export default connectContainer(class extends Component {
           {message}
         </p>
         <UserFieldsFormInstance
-          initialValues={mapValues(user, allowedFields, filteredFields, 'edit', languageDictionary)}
+          initialValues={mapValues(user, allowedFields, filteredFields, 'edit', languageDictionary, { applications: this.props.appsForConnection.toJS() })}
           isEditForm={true}
           fields={filteredFields}
           languageDictionary={languageDictionary}
