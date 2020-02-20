@@ -11,10 +11,7 @@
   "initialUrlPath": "/",
   "docsUrl": "https://auth0.com/docs/extensions/delegated-admin",
   "repository": "https://github.com/auth0-extensions/auth0-delegated-administration-extension",
-  "keywords": [
-    "auth0",
-    "extension"
-  ],
+  "keywords": ["auth0", "extension"],
   "auth0": {
     "createClient": true,
     "onUninstallPath": "/.extensions/on-uninstall",
@@ -59,6 +56,18 @@
           "text": "Yes"
         }
       ]
+    },
+    "CUSTOM_SECRET_1": {
+      "description": "A secret",
+      "example": "example.com",
+      "required": false,
+      "type": "password"
+    },
+    "CUSTOM_SECRET_2": {
+      "description": "another secret",
+      "example": "example.com",
+      "required": false,
+      "type": "password"
     }
   }
 }
