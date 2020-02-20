@@ -12,13 +12,6 @@ const webAuthOptions = {
   redirectUri: `${window.config.BASE_URL}/login`
 };
 
-if (window.config.IS_APPLIANCE) {
-  webAuthOptions.overrides = {
-    __tenant: window.config.AUTH0_DOMAIN.split('.')[0],
-    __token_issuer: `https://${window.config.AUTH0_DOMAIN}/`
-  };
-}
-
 const webAuth = new auth0.WebAuth(webAuthOptions); // eslint-disable-line no-undef
 
 export function login(returnUrl, locale) {
