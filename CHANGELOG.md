@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [4.1.0] - 2020-03-19
 
 - Fix: "Remove MFA" functionality was missing for users that enrolled with MFA but never logged in.
+- Fix: "Logout of custom domain does not work"
 
 ## [4.0.0] - 2020-02-05
 
