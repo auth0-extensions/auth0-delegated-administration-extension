@@ -316,6 +316,9 @@ describe('#users router', () => {
   describe('#Get One', () => {
     it('should return user`s record', (done) => {
       nock(domain)
+        .get('/api/v2/users/1/enrollments')
+        .reply(200, []);
+      nock(domain)
         .get(/user-blocks\/1/)
         .reply(200, { blocked_for: [ 'blah' ] });
 
@@ -333,6 +336,9 @@ describe('#users router', () => {
     });
 
     it('should return user`s record 2', (done) => {
+      nock(domain)
+        .get('/api/v2/users/2/enrollments')
+        .reply(200, []);
       nock(domain)
         .get(/user-blocks\/2/)
         .reply(200, { blocked_for: [ ] });
