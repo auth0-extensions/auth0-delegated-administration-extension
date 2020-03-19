@@ -300,23 +300,17 @@ export default (storage, scriptManager) => {
                 return accessToken;
               }))
           .then((accessToken) => {
-            const checkGuardian = !!data.user.multifactor_last_modified
-              || (data.user.multifactor && data.user.multifactor.indexOf('guardian') >= 0);
-            if (checkGuardian) {
-              return requestGuardianEnrollments(accessToken, req.params.id)
-                .then((enrollments) => {
-                  if (data.user.multifactor && (!enrollments || !enrollments.length)) {
-                    data.user.multifactor = data.user.multifactor.filter(item => item !== 'guardian');
-                    data.user.multifactor = data.user.multifactor.length ? data.user.multifactor : null;
-                  } else if (!data.user.multifactor && enrollments) {
-                    data.user.multifactor = [ 'guardian' ];
-                  }
+            return requestGuardianEnrollments(accessToken, req.params.id)
+              .then((enrollments) => {
+                if (data.user.multifactor && (!enrollments || !enrollments.length)) {
+                  data.user.multifactor = data.user.multifactor.filter(item => item !== 'guardian');
+                  data.user.multifactor = data.user.multifactor.length ? data.user.multifactor : null;
+                } else if (!data.user.multifactor && enrollments) {
+                  data.user.multifactor = [ 'guardian' ];
+                }
 
-                  return res.json(data);
-                });
-            } else {
-              return res.json(data);
-            }
+                return res.json(data);
+              });
           })
       )
       .catch((err) => {
