@@ -7,8 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.1.1] - 2020-03-27
 
-- Fix: Issue with custom domains and PSAAS
-- Added new logout event for Reused Refresh Token
+### Fixed
+
+- Fixed issue with custom domains and PSAAS
+
+### Added
+
+- New log event for Reused Refresh Token
 
 ## [4.1.0] - 2020-03-19
 
