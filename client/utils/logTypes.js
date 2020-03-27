@@ -434,6 +434,14 @@ export default {
       color: '#A93F3F'
     }
   },
+  ferrt: {
+    event: 'Failed Exchange',
+    description: 'Reused Refresh Token',
+    icon: {
+      name: '311',
+      color: '#A93F3F'
+    }
+  },
   fui: {
     event: 'Failed users import',
     description: 'Failed to import users',
