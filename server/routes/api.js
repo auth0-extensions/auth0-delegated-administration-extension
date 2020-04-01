@@ -46,7 +46,11 @@ export default (storage) => {
 
     if (!token) console.error('no token found');
 
-    const promise = tools.managementApi.getClient({
+    // if the 'sub' user_id starts with the 'aud' (i.e. the client ID of the app)
+    // then the user being authenticated is a client_credentials exchange and should
+    // not be looked up in the management API
+    // We'll rely on the id_token have the appropriate role or permission claims
+    const promise = user.sub.startsWith(user.aud) ? user : tools.managementApi.getClient({
       domain: config('AUTH0_DOMAIN'),
       clientId: config('AUTH0_CLIENT_ID'),
       clientSecret: config('AUTH0_CLIENT_SECRET')
