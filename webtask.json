@@ -45,6 +45,22 @@
       "example": "example.com",
       "required": false
     },
+    "USER_SEARCH_ENGINE": {
+      "description": "User search engine. Cloud only supports V3",
+      "type": "select",
+      "default": "v3",
+      "allowMultiple": false,
+      "options": [
+        {
+          "value": "v3",
+          "text": "v3"
+        },
+        {
+          "value": "v2",
+          "text": "v2"
+        }
+      ]
+    },
     "FEDERATED_LOGOUT": {
       "description": "Also sign out from the IDP when users logout?",
       "type": "select",
