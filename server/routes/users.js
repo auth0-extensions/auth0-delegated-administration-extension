@@ -186,7 +186,7 @@ export default (storage, scriptManager) => {
       }
     };
 
-    const searchEngine = (config('AUTH0_RTA').replace('https://', '') !== 'auth0.auth0.com') ? 'v2' : 'v3';
+    const searchEngine = config('USER_SEARCH_ENGINE') || 'v3';
     const quoteChar = searchEngine === 'v2' ? '"' : '';
     let searchQuery = req.query.search;
 
