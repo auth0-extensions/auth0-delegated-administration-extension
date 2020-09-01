@@ -74,7 +74,7 @@ export default class UserActions extends Component {
     if (deleteField.length > 0) return null;
 
     return (
-      <MenuItem disabled={loading || false} onClick={this.deleteUser}>
+      <MenuItem disabled={loading || false} onClick={this.deleteUser} id="delete-user-action">
         {this.state.languageDictionary.deleteUserMenuItemText || 'Delete User'}
       </MenuItem>
     );
@@ -90,7 +90,7 @@ export default class UserActions extends Component {
     if (fieldsWithEdit.length <= 0) return null;
 
     return (
-      <MenuItem disabled={loading || false} onClick={this.changeFields}>
+      <MenuItem disabled={loading || false} onClick={this.changeFields} id="change-profile-action">
         {this.state.languageDictionary.changeFieldsMenuItemText || 'Change Profile'}
       </MenuItem>
     );
@@ -107,7 +107,7 @@ export default class UserActions extends Component {
     if (falsePasswordEditFields.length > 0 && trueResetPasswordEditFields.length <= 0) return null;
 
     return (
-      <MenuItem disabled={loading || false} onClick={this.resetPassword}>
+      <MenuItem disabled={loading || false} onClick={this.resetPassword} id="reset-password-action">
         {this.state.languageDictionary.resetPasswordMenuItemText || 'Reset Password'}
       </MenuItem>
     );
@@ -123,7 +123,7 @@ export default class UserActions extends Component {
     if (falsePasswordEditFields.length > 0) return null;
 
     return (
-      <MenuItem disabled={loading || false} onClick={this.changePassword}>
+      <MenuItem disabled={loading || false} onClick={this.changePassword} id="change-password-action">
         {this.state.languageDictionary.changePasswordMenuItemText || 'Change Password'}
       </MenuItem>
     );
@@ -139,7 +139,7 @@ export default class UserActions extends Component {
     if (falseUsernameEditFields.length > 0) return null;
 
     return (
-      <MenuItem disabled={loading || false} onClick={this.changeUsername}>
+      <MenuItem disabled={loading || false} onClick={this.changeUsername} id="change-username-action">
         {this.state.languageDictionary.changeUsernameMenuItemText || 'Change Username'}
       </MenuItem>
     );
@@ -155,7 +155,7 @@ export default class UserActions extends Component {
     if (falseEmailEditFields.length > 0) return null;
 
     return (
-      <MenuItem disabled={loading || false} onClick={this.changeEmail}>
+      <MenuItem disabled={loading || false} onClick={this.changeEmail} id="change-email-action">
         {this.state.languageDictionary.changeEmailMenuItemText || 'Change Email'}
       </MenuItem>
     );
@@ -171,7 +171,7 @@ export default class UserActions extends Component {
     if (falseTriggerEmailVerified.length > 0) return null;
 
     return (
-      <MenuItem disabled={loading || false} onClick={this.resendVerificationEmail}>
+      <MenuItem disabled={loading || false} onClick={this.resendVerificationEmail} id="resend-verification-email-action">
         {this.state.languageDictionary.resendVerificationEmailMenuItemText || "Resend Verification Email"}
       </MenuItem>
     );
@@ -183,7 +183,7 @@ export default class UserActions extends Component {
     }
 
     return (
-      <MenuItem disabled={loading || false} onClick={this.removeMfa}>
+      <MenuItem disabled={loading || false} onClick={this.removeMfa} id="remove-mfa-action">
         {this.state.languageDictionary.removeMfaMenuItemText || "Remove MFA"}
       </MenuItem>
     );
@@ -192,14 +192,14 @@ export default class UserActions extends Component {
   getBlockedAction = (user, loading) => {
     if (user.blocked) {
       return (
-        <MenuItem disabled={loading || false} onClick={this.unblockUser}>
+        <MenuItem disabled={loading || false} onClick={this.unblockUser} id="unblock-user-action">
           {this.state.languageDictionary.unblockUserMenuItemText || "Unblock User"}
         </MenuItem>
       );
     }
 
     return (
-      <MenuItem disabled={loading || false} onClick={this.blockUser}>
+      <MenuItem disabled={loading || false} onClick={this.blockUser} id="block-user-action">
         {this.state.languageDictionary.blockUserMenuItemText || "Block User"}
       </MenuItem>
     );
@@ -208,7 +208,7 @@ export default class UserActions extends Component {
   getUserBlocksAction = (user, loading) => {
     if (user.blocked_for && user.blocked_for.length) {
       return (
-        <MenuItem disabled={loading || false} onClick={this.removeBlockedIPs}>
+        <MenuItem disabled={loading || false} onClick={this.removeBlockedIPs} id="unblock-user-ips-action">
           {this.state.languageDictionary.removeBlockedIPsMenuItemText || "Unblock for all IPs"}
         </MenuItem>
       );
