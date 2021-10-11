@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Modal } from 'react-bootstrap';
 import { Error, Json, LoadingPanel } from 'auth0-extension-ui';
-
+import { tz_date } from '../../utils/display';
 import getErrorMessage from '../../utils/getErrorMessage.js';
 
 export default class LogDialog extends Component {
@@ -26,6 +26,8 @@ export default class LogDialog extends Component {
     const languageDictionary = this.props.languageDictionary || {};
 
     const log = this.props.log.toJS();
+
+    log.date = tz_date(log.date, languageDictionary.timeZone, languageDictionary.momentLocale);
 
     const logType = _.get(languageDictionary, `logTypes.${log.shortType}.event`, log.type);
 
