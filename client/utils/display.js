@@ -77,3 +77,5 @@ export const mapValues = (user, fieldNames, fields, type, languageDictionary = {
   }
   return mappedUser;
 };
+
+export const tz_date = (date,  timeZone, locale) => timeZone ? new Date(date).toLocaleString(locale || 'en', { timeZone} ) : date;
