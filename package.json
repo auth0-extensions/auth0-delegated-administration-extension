@@ -43,7 +43,7 @@
     "body-parser": "^1.15.1",
     "codemirror": "^5.19.0",
     "cookie-parser": "^1.4.3",
-    "ejs": "^2.4.2",
+    "ejs": "^3.1.10",
     "expect": "^1.20.2",
     "express": "^4.17.1",
     "express-jwt": "^3.4.0",
