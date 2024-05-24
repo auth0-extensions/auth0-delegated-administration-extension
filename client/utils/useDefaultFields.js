@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+const CONNECTIONS_LIST_LIMIT = 20;
+
 const applyDefaults = (type, fields, property, defaults) => {
   const field = _.find(fields, { property });
 
@@ -61,14 +63,15 @@ export const useConnectionsField = (isEditField, fields, connections, onConnecti
     return _.remove(fields, { property: 'connection' });
   }
 
+  const isConnectionListingLimitExceeded =  connections.length >= CONNECTIONS_LIST_LIMIT;
   const defaults = {
     property: 'connection',
     label: 'Connection',
     [type]: {
       required: true,
-      type: 'select',
-      component: 'InputCombo',
-      options: connections.map(conn => ({ value: conn.name, label: conn.name })),
+      type: 'text',
+      component: isConnectionListingLimitExceeded ? 'InputText' :'InputCombo',
+      options: isConnectionListingLimitExceeded ? undefined : connections.map(conn => ({ value: conn.name, label: conn.name })),
       onChange: onConnectionChange
     }
   };
