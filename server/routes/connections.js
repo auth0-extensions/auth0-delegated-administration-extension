@@ -2,8 +2,7 @@ import _ from 'lodash';
 import { Router } from 'express';
 
 import multipartRequest from '../lib/multipartRequest';
-
-const CONNECTIONS_LIST_LIMIT = 50;
+import { CONNECTIONS_LIST_LIMIT } from "../constants";
 
 export default (scriptManager) => {
   const api = Router();

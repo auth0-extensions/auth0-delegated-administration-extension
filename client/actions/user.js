@@ -80,7 +80,7 @@ export function requestCreateUser(memberships) {
     dispatch({
       type: constants.REQUEST_CREATE_USER,
       payload: {
-        connection: connections && connections.length && connections[0].name,
+        connection: connections && connections.length && connections.length < 20 && connections[0].name || null,
         memberships: memberships && memberships.length === 1 ? [ memberships[0] ] : [ ]
       }
     });
