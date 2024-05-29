@@ -2,12 +2,13 @@ import _ from 'lodash';
 import { Router } from 'express';
 
 import multipartRequest from '../lib/multipartRequest';
-import { CONNECTIONS_LIST_LIMIT } from "../constants";
+// only fetch one page of connections
+const CONNECTIONS_FETCH_LIMIT = 50;
 
 export default (scriptManager) => {
   const api = Router();
   api.get('/', (req, res, next) => {
-    multipartRequest(req.auth0, 'connections', { strategy: 'auth0', fields: 'id,name,strategy,options' }, { perPage: 100, limit: CONNECTIONS_LIST_LIMIT})
+    multipartRequest(req.auth0, 'connections', { strategy: 'auth0', fields: 'id,name,strategy,options' }, { perPage: 100, limit: CONNECTIONS_FETCH_LIMIT})
       .then((connections) => {
         global.connections = connections.map(conn => ({ name: conn.name, id: conn.id }));
         const settingsContext = {

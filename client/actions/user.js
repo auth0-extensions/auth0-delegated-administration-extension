@@ -5,7 +5,7 @@ import * as constants from '../constants';
 import { fetchUserLogs } from './userLog';
 import { fetchUserDevices } from './userDevice';
 import { getAccessLevel } from './auth';
-import { removeBlockedIPs } from "../reducers/removeBlockedIPs";
+import { CONNECTIONS_LIST_LIMIT } from "../constants";
 
 const addRequiredTextParam = (url, languageDictionary) => {
   languageDictionary = languageDictionary || {};
@@ -80,7 +80,7 @@ export function requestCreateUser(memberships) {
     dispatch({
       type: constants.REQUEST_CREATE_USER,
       payload: {
-        connection: connections && connections.length && connections.length < 20 && connections[0].name || null,
+        connection: connections && connections.length && connections.length < CONNECTIONS_LIST_LIMIT && connections[0].name || null,
         memberships: memberships && memberships.length === 1 ? [ memberships[0] ] : [ ]
       }
     });
