@@ -8,7 +8,7 @@ const CONNECTIONS_FETCH_LIMIT = 50;
 export default (scriptManager) => {
   const api = Router();
   api.get('/', (req, res, next) => {
-    multipartRequest(req.auth0, 'connections', { strategy: 'auth0', fields: 'id,name,strategy,options' }, { perPage: 100, limit: CONNECTIONS_FETCH_LIMIT})
+    multipartRequest(req.auth0, 'connections', { strategy: 'auth0', fields: 'id,name,strategy,options' }, { limit: CONNECTIONS_FETCH_LIMIT})
       .then((connections) => {
         global.connections = connections.map(conn => ({ name: conn.name, id: conn.id }));
         const settingsContext = {
