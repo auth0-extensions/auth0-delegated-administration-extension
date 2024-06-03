@@ -3,9 +3,10 @@ import { Router } from 'express';
 
 import multipartRequest from '../lib/multipartRequest';
 
-// the limit on the frontend is 20000 so we need to fetch at least as many connections as that to 
-// check if that limit is reached. If we fetch less than the frontend limit, it would always show the
-// drop down select box which would be broken for tenants with more connections than the limit. 
+// This is the number of connections in a tenant which the DAE can reasonably handle. More than this and it fails to
+// finish loading connections and the "create user" button is never shown. If there are more connections than this
+// in the tenant, we will return zero connections to the front end, and it will use a free text box for connection name
+// in the create user dialogue. 
 const CONNECTIONS_FETCH_LIMIT = 20000;
 
 export default (scriptManager) => {
