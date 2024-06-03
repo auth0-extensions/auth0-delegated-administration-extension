@@ -1,14 +1,13 @@
 import _ from 'lodash';
 import { Router } from 'express';
 
-import { tooManyRecords } from '../lib/multipartRequest';
-
 import multipartRequest from '../lib/multipartRequest';
 
 // the limit on the frontend is 20000 so we need to fetch at least as many connections as that to 
 // check if that limit is reached. If we fetch less than the frontend limit, it would always show the
 // drop down select box which would be broken for tenants with more connections than the limit. 
-const CONNECTIONS_FETCH_LIMIT = 20000;
+// const CONNECTIONS_FETCH_LIMIT = 20000;
+const CONNECTIONS_FETCH_LIMIT = 20;
 
 export default (scriptManager) => {
   const api = Router();
@@ -20,13 +19,7 @@ export default (scriptManager) => {
       { limit: CONNECTIONS_FETCH_LIMIT, perPage: 100 }
     )
       .then((connections) => {
-
-        if (!connections.success && connections.status === tooManyRecords) { 
-          console.log("got back 'too many records'");
-          global.isConnectionsLimitExceeded = true;
-        }
-        
-        global.connections = connections.data.map(conn => ({ name: conn.name, id: conn.id }));
+        global.connections = connections.map(conn => ({ name: conn.name, id: conn.id }));
         const settingsContext = {
           request: {
             user: req.user
@@ -36,7 +29,7 @@ export default (scriptManager) => {
 
         return scriptManager.execute('settings', settingsContext)
           .then((settings) => {
-            let result = _.chain(connections.data)
+            let result = _.chain(connections)
               .sortBy(conn => conn.name.toLowerCase())
               .value();
 

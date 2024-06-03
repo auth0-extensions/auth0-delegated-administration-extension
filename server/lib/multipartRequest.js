@@ -1,8 +1,6 @@
 import Promise from 'bluebird';
 import { ArgumentError } from 'auth0-extension-tools';
 
-export const tooManyRecords = Symbol("Record count exceeds limit");
-
 export default function(client, entity, opts = {}, fetchOptions = {} ) {
   const perPage = fetchOptions.perPage || 50;
   const concurrency = fetchOptions.concurrency || 5;
@@ -18,11 +16,7 @@ export default function(client, entity, opts = {}, fetchOptions = {} ) {
 
   const getter = client[entity].getAll;
   const options = { ...opts, per_page: perPage };
-  const result = {
-    success: true,
-    status: "fetched records",
-    data: []
-  };
+  const result = [];
 
   let total = 0;
   let pageCount = 0;
@@ -41,14 +35,14 @@ export default function(client, entity, opts = {}, fetchOptions = {} ) {
         }
 
         const data = response[entity] || response || [];
-        data.forEach(item => result.data.push(item));
+        data.forEach(item => result.push(item));
         return null;
       });
 
   const getPage = (page) =>
     getter({ ...options, page })
       .then((data) => {
-        data.forEach(item => result.data.push(item));
+        data.forEach(item => result.push(item));
         return null;
       });
 
@@ -59,12 +53,10 @@ export default function(client, entity, opts = {}, fetchOptions = {} ) {
         //   - don't return any to the frontend
         //   - will use a free text box in the user creation dialogue
         if (limit && (total > limit)) { 
-          result.success = false;
-          result.status = tooManyRecords;
           return result;
         }
 
-        if (total === 0 || result.data.length >= total) {
+        if (total === 0 || result.length >= total) {
           return result;
         }
 
