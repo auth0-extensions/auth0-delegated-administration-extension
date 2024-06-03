@@ -1,7 +1,5 @@
 import _ from 'lodash';
 
-import { CONNECTIONS_LIST_LIMIT } from "../constants";
-
 const applyDefaults = (type, fields, property, defaults) => {
   const field = _.find(fields, { property });
 
@@ -17,7 +15,11 @@ export const useUsernameField = (isEditField, fields, connections, hasSelectedCo
   const type = isEditField ? 'edit' : 'create';
   const selectedConnection = _.find(connections, (conn) => conn.name === hasSelectedConnection);
   const requireUsername = selectedConnection && selectedConnection.options ? selectedConnection.options.requires_username : false;
-  const noUsername = !requireUsername && (!initialValues || !initialValues.username);
+  const noUsername = connections.length > 0
+    ? !requireUsername && (!initialValues || !initialValues.username)
+    // if we have no connections, we *might* need a username field, we don't know - 
+    // because we don't have the connections to check
+    : false;
 
   const defaults = {
     property: 'username',
@@ -25,7 +27,8 @@ export const useUsernameField = (isEditField, fields, connections, hasSelectedCo
     disable: noUsername,
     [type]: {
       type: 'text',
-      required: true
+      // if we have no connections we should show the field but not require it
+      required: connections.length > 0
     }
   };
 
@@ -59,19 +62,22 @@ export const useMembershipsField = (isEditField, fields, hasMembership, membersh
 
 export const useConnectionsField = (isEditField, fields, connections, onConnectionChange) => {
   const type = isEditField ? 'edit' : 'create';
-  if (!connections || connections.length <= 1) {
+  // if we have exactly one connection then don't show this field and use that connection
+  // however if we have zero connections, we should show the free text connections field
+  if (!connections || connections.length === 1) {
     return _.remove(fields, { property: 'connection' });
   }
 
-  const isConnectionListingLimitExceeded = connections.length >= CONNECTIONS_LIST_LIMIT;
+  const isConnectionLimitExceeded = connections.length === 0;
+
   const defaults = {
     property: 'connection',
-    label: isConnectionListingLimitExceeded ? 'Connection Name' : 'Connection',
+    label: isConnectionLimitExceeded ? 'Connection Name' : 'Connection',
     [type]: {
       required: true,
-      type: isConnectionListingLimitExceeded ? 'text' : 'select',
-      component: isConnectionListingLimitExceeded ? 'InputText' : 'InputCombo',
-      options: isConnectionListingLimitExceeded ? undefined : connections.map(conn => ({ value: conn.name, label: conn.name })),
+      type: isConnectionLimitExceeded ? 'text' : 'select',
+      component: isConnectionLimitExceeded ? 'InputText' : 'InputCombo',
+      options: isConnectionLimitExceeded ? undefined : connections.map(conn => ({ value: conn.name, label: conn.name })),
       onChange: onConnectionChange
     }
   };

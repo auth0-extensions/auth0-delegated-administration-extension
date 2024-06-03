@@ -1,16 +1,32 @@
 import _ from 'lodash';
 import { Router } from 'express';
 
+import { tooManyRecords } from '../lib/multipartRequest';
+
 import multipartRequest from '../lib/multipartRequest';
-// only fetch one page of connections
-const CONNECTIONS_FETCH_LIMIT = 50;
+
+// the limit on the frontend is 20000 so we need to fetch at least as many connections as that to 
+// check if that limit is reached. If we fetch less than the frontend limit, it would always show the
+// drop down select box which would be broken for tenants with more connections than the limit. 
+const CONNECTIONS_FETCH_LIMIT = 20000;
 
 export default (scriptManager) => {
   const api = Router();
   api.get('/', (req, res, next) => {
-    multipartRequest(req.auth0, 'connections', { strategy: 'auth0', fields: 'id,name,strategy,options' }, { limit: CONNECTIONS_FETCH_LIMIT})
+    multipartRequest(
+      req.auth0,
+      'connections',
+      { strategy: 'auth0', fields: 'id,name,strategy,options' },
+      { limit: CONNECTIONS_FETCH_LIMIT, perPage: 100 }
+    )
       .then((connections) => {
-        global.connections = connections.map(conn => ({ name: conn.name, id: conn.id }));
+
+        if (!connections.success && connections.status === tooManyRecords) { 
+          console.log("got back 'too many records'");
+          global.isConnectionsLimitExceeded = true;
+        }
+        
+        global.connections = connections.data.map(conn => ({ name: conn.name, id: conn.id }));
         const settingsContext = {
           request: {
             user: req.user
@@ -20,7 +36,7 @@ export default (scriptManager) => {
 
         return scriptManager.execute('settings', settingsContext)
           .then((settings) => {
-            let result = _.chain(connections)
+            let result = _.chain(connections.data)
               .sortBy(conn => conn.name.toLowerCase())
               .value();
 
