@@ -321,7 +321,7 @@ describe('Client-Utils-useDefaultFields', () => {
       }];
       const target = [];
 
-      useDefaultFields.useConnectionsField(true, fields, []);
+      useDefaultFields.useConnectionsField(true, fields, connection);
       expect(fields).to.deep.equal(target);
     });
 

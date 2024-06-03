@@ -21,6 +21,8 @@ export default function(client, entity, opts = {}, fetchOptions = {} ) {
   let total = 0;
   let pageCount = 0;
 
+  console.log({options})
+
   const getTotals = () =>
     getter({ ...options, include_totals: true, page: 0 })
       .then((response) => {
