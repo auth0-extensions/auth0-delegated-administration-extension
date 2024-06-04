@@ -249,7 +249,7 @@ describe('#Client-Components-UserForm', () => {
       someOtherKey: 'Some other value'
     };
 
-    const Component = renderComponent(languageDictionary);
+    const Component = renderComponent(everythingOptions, languageDictionary);
 
     expect(Component.length).to.be.greaterThan(0);
     expect(Component.find(Button).filterWhere(element => element.text() === 'Cancel').length).to.equal(1);
