@@ -6,8 +6,8 @@ import multipartRequest from '../lib/multipartRequest';
 // This is the number of connections in a tenant which the DAE can reasonably handle. More than this and it fails to
 // finish loading connections and the "create user" button is never shown. If there are more connections than this
 // in the tenant, we will return zero connections to the front end, and it will use a free text box for connection name
-// in the create user dialogue. 
-const CONNECTIONS_FETCH_LIMIT = 200;
+// in the create user dialogue.
+const CONNECTIONS_FETCH_LIMIT = 20000;
 
 export default (scriptManager) => {
   const api = Router();
@@ -16,7 +16,7 @@ export default (scriptManager) => {
       req.auth0,
       'connections',
       { strategy: 'auth0', fields: 'id,name,strategy,options' },
-      { limit: CONNECTIONS_FETCH_LIMIT, perPage: 20 }
+      { limit: CONNECTIONS_FETCH_LIMIT, perPage: 100 }
     )
       .then((connections) => {
         global.connections = connections.map(conn => ({ name: conn.name, id: conn.id }));

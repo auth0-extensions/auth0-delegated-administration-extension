@@ -15,6 +15,7 @@ import './Users.styles.css';
 class Users extends Component {
   static propTypes = {
     loading: PropTypes.bool.isRequired,
+    connectionsLoading: PropTypes.bool.isRequired,
     error: PropTypes.string,
     users: PropTypes.array,
     connections: PropTypes.array,
@@ -44,7 +45,9 @@ class Users extends Component {
 
   componentWillMount = () => {
     this.props.fetchUsers();
-    this.props.fetchConnections();
+    if (!this.props.connectionsLoading) {
+      this.props.fetchConnections();
+    }
   };
 
   onPageChange = (page) => {
@@ -77,7 +80,7 @@ class Users extends Component {
       error,
       users,
       total,
-      connections,
+      connectionsLoading,
       accessLevel,
       nextPage,
       pages,
@@ -102,7 +105,7 @@ class Users extends Component {
         <div className="row content-header">
           <div className="col-xs-12 user-table-content">
             <h1>{languageDictionary.usersTitle || 'Users'}</h1>
-            {( role > 0 && showCreateUser) ?
+            {( !connectionsLoading && role > 0 && showCreateUser) ?
               <button id="create-user-button" className="btn btn-success pull-right new" onClick={this.createUser}>
                 <i className="icon-budicon-473"></i>
                 {languageDictionary.createUserButtonText || 'Create User'}
@@ -158,6 +161,7 @@ function mapStateToProps(state) {
     loading: state.users.get('loading'),
     users: state.users.get('records').toJS(),
     connections: state.connections.get('records').toJS(),
+    connectionsLoading: state.connections.get('loading'),
     total: state.users.get('total'),
     nextPage: state.users.get('nextPage'),
     pages: state.users.get('pages'),
