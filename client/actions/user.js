@@ -5,7 +5,6 @@ import * as constants from '../constants';
 import { fetchUserLogs } from './userLog';
 import { fetchUserDevices } from './userDevice';
 import { getAccessLevel } from './auth';
-import { removeBlockedIPs } from "../reducers/removeBlockedIPs";
 
 const addRequiredTextParam = (url, languageDictionary) => {
   languageDictionary = languageDictionary || {};
@@ -77,10 +76,15 @@ export function createUser(user, languageDictionary) {
 export function requestCreateUser(memberships) {
   return (dispatch, getState) => {
     const connections = getState().connections.get('records').toJS();
+
+    const connection = connections.length === 0
+      ? null
+      : connections && connections.length && connections[0].name
+
     dispatch({
       type: constants.REQUEST_CREATE_USER,
       payload: {
-        connection: connections && connections.length && connections[0].name,
+        connection,
         memberships: memberships && memberships.length === 1 ? [ memberships[0] ] : [ ]
       }
     });

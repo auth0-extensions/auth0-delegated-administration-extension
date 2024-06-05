@@ -247,13 +247,24 @@ describe('Client-Utils-useDefaultFields', () => {
 
     it('empty array population skip', () => {
       const fields = [];
-      const target = [];
+      const target1 = [{
+        property: 'connection',
+        label: 'Connection Name',
+        edit: {
+          required: true,
+          type: 'text',
+          component: 'InputText',
+          options: undefined,
+          onChange: undefined
+        }
+      }];
+      const target2 = [];
 
       useDefaultFields.useConnectionsField(true, fields, []);
-      expect(fields).to.deep.equal(target);
+      expect(fields).to.deep.equal(target1);
 
       useDefaultFields.useConnectionsField(true, fields, connection);
-      expect(fields).to.deep.equal(target);
+      expect(fields).to.deep.equal(target2);
     });
 
     it('pre populated array', () => {
@@ -321,7 +332,7 @@ describe('Client-Utils-useDefaultFields', () => {
       }];
       const target = [];
 
-      useDefaultFields.useConnectionsField(true, fields, []);
+      useDefaultFields.useConnectionsField(true, fields, connection);
       expect(fields).to.deep.equal(target);
     });
 
