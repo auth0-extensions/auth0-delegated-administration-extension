@@ -45,7 +45,7 @@
     "expect": "^1.20.2",
     "express": "^4.17.1",
     "express-jwt": "^3.4.0",
-    "glob": "^7.0.3",
+    "glob": "^9.0.0",
     "history": "^2.1.2",
     "immutable": "^3.8.1",
     "json-loader": "^0.5.4",
