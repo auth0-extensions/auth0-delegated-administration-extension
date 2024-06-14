@@ -520,6 +520,14 @@ export default {
       color: 'green'
     }
   },
+  gd_send_voice: {
+    event: 'Voice OTP Sent',
+    description: 'Voice OTP for MFA sent successfully sent.',
+    icon: {
+      name: '312',
+      color: 'green'
+    }
+  },
   gd_start_auth: {
     event: 'Second factor started',
     description: 'Second factor authentication event started for MFA.',
