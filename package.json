@@ -43,7 +43,7 @@
     "cookie-parser": "^1.4.3",
     "ejs": "^2.4.2",
     "expect": "^1.20.2",
-    "express": "^4.17.1",
+    "express": "^4.20.0",
     "express-jwt": "^3.4.0",
     "glob": "^7.0.3",
     "history": "^2.1.2",
