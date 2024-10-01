@@ -74,7 +74,7 @@
     "request": "^2.34.0",
     "reselect": "^2.5.4",
     "safe-eval": "^0.4.1",
-    "semver": "^5.1.0",
+    "semver": "^7.5.2",
     "snyk": "^1.278.1",
     "string.prototype.endswith": "^0.2.0",
     "superagent": "^3.8.3",
