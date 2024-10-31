@@ -1,8 +1,8 @@
 import fs from 'fs';
-import url from 'url';
 import ejs from 'ejs';
 import path from 'path';
 import { urlHelpers } from 'auth0-extension-express-tools';
+import logger from '../lib/logger';
 
 import config from '../lib/config';
 

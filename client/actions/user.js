@@ -18,7 +18,7 @@ const addRequiredTextParam = (url, languageDictionary) => {
  */
 export function fetchUsers(search, reset = false, page = 0, filterBy, sort, onSuccess) {
   return (dispatch, getState) => {
-    const { sortProperty, sortOrder, searchValue, selectedFilter } = getState().users.toJS();
+    const { sortProperty, sortOrder, searchValue, selectedFilter } = getState().users;
     const meta = { page, sortProperty, sortOrder, searchValue, onSuccess };
     meta.selectedFilter = reset ? '' : filterBy || selectedFilter;
     meta.searchValue = reset ? '' : search || searchValue;
@@ -75,7 +75,7 @@ export function createUser(user, languageDictionary) {
  */
 export function requestCreateUser(memberships) {
   return (dispatch, getState) => {
-    const connections = getState().connections.get('records').toJS();
+    const connections = getState().connections.get('records');
 
     const connection = connections.length === 0
       ? null
@@ -384,7 +384,7 @@ export function cancelDeleteUser() {
  */
 export function deleteUser() {
   return (dispatch, getState) => {
-    const { user: {user_id} } = getState().userDelete.toJS();
+    const { user: {user_id} } = getState().userDelete;
     dispatch({
       type: constants.DELETE_USER,
       payload: {
@@ -425,7 +425,7 @@ export function cancelPasswordReset() {
  */
 export function resetPassword(application) {
   return (dispatch, getState) => {
-    const { user: { user_id }, connection } = getState().passwordReset.toJS();
+    const { user: { user_id }, connection } = getState().passwordReset;
     const clientId = application.client ? (application.client.value || application.client) :  null;
     dispatch({
       type: constants.PASSWORD_RESET,
@@ -467,7 +467,7 @@ export function cancelPasswordChange() {
  */
 export function changePassword(formData, languageDictionary) {
   return (dispatch, getState) => {
-    const { user: { user_id }, connection } = getState().passwordChange.toJS();
+    const { user: { user_id }, connection } = getState().passwordChange;
     dispatch({
       type: constants.PASSWORD_CHANGE,
       payload: {
@@ -510,7 +510,7 @@ export function cancelUsernameChange() {
  */
 export function changeUsername(userId, data, languageDictionary) {
   return (dispatch, getState) => {
-    const user = getState().user.get('record').toJS();
+    const user = getState().user.get('record');
     user.username = data.username;
     dispatch({
       type: constants.USERNAME_CHANGE,

@@ -229,7 +229,7 @@ export function getAppSettings(onSuccess) {
 
 export function toggleStyleSettings() {
   return (dispatch, getState) => {
-    let settings = getState().settings.get('record').toJS();
+    let settings = getState().settings.get('record');
     settings = settings.settings || settings || {};
     const useAlt = localStorage.getItem('delegated-admin:use-alt-css') === 'true';
     const path = useAlt ? settings.css : settings.altcss;
@@ -246,7 +246,7 @@ export function toggleStyleSettings() {
 
 export function getStyleSettings() {
   return (dispatch, getState) => {
-    let settings = getState().settings.get('record').toJS();
+    let settings = getState().settings.get('record');
     settings = settings.settings || settings || {};
     const useAlt = localStorage.getItem('delegated-admin:use-alt-css') === 'true';
     const path = !useAlt ? settings.css : settings.altcss;
