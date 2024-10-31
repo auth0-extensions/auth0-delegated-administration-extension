@@ -20,22 +20,22 @@ export default class Header extends Component {
   getName(iss, user) {
     let thisMenuName = this.props.getDictValue('menuName');
 
-    thisMenuName = thisMenuName || (user && user.get('name'));
-    thisMenuName = thisMenuName || (user && user.get('nickname'));
-    thisMenuName = thisMenuName || (user && user.get('email'));
+    // thisMenuName = thisMenuName || (user && user.get('name'));
+    // thisMenuName = thisMenuName || (user && user.get('nickname'));
+    // thisMenuName = thisMenuName || (user && user.get('email'));
     thisMenuName = thisMenuName || iss;
 
     return thisMenuName.length >= 21 ? thisMenuName.substr(0,18)+'...' : thisMenuName;
   }
 
   getPicture(iss, user) {
-    if (user && user.get('picture')) {
-      return user.get('picture');
-    }
+    // if (user && user.get('picture')) {
+    //   return user.get('picture');
+    // }
 
-    if (user && user.get('nickname')) {
-      return `https://cdn.auth0.com/avatars/${user.get('nickname').slice(0, 2).toLowerCase()}.png`;
-    }
+    // if (user && user.get('nickname')) {
+    //   return `https://cdn.auth0.com/avatars/${user.get('nickname').slice(0, 2).toLowerCase()}.png`;
+    // }
 
     return `https://cdn.auth0.com/avatars/${iss.slice(0, 2).toLowerCase()}.png`;
   }

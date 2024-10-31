@@ -238,27 +238,27 @@ export function cancelBlockUser() {
 /*
  * Update the user details.
  */
-export function updateUser(userId, data, onSuccess, languageDictionary) {
-  return (dispatch) => {
-    dispatch({
-      type: constants.UPDATE_USER,
-      meta: {
-        userId,
-        onSuccess: () => {
-          if (onSuccess) {
-            onSuccess();
-          }
-          dispatch(fetchUserDetail(userId));
-        }
-      },
-      payload: {
-        promise: axios.put(addRequiredTextParam(`/api/users/${userId}`, languageDictionary), data, {
-          responseType: 'json'
-        })
-      }
-    });
-  };
-}
+// export function updateUser(userId, data, onSuccess, languageDictionary) {
+//   return (dispatch) => {
+//     dispatch({
+//       type: constants.UPDATE_USER,
+//       meta: {
+//         userId,
+//         onSuccess: () => {
+//           if (onSuccess) {
+//             onSuccess();
+//           }
+//           dispatch(fetchUserDetail(userId));
+//         }
+//       },
+//       payload: {
+//         promise: axios.put(addRequiredTextParam(`/api/users/${userId}`, languageDictionary), data, {
+//           responseType: 'json'
+//         })
+//       }
+//     });
+//   };
+// }
 /*
  * Block a user.
  */

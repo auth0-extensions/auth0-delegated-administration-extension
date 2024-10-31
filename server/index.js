@@ -58,7 +58,10 @@ export default function (cfg, storageProvider) {
   // Fallback to rendering HTML.
   app.get('*', cookieParser(), htmlRoute());
 
+
+  const logError = (message) => logger.log({ level: "error", message });
+
   // Generic error handler.
-  app.use(errorHandler(logger.error));
+  app.use(errorHandler(logError));
   return app;
 };

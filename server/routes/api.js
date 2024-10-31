@@ -20,11 +20,45 @@ import users from './users';
 
 export default (storage) => {
   const scriptManager = new ScriptManager(storage);
-  const managementApiClient = middlewares.managementApiClient({
-    domain: config('AUTH0_DOMAIN'),
-    clientId: config('AUTH0_CLIENT_ID'),
-    clientSecret: config('AUTH0_CLIENT_SECRET')
-  });
+  // const managementApiClient = middlewares.managementApiClient({
+  //   domain: config("AUTH0_DOMAIN"),
+  //   clientId: config("AUTH0_CLIENT_ID"),
+  //   clientSecret: config("AUTH0_CLIENT_SECRET"),
+  // });
+
+  const managementApiClient = async function (req, res, next) {
+    try {
+      const handlerOptions = {
+        domain: config("AUTH0_DOMAIN"),
+        clientId: config("AUTH0_CLIENT_ID"),
+        clientSecret: config("AUTH0_CLIENT_SECRET"),
+      };
+
+      const isAdministrator =
+        req.user && req.user.access_token && req.user.access_token.length;
+      const options = !isAdministrator
+        ? handlerOptions
+        : {
+            domain: handlerOptions.domain,
+            accessToken: req.user.access_token,
+            headers: handlerOptions.headers,
+          };
+
+      var managementClient = new ManagementClient(options);
+
+      req.auth0 = managementClient;
+
+      console.log({
+        "req.originalUrl": req.originalUrl,
+        "typeof req.auth0": typeof req.auth0,
+      });
+
+      next();
+      return null;
+    } catch (error) {
+      next(error);
+    }
+  };
 
   const api = Router();
 

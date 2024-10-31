@@ -14,7 +14,7 @@ export default function(client, entity, opts = {}, fetchOptions = {} ) {
     throw new ArgumentError('Must provide a valid entity for auth0 client.');
   }
 
-  const getter = client[entity].getAll;
+  // const getter = client[entity].getAll;
   const options = { ...opts, per_page: perPage };
   const result = [];
 
@@ -22,7 +22,7 @@ export default function(client, entity, opts = {}, fetchOptions = {} ) {
   let pageCount = 0;
 
   const getTotals = () =>
-    getter({ ...options, include_totals: true, page: 0 })
+    client[entity].getAll({ ...options, include_totals: true, page: 0 })
       .then((response) => {
         total = response.total || 0;
         pageCount = Math.ceil(total / perPage);
@@ -40,7 +40,7 @@ export default function(client, entity, opts = {}, fetchOptions = {} ) {
       });
 
   const getPage = (page) =>
-    getter({ ...options, page })
+    client[entity].getAll({ ...options, page })
       .then((data) => {
         data.forEach(item => result.push(item));
         return null;

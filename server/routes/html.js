@@ -41,7 +41,23 @@ export default () => {
 
   const getLocale = (req) => {
     const basePath = urlHelpers.getBasePath(req);
-    const pathname = url.parse(req.originalUrl).pathname;
+    // const pathname = url.parse(req.originalUrl).pathname;
+    
+    
+        logger.log({ level: "info", message: req.originalUrl });
+
+        // console.log(req);
+
+        const url = new URL(`https://${req.headers.host}${req.originalUrl}`);
+        const pathname = url.pathname;
+
+        console.log({
+          basePath,
+          "req.originalUrl": req.originalUrl,
+          "req.headers.host": req.headers.host,
+          url: url ?? "no url",
+          pathname: pathname ?? "no pathname",
+        });
     const relativePath = pathname.replace(basePath, '').split('/');
     const routes = [
       'api',
