@@ -43,6 +43,7 @@ export default function(client, entity, opts = {}, fetchOptions = {} ) {
     client[entity].getAll({ ...options, page })
       .then((data) => {
         data.forEach(item => result.push(item));
+        console.log({ result });
         return null;
       });
 

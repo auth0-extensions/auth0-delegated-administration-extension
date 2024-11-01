@@ -64,8 +64,8 @@ class LoginContainer extends Component {
 
 function mapStateToProps(state) {
   return {
-    auth: state.auth.toJS(),
-    languageDictionary: state.languageDictionary.get('record').toJS()
+    auth: state.auth,
+    languageDictionary: state.languageDictionary.get('record')
   };
 }
 

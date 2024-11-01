@@ -19,6 +19,8 @@ import logs from './logs';
 import users from './users';
 
 export default (storage) => {
+  console.log({stage: 1});
+
   const scriptManager = new ScriptManager(storage);
   // const managementApiClient = middlewares.managementApiClient({
   //   domain: config("AUTH0_DOMAIN"),
@@ -26,6 +28,7 @@ export default (storage) => {
   //   clientSecret: config("AUTH0_CLIENT_SECRET"),
   // });
 
+  console.log({stage: 2});
   const managementApiClient = async function (req, res, next) {
     try {
       const handlerOptions = {
@@ -33,6 +36,12 @@ export default (storage) => {
         clientId: config("AUTH0_CLIENT_ID"),
         clientSecret: config("AUTH0_CLIENT_SECRET"),
       };
+
+      console.log({
+        domain: config('AUTH0_DOMAIN'),
+        clientId: config('AUTH0_CLIENT_ID'),
+        clientSecret: config('AUTH0_CLIENT_SECRET')
+      });
 
       const isAdministrator =
         req.user && req.user.access_token && req.user.access_token.length;
@@ -60,11 +69,14 @@ export default (storage) => {
     }
   };
 
+  console.log({stage: 3});
   const api = Router();
-
+console.log({stage: 4});
   const getToken = req => _.get(req, 'headers.authorization', '').split(' ')[1];
-
+  console.log({ stage: 5 });
+  
   const addExtraUserInfo = (token, user) => {
+    console.log({stage: 6});
     global.daeUser = global.daeUser || {};
     global.daeUser[user.sub] = global.daeUser[user.sub] || { exp: 0, token: '' };
 
@@ -79,6 +91,12 @@ export default (storage) => {
     }
 
     if (!token) console.error('no token found');
+
+    console.log({
+      domain: config('AUTH0_DOMAIN'),
+      clientId: config('AUTH0_CLIENT_ID'),
+      clientSecret: config('AUTH0_CLIENT_SECRET')
+    });
 
     const promise = tools.managementApi.getClient({
       domain: config('AUTH0_DOMAIN'),
@@ -97,8 +115,17 @@ export default (storage) => {
 
     global.daeUser[user.sub] = promise;
 
+    console.log({stage: 7});
     return global.daeUser[user.sub];
   };
+
+  console.log({ stage: 8 });
+  
+  console.log({
+    "config('AUTH0_CUSTOM_DOMAIN')": config('AUTH0_CUSTOM_DOMAIN'),
+    "config('AUTH0_DOMAIN')": config('AUTH0_DOMAIN'),
+    "config('EXTENSION_CLIENT_ID')": config('EXTENSION_CLIENT_ID'),
+  })
 
   // Allow end users to authenticate.
   api.use(middlewares.authenticateUsers.optional({
@@ -109,6 +136,9 @@ export default (storage) => {
       const currentRequest = req;
       return addExtraUserInfo(getToken(req), req.user)
         .then((user) => {
+
+          console.log({ user });
+
           currentRequest.user = user;
           currentRequest.user.scope = getScopes(req.user);
           return next();
@@ -116,7 +146,7 @@ export default (storage) => {
         .catch(next);
     }
   }));
-
+console.log({stage: 8.5});
   // Allow dashboard admins to authenticate.
   api.use(middlewares.authenticateAdmins.optional({
     credentialsRequired: false,
@@ -127,6 +157,9 @@ export default (storage) => {
       const currentRequest = req;
       return addExtraUserInfo(getToken(req), req.user)
         .then((user) => {
+
+          console.log({ user });
+
           currentRequest.user = user;
           currentRequest.user.scope = [ constants.AUDITOR_PERMISSION, constants.USER_PERMISSION, constants.OPERATOR_PERMISSION, constants.ADMIN_PERMISSION ];
           return next();
@@ -134,6 +167,7 @@ export default (storage) => {
         .catch(next);
     }
   }));
+console.log({stage: 9});
 
   /* Fight caching attempts by IE */
   api.use((req, res, next) => {
@@ -143,17 +177,27 @@ export default (storage) => {
     next();
   });
 
+  console.log({stage: 10});
+
   api.use((req, res, next) => {
     const permission = (req.method.toLowerCase() === 'get') ? constants.AUDITOR_PERMISSION : constants.USER_PERMISSION;
     return requireScope(permission)(req, res, next);
   });
+  console.log({stage: 11});
   api.use('/applications', managementApiClient, applications());
+  console.log({stage: 12});
   api.use('/connections', managementApiClient, connections(scriptManager));
+  console.log({stage: 13});
   api.use('/scripts', requireScope(constants.ADMIN_PERMISSION), scripts(storage, scriptManager));
+  console.log({stage: 14});
   api.use('/users', managementApiClient, users(storage, scriptManager));
+  console.log({stage: 15});
   api.use('/logs', managementApiClient, logs(scriptManager));
+  console.log({stage: 16});
   api.use('/me', me(scriptManager));
+  console.log({stage: 17});
   api.get('/settings', (req, res, next) => {
+    console.log({stage: 18});
     const settingsContext = {
       request: {
         user: req.user
@@ -164,8 +208,10 @@ export default (storage) => {
     scriptManager.execute('settings', settingsContext)
       .then(settings => res.json({ settings: settings || {} }))
       .catch(next);
+    
   });
 
+  console.log({stage: 19});
   return api;
 }
 ;

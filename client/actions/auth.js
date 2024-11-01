@@ -15,7 +15,13 @@ const webAuthOptions = {
 const webAuth = new auth0.WebAuth(webAuthOptions); // eslint-disable-line no-undef
 
 export function login(returnUrl, locale) {
+  console.log("login function running");
+
   sessionStorage.setItem('delegated-admin:returnTo', returnUrl || '/users');
+
+  console.log({
+    webAuthOptions,
+  })
 
   webAuth.authorize({
     ui_locales: locale
