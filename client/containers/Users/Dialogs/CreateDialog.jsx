@@ -44,15 +44,15 @@ export default connectContainer(class extends Component {
   }
 
   onSubmit = (user) => {
-    const languageDictionary = this.props.languageDictionary.get('record').toJS();
+    const languageDictionary = this.props.languageDictionary.get('record');
     this.props.createUser(user, languageDictionary);
   };
 
   render() {
-    const { error, loading, record } = this.props.userCreate.toJS();
-    const connections = this.props.connections.toJS();
-    const accessLevel = this.props.accessLevel.get('record').toJS();
-    const languageDictionary = this.props.languageDictionary.get('record').toJS();
+    const { error, loading, record } = this.props.userCreate;
+    const connections = this.props.connections;
+    const accessLevel = this.props.accessLevel.get('record');
+    const languageDictionary = this.props.languageDictionary.get('record');
 
     return (
       <Modal show={record !== null} className="modal-overflow-visible" onHide={this.props.cancelCreateUser}>

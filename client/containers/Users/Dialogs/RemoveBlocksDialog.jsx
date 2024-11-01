@@ -12,7 +12,7 @@ import { removeBlockedIPs } from "../../../reducers/removeBlockedIPs";
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     removeBlockedIPs: state.removeBlockedIPs,
-    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
+    settings: (state.settings.get('record') && state.settings.get('record').settings) || {},
     languageDictionary: state.languageDictionary
   });
 
@@ -37,11 +37,11 @@ export default connectContainer(class extends Component {
 
   render() {
     const { cancelRemoveBlocks, settings } = this.props;
-    const { user, error, requesting, loading } = this.props.removeBlockedIPs.toJS();
+    const { user, error, requesting, loading } = this.props.removeBlockedIPs;
 
     const userFields = settings.userFields || [];
 
-    const languageDictionary = this.props.languageDictionary.get('record').toJS();
+    const languageDictionary = this.props.languageDictionary.get('record');
 
     const messageFormat = languageDictionary.removeBlockedIPsDialogMessage ||
       'Do you really want to remove all Anomaly Detection blocks from {username}? ' +

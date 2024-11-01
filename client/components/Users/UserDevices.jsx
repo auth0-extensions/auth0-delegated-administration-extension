@@ -40,7 +40,7 @@ export default class UserDevices extends Component {
       return <div>{languageDictionary.noDevicesMessage || 'This user does not have any registered devices.'}</div>;
     }
 
-    const devices = this.props.devices.toJS();
+    const devices = this.props.devices;
 
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>

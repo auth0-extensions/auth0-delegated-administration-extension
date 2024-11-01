@@ -11,7 +11,7 @@ import getErrorMessage from '../../../utils/getErrorMessage';
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     userDelete: state.userDelete,
-    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
+    settings: (state.settings.get('record') && state.settings.get('record').settings) || {},
     languageDictionary: state.languageDictionary
   });
 
@@ -37,10 +37,10 @@ export default connectContainer(class extends Component {
 
   render() {
     const { cancelDeleteUser, settings } = this.props;
-    const { user, error, requesting, loading } = this.props.userDelete.toJS();
+    const { user, error, requesting, loading } = this.props.userDelete;
 
     const userFields = settings.userFields || [];
-    const languageDictionary = this.props.languageDictionary.get('record').toJS();
+    const languageDictionary = this.props.languageDictionary.get('record');
 
     const messageFormat = languageDictionary.deleteDialogMessage ||
       'Do you really want to delete {username}? ' +

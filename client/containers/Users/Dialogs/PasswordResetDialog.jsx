@@ -23,7 +23,7 @@ export default connectContainer(class extends Component {
     connections: state.connections,
     passwordReset: state.passwordReset,
     appsForConnection: getAppsForConnection(state),
-    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
+    settings: (state.settings.get('record') && state.settings.get('record').settings) || {},
     languageDictionary: state.languageDictionary
   });
 
@@ -57,14 +57,14 @@ export default connectContainer(class extends Component {
 
   render() {
     const { cancelPasswordReset, settings, connections } = this.props;
-    const { connection, user, error, requesting, loading } = this.props.passwordReset.toJS();
+    const { connection, user, error, requesting, loading } = this.props.passwordReset;
 
     if (!requesting) {
       return null;
     }
 
     const userFields = settings.userFields || [];
-    const languageDictionary = this.props.languageDictionary.get('record').toJS();
+    const languageDictionary = this.props.languageDictionary.get('record');
 
     const messageFormat = languageDictionary.resetPasswordMessage ||
       'Do you really want to reset the password for {username}? '+
@@ -73,8 +73,8 @@ export default connectContainer(class extends Component {
       getName(user, userFields, languageDictionary));
 
     const fields = _.cloneDeep(userFields) || [];
-    useClientField(true, fields, this.props.appsForConnection.toJS());
-    useDisabledConnectionField(true, fields, connection, connections.get('records').toJS());
+    useClientField(true, fields, this.props.appsForConnection);
+    useDisabledConnectionField(true, fields, connection, connections.get('records'));
     useDisabledEmailField(true, fields);
 
     const allowedFields = ['email', 'client', 'connection'];
@@ -98,7 +98,7 @@ export default connectContainer(class extends Component {
           {message}
         </p>
         <UserFieldsFormInstance
-          initialValues={mapValues(user, allowedFields, filteredFields, 'edit', languageDictionary, { applications: this.props.appsForConnection.toJS() })}
+          initialValues={mapValues(user, allowedFields, filteredFields, 'edit', languageDictionary, { applications: this.props.appsForConnection })}
           isEditForm={true}
           fields={filteredFields}
           languageDictionary={languageDictionary}

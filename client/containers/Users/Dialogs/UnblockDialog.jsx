@@ -12,7 +12,7 @@ import getErrorMessage from '../../../utils/getErrorMessage';
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     unblock: state.unblock,
-    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
+    settings: (state.settings.get('record') && state.settings.get('record').settings) || {},
     languageDictionary: state.languageDictionary
   });
 
@@ -37,11 +37,11 @@ export default connectContainer(class extends Component {
 
   render() {
     const { cancelUnblockUser, settings } = this.props;
-    const { user, error, requesting, loading } = this.props.unblock.toJS();
+    const { user, error, requesting, loading } = this.props.unblock;
 
     const userFields = settings.userFields || [];
 
-    const languageDictionary = this.props.languageDictionary.get('record').toJS();
+    const languageDictionary = this.props.languageDictionary.get('record');
 
     const messageFormat = languageDictionary.unblockDialogMessage ||
       'Do you really want to unblock {username}? ' +

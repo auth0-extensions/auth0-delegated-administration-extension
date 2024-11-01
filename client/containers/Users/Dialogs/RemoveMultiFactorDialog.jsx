@@ -15,7 +15,7 @@ import getErrorMessage from '../../../utils/getErrorMessage';
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     mfa: state.mfa,
-    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
+    settings: (state.settings.get('record') && state.settings.get('record').settings) || {},
     languageDictionary: state.languageDictionary
   });
 
@@ -45,9 +45,9 @@ export default connectContainer(class extends Component {
 
   render() {
     const { cancelRemoveMultiFactor, settings } = this.props;
-    const { user, error, requesting, loading } = this.props.mfa.toJS();
+    const { user, error, requesting, loading } = this.props.mfa;
     const userFields = settings.userFields || [];
-    const languageDictionary = this.props.languageDictionary.get('record').toJS();
+    const languageDictionary = this.props.languageDictionary.get('record');
 
     const messageFormat = languageDictionary.removeMultiFactorMessage ||
       'Do you really want to remove the multi factor authentication settings for {username}? '+

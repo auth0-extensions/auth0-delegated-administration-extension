@@ -10,7 +10,7 @@ import getErrorMessage from '../../../utils/getErrorMessage';
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     fieldsChange: state.fieldsChange,
-    userId: state.fieldsChange.toJS().userId,
+    userId: state.fieldsChange.userId,
     languageDictionary: state.languageDictionary,
     userForm: state.form
   });
@@ -44,12 +44,12 @@ export default connectContainer(class extends Component {
       .uniq()
       .value();
 
-    this.props.changeFields(this.props.userId, _.pick(user, submitFields), this.props.languageDictionary.get('record').toJS());
+    this.props.changeFields(this.props.userId, _.pick(user, submitFields), this.props.languageDictionary.get('record'));
   }
 
   render() {
-    const { error, loading, record } = this.props.fieldsChange.toJS();
-    const languageDictionary = this.props.languageDictionary.get('record').toJS();
+    const { error, loading, record } = this.props.fieldsChange;
+    const languageDictionary = this.props.languageDictionary.get('record');
 
     return (
       <Modal show={record !== null} className="modal-overflow-visible" onHide={this.props.cancelChangeFields}>

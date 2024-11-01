@@ -25,7 +25,7 @@ export default class LogDialog extends Component {
 
     const languageDictionary = this.props.languageDictionary || {};
 
-    const log = this.props.log.toJS();
+    const log = this.props.log;
 
     const logType = _.get(languageDictionary, `logTypes.${log.shortType}.event`, log.type);
 

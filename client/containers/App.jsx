@@ -54,8 +54,8 @@ class App extends Component {
 
   render() {
     const { settingsLoading } = this.props;
-    const languageDictionary = this.props.languageDictionary ? this.props.languageDictionary.toJS() : {};
-    const settings = this.props.settings.get('settings') && this.props.settings.get('settings').toJS();
+    const languageDictionary = this.props.languageDictionary ? this.props.languageDictionary : {};
+    const settings = this.props.settings.get('settings') && this.props.settings.get('settings');
     const renderCssToggle = !!(settings && settings.css && settings.altcss);
 
     if (settingsLoading) {

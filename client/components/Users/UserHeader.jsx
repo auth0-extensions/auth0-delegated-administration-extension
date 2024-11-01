@@ -64,7 +64,7 @@ export default class UserHeader extends Component {
       return <div></div>;
     }
 
-    const user = this.props.user.toJS();
+    const user = this.props.user;
     const userFields = this.props.userFields || [];
     const languageDictionary = this.props.languageDictionary || {};
 
