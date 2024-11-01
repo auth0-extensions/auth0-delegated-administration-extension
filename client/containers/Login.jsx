@@ -17,8 +17,21 @@ class LoginContainer extends Component {
 
   componentWillMount() {
     if (this.props.auth.isAuthenticated) {
+      console.log(`
+        isAuthenticated: ${this.props.auth.isAuthenticated},
+        pushing to ${this.props.auth.returnTo || '/users'}
+      `);
+
       this.props.push(this.props.auth.returnTo || '/users');
     } else if (!this.props.auth.isAuthenticating && !this.props.auth.error) {
+
+      console.log(`
+        isAuthenticated: ${this.props.auth.isAuthenticated},
+        isAuthenticating: ${this.props.auth.isAuthenticating},
+        error: ${this.props.auth.error},
+        pushing to login
+      `); 
+
       // reset the local storage for locale
       this.props.login(this.props.location.query.returnUrl, window.config.LOCALE || 'en');
     }

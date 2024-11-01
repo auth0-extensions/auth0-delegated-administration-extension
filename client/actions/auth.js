@@ -19,9 +19,9 @@ export function login(returnUrl, locale) {
 
   sessionStorage.setItem('delegated-admin:returnTo', returnUrl || '/users');
 
-  console.log({
-    webAuthOptions,
-  })
+  console.log('delegated-admin:returnTo', returnUrl || '/users')
+
+  console.log({ webAuthOptions })
 
   webAuth.authorize({
     ui_locales: locale
@@ -146,6 +146,8 @@ const processTokens = (dispatch, apiToken, returnTo) => {
       }
     });
 
+
+    console.log(`dispatching LOGIN_SUCCESS with token: ${apiToken}, decodedToken: ${decodedToken}, user: ${decodedToken}, returnTo: ${returnTo}`);
     dispatch({
       type: constants.LOGIN_SUCCESS,
       payload: {
@@ -168,6 +170,7 @@ const processTokens = (dispatch, apiToken, returnTo) => {
 export function loadCredentials() {
   return (dispatch) => {
     if (window.location.hash) {
+      console.log(`dispatching LOGIN_PENDING`);
       dispatch({
         type: constants.LOGIN_PENDING
       });

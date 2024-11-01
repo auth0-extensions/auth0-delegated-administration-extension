@@ -2,6 +2,7 @@ import { Router } from 'express';
 import _ from 'lodash';
 import moment from 'moment';
 import { middlewares } from 'auth0-extension-express-tools';
+import { ManagementClient} from 'auth0';
 import tools from 'auth0-extension-tools';
 
 import { requireScope } from '../lib/middlewares';
