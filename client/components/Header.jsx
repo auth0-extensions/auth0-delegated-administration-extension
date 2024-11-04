@@ -20,6 +20,9 @@ export default class Header extends Component {
   getName(iss, user) {
     let thisMenuName = this.props.getDictValue('menuName');
 
+    // user.get was erroring so commented out. User seems to be a decoded jwt
+    // I don't know what it was previously - to have getter fns, or why it's changed
+
     // thisMenuName = thisMenuName || (user && user.get('name'));
     // thisMenuName = thisMenuName || (user && user.get('nickname'));
     // thisMenuName = thisMenuName || (user && user.get('email'));

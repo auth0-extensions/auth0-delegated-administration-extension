@@ -20,16 +20,12 @@ import logs from './logs';
 import users from './users';
 
 export default (storage) => {
-  console.log({stage: 1});
 
   const scriptManager = new ScriptManager(storage);
-  // const managementApiClient = middlewares.managementApiClient({
-  //   domain: config("AUTH0_DOMAIN"),
-  //   clientId: config("AUTH0_CLIENT_ID"),
-  //   clientSecret: config("AUTH0_CLIENT_SECRET"),
-  // });
 
-  console.log({stage: 2});
+  // moving the managementApiClient middleware function here so that it
+  // can use the new version of the auth0 dep, not the one specified
+  // by the auth0-extension-express-tools library
   const managementApiClient = async function (req, res, next) {
     try {
       const handlerOptions = {
@@ -70,14 +66,11 @@ export default (storage) => {
     }
   };
 
-  console.log({stage: 3});
   const api = Router();
-console.log({stage: 4});
   const getToken = req => _.get(req, 'headers.authorization', '').split(' ')[1];
   console.log({ stage: 5 });
   
   const addExtraUserInfo = (token, user) => {
-    console.log({stage: 6});
     global.daeUser = global.daeUser || {};
     global.daeUser[user.sub] = global.daeUser[user.sub] || { exp: 0, token: '' };
 
@@ -116,7 +109,6 @@ console.log({stage: 4});
 
     global.daeUser[user.sub] = promise;
 
-    console.log({stage: 7});
     return global.daeUser[user.sub];
   };
 
@@ -146,8 +138,7 @@ console.log({stage: 4});
         })
         .catch(next);
     }
-  }));
-console.log({stage: 8.5});
+  })););
   // Allow dashboard admins to authenticate.
   api.use(middlewares.authenticateAdmins.optional({
     credentialsRequired: false,
@@ -168,7 +159,6 @@ console.log({stage: 8.5});
         .catch(next);
     }
   }));
-console.log({stage: 9});
 
   /* Fight caching attempts by IE */
   api.use((req, res, next) => {
@@ -177,28 +167,19 @@ console.log({stage: 9});
     res.setHeader('Expires', '0');
     next();
   });
-
-  console.log({stage: 10});
+;
 
   api.use((req, res, next) => {
     const permission = (req.method.toLowerCase() === 'get') ? constants.AUDITOR_PERMISSION : constants.USER_PERMISSION;
     return requireScope(permission)(req, res, next);
-  });
-  console.log({stage: 11});
-  api.use('/applications', managementApiClient, applications());
-  console.log({stage: 12});
-  api.use('/connections', managementApiClient, connections(scriptManager));
-  console.log({stage: 13});
-  api.use('/scripts', requireScope(constants.ADMIN_PERMISSION), scripts(storage, scriptManager));
-  console.log({stage: 14});
-  api.use('/users', managementApiClient, users(storage, scriptManager));
-  console.log({stage: 15});
-  api.use('/logs', managementApiClient, logs(scriptManager));
-  console.log({stage: 16});
-  api.use('/me', me(scriptManager));
-  console.log({stage: 17});
-  api.get('/settings', (req, res, next) => {
-    console.log({stage: 18});
+  });;
+  api.use('/applications', managementApiClient, applications());;
+  api.use('/connections', managementApiClient, connections(scriptManager));;
+  api.use('/scripts', requireScope(constants.ADMIN_PERMISSION), scripts(storage, scriptManager));;
+  api.use('/users', managementApiClient, users(storage, scriptManager));;
+  api.use('/logs', managementApiClient, logs(scriptManager));;
+  api.use('/me', me(scriptManager));;
+  api.get('/settings', (req, res, next) => {;
     const settingsContext = {
       request: {
         user: req.user
@@ -211,8 +192,7 @@ console.log({stage: 9});
       .catch(next);
     
   });
-
-  console.log({stage: 19});
+;
   return api;
 }
 ;

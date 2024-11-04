@@ -14,7 +14,6 @@ export default function(client, entity, opts = {}, fetchOptions = {} ) {
     throw new ArgumentError('Must provide a valid entity for auth0 client.');
   }
 
-  // const getter = client[entity].getAll;
   const options = { ...opts, per_page: perPage };
   const result = [];
 
@@ -40,6 +39,8 @@ export default function(client, entity, opts = {}, fetchOptions = {} ) {
       });
 
   const getPage = (page) =>
+    // the node-auth0 lib has been rewritten and not uses classes so we can't store the
+    // getter method in a variable and then call it as function, we need to call it directly
     client[entity].getAll({ ...options, page })
       .then((data) => {
         data.forEach(item => result.push(item));
