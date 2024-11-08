@@ -13,7 +13,7 @@
     "build": "npm run validate && npm run clean && npm run client:build && npm run extension:build && npm run package",
     "deploy": "a0-ext deploy --package ./dist/package.zip --url http://0.0.0.0:3000/api/extensions",
     "client:build": "a0-ext build:client ./client/app.jsx ./dist/client",
-    "extension:build": "a0-ext build:server ./webtask.js ./dist && cp ./dist/auth0-delegated-admin.extension.$npm_package_version.js ./dist/bundle.js && cp ./webtask.json ./dist/webtask.json",
+    "extension:build": "a0-ext build:server ./webtask.js ./dist && cp ./dist/auth0-delegated-admin.extension.$npm_package_version.js ./build/bundle.js && cp ./webtask.json ./dist/webtask.json",
     "serve:dev": "cross-env NODE_ENV=development NODE_OPTIONS=--openssl-legacy-provider nodemon -e js --ignore assets/app/ --ignore build/webpack/ --ignore client/ --ignore server/data.json --ignore node_modules/ ./build/webpack/server.js",
     "serve:prod": "cross-env NODE_ENV=production node index.js",
     "test": "cross-env NODE_ENV=test nyc --reporter=lcov mocha --require ignore-styles tests/mocha.js './tests/**/*.tests.js'",
