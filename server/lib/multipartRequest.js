@@ -28,7 +28,7 @@ export default function(client, entity, opts = {}, fetchOptions = {} ) {
 
         // if the total exceeds the limit, don't fetch any more connections from api2
         // we get some from the initial request to get totals, but we'll ignore them
-        if (limit && (total > limit)) { 
+        if (limit && (total > limit)) {
           pageCount = 1;
           return null;
         }
@@ -39,12 +39,9 @@ export default function(client, entity, opts = {}, fetchOptions = {} ) {
       });
 
   const getPage = (page) =>
-    // the node-auth0 lib has been rewritten and not uses classes so we can't store the
-    // getter method in a variable and then call it as function, we need to call it directly
     client[entity].getAll({ ...options, page })
       .then((data) => {
         data.forEach(item => result.push(item));
-        console.log({ result });
         return null;
       });
 
@@ -54,7 +51,7 @@ export default function(client, entity, opts = {}, fetchOptions = {} ) {
         // the number of connections exceeds the limit we can handle:
         //   - don't return any to the frontend
         //   - will use a free text box in the user creation dialogue
-        if (limit && (total > limit)) { 
+        if (limit && (total > limit)) {
           return result;
         }
 

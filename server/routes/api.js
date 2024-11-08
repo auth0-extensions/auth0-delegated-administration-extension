@@ -20,12 +20,7 @@ import logs from './logs';
 import users from './users';
 
 export default (storage) => {
-
   const scriptManager = new ScriptManager(storage);
-
-  // moving the managementApiClient middleware function here so that it
-  // can use the new version of the auth0 dep, not the one specified
-  // by the auth0-extension-express-tools library
   const managementApiClient = async function (req, res, next) {
     try {
       const handlerOptions = {
@@ -33,12 +28,6 @@ export default (storage) => {
         clientId: config("AUTH0_CLIENT_ID"),
         clientSecret: config("AUTH0_CLIENT_SECRET"),
       };
-
-      console.log({
-        domain: config('AUTH0_DOMAIN'),
-        clientId: config('AUTH0_CLIENT_ID'),
-        clientSecret: config('AUTH0_CLIENT_SECRET')
-      });
 
       const isAdministrator =
         req.user && req.user.access_token && req.user.access_token.length;
@@ -54,22 +43,15 @@ export default (storage) => {
 
       req.auth0 = managementClient;
 
-      console.log({
-        "req.originalUrl": req.originalUrl,
-        "typeof req.auth0": typeof req.auth0,
-      });
-
       next();
       return null;
     } catch (error) {
       next(error);
     }
   };
-
   const api = Router();
   const getToken = req => _.get(req, 'headers.authorization', '').split(' ')[1];
-  console.log({ stage: 5 });
-  
+
   const addExtraUserInfo = (token, user) => {
     global.daeUser = global.daeUser || {};
     global.daeUser[user.sub] = global.daeUser[user.sub] || { exp: 0, token: '' };
@@ -86,12 +68,6 @@ export default (storage) => {
 
     if (!token) console.error('no token found');
 
-    console.log({
-      domain: config('AUTH0_DOMAIN'),
-      clientId: config('AUTH0_CLIENT_ID'),
-      clientSecret: config('AUTH0_CLIENT_SECRET')
-    });
-
     const promise = tools.managementApi.getClient({
       domain: config('AUTH0_DOMAIN'),
       clientId: config('AUTH0_CLIENT_ID'),
@@ -106,19 +82,9 @@ export default (storage) => {
             return user;
           })
       );
-
     global.daeUser[user.sub] = promise;
-
     return global.daeUser[user.sub];
   };
-
-  console.log({ stage: 8 });
-  
-  console.log({
-    "config('AUTH0_CUSTOM_DOMAIN')": config('AUTH0_CUSTOM_DOMAIN'),
-    "config('AUTH0_DOMAIN')": config('AUTH0_DOMAIN'),
-    "config('EXTENSION_CLIENT_ID')": config('EXTENSION_CLIENT_ID'),
-  })
 
   // Allow end users to authenticate.
   api.use(middlewares.authenticateUsers.optional({
@@ -129,16 +95,13 @@ export default (storage) => {
       const currentRequest = req;
       return addExtraUserInfo(getToken(req), req.user)
         .then((user) => {
-
-          console.log({ user });
-
           currentRequest.user = user;
           currentRequest.user.scope = getScopes(req.user);
           return next();
         })
         .catch(next);
     }
-  })););
+  }));
   // Allow dashboard admins to authenticate.
   api.use(middlewares.authenticateAdmins.optional({
     credentialsRequired: false,
@@ -149,9 +112,6 @@ export default (storage) => {
       const currentRequest = req;
       return addExtraUserInfo(getToken(req), req.user)
         .then((user) => {
-
-          console.log({ user });
-
           currentRequest.user = user;
           currentRequest.user.scope = [ constants.AUDITOR_PERMISSION, constants.USER_PERMISSION, constants.OPERATOR_PERMISSION, constants.ADMIN_PERMISSION ];
           return next();
@@ -167,32 +127,27 @@ export default (storage) => {
     res.setHeader('Expires', '0');
     next();
   });
-;
 
   api.use((req, res, next) => {
     const permission = (req.method.toLowerCase() === 'get') ? constants.AUDITOR_PERMISSION : constants.USER_PERMISSION;
     return requireScope(permission)(req, res, next);
-  });;
-  api.use('/applications', managementApiClient, applications());;
-  api.use('/connections', managementApiClient, connections(scriptManager));;
-  api.use('/scripts', requireScope(constants.ADMIN_PERMISSION), scripts(storage, scriptManager));;
-  api.use('/users', managementApiClient, users(storage, scriptManager));;
-  api.use('/logs', managementApiClient, logs(scriptManager));;
-  api.use('/me', me(scriptManager));;
-  api.get('/settings', (req, res, next) => {;
+  });
+  api.use('/applications', managementApiClient, applications());
+  api.use('/connections', managementApiClient, connections(scriptManager));
+  api.use('/scripts', requireScope(constants.ADMIN_PERMISSION), scripts(storage, scriptManager));
+  api.use('/users', managementApiClient, users(storage, scriptManager));
+  api.use('/logs', managementApiClient, logs(scriptManager));
+  api.use('/me', me(scriptManager));
+  api.get('/settings', (req, res, next) => {
     const settingsContext = {
       request: {
         user: req.user
       },
       locale: req.headers['dae-locale']
     };
-
     scriptManager.execute('settings', settingsContext)
       .then(settings => res.json({ settings: settings || {} }))
       .catch(next);
-    
   });
-;
   return api;
-}
-;
+};

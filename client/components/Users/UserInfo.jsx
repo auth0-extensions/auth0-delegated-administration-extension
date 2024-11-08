@@ -104,7 +104,7 @@ export default class UserInfo extends Component {
       .value();
 
     /* Prepare the user object */
-    const userObject = user;
+    const userObject = user.toJS();
     if (!userObject || Object.keys(userObject).length === 0) {
       return (
         <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>

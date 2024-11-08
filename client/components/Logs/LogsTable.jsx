@@ -29,7 +29,7 @@ export default class LogsTable extends Component {
       return <div>{languageDictionary.noLogsMessage || 'No logs found'}</div>;
     }
 
-    const logs = this.props.logs;
+    const logs = this.props.logs.toJS();
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
         <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error, settings.errorTranslator)} />

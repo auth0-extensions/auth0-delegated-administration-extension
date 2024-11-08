@@ -26,7 +26,7 @@ export default class UserLogs extends Component {
     }
 
     const languageDictionary = this.props.languageDictionary || {};
-    const logs = this.props.logs;
+    const logs = this.props.logs.toJS();
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
         <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error, settings.errorTranslator)} />

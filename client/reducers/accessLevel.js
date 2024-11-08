@@ -6,7 +6,7 @@ import createReducer from '../utils/createReducer';
 const initialState = {
   loading: false,
   error: null,
-  record: { role: 0, memberships: [], createMemberships: false }
+  record: fromJS({ role: 0, memberships: [], createMemberships: false })
 };
 
 export const accessLevel = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export

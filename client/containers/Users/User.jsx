@@ -22,8 +22,8 @@ export default connectContainer(class extends Component {
     log: state.log,
     logs: state.user.get('logs'),
     devices: state.user.get('devices'),
-    settings: (state.settings.get('record') && state.settings.get('record').settings) || {},
-    languageDictionary: state.languageDictionary.get('record') || {}
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
+    languageDictionary: state.languageDictionary.get('record').toJS() || {}
   });
 
   static actionsToProps = {

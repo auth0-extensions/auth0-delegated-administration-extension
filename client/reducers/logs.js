@@ -6,7 +6,7 @@ import createReducer from '../utils/createReducer';
 const initialState = {
   loading: false,
   error: null,
-  records: [],
+  records: fromJS([]),
   currentRecord: null
 };
 
@@ -15,7 +15,7 @@ export const logs = createReducer(fromJS(initialState), { // eslint-disable-line
     state.merge({
       ...initialState,
       loading: true,
-      records: action.meta.page === 0 ? [] : state.get('records')
+      records: fromJS(action.meta.page === 0 ? [] : state.get('records')),
     }),
   [constants.FETCH_LOGS_REJECTED]: (state, action) =>
     state.merge({
@@ -27,7 +27,7 @@ export const logs = createReducer(fromJS(initialState), { // eslint-disable-line
     return state.merge({
       loading: false,
       nextPage: action.meta.page + 1,
-      records: state.get('records').concat(fromJS(data.map(log => {
+      records: fromJS(state.get('records').concat(fromJS(data.map(log => {
         log.shortType = log.type;
         log.type = logTypes[log.type];
         if (!log.type) {
@@ -40,7 +40,7 @@ export const logs = createReducer(fromJS(initialState), { // eslint-disable-line
           };
         }
         return log;
-      })))
+      }))))
     });
   }
 });

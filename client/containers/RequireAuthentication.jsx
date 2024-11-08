@@ -21,21 +21,10 @@ export default function RequireAuthentication(InnerComponent) {
     }
 
     requireAuthentication() {
-
-      console.log({
-        isAuthenticated: this.props.auth.isAuthenticated,
-        isAuthenticating: this.props.auth.isAuthenticating  
-      })
-
-
       if (!this.props.auth.isAuthenticated && !this.props.auth.isAuthenticating) {
         if (!this.props.location) {
-          console.log('pushing to login');
-
           this.props.push('/login');
         } else {
-
-          console.log(`pushing to login with return url: ${this.props.location.pathname}${this.props.location.search ? this.props.location.search : ''}`);
           this.props.push(`/login?returnUrl=${this.props.location.pathname}${this.props.location.search ? this.props.location.search : ''}`);
         }
       }
@@ -44,8 +33,7 @@ export default function RequireAuthentication(InnerComponent) {
     }
 
     render() {
-      // if (this.props.auth.isAuthenticated) {
-      if (true) {
+      if (this.props.auth.isAuthenticated) {
         return <InnerComponent {...this.props} />;
       }
 
@@ -53,5 +41,5 @@ export default function RequireAuthentication(InnerComponent) {
     }
   }
 
-  return connect((state) => ({ auth: state.auth }), { push })(RequireAuthenticationContainer);
+  return connect((state) => ({ auth: state.auth.toJS() }), { push })(RequireAuthenticationContainer);
 }

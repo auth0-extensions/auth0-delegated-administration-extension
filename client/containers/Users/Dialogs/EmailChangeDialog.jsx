@@ -17,7 +17,7 @@ export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     connections: state.connections,
     emailChange: state.emailChange,
-    settings: (state.settings.get('record') && state.settings.get('record').settings) || {},
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     languageDictionary: state.languageDictionary
   });
 
@@ -43,18 +43,18 @@ export default connectContainer(class extends Component {
   };
 
   onSubmit = (emailForm) => {
-    const { user } = this.props.emailChange;
+    const { user } = this.props.emailChange.toJS();
 
-    this.props.changeEmail(user, emailForm, this.props.languageDictionary.get('record'));
+    this.props.changeEmail(user, emailForm, this.props.languageDictionary.get('record').toJS());
   };
 
   render() {
     const { cancelEmailChange, settings, connections } = this.props;
-    const { user, connection, error, requesting, loading } = this.props.emailChange;
+    const { user, connection, error, requesting, loading } = this.props.emailChange.toJS();
 
     const userFields = settings.userFields || [];
 
-    const languageDictionary = this.props.languageDictionary.get('record');
+    const languageDictionary = this.props.languageDictionary.get('record').toJS();
 
     const messageFormat = languageDictionary.changeEmailMessage ||
       'Do you really want to change the email for {username}?';
@@ -63,7 +63,7 @@ export default connectContainer(class extends Component {
 
     const fields = _.cloneDeep(userFields) || [];
     useEmailField(true, fields);
-    useDisabledConnectionField(true, fields, connection, connections.get('records'));
+    useDisabledConnectionField(true, fields, connection, connections.get('records').toJS());
 
     const allowedFields = ['email', 'connection'];
     const filteredFields = _.filter(fields,

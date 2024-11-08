@@ -108,8 +108,8 @@ function mapStateToProps(state) {
       error: state.log.get('error'),
       loading: state.log.get('loading')
     },
-    settings: (state.settings.get('record') && state.settings.get('record').settings) || {},
-    languageDictionary: state.languageDictionary.get('record')
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
+    languageDictionary: state.languageDictionary.get('record').toJS()
   };
 }
 

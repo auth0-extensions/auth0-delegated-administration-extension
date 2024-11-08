@@ -20,7 +20,7 @@ export default class UserProfile extends Component {
     return (
       <LoadingPanel show={loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
         <Error title={this.props.languageDictionary.errorTitle} message={getErrorMessage(this.props.languageDictionary, error, settings.errorTranslator)} >
-          <Json jsonObject={user} />
+          <Json jsonObject={user.toJS()} />
         </Error>
       </LoadingPanel>
     );

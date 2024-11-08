@@ -41,23 +41,9 @@ export default () => {
 
   const getLocale = (req) => {
     const basePath = urlHelpers.getBasePath(req);
-    // const pathname = url.parse(req.originalUrl).pathname;
-    
-    
-        logger.log({ level: "info", message: req.originalUrl });
-
-        // console.log(req);
-
-        const url = new URL(`https://${req.headers.host}${req.originalUrl}`);
-        const pathname = url.pathname;
-
-        console.log({
-          basePath,
-          "req.originalUrl": req.originalUrl,
-          "req.headers.host": req.headers.host,
-          url: url ?? "no url",
-          pathname: pathname ?? "no pathname",
-        });
+    logger.log({ level: "info", message: req.originalUrl });
+    const url = new URL(`https://${req.headers.host}${req.originalUrl}`);
+    const pathname = url.pathname;
     const relativePath = pathname.replace(basePath, '').split('/');
     const routes = [
       'api',
@@ -81,18 +67,9 @@ export default () => {
     const locale = getLocale(req);
     const basePath = urlHelpers.getBasePath(req);
 
-    console.log({
-      locale, 
-      basePath,
-    })
-
-
     if (req.url.indexOf('/login') !== 0) {
       res.cookie('dae-locale', locale);
       if (req.url.indexOf(`/${locale}`) !== 0) {
-
-        console.log(`redirecting to: ${basePath}${locale}${req.url || '/login'}`);
-
         return res.redirect(`${basePath}${locale}${req.url || '/login'}`);
       }
     }
@@ -114,11 +91,6 @@ export default () => {
     // Render from CDN.
     const clientVersion = process.env.CLIENT_VERSION;
     const PR_NUMBER = process.env.PR_NUMBER;
-
-    console.log({
-      clientVersion,
-      PR_NUMBER
-    })
 
     if (clientVersion) {
       const favIcon = config('FAVICON_PATH') || 'https://cdn.auth0.com/styleguide/4.6.13/lib/logos/img/favicon.png';

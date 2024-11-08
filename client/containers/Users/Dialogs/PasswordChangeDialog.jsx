@@ -20,7 +20,7 @@ export default connectContainer(class PasswordChangeDialog extends Component {
   static stateToProps = (state) => ({
     connections: state.connections,
     passwordChange: state.passwordChange,
-    settings: (state.settings.get('record') && state.settings.get('record').settings) || {},
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     languageDictionary: state.languageDictionary
   });
 
@@ -45,14 +45,14 @@ export default connectContainer(class PasswordChangeDialog extends Component {
   };
 
   onSubmit = (changeForm) => {
-    const languageDictionary = this.props.languageDictionary.get('record');
+    const languageDictionary = this.props.languageDictionary.get('record').toJS();
 
     this.props.changePassword(changeForm, languageDictionary);
   };
 
   render() {
     const { cancelPasswordChange, settings, connections } = this.props;
-    const { connection, user, error, requesting, loading } = this.props.passwordChange;
+    const { connection, user, error, requesting, loading } = this.props.passwordChange.toJS();
 
     const userFields = settings.userFields || [];
 
@@ -60,7 +60,7 @@ export default connectContainer(class PasswordChangeDialog extends Component {
       return null;
     }
 
-    const languageDictionary = this.props.languageDictionary.get('record');
+    const languageDictionary = this.props.languageDictionary.get('record').toJS();
     const messageFormat = languageDictionary.changePasswordMessage ||
       'Do you really want to reset the password for {username}? ' +
       'You\'ll need a safe way to communicate the new password to your user, never send the user this' +
@@ -70,7 +70,7 @@ export default connectContainer(class PasswordChangeDialog extends Component {
 
     const fields = _.cloneDeep(userFields) || [];
     usePasswordFields(true, fields);
-    useDisabledConnectionField(true, fields, connection, connections.get('records'));
+    useDisabledConnectionField(true, fields, connection, connections.get('records').toJS());
     useDisabledEmailField(true, fields);
 
     const allowedFields = ['email', 'connection', 'password', 'repeatPassword'];

@@ -14,7 +14,7 @@ import getErrorMessage from '../../../utils/getErrorMessage';
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     usernameChange: state.usernameChange,
-    settings: (state.settings.get('record') && state.settings.get('record').settings) || {},
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     connections: state.connections,
     languageDictionary: state.languageDictionary
   });
@@ -41,14 +41,14 @@ export default connectContainer(class extends Component {
   };
 
   onSubmit = (formData) => {
-    const languageDictionary = this.props.languageDictionary.get('record');
+    const languageDictionary = this.props.languageDictionary.get('record').toJS();
 
-    this.props.changeUsername(this.props.usernameChange.user.user_id, formData, languageDictionary);
+    this.props.changeUsername(this.props.usernameChange.toJS().user.user_id, formData, languageDictionary);
   };
 
   render() {
     const { cancelUsernameChange, connections, settings } = this.props;
-    const { user, connection, error, requesting, loading } = this.props.usernameChange;
+    const { user, connection, error, requesting, loading } = this.props.usernameChange.toJS();
 
     if (!requesting) {
       return null;
@@ -56,7 +56,7 @@ export default connectContainer(class extends Component {
 
     const userFields = settings.userFields || [];
 
-    const languageDictionary = this.props.languageDictionary.get('record');
+    const languageDictionary = this.props.languageDictionary.get('record').toJS();
 
     const messageFormat = languageDictionary.changeUsernameMessage ||
       'Do you really want to change the username for {username}?';
@@ -66,8 +66,8 @@ export default connectContainer(class extends Component {
     const allowedFields = ['username', 'connection'];
     const initialValues = mapValues(user, allowedFields, userFields, 'edit', languageDictionary);
     const fields = _.cloneDeep(userFields) || [];
-    useUsernameField(true, fields, connections.get('records'), connection, initialValues);
-    useDisabledConnectionField(true, fields, connection, connections.get('records'));
+    useUsernameField(true, fields, connections.get('records').toJS(), connection, initialValues);
+    useDisabledConnectionField(true, fields, connection, connections.get('records').toJS());
 
     const filteredFields = _.filter(fields,
       field => _.includes(allowedFields, field.property));

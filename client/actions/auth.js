@@ -15,13 +15,7 @@ const webAuthOptions = {
 const webAuth = new auth0.WebAuth(webAuthOptions); // eslint-disable-line no-undef
 
 export function login(returnUrl, locale) {
-  console.log("login function running");
-
   sessionStorage.setItem('delegated-admin:returnTo', returnUrl || '/users');
-
-  console.log('delegated-admin:returnTo', returnUrl || '/users')
-
-  console.log({ webAuthOptions })
 
   webAuth.authorize({
     ui_locales: locale
@@ -146,8 +140,6 @@ const processTokens = (dispatch, apiToken, returnTo) => {
       }
     });
 
-
-    console.log(`dispatching LOGIN_SUCCESS with token: ${apiToken}, decodedToken: ${decodedToken}, user: ${decodedToken}, returnTo: ${returnTo}`);
     dispatch({
       type: constants.LOGIN_SUCCESS,
       payload: {
@@ -170,7 +162,6 @@ const processTokens = (dispatch, apiToken, returnTo) => {
 export function loadCredentials() {
   return (dispatch) => {
     if (window.location.hash) {
-      console.log(`dispatching LOGIN_PENDING`);
       dispatch({
         type: constants.LOGIN_PENDING
       });
@@ -238,7 +229,7 @@ export function getAppSettings(onSuccess) {
 
 export function toggleStyleSettings() {
   return (dispatch, getState) => {
-    let settings = getState().settings.get('record');
+    let settings = getState().settings.get('record').toJS();
     settings = settings.settings || settings || {};
     const useAlt = localStorage.getItem('delegated-admin:use-alt-css') === 'true';
     const path = useAlt ? settings.css : settings.altcss;
@@ -255,7 +246,7 @@ export function toggleStyleSettings() {
 
 export function getStyleSettings() {
   return (dispatch, getState) => {
-    let settings = getState().settings.get('record');
+    let settings = getState().settings.get('record').toJS();
     settings = settings.settings || settings || {};
     const useAlt = localStorage.getItem('delegated-admin:use-alt-css') === 'true';
     const path = !useAlt ? settings.css : settings.altcss;

@@ -28,7 +28,7 @@ export const auth = createReducer(fromJS(initialState), { // eslint-disable-line
     state.merge({
       isAuthenticated: true,
       isAuthenticating: false,
-      user: action.payload.user,
+      user: fromJS(action.payload.user),
       token: action.payload.token,
       decodedToken: action.payload.decodedToken,
       issuer: new URL(action.payload.decodedToken.iss).hostname,

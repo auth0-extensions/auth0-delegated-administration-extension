@@ -66,7 +66,7 @@ class Users extends Component {
 
   createUser = () => {
     this.props.requestCreateUser(
-      this.props.accessLevel.get('record').get('memberships') && this.props.accessLevel.get('record').get('memberships')
+      this.props.accessLevel.get('record').get('memberships') && this.props.accessLevel.get('record').get('memberships').toJS()
     );
   };
 
@@ -159,8 +159,8 @@ function mapStateToProps(state) {
     userCreateLoading: state.userCreate.get('loading'),
     validationErrors: state.userCreate.get('validationErrors'),
     loading: state.users.get('loading'),
-    users: state.users.get('records'),
-    connections: state.connections.get('records'),
+    users: state.users.get('records').toJS(),
+    connections: state.connections.get('records').toJS(),
     connectionsLoading: state.connections.get('loading'),
     total: state.users.get('total'),
     nextPage: state.users.get('nextPage'),
@@ -168,8 +168,8 @@ function mapStateToProps(state) {
     sortProperty: state.users.get('sortProperty'),
     sortOrder: state.users.get('sortOrder'),
     searchValue: state.users.get('searchValue'),
-    settings: (state.settings.get('record') && state.settings.get('record').settings) || {},
-    languageDictionary: state.languageDictionary.get('record')
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
+    languageDictionary: state.languageDictionary.get('record').toJS()
   };
 }
 

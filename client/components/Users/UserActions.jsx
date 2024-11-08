@@ -30,12 +30,12 @@ export default class UserActions extends Component {
 
     if (props.user) {
       this.state = {
-        user: props.user,
+        user: props.user.toJS(),
         loading: props.loading
       };
 
       if (props.databaseConnections) {
-        this.state.databaseConnections = props.databaseConnections;
+        this.state.databaseConnections = props.databaseConnections.toJS();
       }
     } else {
       this.state = {
@@ -49,7 +49,7 @@ export default class UserActions extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.user) {
-      const { record, loading } = nextProps.user;
+      const { record, loading } = nextProps.user.toJS();
       this.setState({
         user: record,
         loading
@@ -58,7 +58,7 @@ export default class UserActions extends Component {
 
     if (nextProps.databaseConnections) {
       this.setState({
-        databaseConnections: nextProps.databaseConnections
+        databaseConnections: nextProps.databaseConnections.toJS()
       });
     }
 

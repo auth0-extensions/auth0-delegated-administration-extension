@@ -18,7 +18,7 @@ const addRequiredTextParam = (url, languageDictionary) => {
  */
 export function fetchUsers(search, reset = false, page = 0, filterBy, sort, onSuccess) {
   return (dispatch, getState) => {
-    const { sortProperty, sortOrder, searchValue, selectedFilter } = getState().users;
+    const { sortProperty, sortOrder, searchValue, selectedFilter } = getState().users.toJS();
     const meta = { page, sortProperty, sortOrder, searchValue, onSuccess };
     meta.selectedFilter = reset ? '' : filterBy || selectedFilter;
     meta.searchValue = reset ? '' : search || searchValue;
@@ -75,7 +75,7 @@ export function createUser(user, languageDictionary) {
  */
 export function requestCreateUser(memberships) {
   return (dispatch, getState) => {
-    const connections = getState().connections.get('records');
+    const connections = getState().connections.get('records').toJS();
 
     const connection = connections.length === 0
       ? null
@@ -238,27 +238,27 @@ export function cancelBlockUser() {
 /*
  * Update the user details.
  */
-// export function updateUser(userId, data, onSuccess, languageDictionary) {
-//   return (dispatch) => {
-//     dispatch({
-//       type: constants.UPDATE_USER,
-//       meta: {
-//         userId,
-//         onSuccess: () => {
-//           if (onSuccess) {
-//             onSuccess();
-//           }
-//           dispatch(fetchUserDetail(userId));
-//         }
-//       },
-//       payload: {
-//         promise: axios.put(addRequiredTextParam(`/api/users/${userId}`, languageDictionary), data, {
-//           responseType: 'json'
-//         })
-//       }
-//     });
-//   };
-// }
+export function updateUser(userId, data, onSuccess, languageDictionary) {
+  return (dispatch) => {
+    dispatch({
+      type: constants.UPDATE_USER,
+      meta: {
+        userId,
+        onSuccess: () => {
+          if (onSuccess) {
+            onSuccess();
+          }
+          dispatch(fetchUserDetail(userId));
+        }
+      },
+      payload: {
+        promise: axios.put(addRequiredTextParam(`/api/users/${userId}`, languageDictionary), data, {
+          responseType: 'json'
+        })
+      }
+    });
+  };
+}
 /*
  * Block a user.
  */
@@ -384,7 +384,7 @@ export function cancelDeleteUser() {
  */
 export function deleteUser() {
   return (dispatch, getState) => {
-    const { user: {user_id} } = getState().userDelete;
+    const { user: {user_id} } = getState().userDelete.toJS();
     dispatch({
       type: constants.DELETE_USER,
       payload: {
@@ -425,7 +425,7 @@ export function cancelPasswordReset() {
  */
 export function resetPassword(application) {
   return (dispatch, getState) => {
-    const { user: { user_id }, connection } = getState().passwordReset;
+    const { user: { user_id }, connection } = getState().passwordReset.toJS();
     const clientId = application.client ? (application.client.value || application.client) :  null;
     dispatch({
       type: constants.PASSWORD_RESET,
@@ -467,7 +467,7 @@ export function cancelPasswordChange() {
  */
 export function changePassword(formData, languageDictionary) {
   return (dispatch, getState) => {
-    const { user: { user_id }, connection } = getState().passwordChange;
+    const { user: { user_id }, connection } = getState().passwordChange.toJS();
     dispatch({
       type: constants.PASSWORD_CHANGE,
       payload: {
@@ -510,7 +510,7 @@ export function cancelUsernameChange() {
  */
 export function changeUsername(userId, data, languageDictionary) {
   return (dispatch, getState) => {
-    const user = getState().user.get('record');
+    const user = getState().user.get('record').toJS();
     user.username = data.username;
     dispatch({
       type: constants.USERNAME_CHANGE,

@@ -12,8 +12,8 @@ import getErrorMessage from '../../utils/getErrorMessage';
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     scripts: state.scripts,
-    settings: (state.settings.get('record') && state.settings.get('record').settings) || {},
-    languageDictionary: state.languageDictionary && state.languageDictionary.get('record')
+    settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
+    languageDictionary: state.languageDictionary && state.languageDictionary.get('record').toJS()
   });
 
   static actionsToProps = {
@@ -48,7 +48,7 @@ export default connectContainer(class extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.scripts) {
       const code = this.state.code;
-      const scripts = nextProps.scripts;
+      const scripts = nextProps.scripts.toJS();
       Object.keys(scripts).forEach(scriptName => {
         if (!code[scriptName]) {
           code[scriptName] = scripts[scriptName].script;
@@ -84,7 +84,7 @@ export default connectContainer(class extends Component {
 
   render() {
     const code = this.state.code;
-    const scripts = this.props.scripts;
+    const scripts = this.props.scripts.toJS();
     const { languageDictionary, settings } = this.props;
     const originalTitle = (settings.dict && settings.dict.title) || window.config.TITLE || 'User Management';
     document.title = `${languageDictionary.configurationMenuItemText || 'Configuration'} - ${originalTitle}`;

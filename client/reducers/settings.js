@@ -6,7 +6,7 @@ import createReducer from '../utils/createReducer';
 const initialState = {
   loading: false,
   error: null,
-  record: { settings: { dict: { title: '', memberships: '' }, userFields: [], css: '' } }
+  record: fromJS({ settings: { dict: { title: '', memberships: '' }, userFields: [], css: '' } })
 };
 
 const parseFunction = (property, attribute, functionString) => {

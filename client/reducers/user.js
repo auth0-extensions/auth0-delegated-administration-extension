@@ -9,18 +9,18 @@ const initialState = {
   loading: false,
   error: null,
   userId: null,
-  record: { },
-  memberships: [],
-  connection: {},
+  record: fromJS({}),
+  memberships: fromJS([]),
+  connection: fromJS({}),
   logs: {
     loading: false,
     error: null,
-    records: []
+    records: fromJS([])
   },
   devices: {
     loading: false,
     error: null,
-    records: { }
+    records: fromJS({})
   }
 };
 
