@@ -7,6 +7,8 @@ import { fromJS } from 'immutable';
 import { Router, Route, createMemoryHistory } from 'react-router';
 import { Button } from 'react-bootstrap';
 import moment from 'moment';
+import MockAdapter from 'axios-mock-adapter';
+import axios from 'axios'
 
 import fakeStore from '../../utils/fakeStore';
 
@@ -26,6 +28,18 @@ class LogsWrapper extends Component {
 }
 
 describe('#Client-Containers-Logs', () => {
+  let stub;
+
+  before(() => {
+    // mock api calls
+    stub = new MockAdapter(axios);
+    stub.onGet('/api/logs').reply(200, {});
+  });
+
+  after(() => {
+      stub.restore();
+  });
+
   const aDayAgo = moment().add(-1, 'days');
 
   const success = {

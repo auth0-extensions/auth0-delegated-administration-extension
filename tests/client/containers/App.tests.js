@@ -31,7 +31,6 @@ describe('#Client-Containers-App', () => {
       stub.restore();
   });
 
-
   const renderComponent = (languageDictionary) => {
     const initialState = {
       accessLevel: fromJS({ record: { role: 1 } }),
