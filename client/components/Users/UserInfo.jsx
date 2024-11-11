@@ -34,7 +34,7 @@ export default class UserInfo extends Component {
 
   getIdentities = (user) => {
     if (user.size === 0) return {};
-    return user.get('identities').toJSON()[0];
+    return user.get('identities').toJS()[0];
   };
 
   getBlocked = (user, languageDictionary) => {
