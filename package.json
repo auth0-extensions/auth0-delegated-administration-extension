@@ -138,6 +138,7 @@
     "axios": "^1.7.4",
     "bluebird": "^3.7.2",
     "body-parser": "^1.20.2",
+    "cheerio": "1.0.0-rc.12",
     "codemirror": "^5.19.0",
     "cookie-parser": "1.4.6",
     "edge": "^7.10.1",
@@ -254,6 +255,7 @@
   },
   "overrides": {
     "react": "15.5.0",
-    "cookie-parser": "1.4.6"
+    "cookie-parser": "1.4.6",
+    "cheerio": "1.0.0-rc.12"
   }
 }
