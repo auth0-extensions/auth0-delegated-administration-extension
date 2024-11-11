@@ -1,0 +1,61 @@
+# Javascript Node CircleCI 2.0 configuration file
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+
+    env:
+      CC_TEST_REPORTER_ID: 707f5959816d898ffc7176d49d2cd4f6b200c697460965a77d7af28ffdcf5cb6
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Cache npm dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: npm-dependencies-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            npm-dependencies-
+
+      - name: Install FOSSA
+        run: |
+          curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | bash
+
+      - name: Install dependencies
+        run: npm install
+
+      # - name: FOSSA Init
+      #   run: fossa init
+      # - name: FOSSA Analyze
+      #   run: fossa analyze
+      # - name: FOSSA Test
+      #   run: fossa test
+
+      # code climate requires before-build and after-build to be executed around test
+      - name: Run Tests
+        run: |
+          #./cc-test-reporter before-build
+          npm run test
+          #./cc-test-reporter after-build --exit-code $?
+
+      - name: Build and Package
+        run: |
+          npm run build
+          npm run package
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: package
+          path: ./dist/package.zip
