@@ -28,9 +28,9 @@ jobs:
           restore-keys: |
             npm-dependencies-
 
-      - name: Install FOSSA
-        run: |
-          curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | bash
+      # - name: Install FOSSA
+      #   run: |
+      #     curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | bash
 
       - name: Install dependencies
         run: npm install
