@@ -5,6 +5,8 @@ import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import { fromJS } from 'immutable';
 import { Router, Route, createMemoryHistory } from 'react-router';
+import MockAdapter from 'axios-mock-adapter';
+import axios from 'axios'
 
 import fakeStore from '../../../utils/fakeStore';
 
@@ -26,6 +28,18 @@ class UsersWrapper extends Component {
 }
 
 describe('#Client-Containers-Users-Users', () => {
+  let stub;
+
+  before(() => {
+    // mock api calls
+    stub = new MockAdapter(axios);
+    stub.onGet('/api/connections').reply(200, {});
+  });
+
+  after(() => {
+      stub.restore();
+  });
+
 
   const renderComponent = (languageDictionary, settings = {}) => {
     const initialState = {
