@@ -75,7 +75,7 @@
     "reselect": "^2.5.4",
     "safe-eval": "^0.4.1",
     "semver": "^5.1.0",
-    "snyk": "^1.278.1",
+    "snyk": "^1.1024.0",
     "string.prototype.endswith": "^0.2.0",
     "superagent": "^3.8.3",
     "uuid": "2.0.1",
