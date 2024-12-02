@@ -2,11 +2,12 @@ import expect from 'expect';
 import _ from 'lodash';
 import { languageDictionary } from '../../../client/reducers/languageDictionary';
 import * as constants from '../../../client/constants';
+import {fromJS} from "immutable";
 
 const initialState = {
   loading: false,
   error: null,
-  record: {}
+  record: fromJS({})
 };
 
 describe('languageDictionary reducer', () => {
@@ -27,7 +28,7 @@ describe('languageDictionary reducer', () => {
       {
         loading: true,
         error: null,
-        record: {}
+        record: fromJS({})
       }
     );
   });
@@ -50,7 +51,7 @@ describe('languageDictionary reducer', () => {
           message: 'ERROR',
           status: 500
         },
-        record: {}
+        record: fromJS({})
       }
     );
   });
@@ -71,10 +72,10 @@ describe('languageDictionary reducer', () => {
         {
           loading: false,
           error: null,
-          record: {
+          record: fromJS({
             confirmButtonText: 'some text',
             userTitle: 'User Title'
-          }
+          })
         }
       );
     });

@@ -1,6 +1,7 @@
 import expect from 'expect';
 import { block } from '../../../client/reducers/block';
 import * as constants from '../../../client/constants';
+import {fromJS} from "immutable";
 
 const initialState = {
   error: null,
@@ -31,10 +32,10 @@ describe('block reducer', () => {
       {
         error: null,
         loading: false,
-        user: {
+        user: fromJS({
           user_id: 1,
           user_name: 'test@mail.com'
-        },
+        }),
         requesting: true
       }
     );
@@ -53,10 +54,10 @@ describe('block reducer', () => {
       {
         error: null,
         loading: false,
-        user: {
+        user: fromJS({
           user_id: 1,
           email: 'test@mail.com'
-        },
+        }),
         requesting: true
       }
     );

@@ -1,12 +1,13 @@
 import expect from 'expect';
 import { userCreate } from '../../../client/reducers/userCreate';
 import * as constants from '../../../client/constants';
+import {fromJS} from "immutable";
 
 const initialState = {
   error: null,
   record: null,
   loading: false,
-  validationErrors: { }
+  validationErrors: fromJS({})
 };
 
 describe('User Create reducer', () => {
@@ -35,7 +36,7 @@ describe('User Create reducer', () => {
           connection: 'connection'
         },
         loading: false,
-        validationErrors: { }
+        validationErrors: fromJS({})
       }
     );
   });
@@ -60,7 +61,7 @@ describe('User Create reducer', () => {
         error: null,
         record: null,
         loading: true,
-        validationErrors: { }
+        validationErrors: fromJS({})
       }
     );
   });
@@ -85,7 +86,7 @@ describe('User Create reducer', () => {
         },
         record: null,
         loading: false,
-        validationErrors: { }
+        validationErrors: fromJS({})
       }
     );
   });
@@ -109,7 +110,7 @@ describe('User Create reducer', () => {
         },
         record: null,
         loading: false,
-        validationErrors: { }
+        validationErrors: fromJS({})
       }
     );
   });

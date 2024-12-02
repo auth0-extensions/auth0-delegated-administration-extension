@@ -2,11 +2,12 @@ import expect from 'expect';
 import _ from 'lodash';
 import { settings } from '../../../client/reducers/settings';
 import * as constants from '../../../client/constants';
+import {fromJS} from "immutable";
 
 const initialState = {
   loading: false,
   error: null,
-  record: { settings: { dict: { title: '', memberships: '' }, userFields: [], css: '' } }
+  record: fromJS({ settings: { dict: { title: '', memberships: '' }, userFields: [], css: '' } })
 };
 
 describe('settings reducer', () => {
@@ -27,7 +28,7 @@ describe('settings reducer', () => {
       {
         loading: true,
         error: null,
-        record: { settings: { dict: { title: '', memberships: '' }, userFields: [], css: '' } }
+        record: fromJS({ settings: { dict: { title: '', memberships: '' }, userFields: [], css: '' } })
       }
     );
   });
@@ -50,7 +51,7 @@ describe('settings reducer', () => {
           message: 'ERROR',
           status: 500
         },
-        record: { settings: { dict: { title: '', memberships: '' }, userFields: [], css: '' } }
+        record: fromJS({ settings: { dict: { title: '', memberships: '' }, userFields: [], css: '' } })
       }
     );
   });
@@ -100,12 +101,12 @@ describe('settings reducer', () => {
         {
           loading: false,
           error: null,
-          record: {
+          record: fromJS({
             settings: {
               dict: { title: 'test', memberships: 'test1, test2' },
               css: 'style.css'
             }
-          }
+          })
         }
       );
     });
@@ -128,14 +129,13 @@ describe('settings reducer', () => {
         {
           loading: false,
           error: null,
-          record: {
+          record: fromJS({
             settings: {
               dict: { title: 'test', memberships: 'test1, test2' },
-              userFields: [],
               userFields: [basicField, basicField2],
               css: 'style.css'
             }
-          }
+          })
         }
       );
     });
@@ -180,13 +180,13 @@ describe('settings reducer', () => {
         {
           loading: false,
           error: null,
-          record: {
+          record: fromJS({
             settings: {
               dict: { title: 'test', memberships: 'test1, test2' },
               userFields: [basicField, displayFunctionFieldTarget],
               css: 'style.css'
             }
-          }
+          })
         }
       );
     });
@@ -235,13 +235,13 @@ describe('settings reducer', () => {
         {
           loading: false,
           error: null,
-          record: {
+          record: fromJS({
             settings: {
               dict: { title: 'test', memberships: 'test1, test2' },
               userFields: [complexDisplayFunctionFieldTarget, basicField],
               css: 'style.css'
             }
-          }
+          })
         }
       );
     });
@@ -292,13 +292,13 @@ describe('settings reducer', () => {
         {
           loading: false,
           error: null,
-          record: {
+          record: fromJS({
             settings: {
               dict: { title: 'test', memberships: 'test1, test2' },
               userFields: [optionsFieldTarget, basicField2],
               css: 'style.css'
             }
-          }
+          })
         }
       );
     });
@@ -335,19 +335,19 @@ describe('settings reducer', () => {
       const target = {
         loading: false,
         error: null,
-        record: {
+        record: fromJS({
           settings: {
             dict: { title: 'test', memberships: 'test1, test2' },
             userFields: [fieldTarget, field2],
             css: 'style.css'
           }
-        }
+        })
       };
 
       expect(
-        JSON.stringify(state.record.settings.userFields[0].display)
+        JSON.stringify(state.record.toJS().settings.userFields[0].display)
       ).toEqual(
-        JSON.stringify(target.record.settings.userFields[0].display)
+        JSON.stringify(target.record.toJS().settings.userFields[0].display)
       );
 
       expect(
@@ -397,13 +397,13 @@ describe('settings reducer', () => {
         {
           loading: false,
           error: null,
-          record: {
+          record: fromJS({
             settings: {
               dict: { title: 'test', memberships: 'test1, test2' },
               userFields: [optionsFieldTarget, basicField2],
               css: 'style.css'
             }
-          }
+          })
         }
       );
 
@@ -441,25 +441,25 @@ describe('settings reducer', () => {
       const target = {
         loading: false,
         error: null,
-        record: {
+        record: fromJS({
           settings: {
             dict: { title: 'test', memberships: 'test1, test2' },
             userFields: [fieldTarget],
             css: 'style.css'
           }
-        }
+        })
       };
 
       expect(
-        state.record.settings.userFields[0].edit.validationFunction.toString()
+        state.record.toJS().settings.userFields[0].edit.validationFunction.toString()
       ).toEqual(
-        target.record.settings.userFields[0].edit.validationFunction.toString()
+        target.record.toJS().settings.userFields[0].edit.validationFunction.toString()
       );
 
       expect(
-        state.record.settings.userFields[0].create.validationFunction.toString()
+        state.record.toJS().settings.userFields[0].create.validationFunction.toString()
       ).toEqual(
-        target.record.settings.userFields[0].create.validationFunction.toString()
+        target.record.toJS().settings.userFields[0].create.validationFunction.toString()
       );
 
       expect(
@@ -494,17 +494,17 @@ describe('settings reducer', () => {
       const target = {
         loading: false,
         error: null,
-        record: {
+        record: fromJS({
           settings: {
             dict: { title: 'test', memberships: 'test1, test2' },
-            errorTranslator: targetTranslator,
-            css: 'style.css'
+            css: 'style.css',
+            errorTranslator: targetTranslator
           }
-        }
+        })
       };
 
       expect(
-        state.record.settings.errorTranslator.toString()
+        state.record.toJS().settings.errorTranslator.toString()
       ).toEqual(
         targetTranslator.toString()
       );

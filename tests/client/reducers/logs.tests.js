@@ -3,11 +3,12 @@ import moment from 'moment';
 
 import { logs } from '../../../client/reducers/logs';
 import * as constants from '../../../client/constants';
+import {fromJS} from "immutable";
 
 const initialState = {
   loading: false,
   error: null,
-  records: [],
+  records: fromJS([]),
   currentRecord: null
 };
 
@@ -25,7 +26,7 @@ describe('logs reducer', () => {
       logs({
         loading: false,
         error: null,
-        records: [ 1, 2, 3 ],
+        records: fromJS([ 1, 2, 3 ]),
         currentRecord: null
       }, {
         type: constants.FETCH_LOGS_PENDING,
@@ -37,7 +38,7 @@ describe('logs reducer', () => {
       {
         loading: true,
         error: null,
-        records: [ 1, 2, 3 ],
+        records: fromJS([ 1, 2, 3 ]),
         currentRecord: null
       }
     );
@@ -55,7 +56,7 @@ describe('logs reducer', () => {
       {
         loading: true,
         error: null,
-        records: [],
+        records: fromJS([]),
         currentRecord: null
       }
     );
@@ -79,7 +80,7 @@ describe('logs reducer', () => {
           message: 'ERROR',
           status: 500
         },
-        records: [],
+        records: fromJS([]),
         currentRecord: null
       }
     );
@@ -117,27 +118,26 @@ describe('logs reducer', () => {
       {
         loading: false,
         error: null,
-        records: [
+        records: fromJS([
           {
             _id: '49559553682563810286559514517590841916612030849441857538',
             client_name: 'My App',
             connection: 'Username-Password-Authentication',
             date: '2016-09-26T13:03:50.703Z',
-            shortType: 'custom_type',
             type: {
               icon: {
                 name: '354',
                 color: '#FFA500'
               }
             },
-            user_name: 'test@mail.com'
+            user_name: 'test@mail.com',
+            shortType: 'custom_type'
           },
           {
             _id: '49559553682563810286559514516535449676088458549131214850',
             client_name: 'My App',
             connection: 'Username-Password-Authentication',
             date: '2016-09-26T13:03:36.005Z',
-            shortType: 's',
             type: {
               event: 'Success Login',
               icon: {
@@ -145,9 +145,10 @@ describe('logs reducer', () => {
                 color: 'green'
               }
             },
-            user_name: 'test@mail.com'
+            user_name: 'test@mail.com',
+            shortType: 's'
           }
-        ],
+        ]),
         currentRecord: null,
         nextPage: 2
       }

@@ -1,11 +1,12 @@
 import expect from 'expect';
 import { connections } from '../../../client/reducers/connections';
 import * as constants from '../../../client/constants';
+import {fromJS} from "immutable";
 
 const initialState = {
   loading: false,
   error: null,
-  records: []
+  records: fromJS([])
 };
 
 describe('connections reducer', () => {
@@ -26,7 +27,7 @@ describe('connections reducer', () => {
       {
         loading: true,
         error: null,
-        records: []
+        records: fromJS([])
       }
     );
   });
@@ -49,7 +50,7 @@ describe('connections reducer', () => {
           message: 'ERROR',
           status: 500
         },
-        records: []
+        records: fromJS([])
       }
     );
   });
@@ -73,14 +74,14 @@ describe('connections reducer', () => {
       {
         loading: false,
         error: null,
-        records: [
+        records: fromJS([
           {
             id: 'con_test123',
             name: 'my-custom-db',
             options: [],
             enabled_clients: [ 'dMmvp1003V7ph3E8SUR5j93yJZEjX74l' ]
           }
-        ]
+        ])
       }
     );
   });

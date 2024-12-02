@@ -1,12 +1,13 @@
 import expect from 'expect';
 import { log } from '../../../client/reducers/log';
 import * as constants from '../../../client/constants';
+import {fromJS} from "immutable";
 
 const initialState = {
   loading: false,
   error: null,
   logId: null,
-  record: {}
+  record: fromJS({})
 };
 
 describe('log reducer', () => {
@@ -42,7 +43,7 @@ describe('log reducer', () => {
         loading: true,
         error: null,
         logId: 'log_id',
-        record: {}
+        record: fromJS({})
       }
     );
   });
@@ -67,7 +68,7 @@ describe('log reducer', () => {
           status: 500
         },
         logId: null,
-        record: {}
+        record: fromJS({})
       }
     );
   });
@@ -78,7 +79,7 @@ describe('log reducer', () => {
         loading: false,
         error: null,
         logId: 'test_2',
-        record: {}
+        record: fromJS({})
       }, {
         type: constants.FETCH_LOG_FULFILLED,
         payload: {
@@ -95,11 +96,11 @@ describe('log reducer', () => {
         loading: false,
         error: null,
         logId: 'test_2',
-        record: {
+        record: fromJS({
           _id: 'test_2',
           type: undefined,
           shortType: 'custom_type'
-        }
+        })
       }
     );
   });
@@ -110,7 +111,7 @@ describe('log reducer', () => {
         loading: false,
         error: null,
         logId: 'test_2',
-        record: {}
+        record: fromJS({})
       }, {
         type: constants.FETCH_LOG_FULFILLED,
         payload: {
@@ -127,11 +128,11 @@ describe('log reducer', () => {
         loading: false,
         error: null,
         logId: 'test_2',
-        record: {
+        record: fromJS({
           _id: 'test_2',
           type: 'Success Exchange',
           shortType: 'seacft'
-        }
+        })
       }
     );
   });
@@ -142,7 +143,7 @@ describe('log reducer', () => {
         loading: false,
         error: null,
         logId: 'test_2',
-        record: {}
+        record: fromJS({})
       }, {
         type: constants.FETCH_LOG_FULFILLED,
         payload: {
@@ -159,11 +160,11 @@ describe('log reducer', () => {
         loading: false,
         error: null,
         logId: 'test_2',
-        record: {
+        record: fromJS({
           _id: 'test_2',
           type: 'Success Exchange',
           shortType: 'seacft'
-        }
+        })
       }
     );
   });
@@ -174,7 +175,7 @@ describe('log reducer', () => {
         loading: false,
         error: null,
         logId: 'test_1',
-        record: {}
+        record: fromJS({})
       }, {
         type: constants.FETCH_LOG_FULFILLED,
         payload: {
@@ -191,7 +192,7 @@ describe('log reducer', () => {
         loading: false,
         error: null,
         logId: 'test_1',
-        record: {}
+        record: fromJS({})
       }
     );
   });

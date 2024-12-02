@@ -1,11 +1,12 @@
 import expect from 'expect';
 import { accessLevel } from '../../../client/reducers/accessLevel';
 import * as constants from '../../../client/constants';
+import { fromJS } from "immutable";
 
 const initialState = {
   loading: false,
   error: null,
-  record: { role: 0, memberships: [], createMemberships: false }
+  record: fromJS({ role: 0, memberships: [], createMemberships: false })
 };
 
 describe('accessLevel reducer', () => {
@@ -26,7 +27,7 @@ describe('accessLevel reducer', () => {
       {
         loading: true,
         error: null,
-        record: { role: 0, memberships: [], createMemberships: false }
+        record: fromJS({ role: 0, memberships: [], createMemberships: false })
       }
     );
   });
@@ -49,7 +50,7 @@ describe('accessLevel reducer', () => {
           type: 'TEST',
           status: 500
         },
-        record: { role: 2, memberships: [], createMemberships: false }
+        record: fromJS({ role: 2, memberships: [], createMemberships: false })
       }
     );
   });
@@ -64,7 +65,7 @@ describe('accessLevel reducer', () => {
       {
         loading: false,
         error: null,
-        record: { role: 2, memberships: [ 'test1', 'test2' ] }
+        record: fromJS({ role: 2, memberships: [ 'test1', 'test2' ] })
       }
     );
   });

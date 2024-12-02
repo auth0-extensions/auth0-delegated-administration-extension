@@ -34,7 +34,7 @@ const userLogs = createReducer(fromJS(initialState.logs), {
     state.merge({
       ...initialState.logs,
       loading: false,
-      error: action.errorData
+      error: fromJS(action.errorData)
     }),
   [constants.FETCH_USER_LOGS_FULFILLED]: (state, action) =>
     state.merge({
@@ -69,7 +69,7 @@ const userDevices = createReducer(fromJS(initialState.devices), {
   [constants.FETCH_USER_DEVICES_REJECTED]: (state, action) =>
     state.merge({
       ...initialState.devices,
-      error: action.errorData
+      error: fromJS(action.errorData)
     }),
   [constants.FETCH_USER_DEVICES_FULFILLED]: (state, action) => {
     const devices = action.payload.data.devices.reduce((map, device) => {

@@ -3,24 +3,25 @@ import moment from 'moment';
 
 import { user } from '../../../client/reducers/user';
 import * as constants from '../../../client/constants';
+import {fromJS} from "immutable";
 
 const initialState = {
   loading: false,
   error: null,
   userId: null,
-  record: {},
-  memberships: [],
-  connection: {},
-  logs: {
+  record: fromJS({}),
+  memberships: fromJS([]),
+  connection: fromJS({}),
+  logs: fromJS({
     loading: false,
     error: null,
-    records: []
-  },
-  devices: {
+    records: fromJS([])
+  }),
+  devices: fromJS({
     loading: false,
     error: null,
-    records: {}
-  }
+    records: fromJS({})
+  })
 };
 
 describe('user reducer', () => {
@@ -42,19 +43,19 @@ describe('user reducer', () => {
         loading: false,
         error: null,
         userId: null,
-        record: {},
-        memberships: [],
-        connection: {},
-        logs: {
+        record: fromJS({}),
+        memberships: fromJS([]),
+        connection: fromJS({}),
+        logs: fromJS({
           loading: true,
           error: null,
-          records: []
-        },
-        devices: {
+          records: fromJS([])
+        }),
+        devices: fromJS({
           loading: false,
           error: null,
-          records: {}
-        }
+          records: fromJS({})
+        })
       }
     );
   });
@@ -74,10 +75,10 @@ describe('user reducer', () => {
         loading: false,
         error: null,
         userId: null,
-        record: {},
-        memberships: [],
-        connection: {},
-        logs: {
+        record: fromJS({}),
+        memberships: fromJS([]),
+        connection: fromJS({}),
+        logs: fromJS({
           loading: false,
           error: {
             type: 'TEST',
@@ -85,12 +86,12 @@ describe('user reducer', () => {
             status: 500
           },
           records: []
-        },
-        devices: {
+        }),
+        devices: fromJS({
           loading: false,
           error: null,
           records: {}
-        }
+        })
       }
     );
   });
@@ -125,10 +126,10 @@ describe('user reducer', () => {
         loading: false,
         error: null,
         userId: null,
-        record: {},
-        memberships: [],
-        connection: {},
-        logs: {
+        record: fromJS({}),
+        memberships: fromJS([]),
+        connection: fromJS({}),
+        logs: fromJS({
           loading: false,
           error: null,
           records: [
@@ -137,7 +138,6 @@ describe('user reducer', () => {
               client_name: 'My App',
               connection: 'Username-Password-Authentication',
               date: '2016-09-26T13:03:50.703Z',
-              shortType: 's',
               type: {
                 event: 'Success Login',
                 icon: {
@@ -146,14 +146,14 @@ describe('user reducer', () => {
                 }
               },
               user_name: 'test@mail.com',
-              time_ago: moment('2016-09-26T13:03:50.703Z').fromNow()
+              time_ago: moment('2016-09-26T13:03:50.703Z').fromNow(),
+              shortType: 's'
             },
             {
               _id: '49559553682563810286559514516535449676088458549131214850',
               client_name: 'My App',
               connection: 'Username-Password-Authentication',
               date: '2016-09-26T13:03:36.005Z',
-              shortType: "s",
               type: {
                 event: 'Success Login',
                 icon: {
@@ -162,15 +162,16 @@ describe('user reducer', () => {
                 }
               },
               user_name: 'test@mail.com',
-              time_ago: moment('2016-09-26T13:03:36.005Z').fromNow()
+              time_ago: moment('2016-09-26T13:03:36.005Z').fromNow(),
+              shortType: 's'
             }
           ]
-        },
-        devices: {
+        }),
+        devices: fromJS({
           loading: false,
           error: null,
           records: {}
-        }
+        })
       }
     );
   });
@@ -205,10 +206,10 @@ describe('user reducer', () => {
         loading: false,
         error: null,
         userId: null,
-        record: {},
-        memberships: [],
-        connection: {},
-        logs: {
+        record: fromJS({}),
+        memberships: fromJS([]),
+        connection: fromJS({}),
+        logs: fromJS({
           loading: false,
           error: null,
           records: [
@@ -217,7 +218,6 @@ describe('user reducer', () => {
               client_name: 'My App',
               connection: 'Username-Password-Authentication',
               date: '2016-09-26T13:03:50.703Z',
-              shortType: "s",
               type: {
                 event: 'Success Login',
                 icon: {
@@ -226,14 +226,14 @@ describe('user reducer', () => {
                 }
               },
               user_name: 'test@mail.com',
-              time_ago: moment('2016-09-26T13:03:50.703Z').fromNow()
+              time_ago: moment('2016-09-26T13:03:50.703Z').fromNow(),
+              shortType: "s"
             },
             {
               _id: '49559553682563810286559514516535449676088458549131214850',
               client_name: 'My App',
               connection: 'Username-Password-Authentication',
               date: '2016-09-26T13:03:36.005Z',
-              shortType: "custom_type",
               type: {
                 event: 'Unknown Error',
                 icon: {
@@ -242,15 +242,16 @@ describe('user reducer', () => {
                 }
               },
               user_name: 'test@mail.com',
-              time_ago: moment('2016-09-26T13:03:36.005Z').fromNow()
+              time_ago: moment('2016-09-26T13:03:36.005Z').fromNow(),
+              shortType: "custom_type"
             }
           ]
-        },
-        devices: {
+        }),
+        devices: fromJS({
           loading: false,
           error: null,
           records: {}
-        }
+        })
       }
     );
   });
@@ -268,19 +269,19 @@ describe('user reducer', () => {
         loading: false,
         error: null,
         userId: null,
-        record: {},
-        memberships: [],
-        connection: {},
-        logs: {
+        record: fromJS({}),
+        memberships: fromJS([]),
+        connection: fromJS({}),
+        logs: fromJS({
           loading: false,
           error: null,
           records: []
-        },
-        devices: {
+        }),
+        devices: fromJS({
           loading: false,
           error: null,
           records: {}
-        }
+        })
       }
     );
   });
@@ -296,19 +297,19 @@ describe('user reducer', () => {
         loading: false,
         error: null,
         userId: null,
-        record: {},
-        memberships: [],
-        connection: {},
-        logs: {
+        record: fromJS({}),
+        memberships: fromJS([]),
+        connection: fromJS({}),
+        logs: fromJS({
           loading: false,
           error: null,
           records: []
-        },
-        devices: {
+        }),
+        devices: fromJS({
           loading: true,
           error: null,
           records: {}
-        }
+        })
       }
     );
   });
@@ -328,15 +329,15 @@ describe('user reducer', () => {
         loading: false,
         error: null,
         userId: null,
-        record: {},
-        memberships: [],
-        connection: {},
-        logs: {
+        record: fromJS({}),
+        memberships: fromJS([]),
+        connection: fromJS({}),
+        logs: fromJS({
           loading: false,
           error: null,
           records: []
-        },
-        devices: {
+        }),
+        devices: fromJS({
           loading: false,
           error: {
             type: 'TEST',
@@ -344,7 +345,7 @@ describe('user reducer', () => {
             status: 500
           },
           records: {}
-        }
+        })
       }
     );
   });
@@ -393,23 +394,23 @@ describe('user reducer', () => {
         loading: false,
         error: null,
         userId: null,
-        record: {},
-        memberships: [],
-        connection: {},
-        logs: {
+        record: fromJS({}),
+        memberships: fromJS([]),
+        connection: fromJS({}),
+        logs: fromJS({
           loading: false,
           error: null,
           records: []
-        },
-        devices: {
+        }),
+        devices: fromJS({
           loading: false,
           error: null,
           records: {
-            nexus: 1,
+            ipad: 1,
             iphone: 2,
-            ipad: 1
+            nexus: 1,
           }
-        }
+        })
       }
     );
   });
@@ -427,19 +428,19 @@ describe('user reducer', () => {
         loading: true,
         error: null,
         userId: 'user_1',
-        record: {},
-        memberships: [],
-        connection: {},
-        logs: {
+        record: fromJS({}),
+        memberships: fromJS([]),
+        connection: fromJS({}),
+        logs: fromJS({
           loading: false,
           error: null,
           records: []
-        },
-        devices: {
+        }),
+        devices: fromJS({
           loading: false,
           error: null,
           records: {}
-        }
+        })
       }
     );
   });
@@ -463,19 +464,19 @@ describe('user reducer', () => {
           status: 500
         },
         userId: null,
-        record: {},
-        memberships: [],
-        connection: {},
-        logs: {
+        record: fromJS({}),
+        memberships: fromJS([]),
+        connection: fromJS({}),
+        logs: fromJS({
           loading: false,
           error: null,
           records: []
-        },
-        devices: {
+        }),
+        devices: fromJS({
           loading: false,
           error: null,
           records: {}
-        }
+        })
       }
     );
   });
@@ -503,19 +504,19 @@ describe('user reducer', () => {
         loading: false,
         error: null,
         userId: 1,
-        record: {},
-        memberships: [],
-        connection: {},
-        logs: {
+        record: fromJS({}),
+        memberships: fromJS([]),
+        connection: fromJS({}),
+        logs: fromJS({
           loading: false,
           error: null,
           records: []
-        },
-        devices: {
+        }),
+        devices: fromJS({
           loading: false,
           error: null,
           records: {}
-        }
+        })
       }, {
         type: constants.FETCH_USER_FULFILLED,
         payload: {
@@ -534,22 +535,22 @@ describe('user reducer', () => {
         loading: false,
         error: null,
         userId: 1,
-        record: {
+        record: fromJS({
           user_id: 1,
           name: 'test'
-        },
-        memberships: [ 'department_1', 'department_2' ],
-        connection: {},
-        logs: {
+        }),
+        memberships: fromJS([ 'department_1', 'department_2' ]),
+        connection: fromJS({}),
+        logs: fromJS({
           loading: false,
           error: null,
           records: []
-        },
-        devices: {
+        }),
+        devices: fromJS({
           loading: false,
           error: null,
           records: {}
-        }
+        })
       }
     );
   });

@@ -1,11 +1,12 @@
 import expect from 'expect';
 import { applications } from '../../../client/reducers/applications';
 import * as constants from '../../../client/constants';
+import { fromJS } from "immutable";
 
 const initialState = {
   loading: false,
   error: null,
-  records: []
+  records: fromJS([])
 };
 
 describe('applications reducer', () => {
@@ -26,7 +27,7 @@ describe('applications reducer', () => {
       {
         loading: true,
         error: null,
-        records: []
+        records: fromJS([])
       }
     );
   });
@@ -49,7 +50,7 @@ describe('applications reducer', () => {
           message: 'ERROR',
           status: 500
         },
-        records: []
+        records: fromJS([])
       }
     );
   });
@@ -72,13 +73,13 @@ describe('applications reducer', () => {
       {
         loading: false,
         error: null,
-        records: [
+        records: fromJS([
           {
             name: 'auth0-github-deploy',
             global: false,
             client_id: 'z4JBexbssw4o6mCRPRQWaxzqampwXULL'
           }
-        ]
+        ])
       }
     );
   });
