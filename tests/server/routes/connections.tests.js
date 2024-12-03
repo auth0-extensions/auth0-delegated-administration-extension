@@ -7,6 +7,7 @@ import bodyParser from 'body-parser';
 import connections from '../../../server/routes/connections';
 import ScriptManager from '../../../server/lib/scriptmanager';
 import { user, defaultConnections, defaultScripts } from '../../utils/dummyData';
+import me from "../../../server/routes/me";
 
 
 describe('#connections router', () => {
@@ -25,25 +26,29 @@ describe('#connections router', () => {
     next();
   };
 
-  const storage = {
-    read: () => Promise.resolve(storage.data),
-    data: {
-      scripts: {
-        settings: defaultScripts.settings
+  function initServer(script) {
+    const storage = {
+      read: () => Promise.resolve(storage.data),
+      data: {
+        scripts: {
+          settings: script
+        }
       }
-    }
-  };
+    };
 
-  const scriptManager = new ScriptManager(storage, 1);
+    const scriptManager = new ScriptManager(storage, 1);
 
-  const app = express();
-
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: false }));
-  app.use('/connections', fakeApiClient, addUserToReq, connections(scriptManager));
+    const app = express();
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({ extended: false }));
+    app.use('/connections', fakeApiClient, addUserToReq, connections(scriptManager));
+    return app;
+  }
 
   describe('#Get Connections', () => {
     it('should return filtered connections', (done) => {
+      const app = initServer(defaultScripts.settings);
+
       request(app)
         .get('/connections')
         .expect('Content-Type', /json/)
@@ -56,7 +61,7 @@ describe('#connections router', () => {
     });
 
     it('should return no connections', (done) => {
-      storage.data.scripts.settings = defaultScripts.settings_invalid_connection;
+      const app = initServer(defaultScripts.settings_invalid_connection);
 
       request(app)
         .get('/connections')
@@ -70,7 +75,7 @@ describe('#connections router', () => {
     });
 
     it('should return all connections if there is no "connections" field in "settings"', (done) => {
-      storage.data.scripts.settings = defaultScripts.settings_no_connections;
+      const app = initServer(defaultScripts.settings_no_connections);
 
       request(app)
         .get('/connections')
@@ -84,7 +89,7 @@ describe('#connections router', () => {
     });
 
     it('should return all connections if setting script not found', (done) => {
-      storage.data = {};
+      const app = initServer(undefined);
 
       request(app)
         .get('/connections')
@@ -98,7 +103,7 @@ describe('#connections router', () => {
     });
 
     it('should return connections only with expected fields', (done) => {
-      storage.data = {};
+      const app = initServer(undefined);
 
       request(app)
         .get('/connections')
