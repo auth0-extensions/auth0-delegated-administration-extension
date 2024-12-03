@@ -7,7 +7,6 @@ import bodyParser from 'body-parser';
 import connections from '../../../server/routes/connections';
 import ScriptManager from '../../../server/lib/scriptmanager';
 import { user, defaultConnections, defaultScripts } from '../../utils/dummyData';
-import me from "../../../server/routes/me";
 
 
 describe('#connections router', () => {
