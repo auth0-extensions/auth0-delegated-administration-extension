@@ -51,6 +51,7 @@ jobs:
 
       - name: Build and Package
         run: |
+          node --version
           npm run build
           npm run package
 
