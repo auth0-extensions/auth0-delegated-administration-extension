@@ -1,4 +1,3 @@
-# Javascript Node CircleCI 2.0 configuration file
 name: CI
 
 on:
@@ -28,35 +27,11 @@ jobs:
           restore-keys: |
             npm-dependencies-
 
-      # - name: Install FOSSA
-      #   run: |
-      #     curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | bash
-
       - name: Install dependencies
         run: npm install
 
-      # - name: FOSSA Init
-      #   run: fossa init
-      # - name: FOSSA Analyze
-      #   run: fossa analyze
-      # - name: FOSSA Test
-      #   run: fossa test
-
-      # code climate requires before-build and after-build to be executed around test
       - name: Run Tests
         run: |
           #./cc-test-reporter before-build
           npm run test
           #./cc-test-reporter after-build --exit-code $?
-
-      - name: Build and Package
-        run: |
-          node --version
-          npm run build
-          npm run package
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: package
-          path: ./dist/package.zip
