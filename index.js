@@ -23,7 +23,7 @@ require('@babel/polyfill');
 
 // Handle uncaught.
 process.on('uncaughtException', (err) => {
-  logger.log({ level: "error", message: err });
+  logger.log("error", err);
 });
 
 // Initialize configuration.
@@ -44,11 +44,8 @@ const port = nconf.get('PORT');
 
 app.listen(port, (error) => {
   if (error) {
-    logger.log({ level: "error", message: error });
+    logger.log("error", error);
   } else {
-    logger.log({
-      level: "info",
-      message: `Listening on http://localhost:${port}.`,
-    });
+    logger.log("info", `Listening on http://localhost:${port}.`);
   }
 });

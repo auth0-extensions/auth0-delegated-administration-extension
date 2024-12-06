@@ -59,7 +59,7 @@ export default function (cfg, storageProvider) {
   app.get('*', cookieParser(), htmlRoute());
 
 
-  const logError = (message) => logger.log({ level: "error", message });
+  const logError = (message) => logger.log("error", message );
 
   // Generic error handler.
   app.use(errorHandler(logError));

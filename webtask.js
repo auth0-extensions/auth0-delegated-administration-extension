@@ -5,10 +5,7 @@ const config = require("./server/lib/config");
 const logger = require("./server/lib/logger");
 
 const createServer = tools.createServer((cfg, storage) => {
-  logger.log({
-    level: "info",
-    message: `Starting Delegated Admin Extension - Version: ${process.env.CLIENT_VERSION}`,
-  });
+  logger.log("info", `Starting Delegated Admin Extension - Version: ${process.env.CLIENT_VERSION}`);
 
   return expressApp(cfg, storage);
 });

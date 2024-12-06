@@ -41,7 +41,7 @@ export default () => {
 
   const getLocale = (req) => {
     const basePath = urlHelpers.getBasePath(req);
-    logger.log({ level: "info", message: req.originalUrl });
+    logger.log("info",req.originalUrl);
     const url = new URL(`https://${req.headers.host}${req.originalUrl}`);
     const pathname = url.pathname;
     const relativePath = pathname.replace(basePath, '').split('/');
