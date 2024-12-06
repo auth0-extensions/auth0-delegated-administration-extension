@@ -8,10 +8,11 @@ const logger = winston.createLogger({
       level: winston.config.syslog.levels.emerg,
       handleExceptions: true,
       format: winston.format.combine(
-        // winston.format.timestamp(),
-        // winston.format.colorize({ info: 'blue', error: 'red' }),
-        winston.format.simple(),
-      ),
+          winston.format.timestamp({
+            format: 'YYYY-MM-DD HH:mm:ss'
+          }),
+          winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)
+        ),
     }),
   ],
   exitOnError: false,
