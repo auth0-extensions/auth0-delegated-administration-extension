@@ -8,9 +8,7 @@ const logger = winston.createLogger({
       level: winston.config.syslog.levels.emerg,
       handleExceptions: true,
       format: winston.format.combine(
-          winston.format.timestamp({
-            format: 'YYYY-MM-DD HH:mm:ss'
-          }),
+          winston.format.timestamp(),
           winston.format.printf(info => `${info.timestamp} - ${info.level}: ${info.message}`)
         ),
     }),
