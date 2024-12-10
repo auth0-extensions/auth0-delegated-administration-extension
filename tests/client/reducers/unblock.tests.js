@@ -1,6 +1,7 @@
 import expect from 'expect';
 import { unblock } from '../../../client/reducers/unblock';
 import * as constants from '../../../client/constants';
+import {fromJS} from "immutable";
 
 const initialState = {
   error: null,
@@ -32,10 +33,10 @@ describe('unblock reducer', () => {
         error: null,
         loading: false,
         requesting: true,
-        user: {
+        user: fromJS({
           user_id: 'user_1',
           user_name: 'user'
-        }
+        })
       }
     );
   });
@@ -54,10 +55,10 @@ describe('unblock reducer', () => {
         error: null,
         loading: false,
         requesting: true,
-        user: {
+        user: fromJS({
           user_id: 'user_1',
           email: 'test@mail.com'
-        }
+        })
       }
     );
   });
