@@ -29,5 +29,4 @@ export const languageDictionary = createReducer(fromJS(initialState), { // eslin
       record: fromJS(data)
     });
   }
-
 });
