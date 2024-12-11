@@ -38,6 +38,8 @@ export default (storage) => {
           headers: handlerOptions.headers,
         };
 
+      // It's important to use getClient for the management API token to be cached.
+      // If we instantiate the client directly, a client credentials exchange will be performed on every request.
       req.auth0 = await tools.managementApi.getClient(options);
 
       next();
