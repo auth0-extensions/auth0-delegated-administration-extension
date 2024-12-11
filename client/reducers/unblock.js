@@ -13,7 +13,7 @@ const initialState = {
 export const unblock = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
   [constants.REQUEST_UNBLOCK_USER]: (state, action) =>
     state.merge({
-      user: action.user,
+      user: fromJS(action.user),
       requesting: true
     }),
   [constants.CANCEL_UNBLOCK_USER]: (state) =>

@@ -15,7 +15,7 @@ export const useUsernameField = (isEditField, fields, connections, hasSelectedCo
   const type = isEditField ? 'edit' : 'create';
   const selectedConnection = _.find(connections, (conn) => conn.name === hasSelectedConnection);
   const requireUsername = selectedConnection && selectedConnection.options ? selectedConnection.options.requires_username : false;
-  const noUsername = connections.length > 0
+  const noUsername = (connections && connections.length > 0)
     ? !requireUsername && (!initialValues || !initialValues.username)
     // if we have no connections, we *might* need a username field, we don't know - 
     // because we don't have the connections to check
@@ -28,7 +28,7 @@ export const useUsernameField = (isEditField, fields, connections, hasSelectedCo
     [type]: {
       type: 'text',
       // if we have no connections we should show the field but not require it
-      required: connections.length > 0
+      required: connections && connections.length > 0
     }
   };
 

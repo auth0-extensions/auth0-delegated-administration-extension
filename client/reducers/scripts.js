@@ -19,8 +19,7 @@ export const scripts = createReducer(fromJS({ }), { // eslint-disable-line impor
       .setIn([ action.meta.name, 'script' ], action.meta.script),
   [constants.UPDATE_SCRIPT_REJECTED]: (state, action) =>
     state
-      .setIn([ action.meta.name, 'loading' ], false)
-      .setIn([ action.meta.name, 'error' ], action.errorData),
+      .setIn([ action.meta.name ], fromJS({ loading: false, error: action.errorData })),
   [constants.UPDATE_SCRIPT_FULFILLED]: (state, action) =>
     state
       .setIn([ action.meta.name, 'loading' ], false)

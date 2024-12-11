@@ -5,7 +5,7 @@ import createReducer from '../utils/createReducer';
 const initialState = {
   loading: false,
   error: null,
-  record: { }
+  record: fromJS({})
 };
 
 export const languageDictionary = createReducer(fromJS(initialState), { // eslint-disable-line
@@ -29,5 +29,4 @@ export const languageDictionary = createReducer(fromJS(initialState), { // eslin
       record: fromJS(data)
     });
   }
-
 });

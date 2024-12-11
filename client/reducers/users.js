@@ -7,7 +7,7 @@ import createReducer from '../utils/createReducer';
 const initialState = {
   loading: false,
   error: null,
-  records: [],
+  records: fromJS([]),
   total: 0,
   currentPage: 1,
   pages: 1,
@@ -22,7 +22,7 @@ export const users = createReducer(fromJS(initialState), { // eslint-disable-lin
     state.merge({
       ...initialState,
       loading: true,
-      records: action.meta.page === 0 ? [] : state.get('records'),
+      records: action.meta.page === 0 ? fromJS([]) : state.get('records'),
       pages: action.meta.page === 0 ? 1 : state.get('pages'),
       searchValue: action.meta.searchValue,
       sortProperty: action.meta.sortProperty,

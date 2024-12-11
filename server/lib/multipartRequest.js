@@ -14,7 +14,6 @@ export default function(client, entity, opts = {}, fetchOptions = {} ) {
     throw new ArgumentError('Must provide a valid entity for auth0 client.');
   }
 
-  const getter = client[entity].getAll;
   const options = { ...opts, per_page: perPage };
   const result = [];
 
@@ -22,14 +21,14 @@ export default function(client, entity, opts = {}, fetchOptions = {} ) {
   let pageCount = 0;
 
   const getTotals = () =>
-    getter({ ...options, include_totals: true, page: 0 })
+    client[entity].getAll({ ...options, include_totals: true, page: 0 })
       .then((response) => {
         total = response.total || 0;
         pageCount = Math.ceil(total / perPage);
 
         // if the total exceeds the limit, don't fetch any more connections from api2
         // we get some from the initial request to get totals, but we'll ignore them
-        if (limit && (total > limit)) { 
+        if (limit && (total > limit)) {
           pageCount = 1;
           return null;
         }
@@ -40,7 +39,7 @@ export default function(client, entity, opts = {}, fetchOptions = {} ) {
       });
 
   const getPage = (page) =>
-    getter({ ...options, page })
+    client[entity].getAll({ ...options, page })
       .then((data) => {
         data.forEach(item => result.push(item));
         return null;
@@ -52,7 +51,7 @@ export default function(client, entity, opts = {}, fetchOptions = {} ) {
         // the number of connections exceeds the limit we can handle:
         //   - don't return any to the frontend
         //   - will use a free text box in the user creation dialogue
-        if (limit && (total > limit)) { 
+        if (limit && (total > limit)) {
           return result;
         }
 

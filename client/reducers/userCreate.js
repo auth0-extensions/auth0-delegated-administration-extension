@@ -7,7 +7,7 @@ const initialState = {
   error: null,
   record: null,
   loading: false,
-  validationErrors: { }
+  validationErrors: fromJS({})
 };
 
 export const userCreate = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
@@ -30,7 +30,7 @@ export const userCreate = createReducer(fromJS(initialState), { // eslint-disabl
   [constants.CREATE_USER_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      validationErrors: {},
+      validationErrors: fromJS({}),
       error: action.errorData
     }),
   [constants.CREATE_USER_FULFILLED]: (state) =>

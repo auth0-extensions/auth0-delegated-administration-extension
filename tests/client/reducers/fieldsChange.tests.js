@@ -1,13 +1,14 @@
 import expect from 'expect';
 import { fieldsChange } from '../../../client/reducers/fieldsChange';
 import * as constants from '../../../client/constants';
+import {fromJS} from "immutable";
 
 const initialState = {
   error: null,
   userId: null,
   record: null,
   loading: false,
-  validationErrors: {}
+  validationErrors: fromJS({})
 };
 
 describe('custom fields change reducer', () => {
@@ -39,7 +40,7 @@ describe('custom fields change reducer', () => {
           email: 'test@mail.ru'
         },
         loading: false,
-        validationErrors: {}
+        validationErrors: fromJS({})
       }
     );
   });
@@ -66,7 +67,7 @@ describe('custom fields change reducer', () => {
           email: 'test@mail.ru'
         },
         loading: false,
-        validationErrors: {}
+        validationErrors: fromJS({})
       }
     );
   });
@@ -92,7 +93,7 @@ describe('custom fields change reducer', () => {
         userId: null,
         record: null,
         loading: true,
-        validationErrors: {}
+        validationErrors: fromJS({})
       }
     );
   });
@@ -117,7 +118,7 @@ describe('custom fields change reducer', () => {
         userId: null,
         record: null,
         loading: false,
-        validationErrors: {}
+        validationErrors: fromJS({})
       }
     );
   });

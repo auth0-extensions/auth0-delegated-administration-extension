@@ -1,6 +1,7 @@
 import expect from 'expect';
 import { scripts } from '../../../client/reducers/scripts';
 import * as constants from '../../../client/constants';
+import {fromJS} from "immutable";
 
 describe('scripts reducer', () => {
   it('should handle FETCH_SCRIPT_PENDING', () => {
@@ -11,12 +12,12 @@ describe('scripts reducer', () => {
       }).toJSON()
     ).toEqual(
       {
-        settings: {
+        settings: fromJS({
           loading: true,
           error: null,
           script: null,
           token: null
-        }
+        })
       }
     );
   });
@@ -34,14 +35,14 @@ describe('scripts reducer', () => {
       }).toJSON()
     ).toEqual(
       {
-        settings: {
+        settings: fromJS({
           loading: false,
           error: {
             type: 'TEST',
             message: 'ERROR',
             status: 500
           }
-        }
+        })
       }
     );
   });
@@ -59,10 +60,10 @@ describe('scripts reducer', () => {
       }).toJSON()
     ).toEqual(
       {
-        settings: {
+        settings: fromJS({
           loading: false,
           script: 'function () { return true; }'
-        }
+        })
       }
     );
   });
@@ -78,10 +79,10 @@ describe('scripts reducer', () => {
       }).toJSON()
     ).toEqual(
       {
-        settings: {
+        settings: fromJS({
           loading: true,
           script: 'function () { return true; }'
-        }
+        })
       }
     );
   });
@@ -99,14 +100,14 @@ describe('scripts reducer', () => {
       }).toJSON()
     ).toEqual(
       {
-        settings: {
+        settings: fromJS({
           loading: false,
           error: {
             type: 'TEST',
             message: 'ERROR',
             status: 500
           }
-        }
+        })
       }
     );
   });
@@ -120,9 +121,9 @@ describe('scripts reducer', () => {
       }).toJSON()
     ).toEqual(
       {
-        settings: {
+        settings: fromJS({
           loading: false
-        }
+        })
       }
     );
   });

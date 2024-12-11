@@ -1,23 +1,24 @@
-const winston = require('winston');
+const winston = require("winston");
 
-winston.emitErrs = true;
-
-const logger = new winston.Logger({
+const logger = winston.createLogger({
+  levels: winston.config.syslog.levels,
   transports: [
     new winston.transports.Console({
-      timestamp: true,
-      level: 'debug',
+      // max log level handled by this transport - is the max level
+      level: winston.config.syslog.levels.emerg,
       handleExceptions: true,
-      json: false,
-      colorize: true
-    })
+      format: winston.format.combine(
+          winston.format.timestamp(),
+          winston.format.printf(info => `${info.timestamp} - ${info.level}: ${info.message}`)
+        ),
+    }),
   ],
-  exitOnError: false
+  exitOnError: false,
 });
 
 module.exports = logger;
 module.exports.stream = {
   write: (message) => {
-    logger.info(message.replace(/\n$/, ''));
-  }
+    logger.log("info", message.replace(/\n$/, ""));
+  },
 };

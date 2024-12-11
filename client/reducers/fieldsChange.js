@@ -9,7 +9,7 @@ const initialState = {
   userId: null,
   record: null,
   loading: false,
-  validationErrors: {}
+  validationErrors: fromJS({})
 };
 
 export const fieldsChange = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
@@ -30,7 +30,7 @@ export const fieldsChange = createReducer(fromJS(initialState), { // eslint-disa
   [constants.FIELDS_CHANGE_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
-      validationErrors: {},
+      validationErrors: fromJS({}),
       error: action.errorData
     }),
   [constants.FIELDS_CHANGE_FULFILLED]: (state) =>

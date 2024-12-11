@@ -10,6 +10,7 @@ server/data.*.json
 node_modules
 npm-debug.log
 dist
+package-lock.json
 
 # coverage output
 coverage.lcov

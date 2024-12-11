@@ -1,8 +1,8 @@
 import fs from 'fs';
-import url from 'url';
 import ejs from 'ejs';
 import path from 'path';
 import { urlHelpers } from 'auth0-extension-express-tools';
+import logger from '../lib/logger';
 
 import config from '../lib/config';
 
@@ -41,7 +41,9 @@ export default () => {
 
   const getLocale = (req) => {
     const basePath = urlHelpers.getBasePath(req);
-    const pathname = url.parse(req.originalUrl).pathname;
+    logger.log("info",req.originalUrl);
+    const url = new URL(`https://${req.headers.host}${req.originalUrl}`);
+    const pathname = url.pathname;
     const relativePath = pathname.replace(basePath, '').split('/');
     const routes = [
       'api',
@@ -89,6 +91,7 @@ export default () => {
     // Render from CDN.
     const clientVersion = process.env.CLIENT_VERSION;
     const PR_NUMBER = process.env.PR_NUMBER;
+
     if (clientVersion) {
       const favIcon = config('FAVICON_PATH') || 'https://cdn.auth0.com/styleguide/4.6.13/lib/logos/img/favicon.png';
       const cdnPath = config('CDN_PATH') || (

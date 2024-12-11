@@ -2,8 +2,10 @@ import React  from 'react';
 import { Provider } from 'react-redux';
 import { mount } from 'enzyme';
 import { expect } from 'chai';
-import { describe, it } from 'mocha';
+import { describe, it} from 'mocha';
 import { fromJS } from 'immutable';
+import MockAdapter from 'axios-mock-adapter';
+import axios from 'axios'
 
 import fakeStore from '../../utils/fakeStore';
 
@@ -14,6 +16,20 @@ let wrapper = undefined;
 const wrapperMount = (...args) => (wrapper = mount(...args));
 
 describe('#Client-Containers-App', () => {
+  let stub;
+
+  before(() => {
+    // mock api calls from App > componentWillMount
+    stub = new MockAdapter(axios);
+    stub.onGet('/api/applications').reply(200, []);
+    stub.onGet('/api/settings').reply(200, {});
+    stub.onGet('/api/connections').reply(200, []);
+    stub.onGet('/api/me').reply(200, {});
+  });
+
+  after(() => {
+      stub.restore();
+  });
 
   const renderComponent = (languageDictionary) => {
     const initialState = {

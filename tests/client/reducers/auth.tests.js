@@ -2,6 +2,7 @@ import url from 'url';
 import expect from 'expect';
 import { auth } from '../../../client/reducers/auth';
 import * as constants from '../../../client/constants';
+import {fromJS} from "immutable";
 
 const initialState = {
   error: null,
@@ -100,7 +101,7 @@ describe('auth reducer', () => {
         decodedToken: {
           iss: 'https://roman-test.eu.auth0.com/'
         },
-        user: { name: 'test' },
+        user: fromJS({ name: 'test' }),
         returnTo: 'return-to'
       }
     );

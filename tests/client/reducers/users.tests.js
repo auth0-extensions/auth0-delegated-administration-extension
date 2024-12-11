@@ -3,11 +3,12 @@ import moment from 'moment';
 
 import { users } from '../../../client/reducers/users';
 import * as constants from '../../../client/constants';
+import {fromJS} from "immutable";
 
 const initialState = {
   loading: false,
   error: null,
-  records: [],
+  records: fromJS([]),
   total: 0,
   currentPage: 1,
   pages: 1,
@@ -38,7 +39,7 @@ describe('users reducer', () => {
       {
         loading: true,
         error: null,
-        records: [],
+        records: fromJS([]),
         currentPage: 1,
         pages: 1,
         total: 0,
@@ -56,7 +57,7 @@ describe('users reducer', () => {
         loading: false,
         error: null,
         pages: 2,
-        records: [ 'test' ],
+        records: fromJS([ 'test' ]),
         total: 0
       }, {
         type: constants.FETCH_USERS_PENDING,
@@ -71,7 +72,7 @@ describe('users reducer', () => {
       {
         loading: true,
         error: null,
-        records: [ 'test' ],
+        records: fromJS([ 'test' ]),
         total: 0,
         currentPage: 1,
         pages: 2,
@@ -101,7 +102,7 @@ describe('users reducer', () => {
           message: 'ERROR',
           status: 500
         },
-        records: [],
+        records: fromJS([]),
         total: 0,
         currentPage: 1,
         pages: 1,
@@ -147,7 +148,7 @@ describe('users reducer', () => {
       {
         loading: false,
         error: null,
-        records: [
+        records: fromJS([
           {
             user_id: 1,
             name: 'test',
@@ -165,7 +166,7 @@ describe('users reducer', () => {
             logins_count: 0,
             last_login_relative: 'Never'
           }
-        ],
+        ]),
         total: 2,
         nextPage: 2,
         currentPage: 1,
@@ -183,7 +184,7 @@ describe('users reducer', () => {
       users({
         loading: false,
         error: null,
-        records: [
+        records: fromJS([
           {
             user_id: 1,
             name: 'test',
@@ -199,7 +200,7 @@ describe('users reducer', () => {
             email: 'test2@mail.com',
             logins_count: 0
           }
-        ],
+        ]),
         total: 0
       }, {
         type: constants.BLOCK_USER_FULFILLED,
@@ -211,7 +212,7 @@ describe('users reducer', () => {
       {
         loading: false,
         error: null,
-        records: [
+        records: fromJS([
           {
             user_id: 1,
             name: 'test',
@@ -227,7 +228,7 @@ describe('users reducer', () => {
             email: 'test2@mail.com',
             logins_count: 0
           }
-        ],
+        ]),
         total: 0
       }
     );
@@ -238,7 +239,7 @@ describe('users reducer', () => {
       users({
         loading: false,
         error: null,
-        records: [
+        records: fromJS([
           {
             user_id: 1,
             name: 'test',
@@ -254,7 +255,7 @@ describe('users reducer', () => {
             email: 'test2@mail.com',
             logins_count: 0
           }
-        ],
+        ]),
         total: 0
       }, {
         type: constants.UNBLOCK_USER_FULFILLED,
@@ -266,7 +267,7 @@ describe('users reducer', () => {
       {
         loading: false,
         error: null,
-        records: [
+        records: fromJS([
           {
             user_id: 1,
             name: 'test',
@@ -282,7 +283,7 @@ describe('users reducer', () => {
             email: 'test2@mail.com',
             logins_count: 0
           }
-        ],
+        ]),
         total: 0
       }
     );
@@ -293,7 +294,7 @@ describe('users reducer', () => {
       users({
         loading: false,
         error: null,
-        records: [
+        records: fromJS([
           {
             user_id: 1,
             name: 'test',
@@ -311,7 +312,7 @@ describe('users reducer', () => {
             logins_count: 0,
             multifactor: [ 'guardian' ]
           }
-        ],
+        ]),
         total: 0
       }, {
         type: constants.REMOVE_MULTIFACTOR_FULFILLED,
@@ -323,7 +324,7 @@ describe('users reducer', () => {
       {
         loading: false,
         error: null,
-        records: [
+        records: fromJS([
           {
             user_id: 1,
             name: 'test',
@@ -341,7 +342,7 @@ describe('users reducer', () => {
             logins_count: 0,
             multifactor: [ 'guardian' ]
           }
-        ],
+        ]),
         total: 0
       }
     );

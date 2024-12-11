@@ -6,7 +6,7 @@ import createReducer from '../utils/createReducer';
 const initialState = {
   loading: false,
   error: null,
-  record: { role: 0, memberships: [], createMemberships: false }
+  record: fromJS({ role: 0, memberships: [], createMemberships: false })
 };
 
 export const accessLevel = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
@@ -19,7 +19,7 @@ export const accessLevel = createReducer(fromJS(initialState), { // eslint-disab
     state.merge({
       loading: false,
       error: action.errorData,
-      record: fromJS({ ...initialState.record, role: 2 })
+      record: fromJS({ ...initialState.record.toJS(), role: 2 })
     }),
   [constants.FETCH_ACCESS_LEVEL_FULFILLED]: (state, action) =>
     state.merge({
