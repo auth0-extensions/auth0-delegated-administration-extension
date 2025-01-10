@@ -4,8 +4,7 @@ const logger = winston.createLogger({
   levels: winston.config.syslog.levels,
   transports: [
     new winston.transports.Console({
-      // max log level handled by this transport - is the max level
-      level: winston.config.syslog.levels.emerg,
+      level: 'debug',
       handleExceptions: true,
       format: winston.format.combine(
           winston.format.timestamp(),
