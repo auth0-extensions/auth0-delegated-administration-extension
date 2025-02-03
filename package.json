@@ -3,7 +3,7 @@
   "version": "4.6.0",
   "description": "This extension allows non-dashboard administrators to manage (a subset of) users.",
   "engines": {
-    "node": ">8.9"
+    "node": ">22.13"
   },
   "main": "server.js",
   "scripts": {
