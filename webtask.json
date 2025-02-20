@@ -1,7 +1,7 @@
 {
   "title": "Delegated Administration Dashboard",
   "name": "auth0-delegated-admin",
-  "version": "4.5.1",
+  "version": "4.6.0",
   "author": "auth0",
   "useHashName": false,
   "description": "This extension allows non-dashboard administrators to manage (a subset of) users.",
@@ -15,7 +15,7 @@
   "auth0": {
     "createClient": true,
     "onUninstallPath": "/.extensions/on-uninstall",
-    "scopes": "read:clients delete:clients read:connections read:users update:users delete:users create:users read:logs read:device_credentials update:device_credentials delete:device_credentials delete:guardian_enrollments"
+    "scopes": "read:clients delete:clients read:connections read:connections_options read:users update:users delete:users create:users read:logs read:device_credentials update:device_credentials delete:device_credentials delete:guardian_enrollments"
   },
   "secrets": {
     "EXTENSION_CLIENT_ID": {
