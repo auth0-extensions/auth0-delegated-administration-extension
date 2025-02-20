@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [4.6] - 2025-02-18
 
 - Update to run on node 22.13
+- Added read:connections_options scope to the extension's Management API client
 
 ## [4.4] - 2024-06-05
 
