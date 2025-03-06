@@ -204,7 +204,7 @@ export function getAccessLevel(onSuccess) {
     payload: {
       promise: axios.get('/api/me', {
         responseType: 'json',
-        timeout: 5000,
+        timeout: 8000,
         headers: { 'Content-Type': 'application/json' }
       })
     }
