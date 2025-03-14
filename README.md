@@ -50,7 +50,7 @@ To get this client setup quickly, install the Delegated Admin Extension on the [
 You may also create this client manually by going to [APIs](https://manage.auth0.com/#/apis) and add the "Non Interactive Client" there with the following scopes:
 
 ```
-read:clients delete:clients read:connections read:users update:users delete:users create:users read:logs read:device_credentials update:device_credentials delete:device_credentials delete:guardian_enrollments
+read:clients delete:clients read:connections read:connections_options read:users update:users delete:users create:users read:logs read:device_credentials update:device_credentials delete:device_credentials delete:guardian_enrollments
 ```
 
 This client will be used to interact with the Management API (eg: load users, ....).
