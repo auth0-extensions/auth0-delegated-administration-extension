@@ -19,6 +19,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Checkout auth0-extensions-cli
+        uses: actions/checkout@v4
+        with:
+          repository: auth0-extensions/auth0-extensions-cli
+          ref: hacky-fix
+          path: auth0-extensions-cli
+
       - name: Cache npm dependencies
         uses: actions/cache@v3
         with:
@@ -27,16 +34,19 @@ jobs:
           restore-keys: |
             npm-dependencies-
 
-      - name: Install dependencies
-        run: npm install
-
       - name: Build
-        run: npm run build
+        run: |
+          cd auth0-extensions-cli
+          npm install
+          npm link
+          cd ..
+
+          npm link auth0-extensions-cli
+          npm install
+          npm run build
 
       - name: Run Tests
         run: npm run test
-
-
 
 
 #name: Build
