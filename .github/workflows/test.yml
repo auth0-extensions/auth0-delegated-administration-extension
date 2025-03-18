@@ -34,16 +34,15 @@ jobs:
           restore-keys: |
             npm-dependencies-
 
-      - name: Build
+      - name: Link auth0-extensions-cli
         run: |
           cd auth0-extensions-cli
           npm install
           npm link
-          cd ..
 
-          npm link auth0-extensions-cli
-          npm install
-          npm run build
+#          npm link auth0-extensions-cli
+#          npm install
+#          npm run build
 
       - name: Run Tests
         run: npm run test
