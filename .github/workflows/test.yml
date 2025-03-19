@@ -1,18 +1,20 @@
 name: CI
 
-#on:
-#  push:
-#    branches:
-#      - master
-#  pull_request:
-#    branches:
-#      - master
-
 on:
   push:
+    branches:
+      - test
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_ROLE: ${{ secrets.awsIAMS3UploadRole }}
+
 
 jobs:
-  build_and_test:
+  build_and_deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,18 +36,15 @@ jobs:
           restore-keys: |
             npm-dependencies-
 
-      - name: Link auth0-extensions-cli
-        run: |
-          cd auth0-extensions-cli
-          npm install
-          npm link
-
-#          npm link auth0-extensions-cli
-#          npm install
-#          npm run build
+      - name: Install dependencies
+        run: npm install
 
       - name: Run Tests
         run: npm run test
+
+      - name: Upload to CND
+        run: tools/cdn.sh
+
 
 
 #name: Build
@@ -55,13 +54,7 @@ jobs:
 ##  push:
 ##    branches: [ master ]
 ##
-#permissions:
-#  id-token: write
-#  contents: read
-#
-#env:
-#  AWS_ROLE: ${{ secrets.awsIAMS3UploadRole }}
-#
+
 #jobs:
 #  build-and-deploy:
 #    runs-on: ubuntu-latest
