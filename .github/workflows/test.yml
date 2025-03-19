@@ -21,13 +21,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Checkout auth0-extensions-cli
-        uses: actions/checkout@v4
-        with:
-          repository: auth0-extensions/auth0-extensions-cli
-          ref: hacky-fix
-          path: auth0-extensions-cli
-
       - name: Cache npm dependencies
         uses: actions/cache@v3
         with:
@@ -42,38 +35,12 @@ jobs:
       - name: Run Tests
         run: npm run test
 
+      - name: Configure AWS Credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 # v4 on 2025-01-06
+        with:
+          role-to-assume: ${{ env.AWS_ROLE }}
+          role-session-name: github-action-delegated-admin-deployer
+          aws-region: us-west-1
+
       - name: Upload to CND
         run: tools/cdn.sh
-
-
-
-#name: Build
-#
-#on: push
-#
-##  push:
-##    branches: [ master ]
-##
-
-#jobs:
-#  build-and-deploy:
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v4
-#
-#      - uses: actions/setup-node@v4
-#        with:
-#          node-version: '22'
-#
-#      - name: Configure AWS Credentials using OIDC
-#        uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 # v4 on 2025-01-06
-#        with:
-#          role-to-assume: ${{ env.AWS_ROLE }}
-#          role-session-name: github-action-delegated-admin-deployer
-#          aws-region: us-west-1
-#
-#      - name: Run Deploy
-#        run: |
-#          tools/test.sh
