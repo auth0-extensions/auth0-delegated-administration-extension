@@ -38,7 +38,7 @@ upload_bundle() {
 
     upload_to_s3 "$bundle_local_path" "$bundle_s3_path" ""
   else
-    echo "There is already a $bundle in the cdn. Skipping cdn publish..."
+    echo "There is already a $bundle in the cdn. Bundle upload skipped..."
   fi
 }
 
@@ -50,19 +50,19 @@ upload_assets() {
     "manifest.json"
   )
 
+  if file_exists_in_s3 "$S3_PATH/assets" "${assets[0]}"; then
+    echo "There is already a ${assets[0]} in the cdn. Frontend assets upload skipped..."
+    return
+  fi
+
   for asset in "${assets[@]}"; do
     local asset_local_path="dist/client/$asset"
     local asset_s3_path="$S3_PATH/assets/$asset"
-
-    if ! file_exists_in_s3 "$S3_PATH/assets" "$asset"; then
-      upload_to_s3 "$asset_local_path" "$asset_s3_path" "max-age=86400"
-    else
-      echo "There is already a $asset in the cdn. Skipping cdn publish..."
-    fi
+    upload_to_s3 "$asset_local_path" "$asset_s3_path" "max-age=86400"
   done
 }
 
 #aws s3 ls "$S3_PATH"
-aws s3 cp "$S3_PATH/webtask.json" -
-#upload_bundle
-#upload_assets
+#aws s3 cp "$S3_PATH/webtask.json" -
+upload_bundle
+upload_assets
