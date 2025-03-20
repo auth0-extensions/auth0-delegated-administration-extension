@@ -1,9 +1,6 @@
 name: Release
 
-on:
-  push:
-    branches:
-      - ids-5598
+on: workflow_dispatch
 
 permissions:
   id-token: write
