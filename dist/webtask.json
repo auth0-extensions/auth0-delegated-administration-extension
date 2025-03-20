@@ -1,0 +1,77 @@
+{
+  "title": "Delegated Administration Dashboard",
+  "name": "auth0-delegated-admin",
+  "version": "4.6.0",
+  "author": "auth0",
+  "useHashName": false,
+  "description": "This extension allows non-dashboard administrators to manage (a subset of) users.",
+  "type": "application",
+  "category": "end_user",
+  "logoUrl": "https://cdn.auth0.com/extensions/auth0-delegated-admin/assets/logo.svg",
+  "initialUrlPath": "/",
+  "docsUrl": "https://auth0.com/docs/extensions/delegated-admin",
+  "repository": "https://github.com/auth0-extensions/auth0-delegated-administration-extension",
+  "keywords": ["auth0", "extension"],
+  "auth0": {
+    "createClient": true,
+    "onUninstallPath": "/.extensions/on-uninstall",
+    "scopes": "read:clients delete:clients read:connections read:connections_options read:users update:users delete:users create:users read:logs read:device_credentials update:device_credentials delete:device_credentials delete:guardian_enrollments"
+  },
+  "secrets": {
+    "EXTENSION_CLIENT_ID": {
+      "description": "Client ID of the application you created in the Auth0 Dashboard",
+      "required": true
+    },
+    "TITLE": {
+      "description": "Custom title for the dashboard",
+      "example": "Fabrikam User Management",
+      "required": false
+    },
+    "CUSTOM_CSS": {
+      "description": "A CSS file containing custom styles for the extension",
+      "example": "https://cdn.fabrikam.com/static/extensions/theme/fabrikam.css",
+      "required": false
+    },
+    "FAVICON_PATH": {
+      "description": "Path to custom favicon",
+      "example": "https://cdn.fabrikam.com/static/extensions/theme/favicon.png",
+      "required": false
+    },
+    "AUTH0_CUSTOM_DOMAIN": {
+      "description": "Custom domain",
+      "example": "example.com",
+      "required": false
+    },
+    "USER_SEARCH_ENGINE": {
+      "description": "User search engine. Cloud only supports V3",
+      "type": "select",
+      "default": "v3",
+      "allowMultiple": false,
+      "options": [
+        {
+          "value": "v3",
+          "text": "v3"
+        },
+        {
+          "value": "v2",
+          "text": "v2"
+        }
+      ]
+    },
+    "FEDERATED_LOGOUT": {
+      "description": "Also sign out from the IDP when users logout?",
+      "type": "select",
+      "allowMultiple": false,
+      "options": [
+        {
+          "value": "false",
+          "text": "No"
+        },
+        {
+          "value": "true",
+          "text": "Yes"
+        }
+      ]
+    }
+  }
+}
