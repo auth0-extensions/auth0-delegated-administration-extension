@@ -17,24 +17,26 @@ upload_to_s3() {
   local s3_path=$2
   local cache_control=$3
 
-#  if [ -z "$cache_control" ]; then
-#    aws s3 cp "$local_file" "$s3_path" --region "$REGION" --acl public-read
-#  else
-#    aws s3 cp "$local_file" "$s3_path" --region "$REGION" --acl public-read --cache-control "$cache_control"
-#  fi
-
-  echo "aws s3 cp $local_file $s3_path --region $REGION --acl public-read --cache-control $cache_control"
+  if [ -z "$cache_control" ]; then
+    aws s3 cp "$local_file" "$s3_path" --region "$REGION" --acl public-read
+  else
+    aws s3 cp "$local_file" "$s3_path" --region "$REGION" --acl public-read --cache-control "$cache_control"
+  fi
 
   echo "$local_file uploaded to the cdn"
 }
 
 upload_bundle() {
-  local bundle="$EXTENSION_NAME-$CURRENT_VERSION.js"
+  local bundle="$EXTENSION_NAME.extension.$CURRENT_VERSION.js"
+  local bundle_local_path="dist/$bundle"
+  local bundle_s3_path="$S3_PATH/$bundle"
+
+  if [[ ! -f "$bundle_local_path" ]]; then
+      echo "Error: Missing asset - $bundle"
+      exit 1
+  fi
 
   if ! file_exists_in_s3 "$S3_PATH" "$bundle"; then
-    local bundle_local_path="dist/$bundle"
-    local bundle_s3_path="$S3_PATH/$bundle"
-
     upload_to_s3 "$bundle_local_path" "$bundle_s3_path" ""
   else
     echo "There is already a $bundle in the cdn. Bundle upload skipped..."
@@ -57,10 +59,15 @@ upload_assets() {
   for asset in "${assets[@]}"; do
     local asset_local_path="dist/client/$asset"
     local asset_s3_path="$S3_PATH/assets/$asset"
+
+    if [[ ! -f "$asset_local_path" ]]; then
+        echo "Error: Missing asset - $asset"
+        exit 1
+    fi
+
     upload_to_s3 "$asset_local_path" "$asset_s3_path" "max-age=86400"
   done
 }
-
 
 upload_bundle
 upload_assets
