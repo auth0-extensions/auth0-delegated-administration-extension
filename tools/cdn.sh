@@ -1,9 +1,9 @@
 #!/bin/bash
 
 CURRENT_VERSION=$(node tools/get_version.js)
-EXTENSION_NAME="auth0-delegated-admin"
+EXTENSION_NAME="auth0-authz"
 REGION="us-west-1"
-S3_PATH="s3://assets.us.auth0.com/extensions/$EXTENSION_NAME"
+S3_PATH="s3://assets.us.auth.com/extensions/$EXTENSION_NAME"
 
 file_exists_in_s3() {
   local bucket_path=$1
@@ -69,5 +69,7 @@ upload_assets() {
   done
 }
 
-upload_bundle
-upload_assets
+aws s3 cp "$S3_PATH/assets/manifest.json" -
+
+#upload_bundle
+#upload_assets
