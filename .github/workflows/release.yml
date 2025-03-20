@@ -1,0 +1,45 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - ids-5598
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_ROLE: ${{ secrets.awsIAMS3UploadRole }}
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Cache npm dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: npm-dependencies-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            npm-dependencies-
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Tests
+        run: npm run test
+
+      - name: Configure AWS Credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 # v4 on 2025-01-06
+        with:
+          role-to-assume: ${{ env.AWS_ROLE }}
+          role-session-name: github-action-delegated-admin-deployer
+          aws-region: us-west-1
+
+      - name: Upload to CND
+        run: tools/cdn.sh
