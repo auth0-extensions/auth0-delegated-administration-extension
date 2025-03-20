@@ -71,7 +71,7 @@ upload_assets() {
   done
 }
 
-aws s3 cp "$S3_PATH/assets/manifest.json" -
+#aws s3 cp "$S3_PATH/assets/manifest.json" -
 
-#upload_bundle
-#upload_assets
+upload_bundle
+upload_assets
