@@ -61,5 +61,6 @@ upload_assets() {
   done
 }
 
+aws s3 ls "$S3_PATH"
 upload_bundle
 upload_assets
