@@ -3,7 +3,7 @@
 CURRENT_VERSION=$(node tools/get_version.js)
 EXTENSION_NAME="auth0-authz"
 REGION="us-west-1"
-S3_PATH="s3://assets.us.auth.com/extensions/$EXTENSION_NAME"
+S3_PATH="s3://assets.us.auth0.com/extensions/$EXTENSION_NAME"
 
 file_exists_in_s3() {
   local bucket_path=$1
