@@ -62,5 +62,5 @@ upload_assets() {
 }
 
 aws s3 ls "$S3_PATH"
-upload_bundle
-upload_assets
+#upload_bundle
+#upload_assets
