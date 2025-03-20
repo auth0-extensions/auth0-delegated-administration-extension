@@ -1,7 +1,6 @@
 #!/bin/bash
 
-#CURRENT_VERSION=$(node tools/get_version.js)
-CURRENT_VERSION="4.5.1"
+CURRENT_VERSION=$(node tools/get_version.js)
 EXTENSION_NAME="auth0-delegated-admin"
 REGION="us-west-1"
 S3_PATH="s3://assets.us.auth0.com/extensions/$EXTENSION_NAME"
