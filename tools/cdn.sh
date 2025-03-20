@@ -63,6 +63,6 @@ upload_assets() {
 }
 
 #aws s3 ls "$S3_PATH"
-#aws s3 cp "$S3_PATH/assets/manifest.json" -
-upload_bundle
-upload_assets
+aws s3 cp "$S3_PATH/webtask.json" -
+#upload_bundle
+#upload_assets
