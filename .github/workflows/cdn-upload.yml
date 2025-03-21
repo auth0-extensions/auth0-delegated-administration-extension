@@ -1,13 +1,18 @@
 name: Release
 
-on: workflow_dispatch
+on:
+  workflow_call:
+    secrets:
+      aws_role:
+        required: true
+    inputs:
+      target:
+        required: true
+        type: string
 
 permissions:
   id-token: write
   contents: read
-
-env:
-  AWS_ROLE: ${{ secrets.awsIAMS3UploadRole }}
 
 jobs:
   release:
@@ -34,9 +39,9 @@ jobs:
       - name: Configure AWS Credentials using OIDC
         uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 # v4 on 2025-01-06
         with:
-          role-to-assume: ${{ env.AWS_ROLE }}
+          role-to-assume: ${{ secrets.aws_role }}
           role-session-name: github-action-delegated-admin-deployer
           aws-region: us-west-1
 
       - name: Upload to CND
-        run: tools/cdn.sh
+        run: tools/cdn.sh ${{ inputs.target }}
