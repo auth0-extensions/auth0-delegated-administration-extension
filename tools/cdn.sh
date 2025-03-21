@@ -27,19 +27,21 @@ upload_to_s3() {
 }
 
 upload_bundle() {
-  local bundle="$EXTENSION_NAME.extension.$CURRENT_VERSION.js"
-  local bundle_local_path="dist/$bundle"
-  local bundle_s3_path="$S3_PATH/$bundle"
+  local local_bundle="$EXTENSION_NAME.extension.$CURRENT_VERSION.js"
+  local bundle_local_path="dist/$local_bundle"
+
+  local remote_bundle="$EXTENSION_NAME-$CURRENT_VERSION.js"
+  local bundle_s3_path="$S3_PATH/$remote_bundle"
 
   if [[ ! -f "$bundle_local_path" ]]; then
-      echo "Error: Missing asset - $bundle"
+      echo "Error: Missing asset - $bundle_local_path"
       exit 1
   fi
 
-  if ! file_exists_in_s3 "$S3_PATH" "$bundle"; then
+  if ! file_exists_in_s3 "$S3_PATH" "$remote_bundle"; then
     upload_to_s3 "$bundle_local_path" "$bundle_s3_path" ""
   else
-    echo "There is already a $bundle in the cdn. Bundle upload skipped..."
+    echo "There is already a $remote_bundle in the cdn. Bundle upload skipped..."
   fi
 }
 
