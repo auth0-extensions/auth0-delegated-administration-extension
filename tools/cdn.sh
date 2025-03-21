@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 resolve_s3_path() {
     local env="$1"
