@@ -40,22 +40,23 @@ upload_to_s3() {
 }
 
 upload_bundle() {
-  local local_bundle="$EXTENSION_NAME.extension.$CURRENT_VERSION.js"
-  local bundle_local_path="dist/$local_bundle"
-
-  local remote_bundle="$EXTENSION_NAME-$CURRENT_VERSION.js"
-  local bundle_s3_path="$S3_PATH/$remote_bundle"
+  local bundle="$EXTENSION_NAME.extension.$CURRENT_VERSION.js"
+  local bundle_local_path="dist/$bundle"
+  local bundle_s3_path="$S3_PATH/$bundle"
 
   if [[ ! -f "$bundle_local_path" ]]; then
-      echo "Error: Missing asset - $bundle_local_path"
+      echo "Error: Missing asset - $bundle"
       exit 1
   fi
 
-  if ! file_exists_in_s3 "$S3_PATH" "$remote_bundle"; then
-    upload_to_s3 "$bundle_local_path" "$bundle_s3_path" ""
-  else
-    echo "There is already a $remote_bundle in the cdn. Bundle upload skipped..."
+  if [[ "$MODE" != "dev" ]]; then
+    if file_exists_in_s3 "$S3_PATH" "$bundle"; then
+      echo "There is already a $bundle in the cdn. Bundle upload skipped..."
+      return
+    fi
   fi
+
+  upload_to_s3 "$bundle_local_path" "$bundle_s3_path" ""
 }
 
 upload_assets() {
@@ -66,9 +67,11 @@ upload_assets() {
     "manifest.json"
   )
 
-  if file_exists_in_s3 "$S3_PATH/assets" "${assets[0]}"; then
-    echo "There is already a ${assets[0]} in the cdn. Frontend assets upload skipped..."
-    return
+  if [[ "$MODE" != "dev" ]]; then
+    if file_exists_in_s3 "$S3_PATH/assets" "${assets[0]}"; then
+      echo "There is already a ${assets[0]} in the cdn. Frontend assets upload skipped..."
+      return
+    fi
   fi
 
   for asset in "${assets[@]}"; do
@@ -84,10 +87,11 @@ upload_assets() {
   done
 }
 
+MODE="$1" # dev or prod
 CURRENT_VERSION=$(node tools/get_version.js)
 EXTENSION_NAME="auth0-delegated-admin"
 REGION="us-west-1"
-S3_PATH=$(resolve_s3_path "$1")
+S3_PATH=$(resolve_s3_path "$MODE")
 
 upload_bundle
 upload_assets
