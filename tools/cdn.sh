@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CURRENT_VERSION=$(node tools/get_version.js)
+CURRENT_VERSION="4.5.1"
 EXTENSION_NAME="auth0-delegated-admin"
 REGION="us-west-1"
 S3_PATH="s3://assets.us.auth0.com/extensions/$EXTENSION_NAME"
@@ -17,11 +17,11 @@ upload_to_s3() {
   local s3_path=$2
   local cache_control=$3
 
-  if [ -z "$cache_control" ]; then
-    aws s3 cp "$local_file" "$s3_path" --region "$REGION" --acl public-read
-  else
-    aws s3 cp "$local_file" "$s3_path" --region "$REGION" --acl public-read --cache-control "$cache_control"
-  fi
+#  if [ -z "$cache_control" ]; then
+#    aws s3 cp "$local_file" "$s3_path" --region "$REGION" --acl public-read
+#  else
+#    aws s3 cp "$local_file" "$s3_path" --region "$REGION" --acl public-read --cache-control "$cache_control"
+#  fi
 
   echo "$local_file uploaded to the cdn"
 }
