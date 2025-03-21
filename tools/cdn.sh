@@ -36,43 +36,38 @@ upload_to_s3() {
     aws s3 cp "$local_file" "$s3_path" --region "$REGION" --acl public-read --cache-control "$cache_control"
   fi
 
-  echo "$local_file uploaded to the cdn"
+  echo "$local_file uploaded to the $s3_path"
 }
 
 upload_bundle() {
-  local bundle="$EXTENSION_NAME.extension.$CURRENT_VERSION.js"
-  local bundle_local_path="dist/$bundle"
-  local bundle_s3_path="$S3_PATH/$bundle"
+  echo "Uploading backend assets..."
+
+  local local_bundle="$EXTENSION_NAME.extension.$CURRENT_VERSION.js"
+  local bundle_local_path="dist/$local_bundle"
 
   if [[ ! -f "$bundle_local_path" ]]; then
-      echo "Error: Missing asset - $bundle"
+      echo "Error: Missing asset - $bundle_local_path"
       exit 1
   fi
 
-  if [[ "$MODE" != "dev" ]]; then
-    if file_exists_in_s3 "$S3_PATH" "$bundle"; then
-      echo "There is already a $bundle in the cdn. Bundle upload skipped..."
-      return
-    fi
-  fi
+  local remote_bundle="$EXTENSION_NAME-$CURRENT_VERSION.js"
+  local bundle_s3_path="$S3_PATH/$remote_bundle"
+  upload_to_s3 "$bundle_local_path" "$bundle_s3_path" ""
 
+  local remote_bundle="$EXTENSION_NAME-$MAJOR_MINOR_VERSION.js"
+  local bundle_s3_path="$S3_PATH/$remote_bundle"
   upload_to_s3 "$bundle_local_path" "$bundle_s3_path" ""
 }
 
 upload_assets() {
+  echo "Uploading frontend assets..."
+
   local assets=(
     "$EXTENSION_NAME.ui.$CURRENT_VERSION.js"
     "$EXTENSION_NAME.ui.$CURRENT_VERSION.css"
     "$EXTENSION_NAME.ui.vendors.$CURRENT_VERSION.js"
     "manifest.json"
   )
-
-  if [[ "$MODE" != "dev" ]]; then
-    if file_exists_in_s3 "$S3_PATH/assets" "${assets[0]}"; then
-      echo "There is already a ${assets[0]} in the cdn. Frontend assets upload skipped..."
-      return
-    fi
-  fi
 
   for asset in "${assets[@]}"; do
     local asset_local_path="dist/client/$asset"
@@ -87,10 +82,17 @@ upload_assets() {
   done
 }
 
-MODE="$1" # dev or prod
+MODE="$1" # "dev" or "prod"
+
+# resolve current version and version without patch
 CURRENT_VERSION=$(node tools/get_version.js)
+MAJOR_MINOR_VERSION=$(echo "$CURRENT_VERSION" | cut -d '.' -f 1,2)
+
+# constants
 EXTENSION_NAME="auth0-delegated-admin"
 REGION="us-west-1"
+
+# resolve extension s3 path
 S3_PATH=$(resolve_s3_path "$MODE")
 
 upload_bundle
