@@ -31,10 +31,10 @@ upload_bundle() {
   local bundle_local_path="dist/$bundle"
   local bundle_s3_path="$S3_PATH/$bundle"
 
-  if [[ ! -f "$bundle_local_path" ]]; then
-      echo "Error: Missing asset - $bundle"
-      exit 1
-  fi
+#  if [[ ! -f "$bundle_local_path" ]]; then
+#      echo "Error: Missing asset - $bundle"
+#      exit 1
+#  fi
 
   if ! file_exists_in_s3 "$S3_PATH" "$bundle"; then
     upload_to_s3 "$bundle_local_path" "$bundle_s3_path" ""
@@ -60,10 +60,10 @@ upload_assets() {
     local asset_local_path="dist/client/$asset"
     local asset_s3_path="$S3_PATH/assets/$asset"
 
-    if [[ ! -f "$asset_local_path" ]]; then
-        echo "Error: Missing asset - $asset"
-        exit 1
-    fi
+#    if [[ ! -f "$asset_local_path" ]]; then
+#        echo "Error: Missing asset - $asset"
+#        exit 1
+#    fi
 
     upload_to_s3 "$asset_local_path" "$asset_s3_path" "max-age=86400"
   done
