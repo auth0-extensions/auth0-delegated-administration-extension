@@ -36,11 +36,11 @@ upload_to_s3() {
     aws s3 cp "$local_file" "$s3_path" --region "$REGION" --acl public-read --cache-control "$cache_control"
   fi
 
-  echo "$local_file uploaded to the $s3_path"
+  echo "$local_file uploaded to the $s3_path ✅\n"
 }
 
 upload_bundle() {
-  echo "Uploading backend assets..."
+  echo "1. Uploading backend assets ⚙️: \n"
 
   local local_bundle="$EXTENSION_NAME.extension.$CURRENT_VERSION.js"
   local bundle_local_path="dist/$local_bundle"
@@ -60,7 +60,7 @@ upload_bundle() {
 }
 
 upload_assets() {
-  echo "Uploading frontend assets..."
+  echo "2. Uploading frontend assets 💅: \n"
 
   local assets=(
     "$EXTENSION_NAME.ui.$CURRENT_VERSION.js"
@@ -84,16 +84,15 @@ upload_assets() {
 
 MODE="$1" # "dev" or "prod"
 
-# resolve current version and version without patch
 CURRENT_VERSION=$(node tools/get_version.js)
 MAJOR_MINOR_VERSION=$(echo "$CURRENT_VERSION" | cut -d '.' -f 1,2)
 
-# constants
 EXTENSION_NAME="auth0-delegated-admin"
 REGION="us-west-1"
 
-# resolve extension s3 path
 S3_PATH=$(resolve_s3_path "$MODE")
 
 upload_bundle
 upload_assets
+
+echo "\n🎉 Success! The extension has been successfully uploaded to the CDN. 🚀"
