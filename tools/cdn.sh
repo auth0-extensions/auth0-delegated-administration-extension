@@ -27,7 +27,7 @@ upload_to_s3() {
 }
 
 upload_bundle() {
-  local bundle="$EXTENSION_NAME.$CURRENT_VERSION.js"
+  local bundle="$EXTENSION_NAME-$CURRENT_VERSION.js"
   local bundle_local_path="dist/$bundle"
   local bundle_s3_path="$S3_PATH/$bundle"
 
