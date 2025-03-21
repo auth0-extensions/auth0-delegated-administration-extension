@@ -2,13 +2,14 @@
 
 resolve_s3_path() {
     local env="$1"
+    local s3_path="s3://assets.us.auth0.com/extensions"
 
     case "$env" in
         dev)
-            echo "s3://assets.us.auth0.com/extensions/develop/$EXTENSION_NAME"
+            echo "$s3_path/develop/$EXTENSION_NAME"
             ;;
         prod)
-            echo "s3://assets.us.auth0.com/extensions/$EXTENSION_NAME"
+            echo "$s3_path/$EXTENSION_NAME"
             ;;
         *)
             echo "Invalid environment. Use 'prod' or 'develop'." >&2
