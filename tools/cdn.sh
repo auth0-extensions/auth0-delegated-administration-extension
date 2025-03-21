@@ -1,9 +1,21 @@
 #!/bin/bash
 
-CURRENT_VERSION=$(node tools/get_version.js)
-EXTENSION_NAME="auth0-delegated-admin"
-REGION="us-west-1"
-S3_PATH="s3://assets.us.auth0.com/extensions/$EXTENSION_NAME"
+resolve_s3_path() {
+    local env="$1"
+
+    case "$env" in
+        dev)
+            echo "s3://assets.us.auth0.com/extensions/develop/$EXTENSION_NAME"
+            ;;
+        prod)
+            echo "s3://assets.us.auth0.com/extensions/$EXTENSION_NAME"
+            ;;
+        *)
+            echo "Invalid environment. Use 'prod' or 'develop'." >&2
+            exit 1
+            ;;
+    esac
+}
 
 file_exists_in_s3() {
   local bucket_path=$1
@@ -70,6 +82,11 @@ upload_assets() {
     upload_to_s3 "$asset_local_path" "$asset_s3_path" "max-age=86400"
   done
 }
+
+CURRENT_VERSION=$(node tools/get_version.js)
+EXTENSION_NAME="auth0-delegated-admin"
+REGION="us-west-1"
+S3_PATH=$(resolve_s3_path "$1")
 
 upload_bundle
 upload_assets
