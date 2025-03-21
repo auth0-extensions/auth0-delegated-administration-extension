@@ -24,7 +24,7 @@ describe('# /html', () => {
         expect(body).to.be.a('string');
         expect(body).to.include('<title></title>');
         expect(body).to.include('<link rel="shortcut icon" href="https://cdn.auth0.com/styleguide/4.6.13/lib/logos/img/favicon.png" />');
-        expect(body).to.include('<script type="text/javascript" src="//cdn.auth0.com/extensions/auth0-delegated-admin/assets/auth0-delegated-admin.ui.1.0.js"></script>');
+        expect(body).to.include('<script type="text/javascript" src="//cdn.auth0.com/extensions/develop/auth0-delegated-admin/assets/auth0-delegated-admin.ui.1.0.js"></script>');
 
         return done();
       },
