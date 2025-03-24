@@ -10,7 +10,7 @@ resolve_path() {
             echo "$base_path/develop/$EXTENSION_NAME"
             ;;
         prod)
-            echo "$s3_path/$EXTENSION_NAME"
+            echo "$base_path/$EXTENSION_NAME"
             ;;
         *)
             echo "Invalid environment. Use 'prod' or 'develop'." >&2
