@@ -30,6 +30,7 @@ upload_to_s3() {
   local local_file=$1
   local s3_path=$2
   local cache_control=$3
+  local web_path=$3
 
   if [ -z "$cache_control" ]; then
     aws s3 cp "$local_file" "$s3_path" --region "$REGION" --acl public-read
@@ -38,6 +39,7 @@ upload_to_s3() {
   fi
 
   echo -e "$local_file uploaded to the $s3_path ✅"
+  echo -e "It's now available at: $web_path 🌐 \n"
 }
 
 upload_bundle() {
@@ -56,16 +58,14 @@ upload_bundle() {
   local bundle_s3_path="$S3_PATH/$remote_bundle"
   local web_path="$CDN_PATH/$remote_bundle"
 
-  upload_to_s3 "$bundle_local_path" "$bundle_s3_path" ""
-  echo -e "It's now available at: $web_path 🌐 \n"
+  upload_to_s3 "$bundle_local_path" "$bundle_s3_path" "" "$web_path"
 
   # upload bundle with major.minor version:
   local remote_bundle="$EXTENSION_NAME-$MAJOR_MINOR_VERSION.js"
   local bundle_s3_path="$S3_PATH/$remote_bundle"
   local web_path="$CDN_PATH/$remote_bundle"
-  echo -e "It's now available at: $web_path 🌐 \n"
 
-  upload_to_s3 "$bundle_local_path" "$bundle_s3_path" ""
+  upload_to_s3 "$bundle_local_path" "$bundle_s3_path" "" "$web_path"
 }
 
 upload_assets() {
@@ -88,8 +88,7 @@ upload_assets() {
         exit 1
     fi
 
-    upload_to_s3 "$asset_local_path" "$asset_s3_path" "max-age=86400"
-    echo -e "It's now available at: $web_path 🌐 \n"
+    upload_to_s3 "$asset_local_path" "$asset_s3_path" "max-age=86400" "$web_path"
   done
 }
 
