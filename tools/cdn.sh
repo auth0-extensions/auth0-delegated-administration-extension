@@ -50,14 +50,12 @@ upload_bundle() {
   local remote_bundle="$EXTENSION_NAME-$CURRENT_VERSION.js"
   local bundle_s3_path="$S3_PATH/$remote_bundle"
   local web_path="$CDN_PATH/$remote_bundle"
-
   upload_to_s3 "$bundle_local_path" "$bundle_s3_path" "" "$web_path"
 
   # upload bundle with major.minor version:
   local remote_bundle="$EXTENSION_NAME-$MAJOR_MINOR_VERSION.js"
   local bundle_s3_path="$S3_PATH/$remote_bundle"
   local web_path="$CDN_PATH/$remote_bundle"
-
   upload_to_s3 "$bundle_local_path" "$bundle_s3_path" "" "$web_path"
 }
 
