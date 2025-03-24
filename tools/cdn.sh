@@ -19,18 +19,11 @@ resolve_path() {
     esac
 }
 
-file_exists_in_s3() {
-  local bucket_path=$1
-  local file_name=$2
-
-  aws s3 ls "$bucket_path/$file_name" --region "$REGION" | grep -q "$file_name"
-}
-
 upload_to_s3() {
   local local_file=$1
   local s3_path=$2
   local cache_control=$3
-  local web_path=$3
+  local web_path=$4
 
   if [ -z "$cache_control" ]; then
     aws s3 cp "$local_file" "$s3_path" --region "$REGION" --acl public-read
