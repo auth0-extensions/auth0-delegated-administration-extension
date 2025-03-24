@@ -105,7 +105,7 @@ export default () => {
         assets: {
           customCss: config('CUSTOM_CSS'),
           version: clientVersion,
-          cdnPath: '//cdn.auth0.com/extensions/auth0-delegated-admin/assets',
+          cdnPath: cdnPath,
           favIcon: favIcon
         }
       }));
