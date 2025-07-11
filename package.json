@@ -171,7 +171,7 @@
     "redux-form": "^6.0.5",
     "redux-logger": "^2.7.0",
     "redux-promise-middleware": "^4.1.0",
-    "redux-thunk": "2.2.0",
+    "redux-thunk": "2.4.2",
     "request": "^2.88.2",
     "reselect": "^2.5.4",
     "safe-eval": "^0.4.1",
