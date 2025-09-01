@@ -17,62 +17,66 @@ let userData = {};
 describe('#users router', () => {
   config.setProvider((key) => defaultConfig[key], null);
 
-  const fakeApiClient = (req, res, next) => {
-    req.auth0 = {
-      users: {
-        getAll: (options) => {
-          if (options.q && options.q.startsWith('(user_id:1)')) {
-            return Promise.resolve({
-              users: _.filter(userData, user => user.user_id === 1)
-            });
-          }
-          if (options.sort) {
-            const sortParts = options.sort.split(':');
-            const order = sortParts[1] < 0 ? 'desc' : 'asc';
-            return Promise.resolve({
-              users: _.orderBy(userData, [sortParts[0]], [order])
-            });
-          }
-          return Promise.resolve({ users: userData })
-        },
-        get: (options) => {
-          const id = parseInt(options.id, 10) - 1;
-          return Promise.resolve(userData[id]);
-        },
-        create: (data) => {
-          if (data.memberships) return Promise.reject(new Error('did not fix memberships'));
-          userData.push(data);
-          return Promise.resolve();
-        },
-        delete: () => {
-          userData.pop();
-          return Promise.resolve();
-        },
-        update: (options, data) => {
-          if (!data || Object.keys(data).length === 0) Promise.reject(new Error('can not pass empty data'));
-          const id = parseInt(options.id, 10) - 1;
-          if (data.email) userData[id].email = data.email;
-          if (data.username) userData[id].username = data.username;
-          if (data.password) userData[id].password = data.password;
-          if (data.blocked !== undefined) userData[id].blocked = data.blocked;
-          if (data.app_metadata) _.assign(userData[id].app_metadata, data.app_metadata);
-          if (data.user_metadata) _.assign(userData[id].user_metadata, data.user_metadata);
-          return Promise.resolve();
-        },
-        deleteMultifactorProvider:
-          (options) => options.provider === 'duo' ?
-            Promise.resolve() :
-            Promise.reject(new Error('bad provider'))
+  let auth0Client = {
+    users: {
+      getAll: (options) => {
+        if (options.q && options.q.startsWith('(user_id:1)')) {
+          return Promise.resolve({
+            users: _.filter(userData, user => user.user_id === 1)
+          });
+        }
+        if (options.sort) {
+          const sortParts = options.sort.split(':');
+          const order = sortParts[1] < 0 ? 'desc' : 'asc';
+          return Promise.resolve({
+            users: _.orderBy(userData, [sortParts[0]], [order])
+          });
+        }
+        return Promise.resolve({ users: userData });
       },
-      deviceCredentials: {
-        getAll: () => Promise.resolve([])
-      }
-      ,
-      jobs: {
-        verifyEmail: () => Promise.resolve([])
-      }
-    };
+      get: (options) => {
+        const id = parseInt(options.id, 10) - 1;
+        return Promise.resolve(userData[id]);
+      },
+      create: (data) => {
+        if (data.memberships) return Promise.reject(new Error('did not fix memberships'));
+        userData.push(data);
+        return Promise.resolve();
+      },
+      delete: () => {
+        userData.pop();
+        return Promise.resolve();
+      },
+      update: (options, data) => {
+        if (!data || Object.keys(data).length === 0) Promise.reject(new Error('can not pass empty data'));
+        const id = parseInt(options.id, 10) - 1;
+        if (data.email) userData[id].email = data.email;
+        if (data.username) userData[id].username = data.username;
+        if (data.password) userData[id].password = data.password;
+        if (data.blocked !== undefined) userData[id].blocked = data.blocked;
+        if (data.app_metadata) _.assign(userData[id].app_metadata, data.app_metadata);
+        if (data.user_metadata) _.assign(userData[id].user_metadata, data.user_metadata);
+        return Promise.resolve();
+      },
+      deleteMultifactorProvider:
+        (options) => options.provider === 'duo' ?
+          Promise.resolve() :
+          Promise.reject(new Error('bad provider'))
+    },
+    connections: {
+      getAll: () => Promise.resolve([])
+    },
+    deviceCredentials: {
+      getAll: () => Promise.resolve([])
+    }
+    ,
+    jobs: {
+      verifyEmail: () => Promise.resolve([])
+    }
+  };
 
+  let fakeApiClient = (req, res, next) => {
+    req.auth0 = auth0Client;
     next();
   };
 
@@ -766,10 +770,119 @@ describe('#users router', () => {
   });
 
   describe('#Password reset', () => {
-    it('should reset password', (done) => {
+    it('should reset password using email as a fallback when connection is not found', (done) => {
+      auth0Client.connections.getAll = () => Promise.resolve([]);
+
+      nock(domain)
+        .post('/dbconnections/change_password',
+          { 'email': 'user1@example.com', 'connection': 'unknown-connection' })
+        .reply(204);
+
       request(app)
         .post('/users/1/password-reset')
-        .send({ connection: 'connection' })
+        .send({ connection: 'unknown-connection' })
+        .expect(204)
+        .end((err) => {
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should reset password using email as a fallback when connection has no active identifier', (done) => {
+      auth0Client.connections.getAll = () => Promise.resolve([{
+        id: 'conn123',
+        name: 'test-connection',
+        strategy: 'auth0',
+        options: {
+          attributes: {
+            email: { identifier: { active: false } },
+            username: { identifier: { active: false } }
+          }
+        }
+      }]);
+
+      nock(domain)
+        .post('/dbconnections/change_password',
+          { 'email': 'user1@example.com', 'connection': 'test-connection' })
+        .reply(204);
+
+      request(app)
+        .post('/users/1/password-reset')
+        .send({ connection: 'test-connection' })
+        .expect(204)
+        .end((err) => {
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should reset password using active identifier when connection is found with active identifier', (done) => {
+      auth0Client.connections.getAll = () => Promise.resolve([{
+        id: 'conn456',
+        name: 'username-connection',
+        strategy: 'auth0',
+        options: {
+          attributes: {
+            email: { identifier: { active: false } },
+            username: { identifier: { active: true } }
+          }
+        }
+      }]);
+
+      nock(domain)
+        .post('/dbconnections/change_password',
+          { 'email': 'user1', 'connection': 'username-connection' })
+        .reply(204);
+
+      request(app)
+        .post('/users/1/password-reset')
+        .send({ connection: 'username-connection' })
+        .expect(204)
+        .end((err) => {
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should reset password using email as a fallback when user has no value for active identifier', (done) => {
+      auth0Client.connections.getAll = () => Promise.resolve([{
+        id: 'conn789',
+        name: 'phone-connection',
+        strategy: 'auth0',
+        options: {
+          attributes: {
+            email: { identifier: { active: false } },
+            phone_number: { identifier: { active: true } } // missing in user profile
+          }
+        }
+      }]);
+
+      nock(domain)
+        .post('/dbconnections/change_password',
+          { 'email': 'user1@example.com', 'connection': 'phone-connection' })
+        .reply(204);
+
+      request(app)
+        .post('/users/1/password-reset')
+        .send({ connection: 'phone-connection' })
+        .expect(204)
+        .end((err) => {
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should reset password using email when connection API fails', (done) => {
+      auth0Client.connections.getAll = () => Promise.reject(new Error('failed to fetch connections'));
+
+      nock(domain)
+        .post('/dbconnections/change_password',
+          { 'email': 'user1@example.com', 'connection': 'error-connection' })
+        .reply(204);
+
+      request(app)
+        .post('/users/1/password-reset')
+        .send({ connection: 'error-connection' })
         .expect(204)
         .end((err) => {
           if (err) return done(err);

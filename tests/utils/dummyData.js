@@ -13,11 +13,11 @@ export const defaultLogs = [
 ];
 
 export const defaultUsers = [
-  { email: 'user1@example.com', user_id: 1, app_metadata: { department: 'deptA' } },
-  { email: 'user2@example.com', user_id: 2, app_metadata: { department: 'deptA' } },
-  { email: 'user3@example.com', user_id: 3, app_metadata: { department: 'deptA' }, multifactor_last_modified: 'just now' },
-  { email: 'user4@example.com', user_id: 4, app_metadata: { department: 'deptB' } },
-  { email: 'user5@example.com', user_id: 5, app_metadata: { department: 'deptB' } }
+  { email: 'user1@example.com', username: 'user1', user_id: 1, app_metadata: { department: 'deptA' } },
+  { email: 'user2@example.com', username: 'user2', user_id: 2, app_metadata: { department: 'deptA' } },
+  { email: 'user3@example.com', username: 'user3', user_id: 3, app_metadata: { department: 'deptA' }, multifactor_last_modified: 'just now' },
+  { email: 'user4@example.com', username: 'user4', user_id: 4, app_metadata: { department: 'deptB' } },
+  { email: 'user5@example.com', username: 'user5', user_id: 5, app_metadata: { department: 'deptB' } }
 ];
 
 export const defaultConnections = [

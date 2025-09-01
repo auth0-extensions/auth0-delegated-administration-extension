@@ -12,6 +12,7 @@ import { removeGuardian, requestGuardianEnrollments } from '../lib/removeGuardia
 import { requestUserBlocks, removeUserBlocks } from '../lib/userBlocks';
 import getApiToken from '../lib/getApiToken';
 import getConnectionIdByName from '../lib/getConnectionIdByName';
+import getConnection from '../lib/getConnection';
 
 const isValidField = (type, onlyTheseFields, field) =>
   ((onlyTheseFields && _.includes(onlyTheseFields, field.property)) || (!onlyTheseFields && field[type] !== false));
@@ -100,6 +101,35 @@ const executeWriteHook = (req, scriptManager, userFields, onlyTheseFields) => {
 
   return scriptManager.execute('create', context);
 };
+
+const resolveUserIdentifier = async (auth0Client, user, connectionName) => {
+  try {
+    const connection = await getConnection(auth0Client, connectionName);
+
+    if (!connection) {
+      // Fall back to email if connection not found
+      logger.debug('No connection found. Using email as a fallback.');
+      return user.email;
+    }
+
+    // find active identifier that is present on the user profile
+    const activeIdentifier = Object.entries(connection.options.attributes)
+      .filter(([key, attribute]) => attribute.identifier?.active === true)
+      .map(([key]) => key)
+      .find(identifierType => user[identifierType] != null);
+
+    if (activeIdentifier && user[activeIdentifier]) {
+      return user[activeIdentifier];
+    }
+
+    logger.debug(`No active identifier value found for the active ${activeIdentifier}. Using email as a fallback.`);
+    return user.email;
+  } catch (error) {
+    logger.debug('Failed to resolve active identifier, using email as fallback:', error.message);
+    return user.email;
+  }
+};
+
 
 export default (storage, scriptManager) => {
   const api = Router();
@@ -361,17 +391,30 @@ export default (storage, scriptManager) => {
   /*
    * Trigger a password reset for the user.
    */
-  api.post('/:id/password-reset', verifyUserAccess('reset:password', scriptManager), (req, res, next) => {
+  api.post('/:id/password-reset', verifyUserAccess('reset:password', scriptManager), async (req, res, next) => {
     const client = new auth0.AuthenticationClient({
       domain: config('AUTH0_DOMAIN'),
       clientId: config('AUTH0_CLIENT_ID')
     });
 
     const user = req.targetUser;
-    const data = { email: user.email, connection: req.body.connection, client_id: req.body.clientId };
+    const connectionName = req.body.connection;
+
+    // Resolve the correct identifier value to use for password reset.
+    const identifierValue = await resolveUserIdentifier(req.auth0, user, connectionName);
+
+    const data = {
+      // Note, 'email' property can be used for any user identifier value (email, username, phone).
+      email: identifierValue,
+      connection: connectionName,
+      client_id: req.body.clientId
+    };
+
     return client.requestChangePasswordEmail(data)
       .then(() => res.sendStatus(204))
-      .catch(next);
+      .catch((err) => {
+        next(err)
+      });
   });
 
   /*
