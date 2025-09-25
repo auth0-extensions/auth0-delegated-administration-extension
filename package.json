@@ -130,7 +130,7 @@
   "snyk": true,
   "dependencies": {
     "async": "^3.2.4",
-    "auth0": "3.5.0",
+    "auth0": "4.0.0",
     "auth0-extension-express-tools": "2.1.0",
     "auth0-extension-tools": "1.5.2",
     "auth0-extension-ui": "^1.2.2",
@@ -161,7 +161,7 @@
     "nconf": "^0.12.0",
     "prop-types": "^15.6.0",
     "qs": "^6.11.2",
-    "react": "15.5.0",
+    "react": "16.5.0",
     "react-codemirror": "^0.2.6",
     "react-dom": "15.6.1",
     "react-redux": "^4.4.5",
