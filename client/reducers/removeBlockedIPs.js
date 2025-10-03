@@ -1,7 +1,6 @@
-import { fromJS } from 'immutable';
-
 import * as constants from '../constants';
 import createReducer from '../utils/createReducer';
+import { fromJS } from 'immutable';
 
 const initialState = {
   error: null,
@@ -13,7 +12,7 @@ const initialState = {
 export const removeBlockedIPs = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
   [constants.REQUEST_REMOVE_BLOCKED_IPS]: (state, action) =>
     state.merge({
-      user: action.user,
+      user: fromJS(action.user),
       requesting: true
     }),
   [constants.CANCEL_REMOVE_BLOCKED_IPS]: (state) =>
