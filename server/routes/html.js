@@ -68,7 +68,11 @@ export default () => {
     const basePath = urlHelpers.getBasePath(req);
 
     if (req.url.indexOf('/login') !== 0) {
-      res.cookie('dae-locale', locale);
+      res.cookie('dae-locale', locale, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'Lax'
+      });
       if (req.url.indexOf(`/${locale}`) !== 0) {
         return res.redirect(`${basePath}${locale}${req.url || '/login'}`);
       }
