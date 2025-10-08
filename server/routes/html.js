@@ -68,7 +68,11 @@ export default () => {
     const basePath = urlHelpers.getBasePath(req);
 
     if (req.url.indexOf('/login') !== 0) {
-      res.cookie('dae-locale', locale);
+      res.cookie('dae-locale', locale, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'Lax'
+      });
       if (req.url.indexOf(`/${locale}`) !== 0) {
         return res.redirect(`${basePath}${locale}${req.url || '/login'}`);
       }
@@ -97,7 +101,7 @@ export default () => {
       const cdnPath = config('CDN_PATH') || (
         PR_NUMBER
           ? `//s3.amazonaws.com/extensions-review/auth0-delegated-admin-pr-${PR_NUMBER}/assets`
-          : '//cdn.auth0.com/extensions/auth0-delegated-admin/assets'
+          : '//cdn.auth0.com/extensions/develop/auth0-delegated-admin/assets'
       );
 
       return res.send(ejs.render(template, {
