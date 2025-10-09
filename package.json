@@ -130,7 +130,7 @@
   "snyk": true,
   "dependencies": {
     "async": "^3.2.4",
-    "auth0": "3.5.0",
+    "auth0": "4.0.0",
     "auth0-extension-express-tools": "2.1.0",
     "auth0-extension-tools": "1.5.2",
     "auth0-extension-ui": "^1.2.2",
@@ -178,7 +178,7 @@
     "semver": "^7.5.4",
     "snyk": "^1.278.1",
     "string.prototype.endswith": "^0.2.0",
-    "superagent": "^8.0.9",
+    "superagent": "^10.2.2",
     "uuid": "9.0.0",
     "webtask-tools": "^3.4.1",
     "winston": "^3.10.0"
