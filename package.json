@@ -130,7 +130,7 @@
   "snyk": true,
   "dependencies": {
     "async": "^3.2.4",
-    "auth0": "3.5.0",
+    "auth0": "4.0.0",
     "auth0-extension-express-tools": "2.1.0",
     "auth0-extension-tools": "1.5.2",
     "auth0-extension-ui": "^1.2.2",
