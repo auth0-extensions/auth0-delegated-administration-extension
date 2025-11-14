@@ -109,7 +109,7 @@ export default class Header extends Component {
 
   renderTitle = (isAdmin) => {
     if (isAdmin && window.config.AUTH0_MANAGE_URL) {
-      return <a className="navbar-brand" href={window.config.AUTH0_MANAGE_URL}>{this.props.getDictValue('title', window.config.TITLE)}</a>;
+      return <a className="navbar-brand" href={window.config.AUTH0_MANAGE_URL}>{`${this.props.getDictValue('title', window.config.TITLE)} - MCD Spike`}</a>;
     }
 
     return <span className="navbar-brand">{this.props.getDictValue('title', window.config.TITLE)}</span>;
