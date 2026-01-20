@@ -1,8 +1,12 @@
 import { ValidationError } from 'auth0-extension-tools';
 import tools from 'auth0-extension-tools';
+import{ getClientOptions}  from '../lib/managementApiClient'
 
 import config from './config';
 import logger from './logger';
+
+const DOMAIN_REGEX = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9-]*[A-Za-z0-9])$/;
+const DOMAIN_MAX_LENGTH = 253;
 
 /**
  * Execute custom domain selection hook and get custom domain headers
@@ -38,18 +42,21 @@ export const getCustomDomainHeaders = async (req, scriptManager, method, payload
     let headerValue = null;
     
     if (customDomain) {
+
       if (typeof customDomain !== 'string' || customDomain.trim().length === 0) {
         throw new ValidationError('customDomain must be a non-empty string');
       }
       
-      const domainRegex = /^[a-zA-Z0-9][a-zA-Z0-9-_.]*[a-zA-Z0-9]$/;
-      if (!domainRegex.test(customDomain)) {
-        throw new ValidationError('customDomain contains invalid domain format');
+      if (customDomain.length > DOMAIN_MAX_LENGTH || !DOMAIN_REGEX.test(customDomain)) {
+        throw new ValidationError('customDomain format is not valid');
       }
       
       headerValue = customDomain;
+      
     } else if (useCanonicalDomain === true) {
+
       headerValue = config('AUTH0_DOMAIN');
+      
     }
     
     if (headerValue) {
@@ -61,11 +68,12 @@ export const getCustomDomainHeaders = async (req, scriptManager, method, payload
     return {};
   } catch (error) {
     if (error instanceof ValidationError) {
-      throw error;
+      logger.error(`Custom domain hook validation error: ${error.message}`);
+      
     }
     
-    logger.error('Custom domain hook execution failed:', error);
-    return {};
+    logger.error(`Custom domain hook execution failed: ${error.message}`);
+    throw error
   }
 };
 
@@ -75,23 +83,8 @@ export const getCustomDomainHeaders = async (req, scriptManager, method, payload
  * @param {object} customHeaders - Custom headers to include
  * @returns {Promise<ManagementClient>} Auth0 Management API client with custom headers
  */
-const getClientWithHeaders = async (req, customHeaders) => {
-  const isAdministrator = req.user && req.user.access_token && req.user.access_token.length;
-  
-  const options = isAdministrator
-    ? {
-        domain: config('AUTH0_DOMAIN'),
-        accessToken: req.user.access_token,
-        headers: customHeaders
-      }
-    : {
-        domain: config('AUTH0_DOMAIN'),
-        clientId: config('AUTH0_CLIENT_ID'),
-        clientSecret: config('AUTH0_CLIENT_SECRET'),
-        headers: customHeaders
-      };
-  
-  return tools.managementApi.getClient(options);
+const getClientWithHeaders = async (req, customHeaders) => {  
+  return tools.managementApi.getClient(getClientOptions(req, customHeaders));
 };
 
 /**
