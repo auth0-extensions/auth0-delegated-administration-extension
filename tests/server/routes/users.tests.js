@@ -1725,4 +1725,325 @@ describe('#users router', () => {
     });
   });
 
+  describe('#Custom Domain Hook', () => {
+    before(() => {
+      scriptManager.getCached = skipCache;
+      storage.data.scripts = _.cloneDeep(defaultScriptData.scripts);
+    });
+
+    describe('#Create with customDomain hook', () => {
+      it('should create user when customDomain hook returns null', (done) => {
+        storage.data.scripts.customDomain = ((ctx, callback) => {
+          callback(null, null);
+        }).toString();
+
+        const newUser = {
+          email: 'customdomain-user@example.com',
+          memberships: ['deptA']
+        };
+
+        request(app)
+          .post('/users')
+          .send(newUser)
+          .expect(201)
+          .end((err) => {
+            if (err) return done(err);
+            expect(userData[userData.length - 1].email).to.equal(newUser.email);
+            done();
+          });
+      });
+
+      it('should receive correct context for create operation', (done) => {
+        storage.data.scripts.customDomain = ((ctx, callback) => {
+          if (ctx.method !== 'create') throw Error('Expected method to be create, got: ' + ctx.method);
+          if (!ctx.request || !ctx.request.user) throw Error('Expected request.user to be present');
+          if (!ctx.payload || !ctx.payload.email) throw Error('Expected payload.email to be present');
+          callback(null, null);
+        }).toString();
+
+        const newUser = {
+          email: 'customdomain-context-user@example.com',
+          memberships: ['deptA']
+        };
+
+        request(app)
+          .post('/users')
+          .send(newUser)
+          .expect(201)
+          .end((err) => {
+            if (err) return done(err);
+            done();
+          });
+      });
+
+      it('should fail when customDomain hook returns invalid domain format', (done) => {
+        storage.data.scripts.customDomain = ((ctx, callback) => {
+          callback(null, { customDomain: 'invalid domain with spaces' });
+        }).toString();
+
+        const newUser = {
+          email: 'customdomain-invalid@example.com',
+          memberships: ['deptA']
+        };
+
+        request(app)
+          .post('/users')
+          .send(newUser)
+          .expect(400)
+          .end((err) => {
+            if (err) return done(err);
+            done();
+          });
+      });
+    });
+
+    describe('#Verify email with customDomain hook', () => {
+      it('should send verification email when customDomain hook returns null', (done) => {
+        storage.data.scripts.customDomain = ((ctx, callback) => {
+          callback(null, null);
+        }).toString();
+
+        request(app)
+          .post('/users/1/send-verification-email')
+          .expect(204)
+          .end((err) => {
+            if (err) return done(err);
+            done();
+          });
+      });
+
+      it('should receive correct context for verify-email operation', (done) => {
+        storage.data.scripts.customDomain = ((ctx, callback) => {
+          if (ctx.method !== 'verify-email') throw Error('Expected method to be verify-email, got: ' + ctx.method);
+          if (!ctx.request || !ctx.request.user) throw Error('Expected request.user to be present');
+          if (!ctx.payload || !ctx.payload.user_id) throw Error('Expected payload.user_id to be present');
+          callback(null, null);
+        }).toString();
+
+        request(app)
+          .post('/users/1/send-verification-email')
+          .expect(204)
+          .end((err) => {
+            if (err) return done(err);
+            done();
+          });
+      });
+    });
+
+    describe('#Password reset with customDomain hook', () => {
+      it('should use custom domain for password reset when hook returns customDomain', (done) => {
+        storage.data.scripts.customDomain = ((ctx, callback) => {
+          callback(null, { customDomain: 'custom.example.com' });
+        }).toString();
+
+        auth0Client.connections.getAll = () => Promise.resolve([]);
+
+        nock('https://custom.example.com')
+          .post('/dbconnections/change_password',
+            { 'email': 'user1@example.com', 'connection': 'test-connection' })
+          .reply(204);
+
+        request(app)
+          .post('/users/1/password-reset')
+          .send({ connection: 'test-connection' })
+          .expect(204)
+          .end((err) => {
+            if (err) return done(err);
+            done();
+          });
+      });
+
+      it('should use canonical domain for password reset when hook returns useCanonicalDomain', (done) => {
+        storage.data.scripts.customDomain = ((ctx, callback) => {
+          callback(null, { useCanonicalDomain: true });
+        }).toString();
+
+        auth0Client.connections.getAll = () => Promise.resolve([]);
+
+        nock(domain)
+          .post('/dbconnections/change_password',
+            { 'email': 'user1@example.com', 'connection': 'test-connection' })
+          .reply(204);
+
+        request(app)
+          .post('/users/1/password-reset')
+          .send({ connection: 'test-connection' })
+          .expect(204)
+          .end((err) => {
+            if (err) return done(err);
+            done();
+          });
+      });
+
+      it('should use default domain for password reset when hook returns null', (done) => {
+        storage.data.scripts.customDomain = ((ctx, callback) => {
+          callback(null, null);
+        }).toString();
+
+        auth0Client.connections.getAll = () => Promise.resolve([]);
+
+        nock(domain)
+          .post('/dbconnections/change_password',
+            { 'email': 'user1@example.com', 'connection': 'test-connection' })
+          .reply(204);
+
+        request(app)
+          .post('/users/1/password-reset')
+          .send({ connection: 'test-connection' })
+          .expect(204)
+          .end((err) => {
+            if (err) return done(err);
+            done();
+          });
+      });
+
+      it('should receive correct context for password-reset operation', (done) => {
+        storage.data.scripts.customDomain = ((ctx, callback) => {
+          if (ctx.method !== 'password-reset') throw Error('Expected method to be password-reset, got: ' + ctx.method);
+          if (!ctx.request || !ctx.request.user) throw Error('Expected request.user to be present');
+          if (!ctx.request.originalUser) throw Error('Expected request.originalUser to be present for password-reset');
+          if (!ctx.payload || !ctx.payload.user_id) throw Error('Expected payload.user_id to be present');
+          if (!ctx.payload.connection) throw Error('Expected payload.connection to be present');
+          callback(null, null);
+        }).toString();
+
+        auth0Client.connections.getAll = () => Promise.resolve([]);
+
+        nock(domain)
+          .post('/dbconnections/change_password',
+            { 'email': 'user1@example.com', 'connection': 'test-connection' })
+          .reply(204);
+
+        request(app)
+          .post('/users/1/password-reset')
+          .send({ connection: 'test-connection' })
+          .expect(204)
+          .end((err) => {
+            if (err) return done(err);
+            done();
+          });
+      });
+    });
+
+    describe('#Operations that should NOT invoke customDomain hook', () => {
+      beforeEach(() => {
+        // Set a customDomain hook that throws an error if invoked
+        // This ensures these operations do NOT call the hook
+        storage.data.scripts.customDomain = ((ctx, callback) => {
+          callback(new Error('customDomain hook should not be invoked for this operation: ' + ctx.method));
+        }).toString();
+      });
+
+      // DELETE /:id - delete user
+      it('should NOT invoke customDomain hook for delete user', (done) => {
+        userData[4] = { user_id: 5, email: 'delete-test@example.com', app_metadata: { department: 'deptA' } };
+        request(app)
+          .delete('/users/5')
+          .expect(204)
+          .end((err) => {
+            if (err) return done(err);
+            done();
+          });
+      });
+
+      // PATCH /:id - update user profile (API2 only uses custom domain header when verify_email is true, which DAE never sends)
+      it('should NOT invoke customDomain hook for update user profile', (done) => {
+        request(app)
+          .patch('/users/1')
+          .send({ app_metadata: { department: 'deptA' } })
+          .expect(204)
+          .end((err) => {
+            if (err) return done(err);
+            done();
+          });
+      });
+
+      // PUT /:id/change-password - change password directly (not reset)
+      it('should NOT invoke customDomain hook for change password', (done) => {
+        request(app)
+          .put('/users/1/change-password')
+          .send({ password: 'newpassword', repeatPassword: 'newpassword' })
+          .expect(204)
+          .end((err) => {
+            if (err) return done(err);
+            done();
+          });
+      });
+
+      // PUT /:id/change-username
+      it('should NOT invoke customDomain hook for change username', (done) => {
+        storage.data.scripts.settings = settingsWithUserFields;
+        request(app)
+          .put('/users/1/change-username')
+          .send({ username: 'newusername' })
+          .expect(204)
+          .end((err) => {
+            if (err) return done(err);
+            done();
+          });
+      });
+
+      // PUT /:id/change-email
+      it('should NOT invoke customDomain hook for change email', (done) => {
+        storage.data.scripts.settings = settingsWithUserFields;
+        request(app)
+          .put('/users/1/change-email')
+          .send({ email: 'newemail@example.com' })
+          .expect(204)
+          .end((err) => {
+            if (err) return done(err);
+            done();
+          });
+      });
+
+      // DELETE /:id/multifactor/:provider - remove MFA
+      it('should NOT invoke customDomain hook for remove MFA', (done) => {
+        request(app)
+          .delete('/users/1/multifactor/duo')
+          .expect(204)
+          .end((err) => {
+            if (err) return done(err);
+            done();
+          });
+      });
+
+      // PUT /:id/block
+      it('should NOT invoke customDomain hook for block user', (done) => {
+        request(app)
+          .put('/users/1/block')
+          .expect(204)
+          .end((err) => {
+            if (err) return done(err);
+            done();
+          });
+      });
+
+      // PUT /:id/unblock
+      it('should NOT invoke customDomain hook for unblock user', (done) => {
+        request(app)
+          .put('/users/1/unblock')
+          .expect(204)
+          .end((err) => {
+            if (err) return done(err);
+            done();
+          });
+      });
+
+      // DELETE /:id/blocks - remove user blocks
+      it('should NOT invoke customDomain hook for remove user blocks', (done) => {
+        nock(domain)
+        .delete(/user-blocks\/1/)
+        .reply(204);
+
+        request(app)
+          .delete('/users/1/blocks')
+          .expect(204)
+          .end((err) => {
+            if (err) return done(err);
+            done();
+          });
+      });
+    });
+  });
+
 });

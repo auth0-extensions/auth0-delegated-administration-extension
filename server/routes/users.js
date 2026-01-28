@@ -357,7 +357,7 @@ export default (storage, scriptManager) => {
   });
 
   /*
-   * Deleta a user.
+   * Delete a user.
    */
   api.delete('/:id', verifyUserAccess('delete:user', scriptManager), (req, res, next) => {
     if (req.user.sub === req.params.id) {
@@ -390,16 +390,7 @@ export default (storage, scriptManager) => {
           ), 'property');
         return executeWriteHook(req, scriptManager, settings.userFields, allowedFields);
       })
-      .then(async (payload) => {
-        // Execute update operation with custom domain support
-        await executeWithCustomDomain(
-          req,
-          scriptManager,
-          'update',
-          payload,
-          (client, data) => client.users.update({ id: req.params.id }, data)
-        );
-      })
+      .then((payload) => req.auth0.users.update({ id: req.params.id }, payload))
       .then(() => res.status(204).send())
       .catch(next);
   });
@@ -408,11 +399,10 @@ export default (storage, scriptManager) => {
    * Trigger a password reset for the user.
    */
   api.post('/:id/password-reset', verifyUserAccess('reset:password', scriptManager), async (req, res, next) => {
-    try {
       const user = req.targetUser;
       const connectionName = req.body.connection;
 
-      // Execute custom domain hook to get headers
+      // Execute custom domain hook to get headers but not create an auth0 management client
       const customHeaders = await getCustomDomainHeaders(
         req,
         scriptManager,
@@ -428,7 +418,6 @@ export default (storage, scriptManager) => {
         clientId: config('AUTH0_CLIENT_ID')
       });
 
-      // Resolve the correct identifier value to use for password reset.
       const identifierValue = await resolveUserIdentifier(req.auth0, user, connectionName);
 
       const data = {
@@ -438,11 +427,11 @@ export default (storage, scriptManager) => {
         client_id: req.body.clientId
       };
 
-      await client.requestChangePasswordEmail(data);
-      res.sendStatus(204);
-    } catch (err) {
-      next(err);
-    }
+      return client.requestChangePasswordEmail(data)
+      .then(() => res.sendStatus(204))
+      .catch((err) => {
+        next(err)
+      });
   });
 
   /*
