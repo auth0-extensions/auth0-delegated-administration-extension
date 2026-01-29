@@ -6,20 +6,43 @@
  * branded custom domain.
  */
 
-function(ctx, callback) {
-  // Get the organization from the admin user's metadata
-  const org = ctx.request.user.app_metadata?.organization;
-  
-  // Map organizations to their custom domains
-  const domains = {
-    'enterprise': 'auth.enterprise.com',
-    'partner': 'auth.partner.com',
-    'customer': 'login.customer.com'
+function(context, callback) {
+  const emailToDomain = {
+    'domain1.com': 'domain1.example.com',
+    'domain2.com': 'domain2.example.com',
   };
   
-  // Return the appropriate custom domain, or use canonical domain as fallback
-  return callback(null, {
-    customDomain: domains[org] || null,
-    useCanonicalDomain: !domains[org]  // Use canonical if org not found
-  });
+  function getDomainFromEmail(userEmail) {
+    if (!userEmail) return null;
+    const domain = userEmail.split('@')[1];
+    return emailToDomain[domain];
+}
+  
+  function shouldUseCanonical(userEmail){
+    const domain = userEmail.split('@')[1];
+    return domain === 'corp.com';
+  }
+  
+  let userEmail;
+  
+  if (context.method === 'create') {
+    userEmail = context.payload.email;
+  } else {
+    userEmail = context.request.originalUser.email;
+  }
+  
+  const customDomain = getDomainFromEmail(userEmail);
+
+  // Use a known tenant custom domain
+  if (customDomain) {
+    return callback(null, { customDomain: customDomain });
+  }
+
+  // Use canonical domain
+  if (shouldUseCanonical(userEmail)) {
+    return callback(null, { useCanonicalDomain: true });
+  }
+  
+  // Do not specify domain in custom header, delegate to Tenant Default Domain
+  return callback(null, {});
 }
