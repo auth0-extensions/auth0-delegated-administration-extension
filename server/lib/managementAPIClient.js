@@ -24,7 +24,6 @@ const getClientOptions = (req, customHeaders) => {
 
     // It's important to use getClient for the management API token to be cached.
     // If we instantiate the client directly, a client credentials exchange will be performed on every request.
-    // console.warn("getClientOptions", options)
     return options;
 }
 
