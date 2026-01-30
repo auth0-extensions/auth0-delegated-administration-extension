@@ -13,6 +13,7 @@ import { requestUserBlocks, removeUserBlocks } from '../lib/userBlocks';
 import getApiToken from '../lib/getApiToken';
 import getConnectionIdByName from '../lib/getConnectionIdByName';
 import getConnection from '../lib/getConnection';
+import { getCustomDomainHeaders, executeWithCustomDomain } from '../lib/customDomain';
 
 const isValidField = (type, onlyTheseFields, field) =>
   ((onlyTheseFields && _.includes(onlyTheseFields, field.property)) || (!onlyTheseFields && field[type] !== false));
@@ -187,16 +188,22 @@ export default (storage, scriptManager) => {
         delete createContext.payload.repeatPassword;
 
         return scriptManager.execute('create', createContext)
-          .then((payload) => {
+          .then(async (payload) => {
             // need to preserve the original behavior for null create scripts
             payload = payload || createContext.defaultPayload;
             if (!payload.email || payload.email.length === 0) {
               throw new ValidationError('The email address is required.');
             }
 
-            return payload;
+            // Execute create operation with custom domain support
+            await executeWithCustomDomain(
+              req,
+              scriptManager,
+              'create',
+              payload,
+              (client, data) => client.users.create(data)
+            );
           })
-          .then(payload => req.auth0.users.create(payload))
           .then(() => res.status(201).send())
           .catch(next);
       });
@@ -350,7 +357,7 @@ export default (storage, scriptManager) => {
   });
 
   /*
-   * Deleta a user.
+   * Delete a user.
    */
   api.delete('/:id', verifyUserAccess('delete:user', scriptManager), (req, res, next) => {
     if (req.user.sub === req.params.id) {
@@ -383,7 +390,7 @@ export default (storage, scriptManager) => {
           ), 'property');
         return executeWriteHook(req, scriptManager, settings.userFields, allowedFields);
       })
-      .then(payload => req.auth0.users.update({ id: req.params.id }, payload))
+      .then((payload) => req.auth0.users.update({ id: req.params.id }, payload))
       .then(() => res.status(204).send())
       .catch(next);
   });
@@ -392,25 +399,35 @@ export default (storage, scriptManager) => {
    * Trigger a password reset for the user.
    */
   api.post('/:id/password-reset', verifyUserAccess('reset:password', scriptManager), async (req, res, next) => {
-    const client = new auth0.AuthenticationClient({
-      domain: config('AUTH0_DOMAIN'),
-      clientId: config('AUTH0_CLIENT_ID')
-    });
+      const user = req.targetUser;
+      const connectionName = req.body.connection;
 
-    const user = req.targetUser;
-    const connectionName = req.body.connection;
+      // Execute custom domain hook to get headers but not create an auth0 management client
+      const customHeaders = await getCustomDomainHeaders(
+        req,
+        scriptManager,
+        'password-reset',
+        { user_id: req.params.id, connection: connectionName }
+      );
 
-    // Resolve the correct identifier value to use for password reset.
-    const identifierValue = await resolveUserIdentifier(req.auth0, user, connectionName);
+      // Determine which domain to use
+      const domain = customHeaders['auth0-custom-domain'] || config('AUTH0_DOMAIN');
 
-    const data = {
-      // Note, 'email' property can be used for any user identifier value (email, username, phone).
-      email: identifierValue,
-      connection: connectionName,
-      client_id: req.body.clientId
-    };
+      const client = new auth0.AuthenticationClient({
+        domain,
+        clientId: config('AUTH0_CLIENT_ID')
+      });
 
-    return client.requestChangePasswordEmail(data)
+      const identifierValue = await resolveUserIdentifier(req.auth0, user, connectionName);
+
+      const data = {
+        // Note, 'email' property can be used for any user identifier value (email, username, phone).
+        email: identifierValue,
+        connection: connectionName,
+        client_id: req.body.clientId
+      };
+
+      return client.requestChangePasswordEmail(data)
       .then(() => res.sendStatus(204))
       .catch((err) => {
         next(err)
@@ -624,14 +641,23 @@ export default (storage, scriptManager) => {
   /*
    * Send verification email to the user.
    */
-  api.post('/:id/send-verification-email', verifyUserAccess('send:verification-email', scriptManager), (req, res, next) => {
-    const data = {
-      user_id: req.params.id
-    };
+  api.post('/:id/send-verification-email', verifyUserAccess('send:verification-email', scriptManager), async (req, res, next) => {
+    try {
+      const data = { user_id: req.params.id };
+      
+      // Execute verification email operation with custom domain support
+      await executeWithCustomDomain(
+        req,
+        scriptManager,
+        'verify-email',
+        data,
+        (client, payload) => client.jobs.verifyEmail(payload)
+      );
 
-    req.auth0.jobs.verifyEmail(data)
-      .then(() => res.status(204).send())
-      .catch(next);
+      res.status(204).send();
+    } catch (error) {
+      next(error);
+    }
   });
 
   return api;

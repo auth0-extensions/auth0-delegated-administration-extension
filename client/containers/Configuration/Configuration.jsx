@@ -67,6 +67,7 @@ export default connectContainer(class extends Component {
     this.props.fetchScript('create');
     this.props.fetchScript('memberships');
     this.props.fetchScript('settings');
+    this.props.fetchScript('customDomain');
   };
 
   saveScript = (name) => () => {
@@ -186,6 +187,24 @@ export default connectContainer(class extends Component {
                   <div className="save-config">
                     <button onClick={this.saveScript('settings')} className="btn btn-success">
                       Save Settings Query
+                    </button>
+                  </div>
+                </LoadingPanel>
+              </Tab>
+              <Tab eventKey={6} title={code.customDomain && code.customDomain.length ? <span>Custom Domain Hook</span> : <i>Custom Domain Hook</i>}>
+                <LoadingPanel show={scripts.customDomain && scripts.customDomain.loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
+                  <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, scripts.customDomain && scripts.customDomain.error)} />
+                  <p>
+                    The <strong>Custom Domain Selection hook</strong> allows you to specify which Auth0 custom domain 
+                    should be used for user-facing operations like password resets and email verifications.
+                  </p>
+                  <Editor
+                    value={code.customDomain || ''}
+                    onChange={this.onEditorChanged('customDomain')}
+                  />
+                  <div className="save-config">
+                    <button onClick={this.saveScript('customDomain')} className="btn btn-success">
+                      Save Custom Domain Hook
                     </button>
                   </div>
                 </LoadingPanel>

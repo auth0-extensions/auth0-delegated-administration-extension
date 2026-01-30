@@ -6,6 +6,7 @@ import tools from 'auth0-extension-tools';
 
 import {requireScope} from '../lib/middlewares';
 import config from '../lib/config';
+import{ getClientOptions}  from '../lib/managementApiClient'
 
 import ScriptManager from '../lib/scriptmanager';
 import getScopes from '../lib/getScopes';
@@ -22,25 +23,11 @@ export default (storage) => {
   const scriptManager = new ScriptManager(storage);
   const managementApiClient = async function (req, res, next) {
     try {
-      const handlerOptions = {
-        domain: config("AUTH0_DOMAIN"),
-        clientId: config("AUTH0_CLIENT_ID"),
-        clientSecret: config("AUTH0_CLIENT_SECRET"),
-      };
-
-      const isAdministrator =
-        req.user && req.user.access_token && req.user.access_token.length;
-      const options = !isAdministrator
-        ? handlerOptions
-        : {
-          domain: handlerOptions.domain,
-          accessToken: req.user.access_token,
-          headers: handlerOptions.headers,
-        };
-
+    
+      
       // It's important to use getClient for the management API token to be cached.
       // If we instantiate the client directly, a client credentials exchange will be performed on every request.
-      req.auth0 = await tools.managementApi.getClient(options);
+      req.auth0 = await tools.managementApi.getClient(getClientOptions(req));
 
       next();
       return null;
