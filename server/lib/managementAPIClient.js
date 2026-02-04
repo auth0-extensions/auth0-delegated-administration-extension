@@ -6,18 +6,18 @@ const getClientOptions = (req, customHeaders) => {
             clientId: config("AUTH0_CLIENT_ID"),
             clientSecret: config("AUTH0_CLIENT_SECRET"),
     };
-    
+
     const isAdministrator =
         req.user && req.user.access_token && req.user.access_token.length;
 
-    
+
     const options = !isAdministrator
     ? handlerOptions
     : {
         domain: handlerOptions.domain,
         accessToken: req.user.access_token,
         };
-    
+
     if (customHeaders) {
         options.headers = customHeaders;
     }
@@ -27,6 +27,6 @@ const getClientOptions = (req, customHeaders) => {
     return options;
 }
 
-module.exports = {
+export {
     getClientOptions
 };
