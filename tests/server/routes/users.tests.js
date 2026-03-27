@@ -320,7 +320,7 @@ describe('#users router', () => {
   describe('#Get One', () => {
     it('should return user`s record', (done) => {
       nock(domain)
-        .get('/api/v2/users/1/enrollments')
+        .get('/api/v2/users/1/authentication-methods')
         .reply(200, []);
       nock(domain)
         .get(/user-blocks\/1/)
@@ -341,7 +341,7 @@ describe('#users router', () => {
 
     it('should return user`s record 2', (done) => {
       nock(domain)
-        .get('/api/v2/users/2/enrollments')
+        .get('/api/v2/users/2/authentication-methods')
         .reply(200, []);
       nock(domain)
         .get(/user-blocks\/2/)
@@ -362,7 +362,7 @@ describe('#users router', () => {
 
     it('should return user`s record 3', (done) => {
       nock(domain)
-        .get('/api/v2/users/3/enrollments')
+        .get('/api/v2/users/3/authentication-methods')
         .reply(200, []);
 
       nock(domain)
@@ -410,8 +410,8 @@ describe('#users router', () => {
         .reply(200, { blocked_for: [ ] });
 
       nock(domain)
-        .get('/api/v2/users/3/enrollments')
-        .reply(200, [ { id: 'pid01' } ]);
+        .get('/api/v2/users/3/authentication-methods')
+        .reply(200, [ { id: 'pid01', type: 'guardian' } ]);
 
       request(app)
         .get('/users/3')
@@ -668,24 +668,24 @@ describe('#users router', () => {
   });
 
   describe('#Remove MFA', () => {
-    it('should remove duo MFA', (done) => {
+    it('should remove all MFA via authentication-methods', (done) => {
+      nock(domain)
+        .delete('/api/v2/users/1/authentication-methods')
+        .reply(204);
+
       request(app)
-        .delete('/users/1/multifactor/duo')
+        .delete('/users/1/multifactor/guardian')
         .expect(204)
         .end(err => done(err));
     });
 
-    it('should remove guardian MFA', (done) => {
+    it('should remove MFA regardless of provider param', (done) => {
       nock(domain)
-        .get('/api/v2/users/1/enrollments')
-        .reply(200, [ { id: 'pid01' } ]);
-
-      nock(domain)
-        .delete('/api/v2/guardian/enrollments/pid01')
-        .reply(200);
+        .delete('/api/v2/users/1/authentication-methods')
+        .reply(204);
 
       request(app)
-        .delete('/users/1/multifactor/provider')
+        .delete('/users/1/multifactor/duo')
         .expect(204)
         .end(err => done(err));
     });
@@ -958,14 +958,10 @@ describe('#users router', () => {
     });
   });
 
-  describe('#Remove Multifactor guardian', () => {
-    it('delete guardian', (done) => {
+  describe('#Remove Multifactor via authentication-methods', () => {
+    it('delete all authentication methods', (done) => {
       nock(domain)
-        .get(/1\/enrollments/)
-        .reply(200, [{ id: 1 }]);
-
-      nock(domain)
-        .delete(/enrollments\/1/)
+        .delete('/api/v2/users/1/authentication-methods')
         .reply(204);
 
       request(app)
@@ -977,13 +973,13 @@ describe('#users router', () => {
         });
     });
 
-    it('delete guardian attempt when enrollment already gone', (done) => {
+    it('delete authentication methods with any provider param', (done) => {
       nock(domain)
-        .get(/2\/enrollments/)
-        .reply(200, []);
+        .delete('/api/v2/users/2/authentication-methods')
+        .reply(204);
 
       request(app)
-        .del('/users/2/multifactor/guardian')
+        .del('/users/2/multifactor/any')
         .expect(204)
         .end((err) => {
           if (err) return done(err);
@@ -991,10 +987,10 @@ describe('#users router', () => {
         });
     });
 
-    it('bad request on guardian delete', (done) => {
+    it('should handle error from authentication-methods delete', (done) => {
       nock(domain)
-        .get(/3\/enrollments/)
-        .reply(200, [{ id: 1 }]);
+        .delete('/api/v2/users/3/authentication-methods')
+        .reply(404);
 
       request(app)
         .del('/users/3/multifactor/guardian')
@@ -1005,24 +1001,10 @@ describe('#users router', () => {
         });
     });
 
-    it('bad request on guardian get', (done) => {
+    it('should handle missing api token gracefully', (done) => {
       request(app)
         .del('/users/1/multifactor/guardian')
         .expect(404)
-        .end((err) => {
-          if (err) return done(err);
-          done();
-        });
-    });
-
-    it('should do nothing if there are no enrollments to remove', (done) => {
-      nock(domain)
-        .get('/api/v2/users/1/enrollments')
-        .reply(200);
-
-      request(app)
-        .del('/users/1/multifactor/badProvider')
-        .expect(204)
         .end((err) => {
           if (err) return done(err);
           done();
@@ -1998,6 +1980,10 @@ describe('#users router', () => {
 
       // DELETE /:id/multifactor/:provider - remove MFA
       it('should NOT invoke customDomain hook for remove MFA', (done) => {
+        nock(domain)
+          .delete('/api/v2/users/1/authentication-methods')
+          .reply(204);
+
         request(app)
           .delete('/users/1/multifactor/duo')
           .expect(204)
