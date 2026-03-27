@@ -1,6 +1,6 @@
 import { ValidationError } from 'auth0-extension-tools';
 import tools from 'auth0-extension-tools';
-import{ getClientOptions}  from '../lib/managementApiClient'
+import { getClientOptions } from '../lib/managementAPIClient'
 
 import config from './config';
 import logger from './logger';
