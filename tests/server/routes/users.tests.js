@@ -668,31 +668,34 @@ describe('#users router', () => {
   });
 
   describe('#Remove MFA', () => {
-    it('should remove all MFA via authentication-methods', (done) => {
+    it('should bulk-remove all MFA when provider is "all"', (done) => {
       nock(domain)
         .delete('/api/v2/users/1/authentication-methods')
         .reply(204);
 
       request(app)
-        .delete('/users/1/multifactor/guardian')
+        .delete('/users/1/multifactor/all')
         .expect(204)
         .end(err => done(err));
     });
 
-    it('should remove MFA regardless of provider param', (done) => {
+    it('should remove only matching methods when a specific provider is given', (done) => {
       nock(domain)
-        .delete('/api/v2/users/1/authentication-methods')
+        .get('/api/v2/users/1/authentication-methods')
+        .reply(200, [{ id: 'meth1', type: 'email' }, { id: 'meth2', type: 'phone' }]);
+      nock(domain)
+        .delete('/api/v2/users/1/authentication-methods/meth1')
         .reply(204);
 
       request(app)
-        .delete('/users/1/multifactor/duo')
+        .delete('/users/1/multifactor/email')
         .expect(204)
         .end(err => done(err));
     });
 
     it('should return "access denied" error', (done) => {
       request(app)
-        .delete('/users/5/multifactor/duo')
+        .delete('/users/5/multifactor/all')
         .expect(400)
         .end((err) => {
           if (err) return done(err);
@@ -959,13 +962,13 @@ describe('#users router', () => {
   });
 
   describe('#Remove Multifactor via authentication-methods', () => {
-    it('delete all authentication methods', (done) => {
+    it('bulk-deletes all authentication methods when provider is "all"', (done) => {
       nock(domain)
         .delete('/api/v2/users/1/authentication-methods')
         .reply(204);
 
       request(app)
-        .del('/users/1/multifactor/guardian')
+        .del('/users/1/multifactor/all')
         .expect(204)
         .end((err) => {
           if (err) return done(err);
@@ -973,13 +976,16 @@ describe('#users router', () => {
         });
     });
 
-    it('delete authentication methods with any provider param', (done) => {
+    it('removes only methods of the specified type for a specific provider', (done) => {
       nock(domain)
-        .delete('/api/v2/users/2/authentication-methods')
+        .get('/api/v2/users/2/authentication-methods')
+        .reply(200, [{ id: 'meth1', type: 'phone' }, { id: 'meth2', type: 'email' }]);
+      nock(domain)
+        .delete('/api/v2/users/2/authentication-methods/meth1')
         .reply(204);
 
       request(app)
-        .del('/users/2/multifactor/any')
+        .del('/users/2/multifactor/phone')
         .expect(204)
         .end((err) => {
           if (err) return done(err);
@@ -987,13 +993,37 @@ describe('#users router', () => {
         });
     });
 
-    it('should handle error from authentication-methods delete', (done) => {
+    it('removes multiple methods of the same type for a specific provider', (done) => {
+      nock(domain)
+        .get('/api/v2/users/1/authentication-methods')
+        .reply(200, [
+          { id: 'meth1', type: 'email' },
+          { id: 'meth2', type: 'email' },
+          { id: 'meth3', type: 'phone' }
+        ]);
+      nock(domain)
+        .delete('/api/v2/users/1/authentication-methods/meth1')
+        .reply(204);
+      nock(domain)
+        .delete('/api/v2/users/1/authentication-methods/meth2')
+        .reply(204);
+
+      request(app)
+        .del('/users/1/multifactor/email')
+        .expect(204)
+        .end((err) => {
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should handle error from bulk authentication-methods delete', (done) => {
       nock(domain)
         .delete('/api/v2/users/3/authentication-methods')
         .reply(404);
 
       request(app)
-        .del('/users/3/multifactor/guardian')
+        .del('/users/3/multifactor/all')
         .expect(404)
         .end((err) => {
           if (err) return done(err);
@@ -1001,10 +1031,17 @@ describe('#users router', () => {
         });
     });
 
-    it('should handle missing api token gracefully', (done) => {
+    it('should handle error from individual authentication-method delete', (done) => {
+      nock(domain)
+        .get('/api/v2/users/1/authentication-methods')
+        .reply(200, [{ id: 'meth1', type: 'email' }]);
+      nock(domain)
+        .delete('/api/v2/users/1/authentication-methods/meth1')
+        .reply(500);
+
       request(app)
-        .del('/users/1/multifactor/guardian')
-        .expect(404)
+        .del('/users/1/multifactor/email')
+        .expect(500)
         .end((err) => {
           if (err) return done(err);
           done();
@@ -1985,7 +2022,7 @@ describe('#users router', () => {
           .reply(204);
 
         request(app)
-          .delete('/users/1/multifactor/duo')
+          .delete('/users/1/multifactor/all')
           .expect(204)
           .end((err) => {
             if (err) return done(err);

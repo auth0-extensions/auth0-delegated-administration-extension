@@ -79,11 +79,13 @@ upload_assets() {
         exit 1
     fi
 
-    upload_to_s3 "$asset_local_path" "$asset_s3_path" "max-age=86400" "$web_path"
+    upload_to_s3 "$asset_local_path" "$asset_s3_path" "$ASSETS_CACHE_CONTROL" "$web_path"
   done
 }
 
 MODE="$1" # "dev" or "prod"
+
+ASSETS_CACHE_CONTROL=$([ "$MODE" == "dev" ] && echo "max-age=60" || echo "max-age=86400")
 
 CURRENT_VERSION=$(node tools/get_version.js)
 MAJOR_MINOR_VERSION=$(echo "$CURRENT_VERSION" | cut -d '.' -f 1,2)

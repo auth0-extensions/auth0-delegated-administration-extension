@@ -63,6 +63,15 @@ export default connectContainer(class extends Component {
     const filteredFields = _.filter(fields,
       field => _.includes(allowedFields, field.property));
 
+    const mfaField = filteredFields.find(f => f.property === 'multifactor');
+    const debugInfo = JSON.stringify({
+      multifactor: user && user.multifactor,
+      isArray: Array.isArray(user && user.multifactor),
+      providersLength: providers && providers.length,
+      providersSize: providers && providers.size,
+      mfaOptions: mfaField && mfaField.edit && mfaField.edit.options
+    });
+
     const UserFieldsFormInstance = UserFieldsForm('remove-mfa', this.onSubmit.bind(this));
 
     const initialValues = mapValues(user, allowedFields, filteredFields, 'edit', languageDictionary);

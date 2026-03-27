@@ -8,7 +8,7 @@ import { ArgumentError, ValidationError, UnauthorizedError } from 'auth0-extensi
 import config from '../lib/config';
 import logger from '../lib/logger';
 import { verifyUserAccess } from '../lib/middlewares';
-import { removeAllAuthenticationMethods, requestAuthenticationMethods } from '../lib/removeGuardian';
+import { removeAllAuthenticationMethods, removeAuthenticationMethodsByType, requestAuthenticationMethods } from '../lib/removeGuardian';
 import { requestUserBlocks, removeUserBlocks } from '../lib/userBlocks';
 import getApiToken from '../lib/getApiToken';
 import getConnectionIdByName from '../lib/getConnectionIdByName';
@@ -598,9 +598,12 @@ export default (storage, scriptManager) => {
    */
   api.delete('/:id/multifactor/:provider', verifyUserAccess('remove:multifactor-provider', scriptManager), (req, res, next) => {
     const userId = req.params.id;
+    const provider = req.params.provider;
 
     getApiToken(req)
-      .then(accessToken => removeAllAuthenticationMethods(accessToken, userId))
+      .then(accessToken => provider === 'all'
+        ? removeAllAuthenticationMethods(accessToken, userId)
+        : removeAuthenticationMethodsByType(accessToken, userId, provider))
       .then(() => res.sendStatus(204))
       .catch(next);
   });
