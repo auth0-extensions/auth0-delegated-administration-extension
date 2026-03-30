@@ -191,6 +191,8 @@ export default connectContainer(class extends Component {
                   </div>
                 </LoadingPanel>
               </Tab>
+              {/* The custom domain hook tab is hidden until feature is ready for release */}
+              {/* 
               <Tab eventKey={6} title={code.customDomain && code.customDomain.length ? <span>Custom Domain Hook</span> : <i>Custom Domain Hook</i>}>
                 <LoadingPanel show={scripts.customDomain && scripts.customDomain.loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
                   <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, scripts.customDomain && scripts.customDomain.error)} />
@@ -209,6 +211,7 @@ export default connectContainer(class extends Component {
                   </div>
                 </LoadingPanel>
               </Tab>
+              */}
             </Tabs>
           </div>
         </div>

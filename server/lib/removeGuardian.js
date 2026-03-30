@@ -14,6 +14,14 @@ export const requestAuthenticationMethods = (token, userId) =>
       .set('Content-Type', 'application/json')
       .end((err, res) => {
         if (err) {
+          logger.info(
+            `[requestAuthenticationMethods] error response ` +
+              JSON.stringify({
+                status: err.status,
+                message: err.message,
+                response: res && res.body,
+              }),
+          );
           return reject(err);
         }
         const methods = (res && res.body) ? res.body : [];
