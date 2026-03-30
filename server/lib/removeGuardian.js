@@ -31,6 +31,14 @@ export const removeAllAuthenticationMethods = (token, userId) =>
       .set('Content-Type', 'application/json')
       .end((err, res) => {
         if (err) {
+          logger.info(
+            "[removeAllAuthenticationMethods] error response " +
+              JSON.stringify({
+                status: err.status,
+                message: err.message,
+                response: res && res.body,
+              }),
+          );
           return reject(err);
         }
         return resolve();
@@ -47,6 +55,14 @@ const removeAuthenticationMethodById = (token, userId, methodId) =>
       .set('Content-Type', 'application/json')
       .end((err, res) => {
         if (err) {
+          logger.info(
+            "[removeAuthenticationMethodById] error response " +
+              JSON.stringify({
+                status: err.status,
+                message: err.message,
+                response: res && res.body,
+              }),
+          );
           return reject(err);
         }
         return resolve();
