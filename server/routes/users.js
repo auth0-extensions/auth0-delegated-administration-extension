@@ -339,13 +339,9 @@ export default (storage, scriptManager) => {
           .then((accessToken) => {
             return requestAuthenticationMethods(accessToken, req.params.id)
               .then((methods) => {
-                const hasAuthMethods = Array.isArray(methods) && methods.length > 0;
-                if (hasAuthMethods) {
-                  const providers = [...new Set(methods.map(m => m.type).filter(Boolean))];
-                  data.user.multifactor = providers.length > 0 ? providers : ['guardian'];
-                } else {
-                  data.user.multifactor = null;
-                }
+                data.user.multifactor = Array.isArray(methods) && methods.length > 0
+                  ? [...new Set(methods.map(m => m.type).filter(Boolean))]
+                  : null;
 
                 return res.json(data);
               });

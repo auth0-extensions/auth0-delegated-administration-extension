@@ -425,6 +425,44 @@ describe('#users router', () => {
           done();
         });
     });
+
+    it('should return the exact type from authentication-methods for non-guardian factors', (done) => {
+      nock(domain)
+        .get(/user-blocks\/3/)
+        .reply(200, { blocked_for: [ ] });
+
+      nock(domain)
+        .get('/api/v2/users/3/authentication-methods')
+        .reply(200, [ { id: 'meth01', type: 'totp' } ]);
+
+      request(app)
+        .get('/users/3')
+        .expect(200)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.body.user.multifactor).to.deep.equal([ 'totp' ]);
+          done();
+        });
+    });
+
+    it('should not fall back to guardian when authentication-methods returns entries without a type', (done) => {
+      nock(domain)
+        .get(/user-blocks\/3/)
+        .reply(200, { blocked_for: [ ] });
+
+      nock(domain)
+        .get('/api/v2/users/3/authentication-methods')
+        .reply(200, [ { id: 'pid01' } ]);
+
+      request(app)
+        .get('/users/3')
+        .expect(200)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.body.user.multifactor).to.not.include('guardian');
+          done();
+        });
+    });
   });
 
   describe('#Create', () => {
