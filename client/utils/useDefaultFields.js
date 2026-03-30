@@ -89,8 +89,9 @@ export const useMfaField = (isEditField, fields, providers, onProviderChange) =>
   const type = isEditField ? 'edit' : 'create';
 
   const providerList = providers && providers.toJS ? providers.toJS() : (providers || []);
+  const hasPasskey = providerList.includes('passkey');
   const options = providerList.map(prov => ({ value: prov, label: prov }));
-  if (providerList.length > 1) {
+  if (providerList.length > 1 && !hasPasskey) {
     options.push({ value: 'all', label: 'all' });
   }
 

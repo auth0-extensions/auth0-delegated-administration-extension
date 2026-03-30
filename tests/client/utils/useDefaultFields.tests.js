@@ -611,6 +611,24 @@ describe('Client-Utils-useDefaultFields', () => {
       ]);
     });
 
+    it("does not include all option when passkey is present among many providers", () => {
+      const fields = [];
+      useDefaultFields.useMfaField(true, fields, ["email", "passkey", "phone"]);
+      const options = fields[0].edit.options;
+      expect(options).to.deep.equal([
+        { value: "email", label: "email" },
+        { value: "passkey", label: "passkey" },
+        { value: "phone", label: "phone" },
+      ]);
+    });
+
+    it("does not include all option when passkey is the only provider", () => {
+      const fields = [];
+      useDefaultFields.useMfaField(true, fields, ["passkey"]);
+      const options = fields[0].edit.options;
+      expect(options).to.deep.equal([{ value: "passkey", label: "passkey" }]);
+    });
+
     it('overwrites options on a pre-existing multifactor field from settings', () => {
       const fields = [{
         property: 'multifactor',
