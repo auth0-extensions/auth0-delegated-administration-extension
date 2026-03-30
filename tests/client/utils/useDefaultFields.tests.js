@@ -555,25 +555,25 @@ describe('Client-Utils-useDefaultFields', () => {
   });
 
   describe('#useMfaField', () => {
-    it('does not include ALL option when there is only one provider', () => {
+    it('does not include all option when there is only one provider', () => {
       const fields = [];
       useDefaultFields.useMfaField(true, fields, ['email']);
       const options = fields[0].edit.options;
       expect(options).to.deep.equal([{ value: 'email', label: 'email' }]);
     });
 
-    it('includes ALL option when there are multiple providers', () => {
+    it('includes all option when there are multiple providers', () => {
       const fields = [];
       useDefaultFields.useMfaField(true, fields, ['email', 'phone']);
       const options = fields[0].edit.options;
       expect(options).to.deep.equal([
         { value: 'email', label: 'email' },
         { value: 'phone', label: 'phone' },
-        { value: 'all', label: 'ALL' }
+        { value: 'all', label: 'all' }
       ]);
     });
 
-    it('does not include ALL option when providers list is empty', () => {
+    it('does not include all option when providers list is empty', () => {
       const fields = [];
       useDefaultFields.useMfaField(true, fields, []);
       const options = fields[0].edit.options;
@@ -595,11 +595,11 @@ describe('Client-Utils-useDefaultFields', () => {
       expect(options).to.deep.equal([
         { value: 'email', label: 'email' },
         { value: 'phone', label: 'phone' },
-        { value: 'all', label: 'ALL' }
+        { value: 'all', label: 'all' }
       ]);
     });
 
-    it('includes ALL option when providers is an Immutable.List with multiple items', () => {
+    it('includes all option when providers is an Immutable.List with multiple items', () => {
       const { fromJS } = require('immutable');
       const fields = [];
       useDefaultFields.useMfaField(true, fields, fromJS(['email', 'phone']));
@@ -607,7 +607,7 @@ describe('Client-Utils-useDefaultFields', () => {
       expect(options).to.deep.equal([
         { value: 'email', label: 'email' },
         { value: 'phone', label: 'phone' },
-        { value: 'all', label: 'ALL' }
+        { value: 'all', label: 'all' }
       ]);
     });
 
@@ -626,7 +626,7 @@ describe('Client-Utils-useDefaultFields', () => {
       expect(options).to.deep.equal([
         { value: 'email', label: 'email' },
         { value: 'phone', label: 'phone' },
-        { value: 'all', label: 'ALL' }
+        { value: 'all', label: 'all' }
       ]);
     });
   });

@@ -91,7 +91,7 @@ export const useMfaField = (isEditField, fields, providers, onProviderChange) =>
   const providerList = providers && providers.toJS ? providers.toJS() : (providers || []);
   const options = providerList.map(prov => ({ value: prov, label: prov }));
   if (providerList.length > 1) {
-    options.push({ value: 'all', label: 'All' });
+    options.push({ value: 'all', label: 'all' });
   }
 
   const defaults = {
