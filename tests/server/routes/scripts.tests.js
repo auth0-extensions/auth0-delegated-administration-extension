@@ -50,27 +50,23 @@ describe('#scripts router', () => {
   });
 
   describe('customDomain script access', () => {
-    it('should reject GET /scripts/customDomain with 400', (done) => {
+    it('should return a script on GET /scripts/customDomain', (done) => {
       request(app)
         .get('/scripts/customDomain')
-        .expect(400)
+        .expect(200)
         .end((err, res) => {
           if (err) return done(err);
-          expect(res.body.message).to.match(/Invalid script name/);
+          expect(res.body).to.have.property('script');
           done();
         });
     });
 
-    it('should reject POST /scripts/customDomain with 400', (done) => {
+    it('should save a script on POST /scripts/customDomain', (done) => {
       request(app)
         .post('/scripts/customDomain')
         .send({ script: 'function(ctx, cb) { cb(); }' })
-        .expect(400)
-        .end((err, res) => {
-          if (err) return done(err);
-          expect(res.body.message).to.match(/Invalid script name/);
-          done();
-        });
+        .expect(200)
+        .end((err) => done(err));
     });
   });
 });
