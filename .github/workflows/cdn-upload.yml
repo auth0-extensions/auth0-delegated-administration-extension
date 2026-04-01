@@ -43,5 +43,5 @@ jobs:
           role-session-name: github-action-delegated-admin-deployer
           aws-region: us-west-1
 
-      - name: Upload to CND
+      - name: Upload to CDN
         run: tools/cdn.sh ${{ inputs.target }}

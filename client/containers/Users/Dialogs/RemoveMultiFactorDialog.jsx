@@ -57,6 +57,8 @@ export default connectContainer(class extends Component {
 
     const fields = _.cloneDeep(userFields) || [];
     const providers = user && user.multifactor ? user.multifactor : [];
+    const hasPasskey = providers.includes('passkey');
+    const nonPasskeyProviders = providers.filter(p => p !== 'passkey');
     useMfaField(true, fields, providers);
 
     const allowedFields = [ 'user_id', 'multifactor' ];
@@ -84,6 +86,11 @@ export default connectContainer(class extends Component {
         <p>
           {message}
         </p>
+        {hasPasskey && nonPasskeyProviders.length > 0 && (
+          <p>
+            <b>Note:</b> Removing all authentication factors at once is not supported when the user has at least one passkey registered. Remove any passkeys first, and then if multiple types of factors remain, an option to remove all of the remaining types will be added below.
+          </p>
+        )}
         <UserFieldsFormInstance
           initialValues={initialValues}
           isEditForm={true}

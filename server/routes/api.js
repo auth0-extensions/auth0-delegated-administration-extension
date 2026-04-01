@@ -6,7 +6,7 @@ import tools from 'auth0-extension-tools';
 
 import {requireScope} from '../lib/middlewares';
 import config from '../lib/config';
-import{ getClientOptions}  from '../lib/managementApiClient'
+import { getClientOptions } from '../lib/managementAPIClient'
 
 import ScriptManager from '../lib/scriptmanager';
 import getScopes from '../lib/getScopes';

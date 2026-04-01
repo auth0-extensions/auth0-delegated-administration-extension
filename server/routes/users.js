@@ -8,7 +8,7 @@ import { ArgumentError, ValidationError, UnauthorizedError } from 'auth0-extensi
 import config from '../lib/config';
 import logger from '../lib/logger';
 import { verifyUserAccess } from '../lib/middlewares';
-import { removeGuardian, requestGuardianEnrollments } from '../lib/removeGuardian';
+import { removeAllAuthenticationMethods, removeAuthenticationMethodsByType, requestAuthenticationMethods } from '../lib/removeGuardian';
 import { requestUserBlocks, removeUserBlocks } from '../lib/userBlocks';
 import getApiToken from '../lib/getApiToken';
 import getConnectionIdByName from '../lib/getConnectionIdByName';
@@ -337,14 +337,11 @@ export default (storage, scriptManager) => {
                 return accessToken;
               }))
           .then((accessToken) => {
-            return requestGuardianEnrollments(accessToken, req.params.id)
-              .then((enrollments) => {
-                if (data.user.multifactor && (!enrollments || !enrollments.length)) {
-                  data.user.multifactor = data.user.multifactor.filter(item => item !== 'guardian');
-                  data.user.multifactor = data.user.multifactor.length ? data.user.multifactor : null;
-                } else if (!data.user.multifactor && enrollments) {
-                  data.user.multifactor = [ 'guardian' ];
-                }
+            return requestAuthenticationMethods(accessToken, req.params.id)
+              .then((methods) => {
+                data.user.multifactor = Array.isArray(methods) && methods.length > 0
+                  ? [...new Set(methods.map(m => m.type).filter(Boolean))]
+                  : null;
 
                 return res.json(data);
               });
@@ -596,18 +593,15 @@ export default (storage, scriptManager) => {
    * Remove MFA for the user.
    */
   api.delete('/:id/multifactor/:provider', verifyUserAccess('remove:multifactor-provider', scriptManager), (req, res, next) => {
-    const provider = req.params.provider;
     const userId = req.params.id;
+    const provider = req.params.provider;
 
-    if (provider === 'duo' || provider === 'google-authenticator') {
-      req.auth0.users.deleteMultifactorProvider({ id: userId, provider })
-        .then(() => res.sendStatus(204))
-        .catch(next);
-    } else {
-      getApiToken(req).then(accessToken => removeGuardian(accessToken, userId))
-        .then(() => res.sendStatus(204))
-        .catch(next);
-    }
+    getApiToken(req)
+      .then(accessToken => provider === 'all'
+        ? removeAllAuthenticationMethods(accessToken, userId)
+        : removeAuthenticationMethodsByType(accessToken, userId, provider))
+      .then(() => res.sendStatus(204))
+      .catch(next);
   });
 
   /*

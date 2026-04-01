@@ -88,6 +88,13 @@ export const useConnectionsField = (isEditField, fields, connections, onConnecti
 export const useMfaField = (isEditField, fields, providers, onProviderChange) => {
   const type = isEditField ? 'edit' : 'create';
 
+  const providerList = providers && providers.toJS ? providers.toJS() : (providers || []);
+  const hasPasskey = providerList.includes('passkey');
+  const options = providerList.map(prov => ({ value: prov, label: prov }));
+  if (providerList.length > 1 && !hasPasskey) {
+    options.push({ value: 'all', label: 'all' });
+  }
+
   const defaults = {
     property: 'multifactor',
     label: 'MFA Provider',
@@ -95,12 +102,17 @@ export const useMfaField = (isEditField, fields, providers, onProviderChange) =>
       required: true,
       type: 'select',
       component: 'InputCombo',
-      options: providers.map(prov => ({ value: prov, label: prov })),
+      options,
       onChange: onProviderChange
     }
   };
 
-  return applyDefaults(type, fields, 'multifactor', defaults);
+  applyDefaults(type, fields, 'multifactor', defaults);
+
+  const field = _.find(fields, { property: 'multifactor' });
+  if (field && field[type]) {
+    field[type].options = options;
+  }
 };
 
 export const useDisabledConnectionField = (isEditField, fields, connection, connections) => {

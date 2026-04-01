@@ -2,41 +2,84 @@ import Promise from 'bluebird';
 import request from 'superagent';
 
 import config from './config';
+import logger from './logger';
 
-const requestClearGuardian = (token, enrollmentId) =>
+export const requestAuthenticationMethods = (token, userId) =>
   new Promise((resolve, reject) => {
-    if (!enrollmentId) {
-      return resolve(null);
-    }
-
-    return request
-      .del(`https://${config('AUTH0_DOMAIN')}/api/v2/guardian/enrollments/${enrollmentId}`)
-      .set('Authorization', `Bearer ${token}`)
-      .set('Content-Type', 'application/json')
-      .end((err) => {
-        if (err) {
-          return reject(err);
-        }
-
-        return resolve();
-      });
-  });
-
-export const requestGuardianEnrollments = (token, userId) =>
-  new Promise((resolve, reject) => {
+    const path = `/api/v2/users/${userId}/authentication-methods`;
+    const url = `https://${config('AUTH0_DOMAIN')}${path}`;
     request
-      .get(`https://${config('AUTH0_DOMAIN')}/api/v2/users/${userId}/enrollments`)
+      .get(url)
       .set('Authorization', `Bearer ${token}`)
       .set('Content-Type', 'application/json')
       .end((err, res) => {
         if (err) {
+          logger.info(
+            `[requestAuthenticationMethods] error response ` +
+              JSON.stringify({
+                status: err.status,
+                message: err.message,
+                response: res && res.body,
+              }),
+          );
           return reject(err);
         }
-
-        const result = (res && res.body && res.body[0]) ? res.body[0].id : null;
-        return resolve(result);
+        const methods = (res && res.body) ? res.body : [];
+        return resolve(methods);
       });
   });
 
-export const removeGuardian = (accessToken, userId) => requestGuardianEnrollments(accessToken, userId)
-      .then(enrollmentId => requestClearGuardian(accessToken, enrollmentId));
+export const removeAllAuthenticationMethods = (token, userId) =>
+  new Promise((resolve, reject) => {
+    const path = `/api/v2/users/${userId}/authentication-methods`;
+    const url = `https://${config('AUTH0_DOMAIN')}${path}`;
+    request
+      .del(url)
+      .set('Authorization', `Bearer ${token}`)
+      .set('Content-Type', 'application/json')
+      .end((err, res) => {
+        if (err) {
+          logger.info(
+            "[removeAllAuthenticationMethods] error response " +
+              JSON.stringify({
+                status: err.status,
+                message: err.message,
+                response: res && res.body,
+              }),
+          );
+          return reject(err);
+        }
+        return resolve();
+      });
+  });
+
+const removeAuthenticationMethodById = (token, userId, methodId) =>
+  new Promise((resolve, reject) => {
+    const path = `/api/v2/users/${userId}/authentication-methods/${methodId}`;
+    const url = `https://${config('AUTH0_DOMAIN')}${path}`;
+    request
+      .del(url)
+      .set('Authorization', `Bearer ${token}`)
+      .set('Content-Type', 'application/json')
+      .end((err, res) => {
+        if (err) {
+          logger.info(
+            "[removeAuthenticationMethodById] error response " +
+              JSON.stringify({
+                status: err.status,
+                message: err.message,
+                response: res && res.body,
+              }),
+          );
+          return reject(err);
+        }
+        return resolve();
+      });
+  });
+
+export const removeAuthenticationMethodsByType = (token, userId, type) =>
+  requestAuthenticationMethods(token, userId)
+    .then((methods) => {
+      const matching = methods.filter(m => m.type === type);
+      return Promise.all(matching.map(m => removeAuthenticationMethodById(token, userId, m.id)));
+    });

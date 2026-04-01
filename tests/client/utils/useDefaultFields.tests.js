@@ -554,6 +554,101 @@ describe('Client-Utils-useDefaultFields', () => {
     });
   });
 
+  describe('#useMfaField', () => {
+    it('does not include all option when there is only one provider', () => {
+      const fields = [];
+      useDefaultFields.useMfaField(true, fields, ['email']);
+      const options = fields[0].edit.options;
+      expect(options).to.deep.equal([{ value: 'email', label: 'email' }]);
+    });
+
+    it('includes all option when there are multiple providers', () => {
+      const fields = [];
+      useDefaultFields.useMfaField(true, fields, ['email', 'phone']);
+      const options = fields[0].edit.options;
+      expect(options).to.deep.equal([
+        { value: 'email', label: 'email' },
+        { value: 'phone', label: 'phone' },
+        { value: 'all', label: 'all' }
+      ]);
+    });
+
+    it('does not include all option when providers list is empty', () => {
+      const fields = [];
+      useDefaultFields.useMfaField(true, fields, []);
+      const options = fields[0].edit.options;
+      expect(options).to.deep.equal([]);
+    });
+
+    it('sets required, type, and component correctly', () => {
+      const fields = [];
+      useDefaultFields.useMfaField(true, fields, ['email']);
+      expect(fields[0].edit.required).to.equal(true);
+      expect(fields[0].edit.type).to.equal('select');
+      expect(fields[0].edit.component).to.equal('InputCombo');
+    });
+
+    it('uses create key when isEditField is false', () => {
+      const fields = [];
+      useDefaultFields.useMfaField(false, fields, ['email', 'phone']);
+      const options = fields[0].create.options;
+      expect(options).to.deep.equal([
+        { value: 'email', label: 'email' },
+        { value: 'phone', label: 'phone' },
+        { value: 'all', label: 'all' }
+      ]);
+    });
+
+    it('includes all option when providers is an Immutable.List with multiple items', () => {
+      const { fromJS } = require('immutable');
+      const fields = [];
+      useDefaultFields.useMfaField(true, fields, fromJS(['email', 'phone']));
+      const options = fields[0].edit.options;
+      expect(options).to.deep.equal([
+        { value: 'email', label: 'email' },
+        { value: 'phone', label: 'phone' },
+        { value: 'all', label: 'all' }
+      ]);
+    });
+
+    it("does not include all option when passkey is present among many providers", () => {
+      const fields = [];
+      useDefaultFields.useMfaField(true, fields, ["email", "passkey", "phone"]);
+      const options = fields[0].edit.options;
+      expect(options).to.deep.equal([
+        { value: "email", label: "email" },
+        { value: "passkey", label: "passkey" },
+        { value: "phone", label: "phone" },
+      ]);
+    });
+
+    it("does not include all option when passkey is the only provider", () => {
+      const fields = [];
+      useDefaultFields.useMfaField(true, fields, ["passkey"]);
+      const options = fields[0].edit.options;
+      expect(options).to.deep.equal([{ value: "passkey", label: "passkey" }]);
+    });
+
+    it('overwrites options on a pre-existing multifactor field from settings', () => {
+      const fields = [{
+        property: 'multifactor',
+        label: 'MFA',
+        edit: {
+          type: 'select',
+          component: 'InputCombo',
+          options: [{ value: 'email', label: 'email' }]
+        }
+      }];
+      useDefaultFields.useMfaField(true, fields, ['email', 'phone']);
+      const options = fields[0].edit.options;
+      expect(options).to.deep.equal([
+        { value: 'email', label: 'email' },
+        { value: 'phone', label: 'phone' },
+        { value: 'all', label: 'all' }
+      ]);
+    });
+  });
+
   describe('#useEmailField', () => {
 
     it('empty array population', () => {
