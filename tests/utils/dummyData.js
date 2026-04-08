@@ -129,10 +129,6 @@ export const defaultScripts = {
         css: 'http://localhost:3001/app/default.css'
       };
       callback(null, result);
-    }).toString(),
-  customDomain: (
-    function(ctx, callback) {
-      callback(null, 'https://custom.domain.com');
     }).toString()
 };
 
