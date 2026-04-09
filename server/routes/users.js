@@ -13,6 +13,7 @@ import { requestUserBlocks, removeUserBlocks } from '../lib/userBlocks';
 import getApiToken from '../lib/getApiToken';
 import getConnectionIdByName from '../lib/getConnectionIdByName';
 import getConnection from '../lib/getConnection';
+import getConnectionClients from '../lib/getConnectionClients';
 import { getCustomDomainHeaders, executeWithCustomDomain } from '../lib/customDomain';
 
 const isValidField = (type, onlyTheseFields, field) =>
@@ -315,7 +316,8 @@ export default (storage, scriptManager) => {
         return getConnectionIdByName(req.auth0, name)
           .then((connectionId) => {
             if (connectionId) {
-              return req.auth0.connections.get({ id: connectionId, fields: 'enabled_clients' });
+              return getApiToken(req)
+                .then(token => getConnectionClients(token, connectionId));
             }
 
             return {};
