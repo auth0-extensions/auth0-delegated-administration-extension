@@ -261,6 +261,7 @@ describe('#users router', () => {
   const domain = new RegExp(config('AUTH0_DOMAIN'));
 
   before(() => {
+    global.connections = [{ id: '1', name: 'conn-a' }];
     nock(domain)
       .post('/oauth/token')
       .reply(200, { ok: true, access_token: 'access_token' });
@@ -319,6 +320,9 @@ describe('#users router', () => {
 
   describe('#Get One', () => {
     it('should return user`s record', (done) => {
+      nock(domain)
+        .get('/api/v2/connections/1/clients')
+        .reply(200, { clients: [{ client_id: 'c1' }, { client_id: 'c2' }] });
       nock(domain)
         .get('/api/v2/users/1/authentication-methods')
         .reply(200, []);
@@ -462,6 +466,98 @@ describe('#users router', () => {
           expect(res.body.user.multifactor).to.not.include('guardian');
           done();
         });
+    });
+
+    describe('connection enabled_clients', () => {
+      let savedConnections;
+
+      beforeEach(() => {
+        savedConnections = global.connections;
+      });
+
+      afterEach(() => {
+        global.connections = savedConnections;
+        nock.cleanAll();
+      });
+
+      it('should return enabled_clients for user with identities', (done) => {
+        nock(domain)
+          .get('/api/v2/connections/1/clients')
+          .reply(200, { clients: [{ client_id: 'c1' }, { client_id: 'c2' }] });
+        nock(domain)
+          .get(/user-blocks\/1/)
+          .reply(200, { blocked_for: [] });
+        nock(domain)
+          .get('/api/v2/users/1/authentication-methods')
+          .reply(200, []);
+
+        request(app)
+          .get('/users/1')
+          .expect(200)
+          .end((err, res) => {
+            if (err) return done(err);
+            expect(res.body.connection.enabled_clients).to.deep.equal(['c1', 'c2']);
+            done();
+          });
+      });
+
+      it('should return empty connection when user has no identities', (done) => {
+        nock(domain)
+          .get(/user-blocks\/2/)
+          .reply(200, { blocked_for: [] });
+        nock(domain)
+          .get('/api/v2/users/2/authentication-methods')
+          .reply(200, []);
+
+        request(app)
+          .get('/users/2')
+          .expect(200)
+          .end((err, res) => {
+            if (err) return done(err);
+            expect(res.body.connection).to.deep.equal({});
+            done();
+          });
+      });
+
+      it('should return undefined enabled_clients when connection ID is not found', (done) => {
+        global.connections = [];
+
+        nock(domain)
+          .get(/user-blocks\/1/)
+          .reply(200, { blocked_for: [] });
+        nock(domain)
+          .get('/api/v2/users/1/authentication-methods')
+          .reply(200, []);
+
+        request(app)
+          .get('/users/1')
+          .expect(200)
+          .end((err, res) => {
+            if (err) return done(err);
+            expect(res.body.connection.enabled_clients).to.equal(undefined);
+            done();
+          });
+      });
+
+      it('should return error when getConnectionClients API fails', (done) => {
+        nock(domain)
+          .get('/api/v2/connections/1/clients')
+          .reply(500, { statusCode: 500, error: 'Internal Server Error' });
+        nock(domain)
+          .get(/user-blocks\/1/)
+          .reply(200, { blocked_for: [] });
+        nock(domain)
+          .get('/api/v2/users/1/authentication-methods')
+          .reply(200, []);
+
+        request(app)
+          .get('/users/1')
+          .expect(500)
+          .end((err) => {
+            if (err) return done(err);
+            done();
+          });
+      });
     });
   });
 

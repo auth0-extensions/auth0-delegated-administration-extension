@@ -20,7 +20,7 @@ function fetchPage(token, connectionId, from) {
   });
 }
 
-export default function getConnectionClients(token, connectionId) {
+export default function(token, connectionId) {
   const allClientIds = [];
 
   function fetchAllPages(from) {
