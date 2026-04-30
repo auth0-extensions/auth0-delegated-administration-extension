@@ -87,25 +87,30 @@ export default (storage) => {
     }
     next();
   });
-  api.use(middlewares.authenticateUsers.optional({
-    domain: config('AUTH0_CUSTOM_DOMAIN') || config('AUTH0_DOMAIN'),
-    audience: config('EXTENSION_CLIENT_ID'),
-    credentialsRequired: false,
-    onLoginSuccess: (req, res, next) => {
-      const currentRequest = req;
-      const claimKey = Object.keys(req.user || {}).find(k => k.startsWith('https:') && k.endsWith('auth0-delegated-admin'));
-      console.log('[DAE DEBUG] onLoginSuccess called | sub:', req.user && req.user.sub, '| claim key:', claimKey, '| claim value:', claimKey && JSON.stringify(req.user[claimKey]));
-      return addExtraUserInfo(getToken(req), req.user)
-      .then((user) => {
-        const scopes = getScopes(req.user);
-        console.log('[DAE DEBUG] computed scopes:', JSON.stringify(scopes));
-        currentRequest.user = user;
-        currentRequest.user.scope = scopes;
-        return next();
-      })
-      .catch(next);
-    }
-  }));
+  api.use((req, res, next) => {
+    middlewares.authenticateUsers.optional({
+      domain: config('AUTH0_CUSTOM_DOMAIN') || config('AUTH0_DOMAIN'),
+      audience: config('EXTENSION_CLIENT_ID'),
+      credentialsRequired: false,
+      onLoginSuccess: (req, res, next) => {
+        const currentRequest = req;
+        const claimKey = Object.keys(req.user || {}).find(k => k.startsWith('https:') && k.endsWith('auth0-delegated-admin'));
+        console.log('[DAE DEBUG] onLoginSuccess called | sub:', req.user && req.user.sub, '| claim key:', claimKey, '| claim value:', claimKey && JSON.stringify(req.user[claimKey]));
+        return addExtraUserInfo(getToken(req), req.user)
+        .then((user) => {
+          const scopes = getScopes(req.user);
+          console.log('[DAE DEBUG] computed scopes:', JSON.stringify(scopes));
+          currentRequest.user = user;
+          currentRequest.user.scope = scopes;
+          return next();
+        })
+        .catch(next);
+      }
+    })(req, res, function(err) {
+      console.log('[DAE DEBUG] authenticateUsers.optional exit | err:', err ? (err.code + ': ' + err.message) : 'none', '| req.user:', req.user ? req.user.sub : 'NOT SET');
+      next(err);
+    });
+  });
   // Allow dashboard admins to authenticate.
   api.use(middlewares.authenticateAdmins.optional({
     credentialsRequired: false,
