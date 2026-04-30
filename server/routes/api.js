@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import _ from 'lodash';
 import moment from 'moment';
+import jwtDecode from 'jwt-decode';
 import { middlewares } from 'auth0-extension-express-tools';
 import tools from 'auth0-extension-tools';
 
@@ -73,16 +74,33 @@ export default (storage) => {
   };
 
   // Allow end users to authenticate.
+  api.use((req, res, next) => {
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+      try {
+        const decoded = jwtDecode(req.headers.authorization.split(' ')[1]);
+        const configuredDomain = config('AUTH0_CUSTOM_DOMAIN') || config('AUTH0_DOMAIN');
+        const expectedIss = 'https://' + configuredDomain + '/';
+        console.log('[DAE DEBUG] token iss:', decoded.iss, '| expected iss:', expectedIss, '| match:', decoded.iss === expectedIss);
+      } catch(e) {
+        console.log('[DAE DEBUG] failed to pre-decode token:', e.message);
+      }
+    }
+    next();
+  });
   api.use(middlewares.authenticateUsers.optional({
     domain: config('AUTH0_CUSTOM_DOMAIN') || config('AUTH0_DOMAIN'),
     audience: config('EXTENSION_CLIENT_ID'),
     credentialsRequired: false,
     onLoginSuccess: (req, res, next) => {
       const currentRequest = req;
+      const claimKey = Object.keys(req.user || {}).find(k => k.startsWith('https:') && k.endsWith('auth0-delegated-admin'));
+      console.log('[DAE DEBUG] onLoginSuccess called | sub:', req.user && req.user.sub, '| claim key:', claimKey, '| claim value:', claimKey && JSON.stringify(req.user[claimKey]));
       return addExtraUserInfo(getToken(req), req.user)
       .then((user) => {
+        const scopes = getScopes(req.user);
+        console.log('[DAE DEBUG] computed scopes:', JSON.stringify(scopes));
         currentRequest.user = user;
-        currentRequest.user.scope = getScopes(req.user);
+        currentRequest.user.scope = scopes;
         return next();
       })
       .catch(next);
@@ -115,6 +133,9 @@ export default (storage) => {
   });
 
   api.use((req, res, next) => {
+    if (!req.user) console.log('[DAE DEBUG] requireScope gate: req.user not set (auth middleware skipped or failed)');
+    else if (!req.user.scope) console.log('[DAE DEBUG] requireScope gate: req.user.scope not set');
+    else console.log('[DAE DEBUG] requireScope gate: scope =', JSON.stringify(req.user.scope));
     const permission = (req.method.toLowerCase() === 'get') ? constants.AUDITOR_PERMISSION : constants.USER_PERMISSION;
     return requireScope(permission)(req, res, next);
   });
