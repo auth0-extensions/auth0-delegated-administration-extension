@@ -10,7 +10,7 @@ import { Confirm } from 'auth0-extension-ui';
 
 import fakeStore from '../../../../utils/fakeStore';
 
-import RemoveMultiFactorDialog from '../../../../../client/containers/Users/Dialogs/RemoveMultiFactorDialog';
+import RemoveMultiFactorDialog, { parseProviders } from '../../../../../client/containers/Users/Dialogs/RemoveMultiFactorDialog';
 
 let wrapper = undefined;
 
@@ -147,10 +147,6 @@ describe('#Client-Containers-Users-Dialogs-RemoveMultiFactorDialog', () => {
   });
 
   it('should render without crashing when multifactor is a raw array due to edit:false in userFields', () => {
-    // Regression test for ESD-60343: when userFields contains { property: 'multifactor', edit: false },
-    // useMfaField removes the field from filteredFields, causing mapValues to return the raw JS array.
-    // JSON.parse(array) coerces the array to "totp,recovery-code" via toString() and throws
-    // SyntaxError: Unexpected token 'o', "totp,recovery-code" is not valid JSON.
     const userFields = [{ property: 'multifactor', edit: false }];
     const component = renderComponentWithMfa('bill', ['totp', 'recovery-code'], userFields);
     checkConfirm(component, 'Remove Multi Factor Authentication?');
@@ -160,5 +156,23 @@ describe('#Client-Containers-Users-Dialogs-RemoveMultiFactorDialog', () => {
     const userFields = [{ property: 'multifactor', edit: false }];
     const component = renderComponentWithMfa('bill', ['passkey', 'totp'], userFields);
     checkConfirm(component, 'Remove Multi Factor Authentication?');
+  });
+});
+
+describe('#parseProviders', () => {
+  it('returns an array unchanged', () => {
+    expect(parseProviders(['totp', 'recovery-code'])).to.deep.equal(['totp', 'recovery-code']);
+  });
+
+  it('parses a JSON array string', () => {
+    expect(parseProviders('["totp","recovery-code"]')).to.deep.equal(['totp', 'recovery-code']);
+  });
+
+  it('wraps a plain string provider in an array', () => {
+    expect(parseProviders('totp')).to.deep.equal(['totp']);
+  });
+
+  it('wraps a malformed JSON string in an array rather than throwing', () => {
+    expect(parseProviders('[totp,recovery-code]')).to.deep.equal(['[totp,recovery-code]']);
   });
 });
