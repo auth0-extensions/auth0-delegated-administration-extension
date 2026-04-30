@@ -69,7 +69,15 @@ export default connectContainer(class extends Component {
 
     const initialValues = mapValues(user, allowedFields, filteredFields, 'edit', languageDictionary);
     if (initialValues.multifactor) {
-      initialValues.multifactor = JSON.parse(initialValues.multifactor)[0];
+      let multifactor = initialValues.multifactor;
+      if (!Array.isArray(multifactor)) {
+        try {
+          multifactor = JSON.parse(multifactor);
+        } catch (e) {
+          // already a single string provider value
+        }
+      }
+      initialValues.multifactor = Array.isArray(multifactor) ? multifactor[0] : multifactor;
     }
 
     return (

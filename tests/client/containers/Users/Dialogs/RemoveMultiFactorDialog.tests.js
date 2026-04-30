@@ -41,6 +41,27 @@ describe('#Client-Containers-Users-Dialogs-RemoveMultiFactorDialog', () => {
     );
   };
 
+  const renderComponentWithMfa = (username, multifactor, userFields) => {
+    const initialState = {
+      mfa: fromJS({
+        user: { name: username, multifactor },
+        error: null,
+        requesting: true,
+        loading: false,
+        connection: 'connA'
+      }),
+      settings: userFields
+        ? fromJS({ record: { settings: { userFields } } })
+        : fromJS({}),
+      languageDictionary: fromJS({ record: {} })
+    };
+    return wrapperMount(
+      <Provider store={fakeStore(initialState)}>
+        <RemoveMultiFactorDialog cancelRemoveMultiFactor={() => null} />
+      </Provider>
+    );
+  };
+
   beforeEach(() => {
     wrapper = undefined;
     document.body.innerHTML = '';
@@ -112,6 +133,32 @@ describe('#Client-Containers-Users-Dialogs-RemoveMultiFactorDialog', () => {
 
   it('should render confirm gets null languageDictionary', () => {
     const component = renderComponent('jackie');
+    checkConfirm(component, 'Remove Multi Factor Authentication?');
+  });
+
+  it('should render when user has a single MFA provider', () => {
+    const component = renderComponentWithMfa('bill', ['totp']);
+    checkConfirm(component, 'Remove Multi Factor Authentication?');
+  });
+
+  it('should render when user has multiple MFA providers', () => {
+    const component = renderComponentWithMfa('bill', ['totp', 'recovery-code']);
+    checkConfirm(component, 'Remove Multi Factor Authentication?');
+  });
+
+  it('should render without crashing when multifactor is a raw array due to edit:false in userFields', () => {
+    // Regression test for ESD-60343: when userFields contains { property: 'multifactor', edit: false },
+    // useMfaField removes the field from filteredFields, causing mapValues to return the raw JS array.
+    // JSON.parse(array) coerces the array to "totp,recovery-code" via toString() and throws
+    // SyntaxError: Unexpected token 'o', "totp,recovery-code" is not valid JSON.
+    const userFields = [{ property: 'multifactor', edit: false }];
+    const component = renderComponentWithMfa('bill', ['totp', 'recovery-code'], userFields);
+    checkConfirm(component, 'Remove Multi Factor Authentication?');
+  });
+
+  it('should render without crashing when user has passkey and non-passkey providers with edit:false in userFields', () => {
+    const userFields = [{ property: 'multifactor', edit: false }];
+    const component = renderComponentWithMfa('bill', ['passkey', 'totp'], userFields);
     checkConfirm(component, 'Remove Multi Factor Authentication?');
   });
 });
