@@ -10,7 +10,7 @@ import { Confirm } from 'auth0-extension-ui';
 
 import fakeStore from '../../../../utils/fakeStore';
 
-import RemoveMultiFactorDialog from '../../../../../client/containers/Users/Dialogs/RemoveMultiFactorDialog';
+import RemoveMultiFactorDialog, { parseProviders } from '../../../../../client/containers/Users/Dialogs/RemoveMultiFactorDialog';
 
 let wrapper = undefined;
 
@@ -37,6 +37,27 @@ describe('#Client-Containers-Users-Dialogs-RemoveMultiFactorDialog', () => {
         <RemoveMultiFactorDialog
           cancelRemoveMultiFactor={() => null}
         />
+      </Provider>
+    );
+  };
+
+  const renderComponentWithMfa = (username, multifactor, userFields) => {
+    const initialState = {
+      mfa: fromJS({
+        user: { name: username, multifactor },
+        error: null,
+        requesting: true,
+        loading: false,
+        connection: 'connA'
+      }),
+      settings: userFields
+        ? fromJS({ record: { settings: { userFields } } })
+        : fromJS({}),
+      languageDictionary: fromJS({ record: {} })
+    };
+    return wrapperMount(
+      <Provider store={fakeStore(initialState)}>
+        <RemoveMultiFactorDialog cancelRemoveMultiFactor={() => null} />
       </Provider>
     );
   };
@@ -113,5 +134,45 @@ describe('#Client-Containers-Users-Dialogs-RemoveMultiFactorDialog', () => {
   it('should render confirm gets null languageDictionary', () => {
     const component = renderComponent('jackie');
     checkConfirm(component, 'Remove Multi Factor Authentication?');
+  });
+
+  it('should render when user has a single MFA provider', () => {
+    const component = renderComponentWithMfa('bill', ['totp']);
+    checkConfirm(component, 'Remove Multi Factor Authentication?');
+  });
+
+  it('should render when user has multiple MFA providers', () => {
+    const component = renderComponentWithMfa('bill', ['totp', 'recovery-code']);
+    checkConfirm(component, 'Remove Multi Factor Authentication?');
+  });
+
+  it('should render without crashing when multifactor is a raw array due to edit:false in userFields', () => {
+    const userFields = [{ property: 'multifactor', edit: false }];
+    const component = renderComponentWithMfa('bill', ['totp', 'recovery-code'], userFields);
+    checkConfirm(component, 'Remove Multi Factor Authentication?');
+  });
+
+  it('should render without crashing when user has passkey and non-passkey providers with edit:false in userFields', () => {
+    const userFields = [{ property: 'multifactor', edit: false }];
+    const component = renderComponentWithMfa('bill', ['passkey', 'totp'], userFields);
+    checkConfirm(component, 'Remove Multi Factor Authentication?');
+  });
+});
+
+describe('#parseProviders', () => {
+  it('returns an array unchanged', () => {
+    expect(parseProviders(['totp', 'recovery-code'])).to.deep.equal(['totp', 'recovery-code']);
+  });
+
+  it('parses a JSON array string', () => {
+    expect(parseProviders('["totp","recovery-code"]')).to.deep.equal(['totp', 'recovery-code']);
+  });
+
+  it('wraps a plain string provider in an array', () => {
+    expect(parseProviders('totp')).to.deep.equal(['totp']);
+  });
+
+  it('wraps a malformed JSON string in an array rather than throwing', () => {
+    expect(parseProviders('[totp,recovery-code]')).to.deep.equal(['[totp,recovery-code]']);
   });
 });

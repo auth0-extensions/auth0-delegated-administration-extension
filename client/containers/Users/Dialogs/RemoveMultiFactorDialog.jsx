@@ -12,6 +12,29 @@ import { getName, mapValues } from '../../../utils/display';
 import getDialogMessage from './getDialogMessage';
 import getErrorMessage from '../../../utils/getErrorMessage';
 
+/**
+ * Normalizes a multifactor value from the user object into an array of provider strings.
+ *
+ * The value can arrive in three forms depending on how the field was processed:
+ * - Already a JS array (normal path)
+ * - A JSON-stringified array (e.g. when mapValues serializes the field)
+ * - A plain provider string (e.g. a single-provider user with no serialization)
+ *
+ * @param {string[]|string} value - Raw multifactor value from the user object.
+ * @returns {string[]} Array of MFA provider strings.
+ */
+export const parseProviders = (value) => {
+  if (Array.isArray(value)) {
+    return value;
+  }
+  try {
+    return JSON.parse(value);
+  }
+  catch {
+    return [value];
+  }
+};
+
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     mfa: state.mfa,
@@ -69,7 +92,7 @@ export default connectContainer(class extends Component {
 
     const initialValues = mapValues(user, allowedFields, filteredFields, 'edit', languageDictionary);
     if (initialValues.multifactor) {
-      initialValues.multifactor = JSON.parse(initialValues.multifactor)[0];
+      initialValues.multifactor = parseProviders(initialValues.multifactor)[0];
     }
 
     return (
