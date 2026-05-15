@@ -5,10 +5,74 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.8.4] - 2026-05-04
+
+### Fixed
+
+- Fixed JSON parse error when multifactor field is set to non-editable
+
+## [4.8.3] - 2026-04-17
+
+### Fixed
+
+- Replaced deprecated `enabled_clients` field with new `/connections/{id}/clients` endpoint
+
+## [4.8.2] - 2026-04-14
+
+- Updated axios dependency overrides
+
+## [4.8.1] - 2026-04-01
+
+### Fixed
+
+- Enabled Custom Domain hook tab in extension configuration UI
+
+## [4.8.0] - 2026-04-01
+
+### Added
+
+- New authentication-methods API for MFA removal
+- Custom Domain Hook support for MCD (Multiple Custom Domains) feature
+
+### Fixed
+
+- Fixed ES6/CommonJS module compatibility issue
+
+## [4.7.0] - 2025-10-17
+
+### Changed
+
+- Added `HttpOnly`, `Secure`, and `SameSite` attributes to `dae-locale` cookie
+
+## [4.6.2] - 2025-10-03
+
+### Fixed
+
+- Fixed "Unblock user for all IPs" Immutable.js bug
+
+## [4.6.1] - 2025-09-02
+
+### Added
+
+- Support for flexible user identifiers (email, username, phone number) during password reset
+
 ## [4.6] - 2025-02-18
 
 - Update to run on node 22.13
 - Added read:connections_options scope to the extension's Management API client
+
+## [4.5.1] - 2025-01-10
+
+### Fixed
+
+- Restored debug log level
+
+## [4.5.0] - 2024-12-11
+
+### Changed
+
+- Upgraded to Node.js 18
+- Migrated CI from CircleCI to GitHub Actions
 
 ## [4.4] - 2024-06-05
 
