@@ -58,7 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.6] - 2025-02-18
 
-- Update to run on node 22.13
+- Update to run on node 22.13. Note: customers do not need to change the extensibility runtime setting in their tenant settings. This node version is only for this extension and is managed internally.
 - Added read:connections_options scope to the extension's Management API client
 
 ## [4.5.1] - 2025-01-10
@@ -153,6 +153,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.6.2] - 2019-04-25
 
 ### Fixed
+
 - `Remove MFA` for unconfirmed enrollments
 
 ## [3.6.1] - 2019-04-19
