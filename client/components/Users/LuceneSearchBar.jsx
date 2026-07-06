@@ -18,6 +18,12 @@ export default class SearchBar extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.searchValue !== this.props.searchValue) {
+      this.setState({ searchValue: nextProps.searchValue });
+    }
+  }
+
   onKeyPress = (e) => {
     if (e.key === 'Enter') {
       this.props.onSearch(findDOMNode(this.refs.search).value);

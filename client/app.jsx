@@ -5,6 +5,7 @@ import axios from 'axios';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import queryString from 'query-string';
 
 import { useRouterHistory } from 'react-router';
 import { createHistory } from 'history';
@@ -20,7 +21,22 @@ axios.defaults.baseURL = window.config.BASE_URL;
 
 // Make history aware of the base path.
 const history = useRouterHistory(createHistory)({
-  basename: window.config.BASE_PATH || ''
+  basename: window.config.BASE_PATH || "",
+
+  // history/react-router uses query-string behind the scenes. When query-string parses malformed URLs, 
+  // it throws URIError, which crashes the app before any route renders (and the user sees a blank page)
+  // This is a workaround to still use query-string for normal parsing so we keep its full behavior
+  // while avoiding the crashes caused by malformed URLs.
+  parseQueryString: (str) => {
+    try {
+      return queryString.parse(str);
+    } catch (error) {
+      if (error instanceof URIError) {
+        return {};
+      }
+      throw error;
+    }
+  },
 });
 
 const store = configureStore([ routerMiddleware(history) ], { });

@@ -16,12 +16,19 @@ const addRequiredTextParam = (url, languageDictionary) => {
 /*
  * Search for users.
  */
+export function clearUsers() {
+  return {
+    type: constants.CLEAR_USERS
+  };
+}
+
 export function fetchUsers(search, reset = false, page = 0, filterBy, sort, onSuccess) {
   return (dispatch, getState) => {
     const { sortProperty, sortOrder, searchValue, selectedFilter } = getState().users.toJS();
     const meta = { page, sortProperty, sortOrder, searchValue, onSuccess };
-    meta.selectedFilter = reset ? '' : filterBy || selectedFilter;
     meta.searchValue = reset ? '' : search || searchValue;
+    // filterBy is only meaningful to the API when paired with a search term.
+    meta.selectedFilter = reset || !meta.searchValue ? '' : filterBy || selectedFilter;
     if (sort) {
       meta.sortProperty = sort.property;
       meta.sortOrder = sort.order;

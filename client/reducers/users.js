@@ -18,6 +18,16 @@ const initialState = {
 };
 
 export const users = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
+  // Drop displayed results only; keep sort/search/filter so a later valid fetch can reuse them.
+  [constants.CLEAR_USERS]: (state) =>
+    state.merge({
+      loading: false,
+      records: fromJS([]),
+      total: 0,
+      currentPage: 1,
+      pages: 1,
+      nextPage: 1
+    }),
   [constants.FETCH_USERS_PENDING]: (state, action) =>
     state.merge({
       ...initialState,
