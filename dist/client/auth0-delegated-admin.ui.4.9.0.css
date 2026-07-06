@@ -134,13 +134,16 @@ header.dashboard-header nav #header {
 
 .user-info {
   margin-bottom: 5px;
+  display: -ms-flexbox;
   display: flex;
-  flex-flow: row wrap;
+  -ms-flex-flow: row wrap;
+      flex-flow: row wrap;
 }
 
 .user-info-field {
   margin: 20px 0;
-  flex-basis: 33.33%;
+  -ms-flex-preferred-size: 33.33%;
+      flex-basis: 33.33%;
 }
 
 .user-info-field-title {
@@ -165,8 +168,10 @@ header.dashboard-header nav #header {
 }
 
 .validation-error-fields-list li label {
-  text-decoration-line: underline;
-  text-decoration-style: dashed;
+  -webkit-text-decoration-line: underline;
+          text-decoration-line: underline;
+  -webkit-text-decoration-style: dashed;
+          text-decoration-style: dashed;
 }
 
 .user .content-header {
@@ -394,9 +399,6 @@ button.new {
 
   margin: 0;
   padding: 2px;
-
-  -webkit-box-shadow: 2px 3px 5px rgba(0,0,0,.2);
-  -moz-box-shadow: 2px 3px 5px rgba(0,0,0,.2);
   box-shadow: 2px 3px 5px rgba(0,0,0,.2);
   border-radius: 3px;
   border: 1px solid silver;
@@ -489,19 +491,7 @@ li.CodeMirror-hint-active {
 .cm-animate-fat-cursor {
     width: auto;
     border: 0;
-    -webkit-animation: blink 1.06s steps(1) infinite;
-    -moz-animation: blink 1.06s steps(1) infinite;
     animation: blink 1.06s steps(1) infinite;
-}
-@-moz-keyframes blink {
-    0% { background: #7e7; }
-    50% { background: none; }
-    100% { background: #7e7; }
-}
-@-webkit-keyframes blink {
-    0% { background: #7e7; }
-    50% { background: none; }
-    100% { background: #7e7; }
 }
 @keyframes blink {
     0% { background: #7e7; }
@@ -616,8 +606,8 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
 }
 .CodeMirror-gutter-wrapper {
     -webkit-user-select: none;
-    -moz-user-select: none;
-    user-select: none;
+    -ms-user-select: none;
+        user-select: none;
 }
 
 .CodeMirror-lines {
@@ -625,8 +615,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
     min-height: 1px; /* prevents collapsing before first draw */
 }
 .CodeMirror pre {
-    /* Reset some styles that the rest of the page might have set */
-    -moz-border-radius: 0; -webkit-border-radius: 0; border-radius: 0;
+    /* Reset some styles that the rest of the page might have set */ border-radius: 0;
     border-width: 0;
     background: transparent;
     font-family: inherit;
@@ -671,7 +660,6 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
 .CodeMirror-gutter,
 .CodeMirror-gutters,
 .CodeMirror-linenumber {
-    -moz-box-sizing: content-box;
     box-sizing: content-box;
 }
 
