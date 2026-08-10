@@ -1,11 +1,9 @@
 const fakeStore = (state) => {
   return {
     default: () => {},
-    subscribe: () => {},
+    subscribe: () => () => {},
     dispatch: () => {},
-    getState: () => {
-      return { ...state };
-    },
+    getState: () => state,
   };
 };
 

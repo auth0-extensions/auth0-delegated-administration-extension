@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
@@ -8,7 +8,7 @@ import ValidationError from "../../../../client/components/Users/ValidationError
 describe('#Client-Components-ValidationError', () => {
 
   const renderComponent = (userForm, customFields) => {
-    return shallow(
+    return render(
       <ValidationError
         userForm={userForm}
         customFields={customFields}
@@ -17,17 +17,14 @@ describe('#Client-Components-ValidationError', () => {
     );
   };
 
-  beforeEach(() => {
-  });
-
   const checkError = (errors, label, property) => {
-    const thisError = errors.filterWhere(element => element.prop('htmlFor') === property);
+    const thisError = errors.filter(element => element.getAttribute('for') === property);
     expect(thisError.length).to.be.greaterThan(0);
-    expect(thisError.childAt(0).text()).to.equal(label);
+    expect(thisError[0]).to.have.trimmed.text(label);
   };
 
-  const checkErrors = (component, targets) => {
-    const errors = component.find('label');
+  const checkErrors = (queries, targets) => {
+    const errors = Array.from(queries.container.querySelectorAll('label'));
 
     for (let i = 0; i < targets.length; i++) {
       checkError(errors, targets[i].label, targets[i].property);
@@ -54,7 +51,7 @@ describe('#Client-Components-ValidationError', () => {
       label: 'City'
     }];
 
-    const component = renderComponent(userForm, customFields);
+    const queries = renderComponent(userForm, customFields);
     const targets = [{
         label: 'email',
         property: 'email'
@@ -64,9 +61,7 @@ describe('#Client-Components-ValidationError', () => {
         property: 'app_metadata.address.city'
       }];
 
-    expect(component.length).to.be.greaterThan(0);
-
-    checkErrors(component, targets);
+    checkErrors(queries, targets);
   });
 
   it('should render empty if not submitted', () => {
@@ -79,10 +74,9 @@ describe('#Client-Components-ValidationError', () => {
       }
     };
 
-    const component = renderComponent(userForm, []);
+    const { container } = renderComponent(userForm, []);
 
-    expect(component.length).to.be.greaterThan(0);
-    expect(component.html()).to.equal('<div></div>');
+    expect(container.innerHTML).to.equal('<div></div>');
   });
 
   it('should render empty if no errors', () => {
@@ -92,9 +86,8 @@ describe('#Client-Components-ValidationError', () => {
       }
     };
 
-    const component = renderComponent(userForm, []);
+    const { container } = renderComponent(userForm, []);
 
-    expect(component.length).to.be.greaterThan(0);
-    expect(component.html()).to.equal('<div></div>');
+    expect(container.innerHTML).to.equal('<div></div>');
   });
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render, within } from '@testing-library/react';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import moment from 'moment';
@@ -7,12 +7,11 @@ import _ from 'lodash';
 
 import { fromJS } from 'immutable';
 import UserInfo from '../../../../client/components/Users/UserInfo';
-import UserInfoField from '../../../../client/components/Users/UserInfoField';
 
 describe('#Client-Components-UserInfo', () => {
 
   const renderComponent = (user, userFields, memberships, languageDictionary) => {
-    return shallow(
+    return render(
       <UserInfo
         error={null}
         loading={false}
@@ -28,21 +27,15 @@ describe('#Client-Components-UserInfo', () => {
   beforeEach(() => {
   });
 
-  const checkField = (fields, index, title, value) => {
-    const thisField = fields.filterWhere(element =>
-      element.key() === index.toString());
-    expect(thisField.length > 0 ? thisField.prop('title') : 'No Title').to.equal(title);
-    expect(thisField.length > 0 ? thisField.childAt(0).text() : 'No Value').to.equal(value);
+  const checkField = (queries, title, value) => {
+    const titleEl = queries.getByText(title);
+    const field = titleEl.parentElement;
+    expect(within(field).getByText(value)).to.exist;
   };
 
-  const checkFields = (component, targets) => {
-    const fields = component.find(UserInfoField);
-
-    //expect(fields.length).to.equal(Object.keys(targets).length);
-
-    for (let i = 0; i < targets.length; i++) {
-      checkField(fields, i, targets[i].title, targets[i].value);
-    }
+  const checkFields = (queries, targets) => {
+    expect(queries.container.querySelector('.user-info').children).to.have.length(targets.length);
+    targets.forEach(target => checkField(queries, target.title, target.value));
   };
 
   it('should render', () => {
@@ -79,11 +72,9 @@ describe('#Client-Components-UserInfo', () => {
       multifactor: [ 'guardian', 'google' ]
     };
 
-    const component = renderComponent(user, null, ['a', 'b']);
+    const queries = renderComponent(user, null, ['a', 'b']);
 
-    expect(component.length).to.be.greaterThan(0);
-
-    checkFields(component, targets);
+    checkFields(queries, targets);
   });
 
   it('should render based on languageDictionary', () => {
@@ -128,14 +119,12 @@ describe('#Client-Components-UserInfo', () => {
       user_metadata: { someBoolean: true }
     };
 
-    const component = renderComponent(user,
+    const queries = renderComponent(user,
       [{ label: 'Some Boolean', property: 'user_metadata.someBoolean', display: true }],
       ['a', 'b'],
       languageDictionary);
 
-    expect(component.length).to.be.greaterThan(0);
-
-    checkFields(component, targets);
+    checkFields(queries, targets);
   });
 
   it('should render based on custom fields', () => {
@@ -195,10 +184,8 @@ describe('#Client-Components-UserInfo', () => {
       last_login: moment().add(-1, 'days')
     };
 
-    const component = renderComponent(user, userFields, ['a', 'b']);
+    const queries = renderComponent(user, userFields, ['a', 'b']);
 
-    expect(component.length).to.be.greaterThan(0);
-
-    checkFields(component, targets);
+    checkFields(queries, targets);
   });
 });

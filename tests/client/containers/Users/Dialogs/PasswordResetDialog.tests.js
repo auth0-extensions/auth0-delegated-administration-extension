@@ -1,19 +1,13 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { mount } from 'enzyme';
+import { render, cleanup } from '@testing-library/react';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import { fromJS } from 'immutable';
 
-import { Confirm } from 'auth0-extension-ui';
-
 import fakeStore from '../../../../utils/fakeStore';
 
 import PasswordResetDialog from '../../../../../client/containers/Users/Dialogs/PasswordResetDialog';
-
-let wrapper = undefined;
-
-const wrapperMount = (...args) => (wrapper = mount(...args));
 
 describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
 
@@ -51,7 +45,7 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
           }]
       })
     };
-    return wrapperMount(
+    return render(
       <Provider store={fakeStore(initialState)}>
         <PasswordResetDialog
           cancelPasswordReset={() => null}
@@ -62,20 +56,20 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
   };
 
   beforeEach(() => {
-    wrapper = undefined;
     document.body.innerHTML = '';
   });
 
   afterEach(() => {
-    if (wrapper && wrapper.unmount) wrapper.unmount();
+    cleanup();
+    document.body.innerHTML = '';
   });
 
-  const checkText = (component, preText, username, postText) => {
-    expect(document.querySelector('p')
-      .textContent).to.equal(`${preText}${username}${postText}`);
+  const checkText = (preText, username, postText) => {
+    const pElement = document.querySelector('p');
+    expect(pElement.textContent).to.equal(`${preText}${username}${postText}`);
   };
 
-  const checkConnectionLabel = (component, connectionLabel) => {
+  const checkConnectionLabel = (connectionLabel) => {
     if (connectionLabel) {
       const label = document.querySelector('label[for=connection]');
       expect(label).to.not.be.null;
@@ -85,54 +79,56 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
     }
   };
 
-  const checkEmailLabel = (component, emailLabel) => {
-    expect(document.querySelector('label[for=email]')
-      .textContent).to.equal(emailLabel);
+  const checkEmailLabel = (emailLabel) => {
+    const label = document.querySelector('label[for=email]');
+    expect(label).to.not.be.null;
+    expect(label.textContent).to.equal(emailLabel);
   };
 
-  const checkClientLabel = (component, passwordLabel) => {
-    expect(document.querySelector('label[for=client]')
-      .textContent).to.equal(passwordLabel);
+  const checkClientLabel = (clientLabel) => {
+    const label = document.querySelector('label[for=client]');
+    expect(label).to.not.be.null;
+    expect(label.textContent).to.equal(clientLabel);
   };
 
-  const checkConfirm = (component, title) => {
-    const confirm = component.find(Confirm);
-    expect(confirm.length).to.equal(1);
-    expect(confirm.prop('title')).to.deep.equal(title);
+  const checkConfirm = (title) => {
+    const modalTitle = document.querySelector('.modal-title');
+    expect(modalTitle).to.exist;
+    expect(modalTitle.textContent).to.equal(title);
   };
 
   it('should render', () => {
-    const component = renderComponent({ username: 'bill' });
+    renderComponent({ username: 'bill' });
 
-    checkText(component, 'Do you really want to reset the password for ', 'bill', '? This will send an email to the' +
+    checkText('Do you really want to reset the password for ', 'bill', '? This will send an email to the' +
       ' user allowing them to choose a new password.');
-    checkConnectionLabel(component, 'Connection');
-    checkEmailLabel(component, 'Email');
-    checkClientLabel(component, 'Client');
-    checkConfirm(component, 'Reset Password?');
+    checkConnectionLabel('Connection');
+    checkEmailLabel('Email');
+    checkClientLabel('Client');
+    checkConfirm('Reset Password?');
   });
 
   it('should render without connection field', () => {
-    const component = renderComponent({ username: 'bill', connections: [ { name: 'connA' } ] });
+    renderComponent({ username: 'bill', connections: [ { name: 'connA' } ] });
 
-    checkText(component, 'Do you really want to reset the password for ', 'bill', '? This will send an email to the' +
+    checkText('Do you really want to reset the password for ', 'bill', '? This will send an email to the' +
       ' user allowing them to choose a new password.');
-    checkConnectionLabel(component);
-    checkEmailLabel(component, 'Email');
-    checkClientLabel(component, 'Client');
-    checkConfirm(component, 'Reset Password?');
+    checkConnectionLabel(undefined);
+    checkEmailLabel('Email');
+    checkClientLabel('Client');
+    checkConfirm('Reset Password?');
   });
 
   it('should render not applicable language dictionary', () => {
     const languageDictionary = { someKey: 'someValue' };
-    const component = renderComponent({ username: 'bill' }, languageDictionary);
+    renderComponent({ username: 'bill' }, languageDictionary);
 
-    checkText(component, 'Do you really want to reset the password for ', 'bill', '? This will send an email to the' +
+    checkText('Do you really want to reset the password for ', 'bill', '? This will send an email to the' +
       ' user allowing them to choose a new password.');
-    checkConnectionLabel(component, 'Connection');
-    checkEmailLabel(component, 'Email');
-    checkClientLabel(component, 'Client');
-    checkConfirm(component, 'Reset Password?');
+    checkConnectionLabel('Connection');
+    checkEmailLabel('Email');
+    checkClientLabel('Client');
+    checkConfirm('Reset Password?');
   });
 
   it('should render applicable language dictionary', () => {
@@ -140,28 +136,28 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
       resetPasswordMessage: 'Some pre message {username} ignore second {username}',
       resetPasswordTitle: 'Reset Password Title'
     };
-    const component = renderComponent({ username: 'bob' }, languageDictionary);
+    renderComponent({ username: 'bob' }, languageDictionary);
 
-    checkText(component, 'Some pre message ', 'bob', ' ignore second {username}');
-    checkConfirm(component, 'Reset Password Title');
+    checkText('Some pre message ', 'bob', ' ignore second {username}');
+    checkConfirm('Reset Password Title');
   });
 
   it('should render applicable language dictionary spaces in username', () => {
     const languageDictionary = {
       resetPasswordMessage: 'Some other message {   username    }something else'
     };
-    const component = renderComponent({ username: 'sally' }, languageDictionary);
+    renderComponent({ username: 'sally' }, languageDictionary);
 
-    checkText(component, 'Some other message ', 'sally', 'something else');
+    checkText('Some other message ', 'sally', 'something else');
   });
 
   it('should render applicable language dictionary no username', () => {
     const languageDictionary = {
       resetPasswordMessage: 'no username included: '
     };
-    const component = renderComponent({ username: 'john' }, languageDictionary);
+    renderComponent({ username: 'john' }, languageDictionary);
 
-    checkText(component, 'no username included: ', 'john', '');
+    checkText('no username included: ', 'john', '');
   });
 
   it('should use userFields for whether connection appears', () => {
@@ -178,8 +174,8 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
         }
       }
     };
-    const component = renderComponent({ username: 'john', settings });
-    checkConnectionLabel(component);
+    renderComponent({ username: 'john', settings });
+    checkConnectionLabel(undefined);
   });
 
   it('should use userFields for label names', () => {
@@ -206,10 +202,10 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
         }
       }
     };
-    const component = renderComponent({ username: 'john', settings });
-    checkConnectionLabel(component, 'ConnectionLabel');
-    checkEmailLabel(component, 'EmailLabel');
-    checkClientLabel(component, 'ClientLabel');
+    renderComponent({ username: 'john', settings });
+    checkConnectionLabel('ConnectionLabel');
+    checkEmailLabel('EmailLabel');
+    checkClientLabel('ClientLabel');
   });
 
   it('should handle null label name in user fields', () => {
@@ -233,9 +229,9 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
         }
       }
     };
-    const component = renderComponent({ username: 'john', settings });
-    checkConnectionLabel(component, 'Connection');
-    checkEmailLabel(component, 'Email');
-    checkClientLabel(component, 'Client');
+    renderComponent({ username: 'john', settings });
+    checkConnectionLabel('Connection');
+    checkEmailLabel('Email');
+    checkClientLabel('Client');
   });
 });

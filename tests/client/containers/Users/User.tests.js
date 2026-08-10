@@ -1,26 +1,33 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import { expect } from 'chai';
-import { describe, it } from 'mocha';
+import { describe, it, beforeEach } from 'mocha';
 import { fromJS } from 'immutable';
-import { Router, Route, createMemoryHistory } from 'react-router';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
+import proxyquire from 'proxyquire';
 
 import fakeStore from '../../../utils/fakeStore';
 
-import User from '../../../../client/containers/Users/User';
-import TabsHeader from '../../../../client/components/TabsHeader';
-import LogDialog from '../../../../client/components/Logs/LogDialog';
-import LogsTable from '../../../../client/components/Logs/LogsTable';
-import { UserActions, UserDevices, UserHeader, UserProfile, UserInfo } from '../../../../client/components/Users';
+/* Record the props each child component receives so we can assert what User passes down. */
+let captured = {};
+const StubChild = (name) => (props) => {
+  captured[name] = (captured[name] || []).concat(props);
+  return null;
+};
 
-import { Tab } from 'react-bootstrap';
-
-
-const memoryHistory = createMemoryHistory({});
-
-let wrapper = undefined;
-const wrapperMount = (...args) => (wrapper = mount(...args));
+const User = proxyquire('../../../../client/containers/Users/User', {
+  '../../components/TabsHeader': { '__esModule': true, default: StubChild('TabsHeader') },
+  '../../components/Logs/LogDialog': { '__esModule': true, default: StubChild('LogDialog') },
+  '../../components/Logs/LogsTable': { '__esModule': true, default: StubChild('LogsTable') },
+  '../../components/Users': {
+    UserActions: StubChild('UserActions'),
+    UserDevices: StubChild('UserDevices'),
+    UserHeader: StubChild('UserHeader'),
+    UserProfile: StubChild('UserProfile'),
+    UserInfo: StubChild('UserInfo')
+  }
+}).default;
 
 class UserWrapper extends Component {
   render() {
@@ -87,70 +94,68 @@ describe('#Client-Containers-Users-User', () => {
       }),
       settings: fromJS({ record: { settings: {} } })
     };
-    return wrapperMount(
+    return render(
       <Provider store={fakeStore(initialState)}>
-        <Router history={memoryHistory}>
-          <Route path="/" component={UserWrapper}/>
-        </Router>
+        <MemoryRouter initialEntries={['/']} initialIndex={0}>
+          <Routes>
+            <Route path="/" element={<UserWrapper/>}/>
+          </Routes>
+        </MemoryRouter>
       </Provider>
     );
   };
 
   beforeEach(() => {
-    wrapper = undefined;
+    captured = {};
     document.body.innerHTML = '';
   });
 
-  afterEach(() => {
-    if (wrapper && wrapper.unmount) wrapper.unmount();
-  });
-
-  const checkForLanguageDictionary = (component, componentType, languageDictionary) => {
-    const subComponent = component.find(componentType);
+  const checkForLanguageDictionary = (componentName, languageDictionary) => {
+    const subComponent = captured[componentName] || [];
     expect(subComponent.length).to.equal(1);
-    expect(subComponent.prop('languageDictionary')).to.deep.equal(languageDictionary);
+    expect(subComponent[0].languageDictionary).to.deep.equal(languageDictionary);
   };
 
-  const checkAllComponentsForLanguageDictionary = (component, languageDictionary) => {
-    checkForLanguageDictionary(component, UserActions, languageDictionary);
-    checkForLanguageDictionary(component, UserHeader, languageDictionary);
-    checkForLanguageDictionary(component, UserInfo, languageDictionary);
-    checkForLanguageDictionary(component, UserDevices, languageDictionary);
-    checkForLanguageDictionary(component, LogDialog, languageDictionary);
-    checkForLanguageDictionary(component, LogsTable, languageDictionary);
-    checkForLanguageDictionary(component, UserProfile, languageDictionary);
-    checkForLanguageDictionary(component, TabsHeader, languageDictionary);
+  const checkAllComponentsForLanguageDictionary = (languageDictionary) => {
+    checkForLanguageDictionary('UserActions', languageDictionary);
+    checkForLanguageDictionary('UserHeader', languageDictionary);
+    checkForLanguageDictionary('UserInfo', languageDictionary);
+    checkForLanguageDictionary('UserDevices', languageDictionary);
+    checkForLanguageDictionary('LogDialog', languageDictionary);
+    checkForLanguageDictionary('LogsTable', languageDictionary);
+    checkForLanguageDictionary('UserProfile', languageDictionary);
+    checkForLanguageDictionary('TabsHeader', languageDictionary);
   };
 
-  const checkTabs = (component, userInfoTitle, devicesTitle, logsTitle, profileTitle) => {
-    const tabs = component.find(Tab);
+  const checkTabs = (container, userInfoTitle, devicesTitle, logsTitle, profileTitle) => {
+    const tabs = container.querySelectorAll('[role="tab"]');
     expect(tabs.length).to.equal(4);
-    expect(tabs.at(0).prop('title')).to.equal(userInfoTitle);
-    expect(tabs.at(1).prop('title')).to.equal(devicesTitle);
-    expect(tabs.at(2).prop('title')).to.equal(logsTitle);
-    expect(tabs.at(3).prop('title')).to.equal(profileTitle);
+    expect(tabs[0]).to.have.trimmed.text(userInfoTitle);
+    expect(tabs[1]).to.have.trimmed.text(devicesTitle);
+    expect(tabs[2]).to.have.trimmed.text(logsTitle);
+    expect(tabs[3]).to.have.trimmed.text(profileTitle);
   };
 
-  const checkTitle = (component, title) => {
-    const titleObject = component.find('h1');
+  const checkTitle = (container, title) => {
+    const titleObject = container.querySelectorAll('h1');
     expect(titleObject.length).to.equal(1);
-    expect(titleObject.text()).to.equal(title);
+    expect(titleObject[0]).to.have.trimmed.text(title);
   };
 
   it('should render', () => {
     const component = renderComponent();
 
-    checkAllComponentsForLanguageDictionary(component, {});
-    checkTabs(component, 'User Information', 'Devices', 'Logs', 'Profile');
-    checkTitle(component, 'User Details');
+    checkAllComponentsForLanguageDictionary({});
+    checkTabs(component.container, 'User Information', 'Devices', 'Logs', 'Profile');
+    checkTitle(component.container, 'User Details');
   });
 
   it('should render not applicable language dictionary', () => {
     const component = renderComponent({ someKey: 'someValue' });
 
-    checkAllComponentsForLanguageDictionary(component, { someKey: 'someValue' });
-    checkTabs(component, 'User Information', 'Devices', 'Logs', 'Profile');
-    checkTitle(component, 'User Details');
+    checkAllComponentsForLanguageDictionary({ someKey: 'someValue' });
+    checkTabs(component.container, 'User Information', 'Devices', 'Logs', 'Profile');
+    checkTitle(component.container, 'User Details');
   });
 
   it('should render applicable language dictionary', () => {
@@ -163,8 +168,8 @@ describe('#Client-Containers-Users-User', () => {
     };
     const component = renderComponent(languageDictionary);
 
-    checkAllComponentsForLanguageDictionary(component, languageDictionary);
-    checkTabs(component, 'User Info Title', 'Devices Title', 'Logs Title', 'Profile Title');
-    checkTitle(component, 'User Details Title');
+    checkAllComponentsForLanguageDictionary(languageDictionary);
+    checkTabs(component.container, 'User Info Title', 'Devices Title', 'Logs Title', 'Profile Title');
+    checkTitle(component.container, 'User Details Title');
   });
 });

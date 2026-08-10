@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableColumn,
   TableRow
-} from 'auth0-extension-ui';
+} from '@a0/auth0-extension-ui';
 
 import './UserTable.styles.css';
 import { getValueForType } from '../../utils/display';
@@ -150,26 +150,6 @@ export default class UsersTable extends Component {
     return listFields;
   }
 
-  constructor(props) {
-    super(props);
-
-    const listFields = this.getListFields(props);
-
-    this.state = {
-      listFields
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (!_.isEqual(this.props.userFields, nextProps.userFields)) {
-      const listFields = this.getListFields(nextProps);
-
-      this.setState({
-        listFields
-      });
-    }
-  }
-
   onColumnSort(property, sortOrder) {
     const sort = {
       property,
@@ -190,7 +170,7 @@ export default class UsersTable extends Component {
     const languageDictionary = this.props.languageDictionary || {};
     const labels = languageDictionary.labels || {};
 
-    const listFields = this.state.listFields;
+    const listFields = this.getListFields(this.props);
 
     if (!users.length && !loading) {
       return (
@@ -237,7 +217,7 @@ export default class UsersTable extends Component {
                   const key = `${user.user_id}_${field.property}`;
                   if (field.property === 'picture') {
                     return (
-                      <TableCell>
+                      <TableCell key={key}>
                         <img
                           className="img-circle"
                           src={getValueForType('search', user, field, languageDictionary) || '(empty)'}

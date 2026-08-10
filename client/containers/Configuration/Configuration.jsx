@@ -1,5 +1,6 @@
-import React, { Component, PropTypes } from 'react';
-import { LoadingPanel, Error, Json } from 'auth0-extension-ui';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { LoadingPanel, Error } from '@a0/auth0-extension-ui';
 
 import connectContainer from 'redux-static';
 import { Tabs, Tab } from 'react-bootstrap';
@@ -41,51 +42,39 @@ export default connectContainer(class extends Component {
     };
   }
 
-  shouldComponentUpdate(nextProps) {
-    return this.props.scripts !== nextProps.scripts;
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.scripts) {
-      const code = this.state.code;
-      const scripts = nextProps.scripts.toJS();
-      Object.keys(scripts).forEach(scriptName => {
-        if (!code[scriptName]) {
-          code[scriptName] = scripts[scriptName].script;
-        }
-      });
-
-      this.setState({
-        code
-      });
-    }
-  }
-
-  componentWillMount = () => {
+  componentDidMount() {
     this.props.fetchScript('access');
     this.props.fetchScript('filter');
     this.props.fetchScript('create');
     this.props.fetchScript('memberships');
     this.props.fetchScript('settings');
     this.props.fetchScript('customDomain');
-  };
+  }
+
+  getCode(scripts) {
+    const code = {};
+    Object.keys(scripts).forEach(name => {
+      code[name] = this.state.code[name] !== undefined
+        ? this.state.code[name]
+        : (scripts[name].script || '');
+    });
+    return code;
+  }
 
   saveScript = (name) => () => {
-    this.props.updateScript(name, this.state.code[name]);
+    const scripts = this.props.scripts.toJS();
+    this.props.updateScript(name, this.getCode(scripts)[name]);
   };
 
   onEditorChanged = (name) => (value) => {
-    const code = this.state.code;
-    code[name] = value;
-
-    this.setState({
-      code
-    });
+    this.setState(prevState => ({
+      code: { ...prevState.code, [name]: value }
+    }));
   };
 
   render() {
-    const code = this.state.code;
     const scripts = this.props.scripts.toJS();
+    const code = this.getCode(scripts);
     const { languageDictionary, settings } = this.props;
     const originalTitle = (settings.dict && settings.dict.title) || window.config.TITLE || 'User Management';
     document.title = `${languageDictionary.configurationMenuItemText || 'Configuration'} - ${originalTitle}`;
@@ -195,7 +184,7 @@ export default connectContainer(class extends Component {
                 <LoadingPanel show={scripts.customDomain && scripts.customDomain.loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
                   <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, scripts.customDomain && scripts.customDomain.error)} />
                   <p>
-                    The <strong>Custom Domain Selection hook</strong> allows you to specify which Auth0 custom domain 
+                    The <strong>Custom Domain Selection hook</strong> allows you to specify which Auth0 custom domain
                     should be used for user-facing operations like password resets and email verifications.
                   </p>
                   <Editor

@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableColumn,
   TableRow
-} from 'auth0-extension-ui';
+} from '@a0/auth0-extension-ui';
 import getErrorMessage from '../../utils/getErrorMessage';
 
 export default class UserDevices extends Component {

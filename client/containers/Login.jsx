@@ -1,21 +1,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
-import { LoadingPanel, Confirm, Error } from 'auth0-extension-ui';
+import { Navigate } from 'react-router-dom';
+import { LoadingPanel, Confirm, Error } from '@a0/auth0-extension-ui';
 
 import { login } from '../actions/auth';
 
 class LoginContainer extends Component {
   static propTypes = {
     login: PropTypes.func.isRequired,
-    push: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
     languageDictionary: PropTypes.object.isRequired
   };
 
-  componentWillMount() {
+  componentDidMount() {
     if (this.props.auth.isAuthenticated) {
       this.props.push(this.props.auth.returnTo || '/users');
     } else if (!this.props.auth.isAuthenticating && !this.props.auth.error) {
@@ -69,4 +68,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { login, push })(LoginContainer);
+export default connect(mapStateToProps, { login })(LoginContainer);

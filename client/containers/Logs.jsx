@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, ButtonToolbar } from 'react-bootstrap';
-import { Error, LoadingPanel, TableTotals } from 'auth0-extension-ui';
+import { Error, LoadingPanel, TableTotals } from '@a0/auth0-extension-ui';
 
 import * as actions from '../actions/log';
 import LogDialog from '../components/Logs/LogDialog';
@@ -22,7 +22,7 @@ class LogsContainer extends Component {
     languageDictionary: PropTypes.object.isRequired
   };
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.fetchLogs();
   }
 

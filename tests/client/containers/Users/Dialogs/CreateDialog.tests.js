@@ -1,20 +1,13 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { mount } from 'enzyme';
+import { render, cleanup } from '@testing-library/react';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import { fromJS } from 'immutable';
-import { Modal } from 'react-bootstrap';
-
-import { Confirm } from 'auth0-extension-ui';
 
 import fakeStore from '../../../../utils/fakeStore';
 
 import CreateDialog from '../../../../../client/containers/Users/Dialogs/CreateDialog';
-
-let wrapper = undefined;
-
-const wrapperMount = (...args) => (wrapper = mount(...args))
 
 describe('#Client-Containers-Users-Dialogs-CreateDialog', () => {
 
@@ -33,7 +26,7 @@ describe('#Client-Containers-Users-Dialogs-CreateDialog', () => {
       }),
       connections: fromJS({ records: [{ name: 'connA' }] })
     };
-    return wrapperMount(
+    return render(
       <Provider store={fakeStore(initialState)}>
         <CreateDialog
           createUser={() => null}
@@ -46,31 +39,31 @@ describe('#Client-Containers-Users-Dialogs-CreateDialog', () => {
   };
 
   beforeEach(() => {
-    wrapper = undefined;
     document.body.innerHTML = '';
   });
 
   afterEach(() => {
-    if (wrapper && wrapper.unmount) wrapper.unmount();
+    cleanup();
+    document.body.innerHTML = '';
   });
 
-  const checkTitle = (component, title) => {
+  const checkTitle = (title) => {
     const modalHeader = document.querySelector('.modal-title');
     expect(modalHeader.textContent).to.equal(title);
   };
 
   it('should render', () => {
-    const component = renderComponent();
+    renderComponent();
 
-    checkTitle(component, 'Create User');
+    checkTitle('Create User');
   });
 
   it('should render using language dictionary', () => {
     const languageDictionary = {
       createDialogTitle: 'Create Dialog Title'
     };
-    const component = renderComponent(languageDictionary);
+    renderComponent(languageDictionary);
 
-    checkTitle(component, 'Create Dialog Title', languageDictionary);
+    checkTitle('Create Dialog Title');
   });
 });

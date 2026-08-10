@@ -1,18 +1,26 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
-import { reduxForm, Field } from 'redux-form';
-import { InputText, InputCombo, Multiselect, Select } from 'auth0-extension-ui';
+import { reduxForm } from 'redux-form';
+import proxyquire from 'proxyquire';
+import { InputText, InputCombo, Multiselect, Select } from '@a0/auth0-extension-ui';
 
 import fakeStore from '../../../utils/fakeStore';
-import UserFormField from '../../../../client/components/Users/UserFormField';
 
-let wrapper = undefined;
+/* Record the props the redux-form Field receives so we can assert what UserFormField passes to it. */
+let captured = [];
+const StubField = (props) => {
+  captured.push(props);
+  return null;
+};
 
-const wrapperMount = (...args) => (wrapper = mount(...args));
+const UserFormField = proxyquire(
+  '../../../../client/components/Users/UserFormField',
+  { 'redux-form': { Field: StubField } }
+).default;
 
 class TestForm extends Component {
   render() {
@@ -32,7 +40,7 @@ describe('#Client-Components-Users-UserFormField', () => {
         }
       }
     };
-    return wrapperMount(
+    return render(
       <Provider store={fakeStore(initialState)}>
         <TestFormWrapper
           field={field}
@@ -43,12 +51,8 @@ describe('#Client-Components-Users-UserFormField', () => {
   };
 
   beforeEach(() => {
-    wrapper = undefined;
+    captured = [];
     document.body.innerHTML = '';
-  });
-
-  afterEach(() => {
-    if (wrapper && wrapper.unmount) wrapper.unmount();
   });
 
   const typeMap = {
@@ -58,10 +62,8 @@ describe('#Client-Components-Users-UserFormField', () => {
     'InputSelectCombo': { type: 'select', component: Select }
   };
 
-  const checkField = (component, fieldProps, label, type, isEdit, requiredLabel) => {
+  const checkField = (fieldProps, label, type, isEdit, requiredLabel) => {
     requiredLabel = requiredLabel || ' (required)';
-    const field = component.find(Field);
-    expect(field.length).to.equal(1);
 
     const formType = isEdit ? 'edit' : 'create';
 
@@ -74,19 +76,20 @@ describe('#Client-Components-Users-UserFormField', () => {
       _.isFunction(fieldProps[formType].validationFunction))
       validation.push(fieldProps[formType].validationFunction);
 
-    expect(field.length).to.equal(1);
-    expect(field.prop('name')).to.equal(fieldProps.property);
-    expect(field.prop('type')).to.equal(typeMap[type].type);
-    if (fieldProps[formType].required) expect(field.prop('label')).to.equal(label+requiredLabel);
-    else expect(field.prop('label')).to.equal(label);
-    expect(field.prop('component')).to.equal(typeMap[type].component);
-    if (_.isFunction(targetOptions)) expect(field.prop('loadOptions')).a('function');
-    else expect(field.prop('options')).to.deep.equal(targetOptions);
+    expect(captured.length).to.equal(1);
+    const field = captured[0];
+    expect(field.name).to.equal(fieldProps.property);
+    expect(field.type).to.equal(typeMap[type].type);
+    if (fieldProps[formType].required) expect(field.label).to.equal(label + requiredLabel);
+    else expect(field.label).to.equal(label);
+    expect(field.component).to.equal(typeMap[type].component);
+    if (_.isFunction(targetOptions)) expect(field.loadOptions).a('function');
+    else expect(field.options).to.deep.equal(targetOptions);
     if (validation.length > 0) {
-      expect(field.prop('validate').length).to.deep.equal(validation.length);
-      field.prop('validate').forEach(func => expect(func).a('function'));
+      expect(field.validate.length).to.deep.equal(validation.length);
+      field.validate.forEach(func => expect(func).a('function'));
     } else {
-      expect(!field.prop('validate') || field.prop('validate').length === 0).to.be.true;
+      expect(!field.validate || field.validate.length === 0).to.be.true;
     }
   };
 
@@ -100,8 +103,8 @@ describe('#Client-Components-Users-UserFormField', () => {
       edit: true
     };
 
-    const component = renderComponent(userField, true);
-    checkField(component, userField, 'Property1', 'InputText', true);
+    const queries = renderComponent(userField, true);
+    checkField(userField, 'Property1', 'InputText', true);
   });
 
   it('should render text when requested', () => {
@@ -113,8 +116,8 @@ describe('#Client-Components-Users-UserFormField', () => {
       }
     };
 
-    const component = renderComponent(userField, true);
-    checkField(component, userField, 'Property1', 'InputText', true);
+    const queries = renderComponent(userField, true);
+    checkField(userField, 'Property1', 'InputText', true);
   });
 
   it('should render combo when requested', () => {
@@ -128,8 +131,8 @@ describe('#Client-Components-Users-UserFormField', () => {
       }
     };
 
-    const component = renderComponent(userField, false);
-    checkField(component, userField, 'Property1', 'InputCombo', false);
+    const queries = renderComponent(userField, false);
+    checkField(userField, 'Property1', 'InputCombo', false);
   });
 
   it('should render multi-combo when requested', () => {
@@ -143,8 +146,8 @@ describe('#Client-Components-Users-UserFormField', () => {
       }
     };
 
-    const component = renderComponent(userField, false);
-    checkField(component, userField, 'Property1', 'InputMultiCombo', false);
+    const queries = renderComponent(userField, false);
+    checkField(userField, 'Property1', 'InputMultiCombo', false);
   });
 
   it('should render select-combo when requested', () => {
@@ -158,8 +161,8 @@ describe('#Client-Components-Users-UserFormField', () => {
       }
     };
 
-    const component = renderComponent(userField, true);
-    checkField(component, userField, 'Property1', 'InputSelectCombo', true);
+    const queries = renderComponent(userField, true);
+    checkField(userField, 'Property1', 'InputSelectCombo', true);
   });
 
   const testFieldValidation = (type, required) => {
@@ -178,8 +181,8 @@ describe('#Client-Components-Users-UserFormField', () => {
       }
     };
 
-    const component = renderComponent(userField, true);
-    checkField(component, userField, 'Property1', type, true);
+    const queries = renderComponent(userField, true);
+    checkField(userField, 'Property1', type, true);
   };
 
   it('should render validation for text', () => {
@@ -226,8 +229,8 @@ describe('#Client-Components-Users-UserFormField', () => {
       }
     };
 
-    const component = renderComponent(userField, true);
-    checkField(component, userField, 'Property1', 'InputSelectCombo', true);
+    const queries = renderComponent(userField, true);
+    checkField(userField, 'Property1', 'InputSelectCombo', true);
   });
 
   it('should ignore validationFunction with bad type', () => {
@@ -243,8 +246,8 @@ describe('#Client-Components-Users-UserFormField', () => {
       }
     };
 
-    const component = renderComponent(userField, true);
-    checkField(component, userField, 'Property1', 'InputSelectCombo', true);
+    const queries = renderComponent(userField, true);
+    checkField(userField, 'Property1', 'InputSelectCombo', true);
   });
 
   it('required function display required notation', () => {
@@ -258,8 +261,8 @@ describe('#Client-Components-Users-UserFormField', () => {
       }
     };
 
-    const component = renderComponent(userField, true);
-    checkField(component, userField, 'Property1', 'InputText', true);
+    const queries = renderComponent(userField, true);
+    checkField(userField, 'Property1', 'InputText', true);
   });
 
   it('required function should work with languageDictionary', () => {
@@ -276,8 +279,8 @@ describe('#Client-Components-Users-UserFormField', () => {
       }
     };
 
-    const component = renderComponent(userField, true, languageDictionary);
-    checkField(component, userField, 'Property1', 'InputText', true, 'RequiredLabel');
+    const queries = renderComponent(userField, true, languageDictionary);
+    checkField(userField, 'Property1', 'InputText', true, 'RequiredLabel');
   });
 
 });

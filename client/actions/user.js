@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { push } from 'react-router-redux';
 
 import * as constants from '../constants';
+import { navigateTo } from '../router';
 import { fetchUserLogs } from './userLog';
 import { fetchUserDevices } from './userDevice';
 import { getAccessLevel } from './auth';
@@ -393,7 +393,7 @@ export function deleteUser() {
       meta: {
         userId: user_id,
         onSuccess: () => {
-          dispatch(push('/users'));
+          navigateTo('/users');
         }
       }
     });

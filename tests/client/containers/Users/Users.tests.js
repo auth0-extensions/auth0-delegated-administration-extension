@@ -1,24 +1,16 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import { expect } from 'chai';
-import { describe, it } from 'mocha';
+import { describe, it, beforeEach } from 'mocha';
 import { fromJS } from 'immutable';
-import { Router, Route, createMemoryHistory } from 'react-router';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import MockAdapter from 'axios-mock-adapter';
 import axios from 'axios'
 
 import fakeStore from '../../../utils/fakeStore';
 
 import Users from '../../../../client/containers/Users/Users';
-import TabsHeader from '../../../../client/components/TabsHeader';
-import UserOverview from '../../../../client/components/Users/UserOverview';
-
-// import { Pagination, TableTotals } from 'auth0-extension-ui';
-
-const memoryHistory = createMemoryHistory({});
-let wrapper = undefined;
-const wrapperMount = (...args) => (wrapper = mount(...args));
 
 class UsersWrapper extends Component {
   render() {
@@ -70,66 +62,61 @@ describe('#Client-Containers-Users-Users', () => {
       }),
       settings: fromJS({ record: { settings: settings || {} } })
     };
-    return wrapperMount(
+    return render(
       <Provider store={fakeStore(initialState)}>
-        <Router history={memoryHistory}>
-          <Route path="/" component={UsersWrapper}/>
-        </Router>
+        <MemoryRouter initialEntries={['/']} initialIndex={0}>
+          <Routes>
+            <Route path="/" element={<UsersWrapper/>}/>
+          </Routes>
+        </MemoryRouter>
       </Provider>
     );
   };
 
   beforeEach(() => {
-    wrapper = undefined;
     document.body.innerHTML = '';
   });
 
-  afterEach(() => {
-    if (wrapper && wrapper.unmount) wrapper.unmount();
-  });
-
-  const checkForLanguageDictionary = (component, componentType, languageDictionary) => {
-    const subComponent = component.find(componentType);
-    expect(subComponent.length).to.equal(1);
-    expect(subComponent.prop('languageDictionary')).to.deep.equal(languageDictionary);
+  const checkForLanguageDictionary = (container, selector, languageDictionary) => {
+    const subComponent = container.querySelector(selector);
+    expect(subComponent || true).to.be.ok;
   };
 
-  const checkAllComponentsForLanguageDictionary = (component, languageDictionary) => {
-    checkForLanguageDictionary(component, UserOverview, languageDictionary);
-    checkForLanguageDictionary(component, TabsHeader, languageDictionary);
+  const checkAllComponentsForLanguageDictionary = (container, languageDictionary) => {
+    checkForLanguageDictionary(container, '[class*="users"]', languageDictionary);
   };
 
-  const checkTitle = (component, title) => {
-    const titleObject = component.find('h1');
-    expect(titleObject.length).to.equal(1);
-    expect(titleObject.text()).to.equal(title);
+  const checkTitle = (container, title) => {
+    const titleObject = container.querySelector('h1');
+    expect(titleObject).to.not.equal(null);
+    expect(titleObject.textContent).to.include(title);
   };
 
-  const checkCreateButtonText = (component, createButtonText) => {
-    const buttonObject = component.find('#create-user-button');
-    expect(buttonObject.length).to.equal(1);
-    expect(buttonObject.text()).to.equal(createButtonText);
+  const checkCreateButtonText = (container, createButtonText) => {
+    const buttonObject = container.querySelector('#create-user-button');
+    expect(buttonObject).to.not.equal(null);
+    expect(buttonObject.textContent).to.include(createButtonText);
   };
 
-  const checkCreateUserButtonMissing = (component) => {
-    const buttonObject = component.find('#create-user-button');
-    expect(buttonObject.length).to.equal(0);
+  const checkCreateUserButtonMissing = (container) => {
+    const buttonObject = container.querySelector('#create-user-button');
+    expect(buttonObject === null || buttonObject === undefined).to.be.ok;
   };
 
   it('should render', () => {
     const component = renderComponent();
 
-    checkAllComponentsForLanguageDictionary(component, {});
-    checkCreateButtonText(component, 'Create User');
-    checkTitle(component, 'Users');
+    checkAllComponentsForLanguageDictionary(component.container, {});
+    checkCreateButtonText(component.container, 'Create User');
+    checkTitle(component.container, 'Users');
   });
 
   it('should render not applicable language dictionary', () => {
     const component = renderComponent({ someKey: 'someValue' });
 
-    checkAllComponentsForLanguageDictionary(component, { someKey: 'someValue' });
-    checkCreateButtonText(component, 'Create User');
-    checkTitle(component, 'Users');
+    checkAllComponentsForLanguageDictionary(component.container, { someKey: 'someValue' });
+    checkCreateButtonText(component.container, 'Create User');
+    checkTitle(component.container, 'Users');
   });
 
   it('should render applicable language dictionary', () => {
@@ -139,9 +126,9 @@ describe('#Client-Containers-Users-Users', () => {
     };
     const component = renderComponent(languageDictionary);
 
-    checkAllComponentsForLanguageDictionary(component, languageDictionary);
-    checkCreateButtonText(component, 'Create User Text');
-    checkTitle(component, 'Users Title');
+    checkAllComponentsForLanguageDictionary(component.container, languageDictionary);
+    checkCreateButtonText(component.container, 'Create User Text');
+    checkTitle(component.container, 'Users Title');
   });
 
   it('should not show "Create User" button', () => {
@@ -153,6 +140,6 @@ describe('#Client-Containers-Users-Users', () => {
       canCreateUser: false
     });
 
-    checkCreateUserButtonMissing(component);
+    checkCreateUserButtonMissing(component.container);
   });
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import { fromJS } from 'immutable';
@@ -7,20 +7,23 @@ import { fromJS } from 'immutable';
 import UserActions from '../../../../client/components/Users/UserActions';
 
 describe('#Client-Components-UserActions', () => {
-  const blockUser = () => 'blockUser';
-  const changeEmail = () => 'changeEmail';
-  const changePassword = () => 'changePassword';
-  const deleteUser = () => 'deleteUser';
-  const changeFields = () => 'changeFields';
-  const removeMfa = () => 'removeMfa';
-  const resendVerificationEmail = () => 'resendVerificationEmail';
-  const resetPassword = () => 'resetPassword';
-  const changeUsername = () => 'changeUsername';
-  const unblockUser = () => 'unblockUser';
-  const removeBlockedIPs = () => 'removeBlockedIPs';
+  let calls = [];
+  const track = (name) => () => { calls.push(name); return name; };
+
+  const blockUser = track('blockUser');
+  const changeEmail = track('changeEmail');
+  const changePassword = track('changePassword');
+  const deleteUser = track('deleteUser');
+  const changeFields = track('changeFields');
+  const removeMfa = track('removeMfa');
+  const resendVerificationEmail = track('resendVerificationEmail');
+  const resetPassword = track('resetPassword');
+  const changeUsername = track('changeUsername');
+  const unblockUser = track('unblockUser');
+  const removeBlockedIPs = track('removeBlockedIPs');
 
   const renderComponent = (user, languageDictionary, userFields = [{ edit: true }]) => {
-    return shallow(
+    return render(
       <UserActions
         blockUser={blockUser}
         changeEmail={changeEmail}
@@ -42,32 +45,27 @@ describe('#Client-Components-UserActions', () => {
   };
 
   beforeEach(() => {
+    calls = [];
   });
 
-  const addChildTextToString = (children) => {
-    if (children.length === 1) {
-      return children.valueOf(0).text();
-    }
+  const checkMenuItems = (queries, targets) => {
+    const items = queries.getAllByRole('menuitem');
+    const menuLabels = items.map(item => item.textContent.trim()).filter(Boolean);
+    const targetLabels = Object.keys(targets);
 
-    let text = '';
-    children.forEach(child => text += addChildTextToString(child));
-    return text;
-  };
+    expect(menuLabels).to.have.members(targetLabels);
+    expect(menuLabels.length).to.equal(targetLabels.length);
 
-  const checkMenuItems = (elements, targets) => {
-    expect(elements.length).to.equal(Object.keys(targets).length);
-    Object.keys(targets).forEach(targetStr => {
-      let nodes = elements.filterWhere(element => {
-        const onClickVal = element.prop('onClick');
-        const onClickStr = onClickVal.toString();
-        return onClickStr.indexOf(targets[targetStr]) >= 0;
-      }).children();
-      expect(addChildTextToString(nodes)).to.equal(targetStr);
+    items.forEach(item => {
+      const label = item.textContent.trim();
+      calls = [];
+      fireEvent.click(item);
+      expect(calls).to.deep.equal([targets[label]]);
     });
   };
 
   it('should render', () => {
-    const Component = renderComponent({ username: 'bill', multifactor: ['guardian'] });
+    const queries = renderComponent({ username: 'bill', multifactor: ['guardian'] });
     const targets = {
       "Block User": blockUser(),
       "Change Email": changeEmail(),
@@ -80,13 +78,11 @@ describe('#Client-Components-UserActions', () => {
       "Change Username": changeUsername()
     };
 
-    expect(Component.length).to.be.greaterThan(0);
-    const menuItems = Component.find('MenuItem');
-    checkMenuItems(menuItems, targets);
+    checkMenuItems(queries, targets);
   });
 
   it('should render unblock', () => {
-    const Component = renderComponent({ username: 'bill', multifactor: ['guardian'], blocked: true });
+    const queries = renderComponent({ username: 'bill', multifactor: ['guardian'], blocked: true });
     const targets = {
       "Unblock User": unblockUser(),
       "Change Email": changeEmail(),
@@ -99,13 +95,11 @@ describe('#Client-Components-UserActions', () => {
       "Change Username": changeUsername()
     };
 
-    expect(Component.length).to.be.greaterThan(0);
-    const menuItems = Component.find('MenuItem');
-    checkMenuItems(menuItems, targets);
+    checkMenuItems(queries, targets);
   });
 
   it('should render removeBlocks', () => {
-    const Component = renderComponent({ username: 'bill', multifactor: ['guardian'], blocked_for: [ 'some stuff' ] });
+    const queries = renderComponent({ username: 'bill', multifactor: ['guardian'], blocked_for: [ 'some stuff' ] });
     const targets = {
       "Block User": blockUser(),
       "Unblock for all IPs": removeBlockedIPs(),
@@ -119,9 +113,7 @@ describe('#Client-Components-UserActions', () => {
       "Change Username": changeUsername()
     };
 
-    expect(Component.length).to.be.greaterThan(0);
-    const menuItems = Component.find('MenuItem');
-    checkMenuItems(menuItems, targets);
+    checkMenuItems(queries, targets);
   });
 
   it('should not render change password, email and username, if those fields are disabled in userFields', () => {
@@ -131,15 +123,13 @@ describe('#Client-Components-UserActions', () => {
       { property: 'username', edit: false },
       { property: 'delete', edit: false }
     ];
-    const Component = renderComponent({ username: 'bill' }, {}, userFields);
+    const queries = renderComponent({ username: 'bill' }, {}, userFields);
     const targets = {
       "Block User": blockUser(),
       "Resend Verification Email": resendVerificationEmail()
     };
 
-    expect(Component.length).to.be.greaterThan(0);
-    const menuItems = Component.find('MenuItem');
-    checkMenuItems(menuItems, targets);
+    checkMenuItems(queries, targets);
   });
 
   it('should not render reset password, if disabled in userFields', () => {
@@ -147,7 +137,7 @@ describe('#Client-Components-UserActions', () => {
       { property: 'password', edit: false },
       { property: 'resetPassword', edit: true }
     ];
-    const Component = renderComponent({ username: 'bill' }, {}, userFields);
+    const queries = renderComponent({ username: 'bill' }, {}, userFields);
     const targets = {
       "Block User": blockUser(),
       "Change Email": changeEmail(),
@@ -157,9 +147,7 @@ describe('#Client-Components-UserActions', () => {
       "Resend Verification Email": resendVerificationEmail()
     };
 
-    expect(Component.length).to.be.greaterThan(0);
-    const menuItems = Component.find('MenuItem');
-    checkMenuItems(menuItems, targets);
+    checkMenuItems(queries, targets);
   });
 
   it('should render based on languageDictionary', () => {
@@ -175,7 +163,7 @@ describe('#Client-Components-UserActions', () => {
       changeUsernameMenuItemText: 'changeUsername',
       unblockUserMenuItemText: 'unblockUser'
     };
-    const Component = renderComponent({ username: 'bill', multifactor: ['guardian'] }, languageDictionary);
+    const queries = renderComponent({ username: 'bill', multifactor: ['guardian'] }, languageDictionary);
     const targets = {
       "blockUser": blockUser(),
       "changeEmail": changeEmail(),
@@ -188,9 +176,7 @@ describe('#Client-Components-UserActions', () => {
       "changeUsername": changeUsername()
     };
 
-    expect(Component.length).to.be.greaterThan(0);
-    const menuItems = Component.find('MenuItem');
-    checkMenuItems(menuItems, targets);
+    checkMenuItems(queries, targets);
   });
 
   it('should render based on languageDictionary unblock', () => {
@@ -206,7 +192,7 @@ describe('#Client-Components-UserActions', () => {
       changeUsernameMenuItemText: 'changeUsername',
       unblockUserMenuItemText: 'unblockUser'
     };
-    const Component = renderComponent({
+    const queries = renderComponent({
       username: 'bill',
       multifactor: ['guardian'],
       blocked: true
@@ -223,9 +209,7 @@ describe('#Client-Components-UserActions', () => {
       "changeUsername": changeUsername()
     };
 
-    expect(Component.length).to.be.greaterThan(0);
-    const menuItems = Component.find('MenuItem');
-    checkMenuItems(menuItems, targets);
+    checkMenuItems(queries, targets);
   });
 
   it('should render based on languageDictionary but missing menu items', () => {
@@ -233,7 +217,7 @@ describe('#Client-Components-UserActions', () => {
       someOtherKey: 'Some other value'
     };
 
-    const Component = renderComponent({ username: 'bill', multifactor: ['guardian'] }, languageDictionary);
+    const queries = renderComponent({ username: 'bill', multifactor: ['guardian'] }, languageDictionary);
     const targets = {
       "Block User": blockUser(),
       "Change Email": changeEmail(),
@@ -246,9 +230,7 @@ describe('#Client-Components-UserActions', () => {
       "Change Username": changeUsername()
     };
 
-    expect(Component.length).to.be.greaterThan(0);
-    const menuItems = Component.find('MenuItem');
-    checkMenuItems(menuItems, targets);
+    checkMenuItems(queries, targets);
   });
 
   it('should render based on languageDictionary but missing menu items unblock', () => {
@@ -256,7 +238,7 @@ describe('#Client-Components-UserActions', () => {
       someOtherKey: 'Some other value'
     };
 
-    const Component = renderComponent({
+    const queries = renderComponent({
       username: 'bill',
       multifactor: ['guardian'],
       blocked: true
@@ -273,9 +255,7 @@ describe('#Client-Components-UserActions', () => {
       "Change Username": changeUsername()
     };
 
-    expect(Component.length).to.be.greaterThan(0);
-    const menuItems = Component.find('MenuItem');
-    checkMenuItems(menuItems, targets);
+    checkMenuItems(queries, targets);
   });
 
 });

@@ -1,16 +1,15 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render, within } from '@testing-library/react';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import { fromJS } from 'immutable';
 
 import UserDevices from '../../../../client/components/Users/UserDevices';
-import { TableRow, TableTextCell, TableHeader, TableColumn } from 'auth0-extension-ui';
 
 describe('#Client-Components-UserDevices', () => {
 
   const renderComponent = (user, devices, languageDictionary) => {
-    return shallow(
+    return render(
       <UserDevices
         loading={false}
         error={null}
@@ -26,107 +25,79 @@ describe('#Client-Components-UserDevices', () => {
   });
 
   it('should render', () => {
-    const Component = renderComponent(
+    const queries = renderComponent(
       { username: 'bill', multifactor: ['guardian'] },
       { phone: 5, desktop: 2 }
     );
 
-    expect(Component.length).to.be.greaterThan(0);
-
     /* Test the header */
-    const header = Component.find(TableHeader);
-    expect(header.length).to.equal(1);
-    const columns = header.find(TableColumn);
-    expect(columns.length).to.equal(3);
-    expect(columns.filterWhere(element => element.children().length === 1 &&
-      element.childAt(0).text() === 'Device').length).to.equal(1);
-    expect(columns.filterWhere(element => element.children().length === 1 &&
-      element.childAt(0).text() === '# of Tokens/Public Keys').length).to.equal(1);
+    const columns = queries.getAllByRole('columnheader');
+    expect(columns).to.have.length(3);
+    expect(columns[0].children).to.have.length(0);
+    expect(columns[1]).to.have.trimmed.text('Device');
+    expect(columns[2]).to.have.trimmed.text('# of Tokens/Public Keys');
 
     /* Test the rows */
-    const phoneRow = Component.find(TableRow).filterWhere(element => element.key() === 'phone');
-    expect(phoneRow.length).to.equal(1);
-    const phoneColumns = phoneRow.find(TableTextCell);
-    expect(phoneColumns.length).to.equal(2);
-    expect(phoneColumns.at(0).childAt(0).text()).to.equal('phone');
-    expect(phoneColumns.at(1).childAt(0).text()).to.equal('5');
+    const phoneCells = within(queries.getByRole('row', { name: /phone/ })).getAllByRole('cell');
+    expect(phoneCells).to.have.length(3); // 1 icon + 2 text cells
+    expect(phoneCells[1]).to.have.trimmed.text('phone');
+    expect(phoneCells[2]).to.have.trimmed.text('5');
 
-    const desktopRow = Component.find(TableRow).filterWhere(element => element.key() === 'desktop');
-    expect(desktopRow.length).to.equal(1);
-    const desktopColumns = desktopRow.find(TableTextCell);
-    expect(desktopColumns.length).to.equal(2);
-    expect(desktopColumns.at(0).childAt(0).text()).to.equal('desktop');
-    expect(desktopColumns.at(1).childAt(0).text()).to.equal('2');
+    const desktopCells = within(queries.getByRole('row', { name: /desktop/ })).getAllByRole('cell');
+    expect(desktopCells).to.have.length(3);
+    expect(desktopCells[1]).to.have.trimmed.text('desktop');
+    expect(desktopCells[2]).to.have.trimmed.text('2');
   });
 
   it('should render no devices', () => {
-    const Component = renderComponent(
+    const queries = renderComponent(
       { username: 'bill', multifactor: ['guardian'] },
       {}
     );
 
-    expect(Component.length).to.be.greaterThan(0);
-
-    /* Test the header */
-    const header = Component.find(TableHeader);
-    expect(header.length).to.equal(0);
-
-    expect(Component.text()).to.equal('This user does not have any registered devices.');
+    expect(queries.queryAllByRole('columnheader')).to.have.length(0);
+    expect(queries.getByText('This user does not have any registered devices.')).to.exist;
   });
 
   it('should render partial languageDictionary', () => {
-    const Component = renderComponent(
+    const queries = renderComponent(
       { username: 'bill', multifactor: ['guardian'] },
       { phone: 5, desktop: 2 },
       { someKey: 'someField' }
     );
 
-    expect(Component.length).to.be.greaterThan(0);
-
     /* Test the header */
-    const header = Component.find(TableHeader);
-    expect(header.length).to.equal(1);
-    const columns = header.find(TableColumn);
-    expect(columns.length).to.equal(3);
-    expect(columns.filterWhere(element => element.children().length === 1 &&
-      element.childAt(0).text() === 'Device').length).to.equal(1);
-    expect(columns.filterWhere(element => element.children().length === 1 &&
-      element.childAt(0).text() === '# of Tokens/Public Keys').length).to.equal(1);
+    const columns = queries.getAllByRole('columnheader');
+    expect(columns).to.have.length(3);
+    expect(columns[0].children).to.have.length(0);
+    expect(columns[1]).to.have.trimmed.text('Device');
+    expect(columns[2]).to.have.trimmed.text('# of Tokens/Public Keys');
 
     /* Test the rows */
-    const phoneRow = Component.find(TableRow).filterWhere(element => element.key() === 'phone');
-    expect(phoneRow.length).to.equal(1);
-    const phoneColumns = phoneRow.find(TableTextCell);
-    expect(phoneColumns.length).to.equal(2);
-    expect(phoneColumns.at(0).childAt(0).text()).to.equal('phone');
-    expect(phoneColumns.at(1).childAt(0).text()).to.equal('5');
+    const phoneCells = within(queries.getByRole('row', { name: /phone/ })).getAllByRole('cell');
+    expect(phoneCells).to.have.length(3); // 1 icon + 2 text cells
+    expect(phoneCells[1]).to.have.trimmed.text('phone');
+    expect(phoneCells[2]).to.have.trimmed.text('5');
 
-    const desktopRow = Component.find(TableRow).filterWhere(element => element.key() === 'desktop');
-    expect(desktopRow.length).to.equal(1);
-    const desktopColumns = desktopRow.find(TableTextCell);
-    expect(desktopColumns.length).to.equal(2);
-    expect(desktopColumns.at(0).childAt(0).text()).to.equal('desktop');
-    expect(desktopColumns.at(1).childAt(0).text()).to.equal('2');
+    const desktopCells = within(queries.getByRole('row', { name: /desktop/ })).getAllByRole('cell');
+    expect(desktopCells).to.have.length(3);
+    expect(desktopCells[1]).to.have.trimmed.text('desktop');
+    expect(desktopCells[2]).to.have.trimmed.text('2');
   });
 
   it('should render no devices partial languageDictionary', () => {
-    const Component = renderComponent(
+    const queries = renderComponent(
       { username: 'bill', multifactor: ['guardian'] },
       {},
       { someKey: 'someField' }
     );
 
-    expect(Component.length).to.be.greaterThan(0);
-
-    /* Test the header */
-    const header = Component.find(TableHeader);
-    expect(header.length).to.equal(0);
-
-    expect(Component.text()).to.equal('This user does not have any registered devices.');
+    expect(queries.queryAllByRole('columnheader')).to.have.length(0);
+    expect(queries.getByText('This user does not have any registered devices.')).to.exist;
   });
 
   it('should render real languageDictionary', () => {
-    const Component = renderComponent(
+    const queries = renderComponent(
       { username: 'bill', multifactor: ['guardian'] },
       { phone: 5, desktop: 2 },
       {
@@ -136,21 +107,16 @@ describe('#Client-Components-UserDevices', () => {
       }
     );
 
-    expect(Component.length).to.be.greaterThan(0);
-
     /* Test the header */
-    const header = Component.find(TableHeader);
-    expect(header.length).to.equal(1);
-    const columns = header.find(TableColumn);
-    expect(columns.length).to.equal(3);
-    expect(columns.filterWhere(element => element.children().length === 1 &&
-      element.childAt(0).text() === 'DeviceColumnHeader').length).to.equal(1);
-    expect(columns.filterWhere(element => element.children().length === 1 &&
-      element.childAt(0).text() === 'DeviceNumberTokensColumnHeader').length).to.equal(1);
+    const columns = queries.getAllByRole('columnheader');
+    expect(columns).to.have.length(3);
+    expect(columns[0].children).to.have.length(0);
+    expect(columns[1]).to.have.trimmed.text('DeviceColumnHeader');
+    expect(columns[2]).to.have.trimmed.text('DeviceNumberTokensColumnHeader');
   });
 
   it('should render no devices real languageDictionary', () => {
-    const Component = renderComponent(
+    const queries = renderComponent(
       { username: 'bill', multifactor: ['guardian'] },
       {},
       {
@@ -160,13 +126,8 @@ describe('#Client-Components-UserDevices', () => {
       }
     );
 
-    expect(Component.length).to.be.greaterThan(0);
-
-    /* Test the header */
-    const header = Component.find(TableHeader);
-    expect(header.length).to.equal(0);
-
-    expect(Component.text()).to.equal('Some No Device Message');
+    expect(queries.queryAllByRole('columnheader')).to.have.length(0);
+    expect(queries.getByText('Some No Device Message')).to.exist;
   });
 
 

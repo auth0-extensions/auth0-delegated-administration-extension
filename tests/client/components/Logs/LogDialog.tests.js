@@ -1,12 +1,11 @@
 import React from 'react';
 import moment from 'moment';
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import { fromJS } from 'immutable';
 
 import LogDialog from '../../../../client/components/Logs/LogDialog';
-import { Button, Modal } from 'react-bootstrap';
 
 describe('#Client-Components-Logs-LogDialog', () => {
 
@@ -64,7 +63,7 @@ describe('#Client-Components-Logs-LogDialog', () => {
   };
 
   const renderComponent = (log, languageDictionary) => {
-    return shallow(
+    return render(
       <LogDialog
         onClose={() => 'close'}
         error={null}
@@ -80,33 +79,27 @@ describe('#Client-Components-Logs-LogDialog', () => {
   beforeEach(() => {
   });
 
-  const checkText = (component, preText, typeText, buttonText) => {
-    const title = component.find(Modal.Title);
-    expect(title.length).to.equal(1);
-    expect(title.childAt(0).text()).to.equal(preText);
-    expect(title.childAt(2).text()).to.equal(typeText);
-
-    const button = component.find(Button);
-    expect(button.length).to.equal(1);
-    expect(button.childAt(2).text()).to.equal(buttonText);
+  const checkText = (queries, preText, typeText, buttonText) => {
+    expect(queries.getByRole('heading')).to.have.trimmed.text(`${preText} - ${typeText}`);
+    expect(queries.getAllByRole('button', { name: buttonText }).length).to.be.greaterThan(0);
   };
 
   it('should render', () => {
-    const component = renderComponent(success);
+    const queries = renderComponent(success);
 
-    checkText(component, 'Log', 'Success Exchange (Client Credentials)', 'Close');
+    checkText(queries, 'Log', 'Success Exchange (Client Credentials)', 'Close');
   });
 
   it('should render custom log record', () => {
-    const component = renderComponent(custom);
+    const queries = renderComponent(custom);
 
-    checkText(component, 'Log', 'Log Record', 'Close');
+    checkText(queries, 'Log', 'Log Record', 'Close');
   });
 
   it('should render not applicable language dictionary', () => {
-    const component = renderComponent(success, { someKey: 'someValue' });
+    const queries = renderComponent(success, { someKey: 'someValue' });
 
-    checkText(component, 'Log', 'Success Exchange (Client Credentials)', 'Close');
+    checkText(queries, 'Log', 'Success Exchange (Client Credentials)', 'Close');
   });
 
   it('should render language dictionary seccft', () => {
@@ -123,9 +116,9 @@ describe('#Client-Components-Logs-LogDialog', () => {
       }
     };
 
-    const component = renderComponent(success, languageDictionary);
+    const queries = renderComponent(success, languageDictionary);
 
-    checkText(component, 'LogTextz', 'Some Title', 'Close Me');
+    checkText(queries, 'LogTextz', 'Some Title', 'Close Me');
   });
 
   it('should render language dictionary customLogRecord', () => {
@@ -143,9 +136,9 @@ describe('#Client-Components-Logs-LogDialog', () => {
       }
     };
 
-    const component = renderComponent(custom, languageDictionary);
+    const queries = renderComponent(custom, languageDictionary);
 
-    checkText(component, 'LogTextz', 'Log Record Text', 'Close Me');
+    checkText(queries, 'LogTextz', 'Log Record Text', 'Close Me');
   });
 
 });

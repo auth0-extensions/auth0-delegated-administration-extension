@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Outlet } from 'react-router-dom';
 
 import { logout } from '../actions/auth';
 import { applicationActions, connectionActions, authActions } from '../actions';
-import { LoadingPanel } from 'auth0-extension-ui';
+import { LoadingPanel } from '@a0/auth0-extension-ui';
 
 import Header from '../components/Header';
 
@@ -24,7 +25,7 @@ class App extends Component {
     languageDictionary: PropTypes.object.isRequired
   };
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.getAppSettings();
     this.props.fetchApplications();
     this.props.fetchConnections();
@@ -79,11 +80,11 @@ class App extends Component {
             <section className="content-page current">
               <div className="col-xs-12">
                 <div id="content-area" className="tab-content">
-                  {React.cloneElement(this.props.children, {
+                  <Outlet context={{
                     accessLevel: this.props.accessLevel.toJSON(),
                     appSettings: this.props.settings.toJSON(),
                     getDictValue: this.getDictValue
-                  })}
+                  }} />
                 </div>
               </div>
             </section>

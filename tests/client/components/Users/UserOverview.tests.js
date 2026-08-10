@@ -1,15 +1,24 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
+import proxyquire from 'proxyquire';
 
-import UserOverview from '../../../../client/components/Users/UserOverview';
-import LuceneSearchBar from '../../../../client/components/Users/LuceneSearchBar';
-import UsersTable from '../../../../client/components/Users/UsersTable';
+/* Record the props the child components receive so we can assert what UserOverview passes down. */
+let captured = {};
+const StubChild = (name) => (props) => {
+  captured[name] = (captured[name] || []).concat(props);
+  return null;
+};
+
+const UserOverview = proxyquire(
+  '../../../../client/components/Users/UserOverview',
+  { './': { LuceneSearchBar: StubChild('LuceneSearchBar'), UsersTable: StubChild('UsersTable') } }
+).default;
 
 describe('#Client-Components-UserOverview', () => {
   const renderComponent = (languageDictionary) => {
-    return shallow(
+    return render(
       <UserOverview
         loading={false}
         error={null}
@@ -17,7 +26,7 @@ describe('#Client-Components-UserOverview', () => {
         onSearch={() => 'onSearch'}
         onPageChange={() => 'onPageChange'}
         onColumnSort={() => 'onColumnSort'}
-        users={[{ username: 'bill'}]}
+        users={[{ username: 'bill' }]}
         userFields={[]}
         sortOrder={1}
         sortProperty={'username'}
@@ -28,6 +37,7 @@ describe('#Client-Components-UserOverview', () => {
   };
 
   beforeEach(() => {
+    captured = {};
   });
 
   it('should pass language dictionary', () => {
@@ -41,15 +51,12 @@ describe('#Client-Components-UserOverview', () => {
       notApplicableLabel: 'Not Applicable'
     };
 
-    const component = renderComponent(languageDictionary);
-    expect(component.length).to.be.greaterThan(0);
+    renderComponent(languageDictionary);
 
-    const searchBar = component.find(LuceneSearchBar);
-    expect(searchBar.length).to.equal(1);
-    expect(searchBar.prop('languageDictionary')).to.deep.equal(languageDictionary);
+    expect(captured.LuceneSearchBar).to.have.length(1);
+    expect(captured.LuceneSearchBar[0].languageDictionary).to.deep.equal(languageDictionary);
 
-    const usersTable = component.find(UsersTable);
-    expect(usersTable.length).to.equal(1);
-    expect(usersTable.prop('languageDictionary')).to.deep.equal(languageDictionary);
+    expect(captured.UsersTable).to.have.length(1);
+    expect(captured.UsersTable[0].languageDictionary).to.deep.equal(languageDictionary);
   });
 });

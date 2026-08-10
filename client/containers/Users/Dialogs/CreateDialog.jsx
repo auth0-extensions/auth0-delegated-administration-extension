@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import connectContainer from 'redux-static';
-import { Error } from 'auth0-extension-ui';
+import { Error } from '@a0/auth0-extension-ui';
 import { Modal } from 'react-bootstrap';
 
 import { userActions, scriptActions } from '../../../actions';

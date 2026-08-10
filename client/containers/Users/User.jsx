@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import connectContainer from 'redux-static';
 import { Tabs, Tab } from 'react-bootstrap';
 
@@ -40,13 +41,13 @@ export default connectContainer(class extends Component {
     logs: PropTypes.object,
     devices: PropTypes.object,
     params: PropTypes.object,
-    clearLog: React.PropTypes.func.isRequired,
-    fetchLog: React.PropTypes.func.isRequired,
-    fetchUser: React.PropTypes.func.isRequired,
-    getDictValue: React.PropTypes.func.isRequired
+    clearLog: PropTypes.func.isRequired,
+    fetchLog: PropTypes.func.isRequired,
+    fetchUser: PropTypes.func.isRequired,
+    getDictValue: PropTypes.func.isRequired
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.fetchUser(this.props.params.id);
   }
 
@@ -79,7 +80,8 @@ export default connectContainer(class extends Component {
             <div className="pull-right">
               <UserActions
                 role={role}
-                user={user}
+                user={user.get('record')}
+                loading={user.get('loading')}
                 userFields={allowedUserFields}
                 databaseConnections={databaseConnections}
                 deleteUser={this.props.requestDeleteUser}

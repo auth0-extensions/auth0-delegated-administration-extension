@@ -1,8 +1,8 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
-import { push } from 'react-router-redux';
 
 import * as constants from '../constants';
+import { navigateTo } from '../router';
 
 const webAuthOptions = {
   domain: window.config.AUTH0_CUSTOM_DOMAIN || window.config.AUTH0_DOMAIN,
@@ -151,7 +151,7 @@ const processTokens = (dispatch, apiToken, returnTo) => {
     });
 
     if (returnTo) {
-      dispatch(push(returnTo));
+      navigateTo(returnTo);
     }
 
     resolve();

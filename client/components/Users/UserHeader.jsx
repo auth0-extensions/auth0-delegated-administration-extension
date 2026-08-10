@@ -8,8 +8,8 @@ export default class UserHeader extends Component {
     error: PropTypes.string,
     loading: PropTypes.bool.isRequired,
     user: PropTypes.object.isRequired,
-    userFields: React.PropTypes.array.isRequired,
-    languageDictionary: React.PropTypes.object
+    userFields: PropTypes.array.isRequired,
+    languageDictionary: PropTypes.object
   }
 
   shouldComponentUpdate(nextProps) {

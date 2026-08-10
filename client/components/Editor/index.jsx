@@ -1,7 +1,7 @@
-import React, { Component, PropTypes } from 'react';
-import CodeMirror from 'react-codemirror';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { Controlled as CodeMirror } from 'react-codemirror2';
 
-import 'codemirror';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/addon/lint/lint';
 import 'codemirror/addon/lint/lint.css';
@@ -45,53 +45,25 @@ export default class Editor extends Component {
     }
   }
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: props.value || ''
-    };
-  }
-
-  componentDidMount() {
-    const { editor } = this.refs; // eslint-disable-line react/no-string-refs
-    editor.getCodeMirror().refresh();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.props.value !== nextProps.value) {
-      this.setState({
-        value: nextProps.value
-      });
-
-      const { editor } = this.refs; // eslint-disable-line react/no-string-refs
-      if (editor) {
-        editor.getCodeMirror().setValue(nextProps.value);
-      }
+  componentDidUpdate() {
+    if (this.editor) {
+      this.editor.refresh();
     }
   }
 
-  componentDidUpdate() {
-    const { editor } = this.refs; // eslint-disable-line react/no-string-refs
-    editor.getCodeMirror().refresh();
-  }
-
-  onChange = (code) => {
-    this.setState({
-      value: code
-    });
-
+  onBeforeChange = (editor, data, value) => {
     if (this.props.onChange) {
-      this.props.onChange(code);
+      this.props.onChange(value);
     }
   };
 
   render() {
-    const { options } = this.props;
+    const { options, value } = this.props;
     return (
       <CodeMirror
-        ref="editor" // eslint-disable-line react/no-string-refs
-        value={this.state.value || ''}
-        onChange={this.onChange}
+        editorDidMount={(editor) => { this.editor = editor; editor.refresh(); }}
+        value={value || ''}
+        onBeforeChange={this.onBeforeChange}
         options={options}
       />
     );

@@ -1,18 +1,24 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
+import proxyquire from 'proxyquire';
 
-import UserCustomFormFields from '../../../../client/components/Users/UserCustomFormFields';
-import UserFormField from '../../../../client/components/Users/UserFormField';
+/* Record the props each UserFormField receives so we can assert what UserCustomFormFields passes down. */
+let captured = [];
+const StubField = (props) => {
+  captured.push(props);
+  return null;
+};
 
-let wrapper = undefined;
-
-const wrapperShallow = (...args) => (wrapper = shallow(...args));
+const UserCustomFormFields = proxyquire(
+  '../../../../client/components/Users/UserCustomFormFields',
+  { './UserFormField': { '__esModule': true, default: StubField } }
+).default;
 
 describe('#Client-Components-Users-UserCustomFormFields', () => {
   const renderComponent = (userFields, isEditForm) => {
-    return wrapperShallow(
+    return render(
       <UserCustomFormFields
         isEditForm={isEditForm}
         fields={userFields}
@@ -21,22 +27,15 @@ describe('#Client-Components-Users-UserCustomFormFields', () => {
   };
 
   beforeEach(() => {
-    wrapper = undefined;
+    captured = [];
     document.body.innerHTML = '';
   });
 
-  afterEach(() => {
-    if (wrapper && wrapper.unmount) wrapper.unmount();
-  });
-
-  const checkFields = (component, targetFields, isEditForm) => {
-    const fields = component.find(UserFormField);
-    expect(fields.length).to.equal(targetFields.length);
-    targetFields.map((targetField, index) => {
-      const field = fields.at(index);
-      expect(field.key()).to.equal(index.toString());
-      expect(field.prop('field')).to.deep.equal(targetField);
-      expect(field.prop('isEditField')).to.equal(isEditForm);
+  const checkFields = (targetFields, isEditForm) => {
+    expect(captured.length).to.equal(targetFields.length);
+    targetFields.forEach((targetField, index) => {
+      expect(captured[index].field).to.deep.equal(targetField);
+      expect(captured[index].isEditField).to.equal(isEditForm);
     });
   };
 
@@ -49,12 +48,12 @@ describe('#Client-Components-Users-UserCustomFormFields', () => {
 
 
   it('should render edit fields', () => {
-    const component = renderComponent(dummyFields, true);
-    checkFields(component, dummyFields, true);
+    renderComponent(dummyFields, true);
+    checkFields(dummyFields, true);
   });
 
   it('should render create fields', () => {
-    const component = renderComponent(dummyFields, false);
-    checkFields(component, dummyFields, false);
+    renderComponent(dummyFields, false);
+    checkFields(dummyFields, false);
   });
 });

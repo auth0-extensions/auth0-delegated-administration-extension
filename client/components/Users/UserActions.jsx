@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { MenuItem, DropdownButton } from 'react-bootstrap';
 import _ from 'lodash';
-import { removeBlockedIPs } from "../../reducers/removeBlockedIPs";
 import { RESERVED_USER_FIELDS } from '../../constants';
 
 export default class UserActions extends Component {
@@ -11,7 +10,7 @@ export default class UserActions extends Component {
     changeEmail: PropTypes.func.isRequired,
     changePassword: PropTypes.func.isRequired,
     changeUsername: PropTypes.func.isRequired,
-    databaseConnections: PropTypes.object.isRequired,
+    databaseConnections: PropTypes.object,
     deleteUser: PropTypes.func.isRequired,
     changeFields: PropTypes.func.isRequired,
     removeMfa: PropTypes.func.isRequired,
@@ -19,54 +18,23 @@ export default class UserActions extends Component {
     resetPassword: PropTypes.func.isRequired,
     unblockUser: PropTypes.func.isRequired,
     removeBlockedIPs: PropTypes.func.isRequired,
-    user: PropTypes.object.isRequired,
+    user: PropTypes.object,
+    loading: PropTypes.bool,
     role: PropTypes.number.isRequired,
     userFields: PropTypes.array.isRequired,
     languageDictionary: PropTypes.object
   }
 
-  constructor(props) {
-    super(props);
-
-    if (props.user) {
-      this.state = {
-        user: props.user.toJS(),
-        loading: props.loading
-      };
-
-      if (props.databaseConnections) {
-        this.state.databaseConnections = props.databaseConnections.toJS();
-      }
-    } else {
-      this.state = {
-        user: null,
-        loading: false
-      };
-    }
-
-    this.state.languageDictionary = props.languageDictionary || {};
+  get user() {
+    return this.props.user ? this.props.user.toJS() : null;
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.user) {
-      const { record, loading } = nextProps.user.toJS();
-      this.setState({
-        user: record,
-        loading
-      });
-    }
+  get databaseConnections() {
+    return this.props.databaseConnections ? this.props.databaseConnections.toJS() : [];
+  }
 
-    if (nextProps.databaseConnections) {
-      this.setState({
-        databaseConnections: nextProps.databaseConnections.toJS()
-      });
-    }
-
-    if (nextProps.languageDictionary) {
-      this.setState({
-        languageDictionary: nextProps.languageDictionary
-      });
-    }
+  get languageDictionary() {
+    return this.props.languageDictionary || {};
   }
 
   getDeleteAction = (user, loading) => {
@@ -75,7 +43,7 @@ export default class UserActions extends Component {
 
     return (
       <MenuItem disabled={loading || false} onClick={this.deleteUser}>
-        {this.state.languageDictionary.deleteUserMenuItemText || 'Delete User'}
+        {this.languageDictionary.deleteUserMenuItemText || 'Delete User'}
       </MenuItem>
     );
   }
@@ -91,13 +59,13 @@ export default class UserActions extends Component {
 
     return (
       <MenuItem disabled={loading || false} onClick={this.changeFields}>
-        {this.state.languageDictionary.changeFieldsMenuItemText || 'Change Profile'}
+        {this.languageDictionary.changeFieldsMenuItemText || 'Change Profile'}
       </MenuItem>
     );
   }
 
   getResetPasswordAction = (user, loading) => {
-    if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
+    if (!this.databaseConnections || !this.databaseConnections.length) {
       return null;
     }
 
@@ -108,13 +76,13 @@ export default class UserActions extends Component {
 
     return (
       <MenuItem disabled={loading || false} onClick={this.resetPassword}>
-        {this.state.languageDictionary.resetPasswordMenuItemText || 'Reset Password'}
+        {this.languageDictionary.resetPasswordMenuItemText || 'Reset Password'}
       </MenuItem>
     );
   }
 
   getChangePasswordAction = (user, loading) => {
-    if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
+    if (!this.databaseConnections || !this.databaseConnections.length) {
       return null;
     }
 
@@ -124,13 +92,13 @@ export default class UserActions extends Component {
 
     return (
       <MenuItem disabled={loading || false} onClick={this.changePassword}>
-        {this.state.languageDictionary.changePasswordMenuItemText || 'Change Password'}
+        {this.languageDictionary.changePasswordMenuItemText || 'Change Password'}
       </MenuItem>
     );
   }
 
   getChangeUsernameAction = (user, loading) => {
-    if (!this.state.databaseConnections || !this.state.databaseConnections.length || !user.username) {
+    if (!this.databaseConnections || !this.databaseConnections.length || !user.username) {
       return null;
     }
 
@@ -140,13 +108,13 @@ export default class UserActions extends Component {
 
     return (
       <MenuItem disabled={loading || false} onClick={this.changeUsername}>
-        {this.state.languageDictionary.changeUsernameMenuItemText || 'Change Username'}
+        {this.languageDictionary.changeUsernameMenuItemText || 'Change Username'}
       </MenuItem>
     );
   }
 
   getChangeEmailAction = (user, loading) => {
-    if (!this.state.databaseConnections || !this.state.databaseConnections.length) {
+    if (!this.databaseConnections || !this.databaseConnections.length) {
       return null;
     }
 
@@ -156,13 +124,13 @@ export default class UserActions extends Component {
 
     return (
       <MenuItem disabled={loading || false} onClick={this.changeEmail}>
-        {this.state.languageDictionary.changeEmailMenuItemText || 'Change Email'}
+        {this.languageDictionary.changeEmailMenuItemText || 'Change Email'}
       </MenuItem>
     );
   }
 
   getResendEmailVerificationAction = (user, loading) => {
-    if (!this.state.databaseConnections || !this.state.databaseConnections.length || user.email_verified) {
+    if (!this.databaseConnections || !this.databaseConnections.length || user.email_verified) {
       return null;
     }
 
@@ -172,7 +140,7 @@ export default class UserActions extends Component {
 
     return (
       <MenuItem disabled={loading || false} onClick={this.resendVerificationEmail}>
-        {this.state.languageDictionary.resendVerificationEmailMenuItemText || "Resend Verification Email"}
+        {this.languageDictionary.resendVerificationEmailMenuItemText || "Resend Verification Email"}
       </MenuItem>
     );
   }
@@ -184,7 +152,7 @@ export default class UserActions extends Component {
 
     return (
       <MenuItem disabled={loading || false} onClick={this.removeMfa}>
-        {this.state.languageDictionary.removeMfaMenuItemText || "Remove MFA"}
+        {this.languageDictionary.removeMfaMenuItemText || "Remove MFA"}
       </MenuItem>
     );
   }
@@ -193,14 +161,14 @@ export default class UserActions extends Component {
     if (user.blocked) {
       return (
         <MenuItem disabled={loading || false} onClick={this.unblockUser}>
-          {this.state.languageDictionary.unblockUserMenuItemText || "Unblock User"}
+          {this.languageDictionary.unblockUserMenuItemText || "Unblock User"}
         </MenuItem>
       );
     }
 
     return (
       <MenuItem disabled={loading || false} onClick={this.blockUser}>
-        {this.state.languageDictionary.blockUserMenuItemText || "Block User"}
+        {this.languageDictionary.blockUserMenuItemText || "Block User"}
       </MenuItem>
     );
   }
@@ -209,7 +177,7 @@ export default class UserActions extends Component {
     if (user.blocked_for && user.blocked_for.length) {
       return (
         <MenuItem disabled={loading || false} onClick={this.removeBlockedIPs}>
-          {this.state.languageDictionary.removeBlockedIPsMenuItemText || "Unblock for all IPs"}
+          {this.languageDictionary.removeBlockedIPsMenuItemText || "Unblock for all IPs"}
         </MenuItem>
       );
     }
@@ -218,19 +186,20 @@ export default class UserActions extends Component {
   }
 
   deleteUser = () => {
-    this.props.deleteUser(this.state.user);
+    this.props.deleteUser(this.user);
   }
 
   changeFields = () => {
     const languageDictionary = this.props.languageDictionary;
+    const currentUser = this.user;
     const ignoreFields = [ 'username', 'memberships', 'connection', 'password', 'email', 'repeatPassword' ];
     const customFields = _.filter(this.props.userFields, field =>
       !_.includes(ignoreFields, field.property) && field.edit && _.isFunction(field.edit.display));
-    const user = Object.assign({}, this.state.user);
+    const user = Object.assign({}, currentUser);
 
     _.each(customFields, field => {
       try {
-        _.update(user, field.property, (value) => field.edit.display(this.state.user, value, languageDictionary));
+        _.update(user, field.property, (value) => field.edit.display(currentUser, value, languageDictionary));
       } catch (e) {
         /* Swallow eval errors */
         console.log(`Could not display ${field.property} because: ${e.message}`);
@@ -242,11 +211,11 @@ export default class UserActions extends Component {
   }
 
   resetPassword = () => {
-    this.props.resetPassword(this.state.user, this.state.databaseConnections[0]);
+    this.props.resetPassword(this.user, this.databaseConnections[0]);
   }
 
   changePassword = () => {
-    this.props.changePassword(this.state.user, this.state.databaseConnections[0]);
+    this.props.changePassword(this.user, this.databaseConnections[0]);
   }
 
   static getDisplayObject(user, fields) {
@@ -264,55 +233,59 @@ export default class UserActions extends Component {
   }
 
   changeUsername = () => {
+    const currentUser = this.user;
     const usernameEditFields = _.filter(this.props.userFields, field => field.property === 'username' && field.edit !== false && field.edit);
-    this.props.changeUsername(this.state.user, this.state.databaseConnections[0], UserActions.getDisplayObject(this.state.user, usernameEditFields));
+    this.props.changeUsername(currentUser, this.databaseConnections[0], UserActions.getDisplayObject(currentUser, usernameEditFields));
   }
 
   changeEmail = () => {
+    const currentUser = this.user;
     const emailEditFields = _.filter(this.props.userFields, field => field.property === 'email' && field.edit !== false && field.edit);
-    this.props.changeEmail(this.state.user, this.state.databaseConnections[0], UserActions.getDisplayObject(this.state.user, emailEditFields));
+    this.props.changeEmail(currentUser, this.databaseConnections[0], UserActions.getDisplayObject(currentUser, emailEditFields));
   }
 
   resendVerificationEmail = () => {
-    this.props.resendVerificationEmail(this.state.user, this.state.databaseConnections[0]);
+    this.props.resendVerificationEmail(this.user, this.databaseConnections[0]);
   }
 
   blockUser = () => {
-    this.props.blockUser(this.state.user);
+    this.props.blockUser(this.user);
   }
 
   unblockUser = () => {
-    this.props.unblockUser(this.state.user);
+    this.props.unblockUser(this.user);
   }
 
   removeBlockedIPs = () => {
-    this.props.removeBlockedIPs(this.state.user);
+    this.props.removeBlockedIPs(this.user);
   }
 
   removeMfa = () => {
-    this.props.removeMfa(this.state.user);
+    this.props.removeMfa(this.user);
   }
 
   render() {
-    if (!this.state.user || this.props.role < 1) {
+    const user = this.user;
+    if (!user || this.props.role < 1) {
       return null;
     }
 
-    const languageDictionary = this.props.languageDictionary || {};
+    const loading = this.props.loading || false;
+    const languageDictionary = this.languageDictionary;
     const buttonTitle = languageDictionary.userActionsButton || 'Actions';
 
     return (
       <DropdownButton bsStyle="success" title={buttonTitle} id="user-actions">
-        {this.getMultifactorAction(this.state.user, this.state.loading)}
-        {this.getBlockedAction(this.state.user, this.state.loading)}
-        {this.getUserBlocksAction(this.state.user, this.state.loading)}
-        {this.getResetPasswordAction(this.state.user, this.state.loading)}
-        {this.getResendEmailVerificationAction(this.state.user, this.state.loading)}
-        {this.getChangeUsernameAction(this.state.user, this.state.loading)}
-        {this.getChangeEmailAction(this.state.user, this.state.loading)}
-        {this.getChangePasswordAction(this.state.user, this.state.loading)}
-        {this.getChangeFieldsAction(this.state.user, this.state.loading)}
-        {this.getDeleteAction(this.state.user, this.state.loading)}
+        {this.getMultifactorAction(user, loading)}
+        {this.getBlockedAction(user, loading)}
+        {this.getUserBlocksAction(user, loading)}
+        {this.getResetPasswordAction(user, loading)}
+        {this.getResendEmailVerificationAction(user, loading)}
+        {this.getChangeUsernameAction(user, loading)}
+        {this.getChangeEmailAction(user, loading)}
+        {this.getChangePasswordAction(user, loading)}
+        {this.getChangeFieldsAction(user, loading)}
+        {this.getDeleteAction(user, loading)}
       </DropdownButton>
     );
   }

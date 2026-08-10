@@ -5,7 +5,7 @@ import connectContainer from 'redux-static';
 
 import submitForm from '../../../actions/submitForm';
 import { userActions } from '../../../actions';
-import { Error, Confirm } from 'auth0-extension-ui';
+import { Error, Confirm } from '@a0/auth0-extension-ui';
 import { useMfaField } from '../../../utils/useDefaultFields';
 import UserFieldsForm from '../../../components/Users/UserFieldsForm';
 import { getName, mapValues } from '../../../utils/display';
