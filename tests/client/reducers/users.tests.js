@@ -84,6 +84,37 @@ describe('users reducer', () => {
     );
   });
 
+  it('should handle CLEAR_USERS', () => {
+    expect(
+      users({
+        loading: true,
+        error: null,
+        records: fromJS([{ user_id: 1, name: 'test' }]),
+        total: 5,
+        pages: 2,
+        currentPage: 2,
+        searchValue: 'email:john',
+        selectedFilter: 'email',
+        sortProperty: 'name',
+        sortOrder: 1
+      }, {
+        type: constants.CLEAR_USERS
+      }).toJSON()
+    ).toEqual({
+      loading: false,
+      error: null,
+      records: fromJS([]),
+      total: 0,
+      pages: 1,
+      currentPage: 1,
+      nextPage: 1,
+      searchValue: 'email:john',
+      selectedFilter: 'email',
+      sortProperty: 'name',
+      sortOrder: 1
+    });
+  });
+
   it('should handle FETCH_USERS_REJECTED', () => {
     expect(
       users(initialState, {

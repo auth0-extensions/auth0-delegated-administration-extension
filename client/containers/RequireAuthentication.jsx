@@ -25,7 +25,10 @@ export default function RequireAuthentication(InnerComponent) {
         if (!this.props.location) {
           this.props.push('/login');
         } else {
-          this.props.push(`/login?returnUrl=${this.props.location.pathname}${this.props.location.search ? this.props.location.search : ''}`);
+          // Encode the full return path so nested query params (e.g. search & filterBy)
+          // are not parsed as separate /login query params after the Auth0 redirect.
+          const returnPath = `${this.props.location.pathname}${this.props.location.search || ''}`;
+          this.props.push(`/login?returnUrl=${encodeURIComponent(returnPath)}`);
         }
       }
 

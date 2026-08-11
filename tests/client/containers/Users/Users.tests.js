@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Provider } from 'react-redux';
 import { mount } from 'enzyme';
 import { expect } from 'chai';
@@ -10,7 +10,7 @@ import axios from 'axios'
 
 import fakeStore from '../../../utils/fakeStore';
 
-import Users from '../../../../client/containers/Users/Users';
+import UsersContainer from '../../../../client/containers/Users/Users';
 import TabsHeader from '../../../../client/components/TabsHeader';
 import UserOverview from '../../../../client/components/Users/UserOverview';
 
@@ -20,12 +20,6 @@ const memoryHistory = createMemoryHistory({});
 let wrapper = undefined;
 const wrapperMount = (...args) => (wrapper = mount(...args));
 
-class UsersWrapper extends Component {
-  render() {
-    return <Users
-    />
-  }
-}
 
 describe('#Client-Containers-Users-Users', () => {
   let stub;
@@ -40,8 +34,8 @@ describe('#Client-Containers-Users-Users', () => {
       stub.restore();
   });
 
-
-  const renderComponent = (languageDictionary, settings = {}) => {
+  const renderComponent = (languageDictionary, settings = {}, route = '/users') => {
+    memoryHistory.push(route);
     const initialState = {
       connections: fromJS({ records: [{name: 'connA'}]}),
       accessLevel: fromJS({ record: { role: 1 } }),
@@ -73,7 +67,7 @@ describe('#Client-Containers-Users-Users', () => {
     return wrapperMount(
       <Provider store={fakeStore(initialState)}>
         <Router history={memoryHistory}>
-          <Route path="/" component={UsersWrapper}/>
+          <Route path="/users" component={UsersContainer} />
         </Router>
       </Provider>
     );
@@ -116,6 +110,21 @@ describe('#Client-Containers-Users-Users', () => {
     expect(buttonObject.length).to.equal(0);
   };
 
+  const checkSearchValidationError = (component, message) => {
+    const userOverview = component.find(UserOverview);
+    expect(userOverview.length).to.equal(1);
+    expect(userOverview.prop('error')).to.deep.equal({
+      searchValidation: true,
+      message
+    });
+  };
+
+  const checkNoSearchValidationError = (component) => {
+    const userOverview = component.find(UserOverview);
+    expect(userOverview.length).to.equal(1);
+    expect(userOverview.prop('error')).to.equal(null);
+  };
+
   it('should render', () => {
     const component = renderComponent();
 
@@ -154,5 +163,90 @@ describe('#Client-Containers-Users-Users', () => {
     });
 
     checkCreateUserButtonMissing(component);
+  });
+
+  it('should fetch users using a valid Lucene search query from the URL', () => {
+    stub.onGet('/api/users').reply((config) => {
+      expect(config.params.search).to.equal('email:"john@doe.com"');
+      return [200, { users: [], total: 0 }];
+    });
+    const component = renderComponent({}, {}, '/users?search=email%3A%22john%40doe.com%22');
+    checkNoSearchValidationError(component);
+  });
+
+  it('should fetch users when the URL has no search query', () => {
+    stub.onGet('/api/users').reply((config) => {
+      expect(config.params.search).to.equal('');
+      return [200, { users: [], total: 0 }];
+    });
+    const component = renderComponent();
+    checkNoSearchValidationError(component);
+  });
+
+  it('should fetch users using a field search from the URL when filterable user fields are configured', () => {
+    stub.onGet('/api/users').reply((config) => {
+      expect(config.params.search).to.equal('134');
+      expect(config.params.filterBy).to.equal('app_metadata.contactId');
+      return [200, { users: [], total: 0 }];
+    });
+    const component = renderComponent(
+      {},
+      {
+        userFields: [
+          {
+            label: 'Contact ID',
+            property: 'app_metadata.contactId',
+            search: { filter: true }
+          }
+        ]
+      },
+      '/users?search=134&filterBy=app_metadata.contactId'
+    );
+    checkNoSearchValidationError(component);
+  });
+
+  it('should show an error for an invalid lucene search query from the URL', () => {
+    const component = renderComponent({}, {}, '/users?search=foo)%20OR%20(user_id%3Aevil');
+    checkSearchValidationError(component, 'Invalid Lucene search syntax');
+  });
+
+  it('should show an error for a stale field search URL when filterBy is no longer configured', () => {
+    const component = renderComponent(
+      {},
+      {
+        userFields: [
+          {
+            label: 'Contact ID',
+            property: 'app_metadata.contactId',
+            search: { filter: true }
+          }
+        ]
+      },
+      '/users?search=134&filterBy=app_metadata.removed'
+    );
+    checkSearchValidationError(
+      component,
+      'Unsupported filter field in the URL "app_metadata.removed"'
+    );
+  });
+
+  it('should show an error when a field search URL omits filterBy', () => {
+    const component = renderComponent(
+      {},
+      {
+        userFields: [
+          {
+            label: 'Contact ID',
+            property: 'app_metadata.contactId',
+            search: { filter: true }
+          }
+        ]
+      },
+      '/users?search=134'
+    );
+    checkSearchValidationError(
+      component,
+      'Filter field is required when search term is present in the URL'
+    );
   });
 });
