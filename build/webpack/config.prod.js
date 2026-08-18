@@ -37,8 +37,7 @@ config.module = {
       test: /\.css$/,
       use: [
         MiniCssExtractPlugin.loader,
-        'css-loader',
-        path.resolve(__dirname, './fix-extension-ui-css-loader.js')
+        'css-loader'
       ]
     },
     {

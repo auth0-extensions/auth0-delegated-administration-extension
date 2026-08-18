@@ -126,7 +126,7 @@
   },
   "snyk": true,
   "dependencies": {
-    "@a0/auth0-extension-ui": "1.0.1",
+    "@a0/auth0-extension-ui": "^1.0.2",
     "async": "^3.2.4",
     "auth0": "3.5.0",
     "auth0-extension-express-tools": "2.1.0",
