@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { Error, LoadingPanel, TableTotals, SearchBar } from '@a0/auth0-extension-ui';
+import { LoadingPanel, TableTotals, SearchBar } from '@a0/auth0-extension-ui';
+import Error from '../Error';
 
 import { LuceneSearchBar, UsersTable } from './';
 import getErrorMessage from '../../utils/getErrorMessage';

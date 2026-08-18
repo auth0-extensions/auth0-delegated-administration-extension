@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Navigate } from 'react-router-dom';
-import { LoadingPanel, Confirm, Error } from '@a0/auth0-extension-ui';
+import { LoadingPanel, Confirm } from '@a0/auth0-extension-ui';
+import Error from '../components/Error';
 
 import { login } from '../actions/auth';
 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { LoadingPanel, Error } from '@a0/auth0-extension-ui';
+import { LoadingPanel } from '@a0/auth0-extension-ui';
+import Error from '../../components/Error';
 
 import connectContainer from 'redux-static';
 import { Tabs, Tab } from 'react-bootstrap';

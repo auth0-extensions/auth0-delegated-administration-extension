@@ -2,7 +2,8 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Modal } from 'react-bootstrap';
-import { Error, Json, LoadingPanel } from '@a0/auth0-extension-ui';
+import { Json, LoadingPanel } from '@a0/auth0-extension-ui';
+import Error from '../Error';
 
 import getErrorMessage from '../../utils/getErrorMessage.js';
 
