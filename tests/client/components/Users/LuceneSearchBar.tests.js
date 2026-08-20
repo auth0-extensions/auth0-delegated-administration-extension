@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
@@ -7,7 +7,7 @@ import SearchBar from '../../../../client/components/Users/LuceneSearchBar';
 
 describe('#Client-Components-LuceneSearchBar', () => {
   const renderComponent = (languageDictionary) => {
-    return shallow(
+    return render(
       <SearchBar
         enabled={false}
         onReset={() => true}
@@ -21,10 +21,9 @@ describe('#Client-Components-LuceneSearchBar', () => {
   });
 
   it('should render', () => {
-    const Component = renderComponent();
+    const { getByPlaceholderText } = renderComponent();
 
-    expect(Component.length).to.be.greaterThan(0);
-    expect(Component.find('input').prop('placeholder')).to.equal('Search for users using the Lucene syntax');
+    expect(getByPlaceholderText('Search for users using the Lucene syntax')).to.exist;
   });
 
   it('should render based on languageDictionary', () => {
@@ -32,10 +31,9 @@ describe('#Client-Components-LuceneSearchBar', () => {
       searchBarPlaceholder: 'Do search a different way'
     };
 
-    const Component = renderComponent(languageDictionary);
+    const { getByPlaceholderText } = renderComponent(languageDictionary);
 
-    expect(Component.length).to.be.greaterThan(0);
-    expect(Component.find('input').prop('placeholder')).to.equal(languageDictionary.searchBarPlaceholder);
+    expect(getByPlaceholderText(languageDictionary.searchBarPlaceholder)).to.exist;
   });
 
   it('should render based on languageDictionary but missing loginsCountLabel', () => {
@@ -43,9 +41,8 @@ describe('#Client-Components-LuceneSearchBar', () => {
       someOtherKey: 'Some other value'
     };
 
-    const Component = renderComponent(languageDictionary);
+    const { getByPlaceholderText } = renderComponent(languageDictionary);
 
-    expect(Component.length).to.be.greaterThan(0);
-    expect(Component.find('input').prop('placeholder')).to.equal('Search for users using the Lucene syntax');
+    expect(getByPlaceholderText('Search for users using the Lucene syntax')).to.exist;
   });
 });

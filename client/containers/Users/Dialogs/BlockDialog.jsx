@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import connectContainer from 'redux-static';
-import { Error, Confirm } from 'auth0-extension-ui';
+import { Confirm } from '@a0/auth0-extension-ui';
+import Error from '../../../components/Error';
 
 import { userActions } from '../../../actions';
 import getDialogMessage from './getDialogMessage';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import { fromJS } from 'immutable';
@@ -13,7 +13,7 @@ describe('#Client-Components-UserHeader', () => {
       email: 'bill@mostek.com'
     };
 
-    return shallow(
+    return render(
       <UserHeader
         error={null}
         loading={false}
@@ -28,10 +28,9 @@ describe('#Client-Components-UserHeader', () => {
   });
 
   it('should render', () => {
-    const Component = renderComponent();
+    const { getByText } = renderComponent();
 
-    expect(Component.length).to.be.greaterThan(0);
-    expect(Component.find('span.lined-text').text()).to.equal('Logins Count:');
+    expect(getByText('Logins Count:')).to.exist;
   });
 
   it('should render based on languageDictionary', () => {
@@ -39,10 +38,9 @@ describe('#Client-Components-UserHeader', () => {
       loginsCountLabel: 'Some Logins Count Label:'
     };
 
-    const Component = renderComponent(languageDictionary);
+    const { getByText } = renderComponent(languageDictionary);
 
-    expect(Component.length).to.be.greaterThan(0);
-    expect(Component.find('span.lined-text').text()).to.equal(languageDictionary.loginsCountLabel);
+    expect(getByText(languageDictionary.loginsCountLabel)).to.exist;
   });
 
   it('should render based on languageDictionary but missing loginsCountLabel', () => {
@@ -50,9 +48,8 @@ describe('#Client-Components-UserHeader', () => {
       someOtherKey: 'Some Logins Count Label:'
     };
 
-    const Component = renderComponent(languageDictionary);
+    const { getByText } = renderComponent(languageDictionary);
 
-    expect(Component.length).to.be.greaterThan(0);
-    expect(Component.find('span.lined-text').text()).to.equal('Logins Count:');
+    expect(getByText('Logins Count:')).to.exist;
   });
 });

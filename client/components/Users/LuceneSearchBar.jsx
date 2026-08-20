@@ -1,4 +1,3 @@
-import { findDOMNode } from 'react-dom';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
@@ -15,12 +14,13 @@ export default class SearchBar extends Component {
   constructor (props) {
     super(props);
     this.state = {searchValue: props.searchValue}
+    this.searchRef = React.createRef();
     this.handleChange = this.handleChange.bind(this);
   }
 
   onKeyPress = (e) => {
     if (e.key === 'Enter') {
-      this.props.onSearch(findDOMNode(this.refs.search).value);
+      this.props.onSearch(this.searchRef.current.value);
     }
   }
 
@@ -30,7 +30,9 @@ export default class SearchBar extends Component {
 
   onResetSearch = () => {
     this.setState({searchValue: ''});
-    findDOMNode(this.refs.search).value = '';
+    if (this.searchRef.current) {
+      this.searchRef.current.value = '';
+    }
     this.props.onReset();
   }
 
@@ -58,7 +60,7 @@ export default class SearchBar extends Component {
             <span className="search-area">
               <i className="icon-budicon-489"></i>
               <input
-                className="user-input" type="text" ref="search"
+                className="user-input" type="text" ref={this.searchRef}
                 placeholder={languageDictionary.searchBarPlaceholder || 'Search for users using the Lucene syntax'}
                 spellCheck="false" style={{ marginLeft: '10px' }} onChange={this.handleChange} onKeyPress={this.onKeyPress} value={this.state.searchValue} id={this.props.inputId || ''}
               />

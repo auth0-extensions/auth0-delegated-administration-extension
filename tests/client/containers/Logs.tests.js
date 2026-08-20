@@ -1,25 +1,29 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import { expect } from 'chai';
-import { describe, it } from 'mocha';
+import { describe, it, beforeEach } from 'mocha';
 import { fromJS } from 'immutable';
-import { Router, Route, createMemoryHistory } from 'react-router';
-import { Button } from 'react-bootstrap';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import moment from 'moment';
 import MockAdapter from 'axios-mock-adapter';
 import axios from 'axios'
+import proxyquire from 'proxyquire';
 
 import fakeStore from '../../utils/fakeStore';
 
-import Logs from '../../../client/containers/Logs';
-import TabsHeader from '../../../client/components/TabsHeader';
-import LogsTable from '../../../client/components/Logs/LogsTable';
-import LogDialog from '../../../client/components/Logs/LogDialog';
+/* Record the props each child component receives so we can assert what Logs passes down. */
+let captured = {};
+const StubChild = (name) => (props) => {
+  captured[name] = (captured[name] || []).concat(props);
+  return null;
+};
 
-let wrapper = undefined;
-const wrapperMount = (...args) => (wrapper = mount(...args));
-const memoryHistory = createMemoryHistory({});
+const Logs = proxyquire('../../../client/containers/Logs', {
+  '../components/Logs/LogDialog': { '__esModule': true, default: StubChild('LogDialog') },
+  '../components/Logs/LogsTable': { '__esModule': true, default: StubChild('LogsTable') },
+  '../components/TabsHeader': { '__esModule': true, default: StubChild('TabsHeader') }
+}).default;
 
 class LogsWrapper extends Component {
   render() {
@@ -76,55 +80,53 @@ describe('#Client-Containers-Logs', () => {
       }),
       settings: fromJS({ loading: false, record: { settings: {} } })
     };
-    return wrapperMount(
+    return render(
       <Provider store={fakeStore(initialState)}>
-        <Router history={memoryHistory}>
-          <Route path="/" component={LogsWrapper}/>
-        </Router>
+        <MemoryRouter>
+          <Routes>
+            <Route path="/" element={<LogsWrapper/>}/>
+          </Routes>
+        </MemoryRouter>
       </Provider>
     );
   };
 
   beforeEach(() => {
-    wrapper = undefined;
+    captured = {};
     document.body.innerHTML = '';
   });
 
-  afterEach(() => {
-    if (wrapper && wrapper.unmount) wrapper.unmount();
-  });
-
-  const checkForLanguageDictionary = (component, componentType, languageDictionary) => {
-    const subComponent = component.find(componentType);
+  const checkForLanguageDictionary = (componentName, languageDictionary) => {
+    const subComponent = captured[componentName] || [];
     expect(subComponent.length).to.equal(1);
-    expect(subComponent.prop('languageDictionary')).to.deep.equal(languageDictionary);
+    expect(subComponent[0].languageDictionary).to.deep.equal(languageDictionary);
   };
 
-  const checkAllComponentsForLanguageDictionary = (component, languageDictionary) => {
-    checkForLanguageDictionary(component, LogDialog, languageDictionary);
-    checkForLanguageDictionary(component, LogsTable, languageDictionary);
-    checkForLanguageDictionary(component, TabsHeader, languageDictionary);
+  const checkAllComponentsForLanguageDictionary = (languageDictionary) => {
+    checkForLanguageDictionary('LogDialog', languageDictionary);
+    checkForLanguageDictionary('LogsTable', languageDictionary);
+    checkForLanguageDictionary('TabsHeader', languageDictionary);
   };
 
-  const checkButtons = (component, refreshText, loadMoreText) => {
-    const buttons = component.find(Button);
+  const checkButtons = (container, refreshText, loadMoreText) => {
+    const buttons = container.querySelectorAll('button');
     expect(buttons.length).to.equal(2);
-    expect(buttons.at(0).text()).to.equal(' '+refreshText);
-    expect(buttons.at(1).text()).to.equal(' '+loadMoreText);
+    expect(buttons[0]).to.have.trimmed.text(refreshText);
+    expect(buttons[1]).to.have.trimmed.text(loadMoreText);
   };
 
   it('should render', () => {
     const component = renderComponent();
 
-    checkAllComponentsForLanguageDictionary(component, {});
-    checkButtons(component, 'Refresh', 'Load More');
+    checkAllComponentsForLanguageDictionary({});
+    checkButtons(component.container, 'Refresh', 'Load More');
   });
 
   it('should render not applicable language dictionary', () => {
     const component = renderComponent({ someKey: 'someValue' });
 
-    checkAllComponentsForLanguageDictionary(component, { someKey: 'someValue' });
-    checkButtons(component, 'Refresh', 'Load More');
+    checkAllComponentsForLanguageDictionary({ someKey: 'someValue' });
+    checkButtons(component.container, 'Refresh', 'Load More');
   });
 
   it('should render applicable language dictionary', () => {
@@ -135,7 +137,7 @@ describe('#Client-Containers-Logs', () => {
 
     const component = renderComponent(languageDictionary);
 
-    checkAllComponentsForLanguageDictionary(component, languageDictionary);
-    checkButtons(component, 'Refresh Text', 'Load More Text');
+    checkAllComponentsForLanguageDictionary(languageDictionary);
+    checkButtons(component.container, 'Refresh Text', 'Load More Text');
   });
 });

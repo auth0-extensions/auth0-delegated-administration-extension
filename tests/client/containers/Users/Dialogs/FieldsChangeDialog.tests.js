@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { mount } from 'enzyme';
+import { render, cleanup } from '@testing-library/react';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import { fromJS } from 'immutable';
@@ -8,10 +8,6 @@ import { fromJS } from 'immutable';
 import fakeStore from '../../../../utils/fakeStore';
 
 import FieldsChangeDialog from '../../../../../client/containers/Users/Dialogs/FieldsChangeDialog';
-
-let wrapper = undefined;
-
-const wrapperMount = (...args) => (wrapper = mount(...args))
 
 describe('#Client-Containers-Users-Dialogs-FieldsChangeDialog', () => {
 
@@ -28,7 +24,7 @@ describe('#Client-Containers-Users-Dialogs-FieldsChangeDialog', () => {
         record: languageDictionary || {}
       })
     };
-    return wrapperMount(
+    return render(
       <Provider store={fakeStore(initialState)}>
         <FieldsChangeDialog
           cancelChangeFields={() => null}
@@ -39,31 +35,31 @@ describe('#Client-Containers-Users-Dialogs-FieldsChangeDialog', () => {
   };
 
   beforeEach(() => {
-    wrapper = undefined;
     document.body.innerHTML = '';
   });
 
   afterEach(() => {
-    if (wrapper && wrapper.unmount) wrapper.unmount();
+    cleanup();
+    document.body.innerHTML = '';
   });
 
-  const checkTitle = (component, title) => {
+  const checkTitle = (title) => {
     const modalHeader = document.querySelector('.modal-title');
     expect(modalHeader.textContent).to.equal(title);
   };
 
   it('should render', () => {
-    const component = renderComponent();
+    renderComponent();
 
-    checkTitle(component, 'Change Profile');
+    checkTitle('Change Profile');
   });
 
   it('should render using language dictionary', () => {
     const languageDictionary = {
       changeProfileDialogTitle: 'Change Profile Title'
     };
-    const component = renderComponent(languageDictionary);
+    renderComponent(languageDictionary);
 
-    checkTitle(component, 'Change Profile Title', languageDictionary);
+    checkTitle('Change Profile Title');
   });
 });

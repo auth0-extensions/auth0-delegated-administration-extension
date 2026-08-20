@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Error, LoadingPanel } from 'auth0-extension-ui';
+import { LoadingPanel } from '@a0/auth0-extension-ui';
+import Error from '../Error';
 
 import './UserInfo.styles.css';
 import UserInfoField from './UserInfoField';

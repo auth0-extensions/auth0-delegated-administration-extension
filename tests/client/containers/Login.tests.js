@@ -1,17 +1,13 @@
 import React  from 'react';
 import { Provider } from 'react-redux';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import { expect } from 'chai';
-import { describe, it } from 'mocha';
+import { describe, it, beforeEach } from 'mocha';
 import { fromJS } from 'immutable';
 
 import fakeStore from '../../utils/fakeStore';
 
 import Login from '../../../client/containers/Login';
-import { Confirm } from 'auth0-extension-ui';
-
-let wrapper = undefined;
-const wrapperMount = (...args) => (wrapper = mount(...args));
 
 describe('#Client-Containers-Login', () => {
 
@@ -30,7 +26,7 @@ describe('#Client-Containers-Login', () => {
       }),
       settings: fromJS({ loading: false, record: { settings: {} } })
     };
-    return wrapperMount(
+    return render(
       <Provider store={fakeStore(initialState)}>
         <Login></Login>
       </Provider>
@@ -38,20 +34,15 @@ describe('#Client-Containers-Login', () => {
   };
 
   beforeEach(() => {
-    wrapper = undefined;
     document.body.innerHTML = '';
   });
 
-  afterEach(() => {
-    if (wrapper && wrapper.unmount) wrapper.unmount();
-  });
-
-  const checkErrorConfirm = (component, confirmTitle, confirmButtonText) => {
-    const confirm = component.find(Confirm);
+  const checkErrorConfirm = (container, confirmTitle, confirmButtonText) => {
+    const confirm = document.body.querySelectorAll('.login-error');
     if (confirmTitle) {
       expect(confirm.length).to.equal(1);
-      expect(confirm.prop('confirmMessage')).to.equal(confirmButtonText);
-      expect(confirm.prop('title')).to.equal(confirmTitle);
+      expect(confirm[0].querySelector('.modal-title')).to.have.trimmed.text(confirmTitle);
+      expect(confirm[0].querySelector('.button-confirm')).to.have.trimmed.text(confirmButtonText);
     } else {
       expect(confirm.length).to.equal(0);
     }
@@ -60,19 +51,19 @@ describe('#Client-Containers-Login', () => {
   it('should render', () => {
     const component = renderComponent();
 
-    checkErrorConfirm(component);
+    checkErrorConfirm(component.container);
   });
 
   it('should render error confirm', () => {
     const component = renderComponent('some error');
 
-    checkErrorConfirm(component, 'Login Error', 'Login');
+    checkErrorConfirm(component.container, 'Login Error', 'Login');
   });
 
   it('should render error confirm not applicable language dictionary', () => {
     const component = renderComponent('some error', { someKey: 'someValue' });
 
-    checkErrorConfirm(component, 'Login Error', 'Login');
+    checkErrorConfirm(component.container, 'Login Error', 'Login');
   });
 
   it('should render error confirm applicable language dictionary', () => {
@@ -83,6 +74,6 @@ describe('#Client-Containers-Login', () => {
 
     const component = renderComponent('Some Error', languageDictionary);
 
-    checkErrorConfirm(component, 'Login Error Title', 'Login Button');
+    checkErrorConfirm(component.container, 'Login Error Title', 'Login Button');
   });
 });

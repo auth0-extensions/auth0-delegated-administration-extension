@@ -1,4 +1,4 @@
-import createLogger from 'redux-logger';
+import { createLogger } from 'redux-logger';
 import thunkMiddleware from 'redux-thunk';
 import promiseMiddleware from 'redux-promise-middleware';
 import { compose, createStore, applyMiddleware } from 'redux';
@@ -6,13 +6,12 @@ import { compose, createStore, applyMiddleware } from 'redux';
 import rootReducer from '../reducers';
 import normalizeErrorMiddleware from '../middlewares/normalizeErrorMiddleware';
 import promiseSuccessMiddleware from '../middlewares/promiseSuccessMiddleware';
-import DevTools from '../containers/DevTools';
 
 
 export default function configureStore(middlewares, initialState = { }) {
   const pipeline = [
     applyMiddleware(
-      promiseMiddleware(),
+      promiseMiddleware,
       thunkMiddleware,
       normalizeErrorMiddleware(),
       promiseSuccessMiddleware(),
@@ -23,11 +22,9 @@ export default function configureStore(middlewares, initialState = { }) {
     )
   ];
 
-  if (process.env.NODE_ENV !== 'production') {
-    pipeline.push(DevTools.instrument());
-  }
+  const composeEnhancers = (process.env.NODE_ENV !== 'production' && typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
 
-  const finalCreateStore = compose(...pipeline)(createStore);
+  const finalCreateStore = composeEnhancers(...pipeline)(createStore);
   const store = finalCreateStore(rootReducer, initialState);
 
   // Enable Webpack hot module replacement for reducers.

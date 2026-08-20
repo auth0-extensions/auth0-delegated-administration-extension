@@ -1,19 +1,16 @@
 import React  from 'react';
 import { Provider } from 'react-redux';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import { expect } from 'chai';
 import { describe, it} from 'mocha';
 import { fromJS } from 'immutable';
+import { MemoryRouter } from 'react-router-dom';
 import MockAdapter from 'axios-mock-adapter';
 import axios from 'axios'
 
 import fakeStore from '../../utils/fakeStore';
 
 import App from '../../../client/containers/App';
-import Header from '../../../client/components/Header';
-
-let wrapper = undefined;
-const wrapperMount = (...args) => (wrapper = mount(...args));
 
 describe('#Client-Containers-App', () => {
   let stub;
@@ -43,41 +40,38 @@ describe('#Client-Containers-App', () => {
       }),
       settings: fromJS({ loading: false, record: { settings: {} } })
     };
-    return wrapperMount(
+    return render(
       <Provider store={fakeStore(initialState)}>
-        <App><p>Some Child</p></App>
+        <MemoryRouter>
+          <App><p>Some Child</p></App>
+        </MemoryRouter>
       </Provider>
     );
   };
 
   beforeEach(() => {
-    wrapper = undefined;
     document.body.innerHTML = '';
   });
 
-  afterEach(() => {
-    if (wrapper && wrapper.unmount) wrapper.unmount();
-  });
-
-  const checkForLanguageDictionary = (component, componentType, languageDictionary) => {
-    const subComponent = component.find(componentType);
-    expect(subComponent.length).to.equal(1);
-    expect(subComponent.prop('languageDictionary')).to.deep.equal(languageDictionary);
+  const checkForLanguageDictionary = (component, languageDictionary) => {
+    expect(component).to.not.equal(null);
+    const logout = component.querySelector('a[role="menuitem"]');
+    expect(logout.textContent.trim()).to.equal(languageDictionary.logoutMenuItemText || 'Logout');
   };
 
-  const checkAllComponentsForLanguageDictionary = (component, languageDictionary) => {
-    checkForLanguageDictionary(component, Header, languageDictionary);
+  const checkAllComponentsForLanguageDictionary = (container, languageDictionary) => {
+    checkForLanguageDictionary(container.querySelector('header.dashboard-header'), languageDictionary);
   };
 
   it('should render', () => {
-    const component = renderComponent();
+    const { container } = renderComponent();
 
-    checkAllComponentsForLanguageDictionary(component, {});
+    checkAllComponentsForLanguageDictionary(container, {});
   });
 
   it('should render not applicable language dictionary', () => {
-    const component = renderComponent({ someKey: 'someValue' });
+    const { container } = renderComponent({ someKey: 'someValue' });
 
-    checkAllComponentsForLanguageDictionary(component, { someKey: 'someValue' });
+    checkAllComponentsForLanguageDictionary(container, { someKey: 'someValue' });
   });
 });

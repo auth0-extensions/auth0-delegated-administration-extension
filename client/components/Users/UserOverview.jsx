@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { findDOMNode } from 'react-dom';
 import _ from 'lodash';
-import { Error, LoadingPanel, TableTotals, SearchBar } from 'auth0-extension-ui';
+import { LoadingPanel, TableTotals, SearchBar } from '@a0/auth0-extension-ui';
+import Error from '../Error';
 
 import { LuceneSearchBar, UsersTable } from './';
 import getErrorMessage from '../../utils/getErrorMessage';
@@ -46,6 +46,7 @@ export default class UserOverview extends React.Component {
       selectedFilter: this.defaultFilter
     };
 
+    this.searchResultsRef = React.createRef();
     this.onKeyPress = this.onKeyPress.bind(this);
     this.onReset = this.onReset.bind(this);
     this.onHandleOptionChange = this.onHandleOptionChange.bind(this);
@@ -78,9 +79,10 @@ export default class UserOverview extends React.Component {
   }
 
   focusSearchResults = () => {
-    const searchResults = findDOMNode(this.refs.searchResults);
+    const searchResults = this.searchResultsRef.current;
+    if (!searchResults) return;
     const element = searchResults.querySelector('a') || searchResults.querySelector('label');
-    element.focus();
+    if (element) element.focus();
   };
 
   render() {
@@ -133,7 +135,7 @@ export default class UserOverview extends React.Component {
         </div>
         <LoadingPanel show={loading}>
           <div className="row">
-            <div className="col-xs-12" ref="searchResults">
+            <div className="col-xs-12" ref={this.searchResultsRef}>
               <UsersTable loading={loading} users={this.props.users}
                           userFields={this.props.userFields} onColumnSort={this.props.onColumnSort}
                           sortOrder={sortOrder} sortProperty={sortProperty}

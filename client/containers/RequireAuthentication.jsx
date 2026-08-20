@@ -1,45 +1,40 @@
 import axios from 'axios';
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { useNavigate } from 'react-router-dom';
 
 export default function RequireAuthentication(InnerComponent) {
-  class RequireAuthenticationContainer extends React.Component {
-    static propTypes = {
-      push: PropTypes.func.isRequired,
-      auth: PropTypes.object.isRequired,
-      location: PropTypes.object.isRequired
-    };
+  function RequireAuthenticationContainer(props) {
+    const navigate = useNavigate();
+    const { isAuthenticated, isAuthenticating } = props.auth;
+    const { location } = props;
 
-    componentWillMount() {
-      this.requireAuthentication();
-    }
+    useEffect(() => {
+      axios.defaults.headers.common['dae-locale'] = window.config.LOCALE;
+    }, []);
 
-    componentWillReceiveProps() {
-      this.requireAuthentication();
-    }
-
-    requireAuthentication() {
-      if (!this.props.auth.isAuthenticated && !this.props.auth.isAuthenticating) {
-        if (!this.props.location) {
-          this.props.push('/login');
+    useEffect(() => {
+      if (!isAuthenticated && !isAuthenticating) {
+        if (!location) {
+          navigate('/login');
         } else {
-          this.props.push(`/login?returnUrl=${this.props.location.pathname}${this.props.location.search ? this.props.location.search : ''}`);
+          navigate(`/login?returnUrl=${location.pathname}${location.search ? location.search : ''}`);
         }
       }
+    }, [isAuthenticated, isAuthenticating, location, navigate]);
 
-      axios.defaults.headers.common['dae-locale'] = window.config.LOCALE;
+    if (isAuthenticated) {
+      return <InnerComponent {...props} />;
     }
 
-    render() {
-      if (this.props.auth.isAuthenticated) {
-        return <InnerComponent {...this.props} />;
-      }
-
-      return <div></div>;
-    }
+    return <div></div>;
   }
 
-  return connect((state) => ({ auth: state.auth.toJS() }), { push })(RequireAuthenticationContainer);
+  RequireAuthenticationContainer.propTypes = {
+    auth: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired
+  };
+
+  return connect((state) => ({ auth: state.auth.toJS() }))(RequireAuthenticationContainer);
 }

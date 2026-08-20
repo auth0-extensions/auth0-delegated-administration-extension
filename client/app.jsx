@@ -1,30 +1,19 @@
-import 'babel-polyfill';
 import 'string.prototype.endswith';
 
 import axios from 'axios';
-import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
-
-import { useRouterHistory } from 'react-router';
-import { createHistory } from 'history';
-import { routerMiddleware, syncHistoryWithStore } from 'react-router-redux';
+import { RouterProvider } from 'react-router-dom';
 
 import { loadCredentials } from './actions/auth';
-import routes from './routes';
+import { router } from './router';
 import configureStore from './store/configureStore';
 import * as constants from './constants';
 
 // Make axios aware of the base path.
 axios.defaults.baseURL = window.config.BASE_URL;
 
-// Make history aware of the base path.
-const history = useRouterHistory(createHistory)({
-  basename: window.config.BASE_PATH || ''
-});
-
-const store = configureStore([ routerMiddleware(history) ], { });
-const reduxHistory = syncHistoryWithStore(history, store);
+const store = configureStore([], { });
 
 store.subscribe(() => {
   switch (store.getState().lastAction.type) {
@@ -80,16 +69,9 @@ store.subscribe(() => {
 store.dispatch(loadCredentials());
 
 // Render application.
-ReactDOM.render(
+const root = createRoot(document.getElementById('app'));
+root.render(
   <Provider store={store}>
-    {routes(reduxHistory)}
-  </Provider>,
-  document.getElementById('app')
+    <RouterProvider router={router} />
+  </Provider>
 );
-
-// Show the developer tools.
-if (process.env.NODE_ENV !== 'production') {
-  const showDevTools = require('./showDevTools'); // eslint-disable-line global-require
-
-  showDevTools(store);
-}

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { InputText, InputCombo, Multiselect, Select, VirtualizedSelect } from 'auth0-extension-ui';
+import { InputText, InputCombo, Multiselect, Select, VirtualizedSelect } from '@a0/auth0-extension-ui';
 import { Field } from 'redux-form';
 
 import requiredValidationFunction from '../../utils/requiredValidationFunction';
@@ -29,12 +29,22 @@ export default class UserFormField extends Component {
     );
   }
 
+  // Keep these as stable methods, not inline arrow functions. redux-form
+  // compares validators by reference, so a fresh function on every render makes
+  // it re-register the field and loop forever. See https://github.com/redux-form/redux-form/issues/4148
+  validateRequired = (value) =>
+    requiredValidationFunction(this.props.languageDictionary || {})(value);
+
+  validateCustom = (value, values, context) => {
+    const { field, isEditField, languageDictionary } = this.props;
+    const settings = field[isEditField ? 'edit' : 'create'];
+    return settings.validationFunction(value, values, context, languageDictionary || {});
+  };
+
   getFieldByComponentName(field, componentName) {
     const validate = (field.required || field.validationFunction) ? [] : undefined;
-    if (field.required) validate.push(requiredValidationFunction(this.props.languageDictionary || {}));
-    if (field.validationFunction) {
-      validate.push((value, values, context) => field.validationFunction(value, values, context, this.props.languageDictionary || {}));
-    }
+    if (field.required) validate.push(this.validateRequired);
+    if (field.validationFunction) validate.push(this.validateCustom);
 
     switch (componentName) {
       case 'InputCombo': {

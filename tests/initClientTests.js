@@ -1,13 +1,13 @@
-import { configure } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-15';
 import { JSDOM } from 'jsdom';
 import auth0 from 'auth0-js';
 import chai from 'chai';
 import chaiMatch from 'chai-match';
+import chaiDom from 'chai-dom';
 
 chai.use(chaiMatch);
+chai.use(chaiDom);
 
-const jsdom = new JSDOM('<!doctype html><html><body></body></html>');
+const jsdom = new JSDOM('<!doctype html><html><body></body></html>', { url: 'http://localhost/' });
 const { window } = jsdom;
 
 function copyProps(src, target) {
@@ -29,13 +29,33 @@ window.config = {
 global.auth0 = auth0;
 global.window = window;
 global.document = window.document;
-Object.defineProperty(global, 'navigator', {
-  value: { userAgent: 'node.js' },
-  writable: true,
-  configurable: true,
-});
-global.self = {navigator: global.navigator };
+global.self = window;
+global.IS_REACT_ACT_ENVIRONMENT = true;
 
 copyProps(window, global);
 
-configure({ adapter: new Adapter() });
+// Mock components from @a0/auth0-extension-ui to avoid context requirement in tests
+import React from 'react';
+const mockTabPane = (props) => React.createElement('li', null, props.title);
+mockTabPane.displayName = 'TabPane';
+
+const mockSearchBar = (props) => {
+  return React.createElement('div', null,
+    React.createElement('input', {
+      placeholder: props.placeholder,
+      type: 'text'
+    })
+  );
+};
+mockSearchBar.displayName = 'SearchBar';
+
+// Override the module resolution for @a0/auth0-extension-ui to include our mocks
+const Module = require('module');
+const originalRequire = Module.prototype.require;
+Module.prototype.require = function(id) {
+  if (id === '@a0/auth0-extension-ui') {
+    const orig = originalRequire.apply(this, arguments);
+    return { ...orig, TabPane: mockTabPane, SearchBar: mockSearchBar };
+  }
+  return originalRequire.apply(this, arguments);
+};

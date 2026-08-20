@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
-import { Pagination, TableTotals } from 'auth0-extension-ui';
+import { Pagination, TableTotals } from '@a0/auth0-extension-ui';
 
 import { connectionActions, userActions } from '../../actions';
 
@@ -43,12 +43,12 @@ class Users extends Component {
     };
   }
 
-  componentWillMount = () => {
+  componentDidMount() {
     this.props.fetchUsers();
     if (!this.props.connectionsLoading) {
       this.props.fetchConnections();
     }
-  };
+  }
 
   onPageChange = (page) => {
     this.props.fetchUsers('', false, page - 1);

@@ -1,12 +1,11 @@
 import React from 'react';
 import moment from 'moment';
-import { shallow } from 'enzyme';
+import { render, within } from '@testing-library/react';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import { fromJS } from 'immutable';
 
 import LogsTable from '../../../../client/components/Logs/LogsTable';
-import { TableRow, TableIconCell, TableTextCell, TableHeader, TableColumn } from 'auth0-extension-ui';
 
 describe('#Client-Components-Logs-LogsTable', () => {
   const aDayAgo = moment().add(-1, 'days');
@@ -28,7 +27,7 @@ describe('#Client-Components-Logs-LogsTable', () => {
   ];
 
   const renderComponent = (logs, languageDictionary, suppressRawData, isUserLogs) => {
-    return shallow(
+    return render(
       <LogsTable
         loading={false}
         error={null}
@@ -44,50 +43,42 @@ describe('#Client-Components-Logs-LogsTable', () => {
   beforeEach(() => {
   });
 
-  const checkRow = (component, index, target) => {
-    const row = component.find(TableRow).filterWhere(element => element.key() === index.toString());
-    expect(row.length).to.equal(1);
+  const checkRow = (queries, index, target) => {
+    const rows = queries.getAllByRole('row');
+    expect(rows.length).to.be.greaterThan(index + 1);
+    const cells = within(rows[index + 1]).getAllByRole('cell');
+    expect(cells).to.have.length(6); // 1 icon + 5 text cells
 
-    const iconColumn = row.find(TableIconCell);
-    expect(iconColumn.length).to.equal(1);
-    expect(iconColumn.prop('color')).to.equal(target.icon.color);
-    expect(iconColumn.prop('icon')).to.equal(target.icon.name);
+    const icon = cells[0].querySelector('i');
+    expect(icon).to.have.class(`icon-budicon-${target.icon.name}`);
+    expect(icon.style.color).to.equal(target.icon.color);
 
-    const textColumns = row.find(TableTextCell);
-    expect(textColumns.length).to.equal(5);
-    // could use map here, but easier to debug if issue with them separated
-    expect(textColumns.at(0).prop('onClick')).to.be.a(target.control);
-    expect(textColumns.at(0).childAt(0).text()).to.equal(target.text[0]);
-    expect(textColumns.at(1).childAt(0).text()).to.equal(target.text[1]);
-    expect(textColumns.at(2).childAt(0).text()).to.equal(target.text[2]);
-    expect(textColumns.at(3).childAt(0).text()).to.equal(target.text[3]);
-    expect(textColumns.at(4).childAt(0).text()).to.equal(target.text[4]);
+    expect(cells[1]).to.have.trimmed.text(target.text[0]);
+    expect(cells[2]).to.have.trimmed.text(target.text[1]);
+    expect(cells[3]).to.have.trimmed.text(target.text[2]);
+    expect(cells[4]).to.have.trimmed.text(target.text[3]);
+    expect(cells[5]).to.have.trimmed.text(target.text[4]);
   };
 
   const checkDefault = (languageDictionary, suppressRawData, isUserLogs) => {
-    const component = renderComponent(dummyLogs, languageDictionary, suppressRawData, isUserLogs);
+    const queries = renderComponent(dummyLogs, languageDictionary, suppressRawData, isUserLogs);
 
-    expect(component.length).to.be.greaterThan(0);
-
-    /* Test the header */
-    const header = component.find(TableHeader);
-    expect(header.length).to.equal(1);
-    const columns = header.find(TableColumn);
-    expect(columns.length).to.equal(6);
-    expect(columns.at(0).children().length).to.equal(0);
-    expect(columns.at(1).childAt(0).text()).to.equal('Event');
-    expect(columns.at(2).childAt(0).text()).to.equal('Description');
-    expect(columns.at(3).childAt(0).text()).to.equal('Date');
-    expect(columns.at(4).childAt(0).text()).to.equal('Connection');
-    expect(columns.at(5).childAt(0).text()).to.equal('Application');
+    const headerCells = queries.getAllByRole('columnheader');
+    expect(headerCells).to.have.length(6);
+    expect(headerCells[0].children).to.have.length(0);
+    expect(headerCells[1]).to.have.trimmed.text('Event');
+    expect(headerCells[2]).to.have.trimmed.text('Description');
+    expect(headerCells[3]).to.have.trimmed.text('Date');
+    expect(headerCells[4]).to.have.trimmed.text('Connection');
+    expect(headerCells[5]).to.have.trimmed.text('Application');
 
     /* Test the rows */
-    checkRow(component, 0, {
+    checkRow(queries, 0, {
       icon: { color: 'green', name: 'success' },
       text: ['sapi', 'bill', 'a day ago', 'connA', 'client'],
       control: (suppressRawData) ? 'null' : 'function'
     });
-    checkRow(component, 1, {
+    checkRow(queries, 1, {
       icon: { color: 'red', name: 'failure' },
       text: ['fapi', 'some description', 'a day ago', 'N/A', 'N/A'],
       control: (suppressRawData) ? 'null' : 'function'
@@ -117,29 +108,24 @@ describe('#Client-Components-Logs-LogsTable', () => {
       }
     };
 
-    const component = renderComponent(dummyLogs, languageDictionary, false, true);
+    const queries = renderComponent(dummyLogs, languageDictionary, false, true);
 
-    expect(component.length).to.be.greaterThan(0);
-
-    /* Test the header */
-    const header = component.find(TableHeader);
-    expect(header.length).to.equal(1);
-    const columns = header.find(TableColumn);
-    expect(columns.length).to.equal(6);
-    expect(columns.at(0).children().length).to.equal(0);
-    expect(columns.at(1).childAt(0).text()).to.equal('Event');
-    expect(columns.at(2).childAt(0).text()).to.equal('Description');
-    expect(columns.at(3).childAt(0).text()).to.equal('Date');
-    expect(columns.at(4).childAt(0).text()).to.equal('Connection');
-    expect(columns.at(5).childAt(0).text()).to.equal('Application');
+    const headerCells = queries.getAllByRole('columnheader');
+    expect(headerCells).to.have.length(6);
+    expect(headerCells[0].children).to.have.length(0);
+    expect(headerCells[1]).to.have.trimmed.text('Event');
+    expect(headerCells[2]).to.have.trimmed.text('Description');
+    expect(headerCells[3]).to.have.trimmed.text('Date');
+    expect(headerCells[4]).to.have.trimmed.text('Connection');
+    expect(headerCells[5]).to.have.trimmed.text('Application');
 
     /* Test the rows */
-    checkRow(component, 0, {
+    checkRow(queries, 0, {
       icon: { color: 'green', name: 'success' },
       text: ['Sapi Event', 'Sapi Description', 'a day ago', 'connA', 'client'],
       control: 'function'
     });
-    checkRow(component, 1, {
+    checkRow(queries, 1, {
       icon: { color: 'red', name: 'failure' },
       text: ['Fapi Event', 'Fapi Description', 'a day ago', 'N/A', 'N/A'],
       control: 'function'
@@ -171,29 +157,24 @@ describe('#Client-Components-Logs-LogsTable', () => {
       }
     };
 
-    const component = renderComponent(dummyLogs, languageDictionary);
+    const queries = renderComponent(dummyLogs, languageDictionary);
 
-    expect(component.length).to.be.greaterThan(0);
-
-    /* Test the header */
-    const header = component.find(TableHeader);
-    expect(header.length).to.equal(1);
-    const columns = header.find(TableColumn);
-    expect(columns.length).to.equal(6);
-    expect(columns.at(0).children().length).to.equal(0);
-    expect(columns.at(1).childAt(0).text()).to.equal('EventHeader');
-    expect(columns.at(2).childAt(0).text()).to.equal('DescriptionHeader');
-    expect(columns.at(3).childAt(0).text()).to.equal('DateHeader');
-    expect(columns.at(4).childAt(0).text()).to.equal('ConnectionHeader');
-    expect(columns.at(5).childAt(0).text()).to.equal('ApplicationHeader');
+    const headerCells = queries.getAllByRole('columnheader');
+    expect(headerCells).to.have.length(6);
+    expect(headerCells[0].children).to.have.length(0);
+    expect(headerCells[1]).to.have.trimmed.text('EventHeader');
+    expect(headerCells[2]).to.have.trimmed.text('DescriptionHeader');
+    expect(headerCells[3]).to.have.trimmed.text('DateHeader');
+    expect(headerCells[4]).to.have.trimmed.text('ConnectionHeader');
+    expect(headerCells[5]).to.have.trimmed.text('ApplicationHeader');
 
     /* Test the rows */
-    checkRow(component, 0, {
+    checkRow(queries, 0, {
       icon: { color: 'green', name: 'success' },
       text: ['Sapi Event', 'bill', 'il y a un jour', 'connA', 'client'],
       control: 'function'
     });
-    checkRow(component, 1, {
+    checkRow(queries, 1, {
       icon: { color: 'red', name: 'failure' },
       text: ['Fapi Event', 'Fapi Description', 'il y a un jour', 'Not Applicable', 'Not Applicable'],
       control: 'function'
@@ -201,17 +182,15 @@ describe('#Client-Components-Logs-LogsTable', () => {
   });
 
   it('should render with no logs', () => {
-    const component = renderComponent([]);
+    const { getByText } = renderComponent([]);
 
-    expect(component.length).to.be.greaterThan(0);
-    expect(component.childAt(0).text()).to.equal('No logs found');
+    expect(getByText(/No logs found/)).to.exist;
   });
 
   it('should render with no logs languageDictionary', () => {
-    const component = renderComponent([], { noLogsMessage: 'some no logs message' });
+    const { getByText } = renderComponent([], { noLogsMessage: 'some no logs message' });
 
-    expect(component.length).to.be.greaterThan(0);
-    expect(component.childAt(0).text()).to.equal('some no logs message');
+    expect(getByText('some no logs message')).to.exist;
   });
 
 });

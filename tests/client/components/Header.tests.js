@@ -1,11 +1,10 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import { fromJS } from 'immutable';
 import _ from 'lodash';
-
-import { Link } from 'react-router';
+import { MemoryRouter } from 'react-router-dom';
 
 import Header from '../../../client/components/Header';
 
@@ -35,108 +34,97 @@ describe('#Client-Components-Header', () => {
     const renderCssToggle = options.cssToggle || false;
     const styleSettings = options.styleSettings || { useAlt: false };
 
-    return shallow(
-      <Header
-        user={options.user === null ? null : fromJS(user)}
-        getDictValue={getDictValue}
-        accessLevel={accessLevel}
-        issuer={issuer}
-        onLogout={logout}
-        onCssToggle={cssToggle}
-        styleSettings={fromJS(styleSettings)}
-        renderCssToggle={options.renderCssToggle}
-        languageDictionary={options.languageDictionary}
-      />
+    return render(
+      <MemoryRouter>
+        <Header
+          user={options.user === null ? null : fromJS(user)}
+          getDictValue={getDictValue}
+          accessLevel={accessLevel}
+          issuer={issuer}
+          onLogout={logout}
+          onCssToggle={cssToggle}
+          styleSettings={fromJS(styleSettings)}
+          renderCssToggle={options.renderCssToggle}
+          languageDictionary={options.languageDictionary}
+        />
+      </MemoryRouter>
     );
   };
 
   beforeEach(() => {
   });
 
-  const checkMenuLabel = (component, text) => {
-    const span = component.find('span.username-text');
-    expect(span.length).to.equal(1);
-    expect(span.text()).to.equal(text);
+  const checkMenuLabel = (queries, text) => {
+    const span = queries.container.querySelectorAll('span.username-text');
+    expect(span).to.have.length(1);
+    expect(span[0]).to.have.trimmed.text(text);
   };
 
-  const checkLogoutMenuItem = (component, text) => {
-    const logoutLink = component.find('a[role="menuitem"]');
-    expect(logoutLink.length).to.equal(1);
-    expect(logoutLink.text()).to.equal(text);
+  const checkLogoutMenuItem = (queries, text) => {
+    const logoutLink = queries.container.querySelectorAll('a[role="menuitem"]');
+    expect(logoutLink).to.have.length(1);
+    expect(logoutLink[0]).to.have.trimmed.text(text);
   };
 
-  const checkForAdminMenuItems = (component, usersAndLogsText, configurationText) => {
-    const links = component.find(Link);
-    expect(links.length).to.equal(2);
-    expect(links.at(0).childAt(0).text()).to.equal(usersAndLogsText);
-    expect(links.at(1).childAt(0).text()).to.equal(configurationText);
+  const checkForAdminMenuItems = (queries, usersAndLogsText, configurationText) => {
+    const links = queries.getAllByRole('link');
+    expect(links).to.have.length(2);
+    expect(links[0]).to.have.trimmed.text(usersAndLogsText);
+    expect(links[1]).to.have.trimmed.text(configurationText);
   };
 
-  const checkForCssToggleMenuItem = (component, text) => {
-    const links = component.find('a[role="menuitem"]');
-    expect(links.length).to.equal(2);
-    expect(links.at(0).text()).to.equal(text);
+  const checkForCssToggleMenuItem = (queries, text) => {
+    const links = queries.container.querySelectorAll('a[role="menuitem"]');
+    expect(links).to.have.length(2);
+    expect(links[0]).to.have.trimmed.text(text);
   };
 
-  const checkForNoAdminMenuItems = (component) => {
-    const links = component.find(Link);
-    expect(links.length).to.equal(0);
+  const checkForNoAdminMenuItems = (queries) => {
+    expect(queries.queryAllByRole('link')).to.have.length(0);
   };
 
   it('should render admin', () => {
-    const component = renderComponent({ accessLevel: { role: 3 } });
+    const queries = renderComponent({ accessLevel: { role: 3 } });
 
-    expect(component.length).to.be.greaterThan(0);
-
-    checkLogoutMenuItem(component, 'Logout');
-    checkForAdminMenuItems(component, 'Users & Logs', 'Configuration');
+    checkLogoutMenuItem(queries, 'Logout');
+    checkForAdminMenuItems(queries, 'Users & Logs', 'Configuration');
   });
 
   it('should render logs-user', () => {
-    const component = renderComponent({ accessLevel: { role: 2 } });
+    const queries = renderComponent({ accessLevel: { role: 2 } });
 
-    expect(component.length).to.be.greaterThan(0);
-
-    checkLogoutMenuItem(component, 'Logout');
-    checkForNoAdminMenuItems(component);
+    checkLogoutMenuItem(queries, 'Logout');
+    checkForNoAdminMenuItems(queries);
   });
 
   it('should render non-admin', () => {
-    const component = renderComponent();
+    const queries = renderComponent();
 
-    expect(component.length).to.be.greaterThan(0);
-
-    checkLogoutMenuItem(component, 'Logout');
-    checkForNoAdminMenuItems(component);
+    checkLogoutMenuItem(queries, 'Logout');
+    checkForNoAdminMenuItems(queries);
   });
 
   it('should render menuName from user.name', () => {
-    const component = renderComponent();
+    const queries = renderComponent();
 
-    expect(component.length).to.be.greaterThan(0);
-
-    checkMenuLabel(component, 'bill');
+    checkMenuLabel(queries, 'bill');
   });
 
   it('should render menuName from user.nickname', () => {
     const user = _.cloneDeep(dummyUser);
     delete user.name;
-    const component = renderComponent({ user });
+    const queries = renderComponent({ user });
 
-    expect(component.length).to.be.greaterThan(0);
-
-    checkMenuLabel(component, 'bills nickname');
+    checkMenuLabel(queries, 'bills nickname');
   });
 
   it('should render menuName from user.email', () => {
     const user = _.cloneDeep(dummyUser);
     delete user.name;
     delete user.nickname;
-    const component = renderComponent({ user });
+    const queries = renderComponent({ user });
 
-    expect(component.length).to.be.greaterThan(0);
-
-    checkMenuLabel(component, 'bill@somewhere.com');
+    checkMenuLabel(queries, 'bill@somewhere.com');
   });
 
   it('should render menuName from issuer', () => {
@@ -144,48 +132,38 @@ describe('#Client-Components-Header', () => {
     delete user.name;
     delete user.nickname;
     delete user.email;
-    const component = renderComponent({ user });
+    const queries = renderComponent({ user });
 
-    expect(component.length).to.be.greaterThan(0);
-
-    checkMenuLabel(component, 'issuer');
+    checkMenuLabel(queries, 'issuer');
   });
 
   it('should render menuName from user.name truncate', () => {
-    const component = renderComponent({ user: longNameUser });
+    const queries = renderComponent({ user: longNameUser });
 
-    expect(component.length).to.be.greaterThan(0);
-
-    checkMenuLabel(component, 'bill_really_long_n...');
+    checkMenuLabel(queries, 'bill_really_long_n...');
   });
 
   it('should render menuName from user.nickname truncate', () => {
     const user = _.cloneDeep(longNameUser);
     delete user.name;
-    const component = renderComponent({ user });
+    const queries = renderComponent({ user });
 
-    expect(component.length).to.be.greaterThan(0);
-
-    checkMenuLabel(component, 'bills nickname_rea...');
+    checkMenuLabel(queries, 'bills nickname_rea...');
   });
 
   it('should render menuName from user.email truncate', () => {
     const user = _.cloneDeep(longNameUser);
     delete user.name;
     delete user.nickname;
-    const component = renderComponent({ user });
+    const queries = renderComponent({ user });
 
-    expect(component.length).to.be.greaterThan(0);
-
-    checkMenuLabel(component, 'bill@somewhere.com...');
+    checkMenuLabel(queries, 'bill@somewhere.com...');
   });
 
   it('should render menuName from issuer truncate', () => {
-    const component = renderComponent({ user: null, issuer: 'issuer_some_really_long_breaks_css' });
+    const queries = renderComponent({ user: null, issuer: 'issuer_some_really_long_breaks_css' });
 
-    expect(component.length).to.be.greaterThan(0);
-
-    checkMenuLabel(component, 'issuer_some_really...');
+    checkMenuLabel(queries, 'issuer_some_really...');
   });
 
   it('should render admin languageDictionary', () => {
@@ -195,17 +173,15 @@ describe('#Client-Components-Header', () => {
       logoutMenuItemText: 'logoutText'
     };
 
-    const component = renderComponent({
+    const queries = renderComponent({
       accessLevel: { role: 3 },
       languageDictionary,
       getDictValue: () => 'menuName'
     });
 
-    expect(component.length).to.be.greaterThan(0);
-
-    checkMenuLabel(component, 'menuName');
-    checkLogoutMenuItem(component, 'logoutText');
-    checkForAdminMenuItems(component, 'usersAndLogs', 'configurationText');
+    checkMenuLabel(queries, 'menuName');
+    checkLogoutMenuItem(queries, 'logoutText');
+    checkForAdminMenuItems(queries, 'usersAndLogs', 'configurationText');
   });
 
   it('should render non-admin languageDictionary', () => {
@@ -215,24 +191,20 @@ describe('#Client-Components-Header', () => {
       logoutMenuItemText: 'logoutText'
     };
 
-    const component = renderComponent({
+    const queries = renderComponent({
       languageDictionary,
       getDictValue: () => 'menuName_some_really_long_name_breaks_css'
     });
 
-    expect(component.length).to.be.greaterThan(0);
-
-    checkMenuLabel(component, 'menuName_some_real...');
-    checkLogoutMenuItem(component, 'logoutText');
-    checkForNoAdminMenuItems(component);
+    checkMenuLabel(queries, 'menuName_some_real...');
+    checkLogoutMenuItem(queries, 'logoutText');
+    checkForNoAdminMenuItems(queries);
   });
 
   it('should render cssToggle menu item for nonAdmin', () => {
-    const component = renderComponent({ renderCssToggle: true, languageDictionary: { toggleStyleSetAlternative: 'Switch to Alternative' } });
+    const queries = renderComponent({ renderCssToggle: true, languageDictionary: { toggleStyleSetAlternative: 'Switch to Alternative' } });
 
-    expect(component.length).to.be.greaterThan(0);
-
-    checkForCssToggleMenuItem(component, 'Switch to Alternative');
+    checkForCssToggleMenuItem(queries, 'Switch to Alternative');
   });
 
   it('should render cssToggle menu item for Admin', () => {
@@ -241,10 +213,8 @@ describe('#Client-Components-Header', () => {
       renderCssToggle: true,
       languageDictionary: { toggleStyleSetAlternative: 'Switch to Alternative' }
     };
-    const component = renderComponent(options);
+    const queries = renderComponent(options);
 
-    expect(component.length).to.be.greaterThan(0);
-
-    checkForCssToggleMenuItem(component, 'Switch to Alternative');
+    checkForCssToggleMenuItem(queries, 'Switch to Alternative');
   });
 });

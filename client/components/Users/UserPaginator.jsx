@@ -1,10 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 export default class UserPaginator extends React.Component {
   static propTypes = {
-    onPageChange: React.PropTypes.func.isRequired,
-    nextPage: React.PropTypes.number.isRequired,
-    pages: React.PropTypes.number.isRequired
+    onPageChange: PropTypes.func.isRequired,
+    nextPage: PropTypes.number.isRequired,
+    pages: PropTypes.number.isRequired
   }
 
   shouldComponentUpdate(nextProps) {

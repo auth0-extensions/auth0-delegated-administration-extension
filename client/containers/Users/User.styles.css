@@ -1,3 +1,16 @@
+.btn.button-confirm {
+  color: #fff;
+  background-color: #44c7f4;
+  border-color: #2cc0f3;
+}
+.btn.button-confirm:hover,
+.btn.button-confirm:focus,
+.btn.button-confirm:active {
+  color: #fff;
+  background-color: #14b9f1;
+  border-color: #0ca2d6;
+}
+
 .user .content-header {
   margin-bottom: 20px;
 }

@@ -1,12 +1,10 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import _ from 'lodash';
 
-import { Field } from 'redux-form';
-import { Button } from 'react-bootstrap';
 import fakeStore from '../../../utils/fakeStore';
 import UserForm from '../../../../client/components/Users/UserForm';
 
@@ -36,7 +34,7 @@ describe('#Client-Components-UserForm', () => {
         }
       }
     };
-    return mount(
+    return render(
       <Provider store={fakeStore(initialState)}>
         <UserForm
           connections={options.connections}
@@ -56,18 +54,16 @@ describe('#Client-Components-UserForm', () => {
   beforeEach(() => {
   });
 
-  const checkField = (fields, fieldName, labelValue) => {
-    const thisField = fields.filterWhere(element =>
-      element.prop('name') === fieldName);
-    expect(thisField.length > 0 ? thisField.prop('name') : 'Not Found').to.equal(fieldName);
-    expect(thisField.prop('label')).to.equal(labelValue);
+  const checkField = (queries, fieldName, labelValue) => {
+    const label = queries.container.querySelector(`label[for="${fieldName}"]`);
+    expect(label).to.not.equal(null);
+    expect(label).to.have.trimmed.text(labelValue);
   };
 
-  const checkFields = (component, targets) => {
-    const fields = component.find(Field);
-
-    expect(fields.length).to.equal(Object.keys(targets).length);
-    Object.keys(targets).forEach(target => checkField(fields, target, targets[target]));
+  const checkFields = (queries, targets) => {
+    const labels = queries.container.querySelectorAll('label[for]');
+    expect(labels).to.have.length(Object.keys(targets).length);
+    Object.keys(targets).forEach(target => checkField(queries, target, targets[target]));
   };
 
   it('should render', () => {
@@ -80,16 +76,13 @@ describe('#Client-Components-UserForm', () => {
       email: 'Email (required)'
     };
 
-    const component = renderComponent(everythingOptions);
+    const queries = renderComponent(everythingOptions);
 
-    expect(component.length).to.be.greaterThan(0);
-
-    checkFields(component, targets);
+    checkFields(queries, targets);
 
     // Check Buttons
-    expect(component.find(Button).filterWhere(element =>
-      element.text() === 'Cancel').length).to.equal(1);
-    expect(component.find(Button).filterWhere(element => element.text() === 'Create').length).to.equal(1);
+    expect(queries.getAllByRole('button', { name: 'Cancel' })).to.have.length(1);
+    expect(queries.getAllByRole('button', { name: 'Create' })).to.have.length(1);
   });
 
   it('should render connection, email, password, memberships if create is true', () => {
@@ -126,16 +119,13 @@ describe('#Client-Components-UserForm', () => {
       }
     ];
 
-    const component = renderComponent(everythingWithCustomFields);
+    const queries = renderComponent(everythingWithCustomFields);
 
-    expect(component.length).to.be.greaterThan(0);
-
-    checkFields(component, targets);
+    checkFields(queries, targets);
 
     // Check Buttons
-    expect(component.find(Button).filterWhere(element =>
-      element.text() === 'Cancel').length).to.equal(1);
-    expect(component.find(Button).filterWhere(element => element.text() === 'Create').length).to.equal(1);
+    expect(queries.getAllByRole('button', { name: 'Cancel' })).to.have.length(1);
+    expect(queries.getAllByRole('button', { name: 'Create' })).to.have.length(1);
   });
 
   it('should not render connection, email, password, memberships if create is false', () => {
@@ -176,16 +166,13 @@ describe('#Client-Components-UserForm', () => {
       hasConnection: 'connA'
     };
 
-    const component = renderComponent(nothingOptions);
+    const queries = renderComponent(nothingOptions);
 
-    expect(component.length).to.be.greaterThan(0);
-
-    checkFields(component, targets);
+    checkFields(queries, targets);
 
     // Check Buttons
-    expect(component.find(Button).filterWhere(element =>
-      element.text() === 'Cancel').length).to.equal(1);
-    expect(component.find(Button).filterWhere(element => element.text() === 'Create').length).to.equal(1);
+    expect(queries.getAllByRole('button', { name: 'Cancel' })).to.have.length(1);
+    expect(queries.getAllByRole('button', { name: 'Create' })).to.have.length(1);
   });
 
   it('should render labels based on customFields and dict values', () => {
@@ -233,15 +220,13 @@ describe('#Client-Components-UserForm', () => {
     ];
     everythingWithCustomFields.getDictValue = () => 'MembershipsLabel';
 
-    const component = renderComponent(everythingWithCustomFields, languageDictionary);
+    const queries = renderComponent(everythingWithCustomFields, languageDictionary);
 
-    expect(component.length).to.be.greaterThan(0);
-
-    checkFields(component, targets);
+    checkFields(queries, targets);
 
     // Check Buttons
-    expect(component.find(Button).filterWhere(element => element.text() === 'CancelButton').length).to.equal(1);
-    expect(component.find(Button).filterWhere(element => element.text() === 'CreateButton').length).to.equal(1);
+    expect(queries.getAllByRole('button', { name: 'CancelButton' })).to.have.length(1);
+    expect(queries.getAllByRole('button', { name: 'CreateButton' })).to.have.length(1);
   });
 
   it('should render based on languageDictionary but missing button labels', () => {
@@ -249,10 +234,9 @@ describe('#Client-Components-UserForm', () => {
       someOtherKey: 'Some other value'
     };
 
-    const Component = renderComponent(everythingOptions, languageDictionary);
+    const queries = renderComponent(everythingOptions, languageDictionary);
 
-    expect(Component.length).to.be.greaterThan(0);
-    expect(Component.find(Button).filterWhere(element => element.text() === 'Cancel').length).to.equal(1);
-    expect(Component.find(Button).filterWhere(element => element.text() === 'Create').length).to.equal(1);
+    expect(queries.getAllByRole('button', { name: 'Cancel' })).to.have.length(1);
+    expect(queries.getAllByRole('button', { name: 'Create' })).to.have.length(1);
   });
 });
