@@ -1,0 +1,33 @@
+{
+  "name": "webtask-tools",
+  "version": "3.5.1-vendored",
+  "description": "Tools to facilitate working in a webtask context (vendored fork; request -> superagent)",
+  "main": "./lib/index.js",
+  "scripts": {
+    "lint": "eslint **/*.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/auth0/webtask-tools.git"
+  },
+  "keywords": [
+    "webtask",
+    "auth0",
+    "server"
+  ],
+  "author": "Geoff Goodman",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/auth0/webtask-tools/issues"
+  },
+  "homepage": "https://github.com/auth0/webtask-tools#readme",
+  "devDependencies": {},
+  "dependencies": {
+    "boom": "^7.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "pug": "^2.0.3",
+    "safe-buffer": "^5.0.1",
+    "superagent": "^3.8.3"
+  }
+}

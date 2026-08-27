@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import auth0 from 'auth0';
-import request from 'request';
+import axios from 'axios';
 import Promise from 'bluebird';
 import { Router } from 'express';
 import { ArgumentError, ValidationError, UnauthorizedError } from 'auth0-extension-tools';
@@ -568,25 +568,29 @@ export default (storage, scriptManager) => {
     getApiToken(req)
       .then((accessToken) => {
         const options = {
-          uri: `https://${config('AUTH0_DOMAIN')}/api/v2/users/${encodeURIComponent(req.params.id)}/logs`,
+          url: `https://${config('AUTH0_DOMAIN')}/api/v2/users/${encodeURIComponent(req.params.id)}/logs`,
+          method: 'get',
           headers: {
             authorization: `Bearer ${accessToken}`
           },
-          json: true
+          // Server-side code must use Node's http stack, never a browser XHR adapter.
+          adapter: 'http',
+          // Resolve for any status so we can preserve the existing status-code handling below.
+          validateStatus: () => true
         };
 
-        return request.get(options, (err, response, body) => {
-          if (err) {
-            return next(err);
-          }
+        return axios(options)
+          .then((response) => {
+            const body = response.data;
 
-          if (response.statusCode < 200 || response.statusCode >= 300) {
-            logger.error('Log response failed: ', response.headers);
-            return next(new Error((body && (body.error || body.message || body.code)) || `Request Error: ${response.statusCode}`));
-          }
+            if (response.status < 200 || response.status >= 300) {
+              logger.error('Log response failed: ', response.headers);
+              return next(new Error((body && (body.error || body.message || body.code)) || `Request Error: ${response.status}`));
+            }
 
-          return res.json(body);
-        });
+            return res.json(body);
+          })
+          .catch(next);
       })
       .catch(next);
   });

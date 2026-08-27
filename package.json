@@ -1,6 +1,6 @@
 {
   "name": "auth0-delegated-admin",
-  "version": "5.0.0",
+  "version": "6.1.0",
   "description": "This extension allows non-dashboard administrators to manage (a subset of) users.",
   "engines": {
     "node": ">22.13"
@@ -92,7 +92,6 @@
       "moment@2.29.4",
       "morgan@1.10.0",
       "qs@6.11.2",
-      "request@2.88.2",
       "superagent@8.0.9",
       "uuid@9.0.0",
       "winston@3.10.0"
@@ -168,7 +167,6 @@
     "redux-logger": "3.0.1",
     "redux-promise-middleware": "6.1.3",
     "redux-thunk": "2.2.0",
-    "request": "^2.88.2",
     "reselect": "^2.5.4",
     "safe-eval": "^0.4.1",
     "semver": "^7.5.4",
@@ -176,7 +174,7 @@
     "string.prototype.endswith": "^0.2.0",
     "superagent": "^8.0.9",
     "uuid": "9.0.0",
-    "webtask-tools": "^3.4.1",
+    "webtask-tools": "file:./vendor/webtask-tools",
     "winston": "^3.10.0"
   },
   "devDependencies": {
@@ -258,12 +256,14 @@
   "overrides": {
     "cookie-parser": "1.4.6",
     "cheerio": "1.0.0-rc.12",
+    "webtask-tools": "file:./vendor/webtask-tools",
     "auth0-extension-express-tools": {
       "jwks-rsa": {
         "axios": "0.32.0"
       }
     },
     "auth0-extension-tools": {
+      "jwks-rsa": "1.12.3",
       "auth0": {
         "axios": "0.32.0",
         "jwks-rsa": {
