@@ -9,7 +9,7 @@ const ArgumentError = require('../errors').ArgumentError;
 const ManagementApiError = require('../errors').ManagementApiError;
 
 const getAccessToken = function(domain, clientId, clientSecret) {
-  return new Promise(function(resolve, reject) {
+  return Promise.resolve(
     request
       .post('https://' + domain + '/oauth/token')
       .send({
@@ -19,22 +19,30 @@ const getAccessToken = function(domain, clientId, clientSecret) {
         grant_type: 'client_credentials'
       })
       .set('Accept', 'application/json')
-      .end(function(err, res) {
-        if (err && err.status === 401) {
-          return reject(new ManagementApiError('unauthorized', 'Invalid credentials for ' + clientId, err.status));
-        } else if (err && res && res.body && res.body.error) {
-          return reject(new ManagementApiError(res.body.error, res.body.error_description || res.body.error, err.status));
-        } else if (err) {
-          return reject(err);
-        }
+  )
+    .then(function(res) {
+      if (!res.ok || !res.body.access_token) {
+        throw new ManagementApiError('unknown_error', 'Unknown error from Management Api or no access token was provided: ' + (res.text || res.status));
+      }
 
-        if (!res.ok || !res.body.access_token) {
-          return reject(new ManagementApiError('unknown_error', 'Unknown error from Management Api or no access token was provided: ' + (res.text || res.status)));
-        }
+      return res.body.access_token;
+    })
+    .catch(function(err) {
+      // Pass through errors we already classified in the success handler.
+      if (err instanceof ManagementApiError) {
+        throw err;
+      }
 
-        return resolve(res.body.access_token);
-      });
-  });
+      // superagent rejects with an error carrying `status` and `response` on non-2xx.
+      var res = err.response;
+      if (err.status === 401) {
+        throw new ManagementApiError('unauthorized', 'Invalid credentials for ' + clientId, err.status);
+      } else if (res && res.body && res.body.error) {
+        throw new ManagementApiError(res.body.error, res.body.error_description || res.body.error, err.status);
+      }
+
+      throw err;
+    });
 };
 
 const getAccessTokenCached = Promise.promisify(

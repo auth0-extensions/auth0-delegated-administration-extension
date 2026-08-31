@@ -1,4 +1,4 @@
-const tools = require('auth0-extension-tools');
+const tools = require('../../auth0-extension-tools');
 
 module.exports = function(handlerOptions) {
   return function(req, res, next) {

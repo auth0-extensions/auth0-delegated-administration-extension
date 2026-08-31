@@ -1,7 +1,7 @@
 import Promise from 'bluebird';
 import safeEval from 'safe-eval';
 import memoizer from 'lru-memoizer';
-import { ArgumentError } from 'auth0-extension-tools';
+import { ArgumentError } from '../../vendor/auth0-extension-tools';
 
 import logger from './logger';
 import parseScriptError from './errors/parseScriptError';

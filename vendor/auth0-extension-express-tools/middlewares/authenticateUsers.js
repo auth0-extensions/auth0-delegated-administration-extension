@@ -1,9 +1,9 @@
 const decode = require('jwt-decode');
-const jwt = require('express-jwt');
+const jwt = require('express-jwt').expressjwt;
 const jwksRsa = require('jwks-rsa');
-const tools = require('auth0-extension-tools');
+const tools = require('../../auth0-extension-tools');
 const conditional = require('express-conditional-middleware');
-const UnauthorizedError = require('auth0-extension-tools').UnauthorizedError;
+const UnauthorizedError = require('../../auth0-extension-tools').UnauthorizedError;
 
 module.exports = function(options) {
   if (!options || typeof options !== 'object') {
@@ -47,7 +47,11 @@ module.exports = function(options) {
     algorithms: [ 'RS256' ],
 
     // Optionally require authentication
-    credentialsRequired: (options && options.credentialsRequired) || true
+    credentialsRequired: (options && options.credentialsRequired) || true,
+
+    // express-jwt v8 attaches the decoded token to req.auth by default;
+    // downstream code (managementApiClient, api routes) reads req.user.
+    requestProperty: 'user'
   });
 
   return function(req, res, next) {

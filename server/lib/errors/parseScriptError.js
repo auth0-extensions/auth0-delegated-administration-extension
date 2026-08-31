@@ -1,4 +1,4 @@
-import { ValidationError } from 'auth0-extension-tools';
+import { ValidationError } from '../../../vendor/auth0-extension-tools';
 
 export default (err, name) => {
   const caughtError = new ValidationError(err.message || '');

@@ -1,6 +1,6 @@
 const decode = require('jwt-decode');
-const expressJwt = require('express-jwt');
-const tools = require('auth0-extension-tools');
+const expressJwt = require('express-jwt').expressjwt;
+const tools = require('../../auth0-extension-tools');
 const conditional = require('express-conditional-middleware');
 
 module.exports = function(options) {
@@ -37,7 +37,10 @@ module.exports = function(options) {
     issuer: options.baseUrl,
     secret: options.secret,
     algorithms: [ 'HS256' ],
-    credentialsRequired: options.credentialsRequired || true
+    credentialsRequired: options.credentialsRequired || true,
+    // express-jwt v8 attaches the decoded token to req.auth by default;
+    // downstream code (managementApiClient, api routes) reads req.user.
+    requestProperty: 'user'
   });
 
   return function(req, res, next) {

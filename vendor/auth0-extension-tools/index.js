@@ -1,5 +1,3 @@
-const Webtask = require('webtask-tools');
-
 const errors = require('./errors');
 const storage = require('./storage');
 
@@ -28,11 +26,6 @@ tools.FileStorageContext = storage.FileStorageContext;
 tools.WebtaskStorageContext = storage.WebtaskStorageContext;
 
 /*
- * Helpers that expose CRUD capablities to storage.
- */
-tools.BlobRecordProvider = require('./blobRecordProvider');
-
-/*
  * Helper that providers a configuration object containing one or more settings.
  */
 tools.config = require('./config/configFactory');
@@ -52,17 +45,3 @@ tools.validateHookToken = require('./validateHookToken');
  * Session.
  */
 tools.SessionManager = require('./sessionManager');
-
-/*
- * Bootstrap function to run initialize an Express server.
- */
-tools.createExpressServer = function createExpressServer(cb) {
-  return Webtask.fromExpress(tools.createServer(cb));
-};
-
-/*
- * Bootstrap function to run initialize a Hapi server.
- */
-tools.createHapiServer = function createHapiServer(cb) {
-  return Webtask.fromHapi(tools.createServer(cb));
-};

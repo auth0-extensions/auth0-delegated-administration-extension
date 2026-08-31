@@ -2,7 +2,7 @@ const express = require('express');
 const crypto = require('crypto');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
-const tools = require('auth0-extension-tools');
+const tools = require('../../auth0-extension-tools');
 
 const urlHelpers = require('../urlHelpers');
 
@@ -74,7 +74,7 @@ module.exports = function(options) {
   router.get(urlPrefix + '/login', function(req, res) {
     const basePath = urlHelpers.getBasePath(req);
     const state = crypto.randomBytes(16).toString('hex');
-    const nonce = crypto.randomBytes(16).toString('hex');  
+    const nonce = crypto.randomBytes(16).toString('hex');
     const basicAttr = {
       httpOnly: true,
       path: basePath

@@ -1,5 +1,5 @@
 import Promise from 'bluebird';
-import { managementApi } from 'auth0-extension-tools';
+import { managementApi } from '../../vendor/auth0-extension-tools';
 
 import config from './config';
 

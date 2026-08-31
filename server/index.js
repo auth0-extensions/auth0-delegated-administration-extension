@@ -3,8 +3,8 @@ import morgan from 'morgan';
 import Express from 'express';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
-import * as tools from 'auth0-extension-tools';
-import { routes } from 'auth0-extension-express-tools';
+import * as tools from '../vendor/auth0-extension-tools';
+import { routes } from '../vendor/auth0-extension-express-tools';
 
 import api from './routes/api';
 import hooks from './routes/hooks';

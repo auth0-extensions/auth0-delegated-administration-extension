@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import _ from 'lodash';
 import moment from 'moment';
-import { middlewares } from 'auth0-extension-express-tools';
-import tools from 'auth0-extension-tools';
+import { middlewares } from '../../vendor/auth0-extension-express-tools';
+import tools from '../../vendor/auth0-extension-tools';
 
 import {requireScope} from '../lib/middlewares';
 import config from '../lib/config';
