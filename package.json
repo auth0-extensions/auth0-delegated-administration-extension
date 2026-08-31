@@ -254,11 +254,6 @@
   "overrides": {
     "cookie-parser": "1.4.6",
     "cheerio": "1.0.0-rc.12",
-    "auth0-extension-express-tools": {
-      "jwks-rsa": {
-        "axios": "0.32.0"
-      }
-    },
     "axios@0.27.2": "0.32.0",
     "webpack-dev-server@3.11.3": "5.2.6",
     "vm2": "3.11.6"
