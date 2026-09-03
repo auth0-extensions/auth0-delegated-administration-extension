@@ -23,8 +23,8 @@ export default (storage) => {
   const scriptManager = new ScriptManager(storage);
   const managementApiClient = async function (req, res, next) {
     try {
-    
-      
+
+
       // It's important to use getClient for the management API token to be cached.
       // If we instantiate the client directly, a client credentials exchange will be performed on every request.
       req.auth0 = await tools.managementApi.getClient(getClientOptions(req));
@@ -79,6 +79,7 @@ export default (storage) => {
     credentialsRequired: false,
     onLoginSuccess: (req, res, next) => {
       const currentRequest = req;
+      // here
       return addExtraUserInfo(getToken(req), req.user)
       .then((user) => {
         currentRequest.user = user;
