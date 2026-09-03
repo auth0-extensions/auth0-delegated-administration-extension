@@ -55,8 +55,11 @@ export default class UserFormField extends Component {
         return (this.getFieldComponent(field, InputCombo, additionalOptions));
       }
       case 'InputMultiCombo': {
+        const normalizedOptions = (field.options || []).map(o =>
+          (o !== null && typeof o === 'object') ? o : { value: o, label: o }
+        );
         const additionalOptions = {
-          loadOptions: (input, callback) => callback(null, { options: field.options || [], complete: true }),
+          loadOptions: (input, callback) => callback(normalizedOptions),
           multi: true,
           displayLabelOnly: field.displayLabelOnly
         };
@@ -64,8 +67,11 @@ export default class UserFormField extends Component {
         return (this.getFieldComponent(field, Multiselect, additionalOptions));
       }
       case 'InputSelectCombo': {
+        const normalizedOptions = (field.options || []).map(o =>
+          (o !== null && typeof o === 'object') ? o : { value: o, label: o }
+        );
         const additionalOptions = {
-          loadOptions: (input, callback) => callback(null, { options: field.options || [], complete: true }),
+          loadOptions: (input, callback) => callback(normalizedOptions),
           multi: false
         };
         if (validate) additionalOptions.validate = validate;
