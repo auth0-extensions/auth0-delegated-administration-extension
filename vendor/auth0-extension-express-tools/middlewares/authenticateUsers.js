@@ -1,4 +1,4 @@
-const decode = require('jwt-decode');
+const decode = require('jwt-decode').default;
 const jwt = require('express-jwt').expressjwt;
 const jwksRsa = require('jwks-rsa');
 const tools = require('../../auth0-extension-tools');
@@ -57,16 +57,7 @@ module.exports = function(options) {
   return function(req, res, next) {
     validateToken(req, res, function(err) {
       if (err) {
-        // TEMP DEBUG: blast the real (normally-swallowed) validation error into
-        // the HTTP response so we can see it without webtask log access.
-        return res.status(500).json({
-          debug: 'authenticateUsers validateToken failed',
-          name: err.name,
-          message: err.message,
-          code: err.code,
-          inner: err.inner ? { name: err.inner.name, message: err.inner.message } : undefined,
-          stack: err.stack
-        });
+        return next(err);
       }
 
       if (options.onLoginSuccess) {
@@ -80,48 +71,19 @@ module.exports = function(options) {
 
 module.exports.optional = function(options) {
   const mw = module.exports(options);
-  const expectedIss = 'https://' + options.domain + '/';
   return conditional(
     function(req) {
-      // TEMP DEBUG: stash why the predicate decides so the fail handler below
-      // can surface it via the API.
-      if (!(req && req.headers && req.headers.authorization)) {
-        req.__authOptionalReason = { case: 'no-authorization-header' };
-        return false;
-      }
-      if (req.headers.authorization.indexOf('Bearer ') !== 0) {
-        req.__authOptionalReason = { case: 'not-bearer' };
-        return false;
-      }
-      try {
-        const decodedToken = decode(req.headers.authorization.split(' ')[1]);
-        if (!decodedToken) {
-          req.__authOptionalReason = { case: 'decoded-token-falsy' };
+      if (req && req.headers && req.headers.authorization && req.headers.authorization.indexOf('Bearer ') === 0) {
+        try {
+          const decodedToken = decode(req.headers.authorization.split(' ')[1]);
+          return decodedToken && decodedToken.iss === 'https://' + options.domain + '/';
+        } catch (ex) {
           return false;
         }
-        if (decodedToken.iss !== expectedIss) {
-          req.__authOptionalReason = {
-            case: 'issuer-mismatch',
-            tokenIss: decodedToken.iss,
-            expectedIss: expectedIss,
-            optionsDomain: options.domain
-          };
-          return false;
-        }
-        return true;
-      } catch (ex) {
-        req.__authOptionalReason = { case: 'jwt-decode-threw', message: ex && ex.message };
-        return false;
       }
+
+      return false;
     },
-    mw,
-    // TEMP DEBUG: surface the skip reason via the API instead of silently
-    // falling through (which downstream reads as "Missing scope").
-    function(req, res) {
-      return res.status(499).json({
-        debug: 'authenticateUsers.optional predicate skipped auth',
-        reason: req.__authOptionalReason || { case: 'unknown' }
-      });
-    }
+    mw
   );
 };
