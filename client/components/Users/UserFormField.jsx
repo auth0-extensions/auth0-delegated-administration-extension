@@ -6,6 +6,29 @@ import { Field } from 'redux-form';
 
 import requiredValidationFunction from '../../utils/requiredValidationFunction';
 
+const toOptionObject = v =>
+  (v !== null && typeof v === 'object') ? v : { value: v, label: v };
+
+// Wrappers that patch input.value (normalize stored strings to {value,label}) and
+// fix input.onBlur (pass current value so redux-form doesn't reset the field on blur).
+const MultiComboField = ({ input, ...rest }) => {
+  const patchedInput = {
+    ...input,
+    value: (input.value || []).map(toOptionObject),
+    onBlur: () => input.onBlur && input.onBlur(input.value)
+  };
+  return <Multiselect input={patchedInput} {...rest} />;
+};
+
+const SelectComboField = ({ input, ...rest }) => {
+  const patchedInput = {
+    ...input,
+    value: (input.value != null && input.value !== '') ? toOptionObject(input.value) : null,
+    onBlur: () => input.onBlur && input.onBlur(input.value)
+  };
+  return <Select input={patchedInput} {...rest} />;
+};
+
 export default class UserFormField extends Component {
   static propTypes = {
     field: PropTypes.object.isRequired,
@@ -55,27 +78,23 @@ export default class UserFormField extends Component {
         return (this.getFieldComponent(field, InputCombo, additionalOptions));
       }
       case 'InputMultiCombo': {
-        const normalizedOptions = (field.options || []).map(o =>
-          (o !== null && typeof o === 'object') ? o : { value: o, label: o }
-        );
+        const normalizedOptions = (field.options || []).map(toOptionObject);
         const additionalOptions = {
           loadOptions: (input, callback) => callback(normalizedOptions),
           multi: true,
           displayLabelOnly: field.displayLabelOnly
         };
         if (validate) additionalOptions.validate = validate;
-        return (this.getFieldComponent(field, Multiselect, additionalOptions));
+        return (this.getFieldComponent(field, MultiComboField, additionalOptions));
       }
       case 'InputSelectCombo': {
-        const normalizedOptions = (field.options || []).map(o =>
-          (o !== null && typeof o === 'object') ? o : { value: o, label: o }
-        );
+        const normalizedOptions = (field.options || []).map(toOptionObject);
         const additionalOptions = {
           loadOptions: (input, callback) => callback(normalizedOptions),
           multi: false
         };
         if (validate) additionalOptions.validate = validate;
-        return (this.getFieldComponent(field, Select, additionalOptions));
+        return (this.getFieldComponent(field, SelectComboField, additionalOptions));
       }
       case 'InputVirtualizedSelect': {
         const additionalOptions = {
