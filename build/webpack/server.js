@@ -1,3 +1,4 @@
+const path = require('path');
 const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
 
@@ -7,12 +8,38 @@ const WebpackDevServer = require('webpack-dev-server');
 // this extension needs.
 const config = require('./config.dev.js');
 
+// The server is also webpacked locally (config.server.dev.js), using the same
+// resolution/externals rules as the deployed webtask, so `serve:dev` reproduces
+// module-resolution bugs (e.g. CJS/ESM dual-build mismatches) that running the
+// raw source through @babel/register would hide.
+const serverConfig = require('./config.server.dev.js');
+const SERVER_BUNDLE = path.join(__dirname, '../../dist/server.dev.js');
+
 const DEV_SERVER_PORT = 3000;
 const BACKEND_PORT = 3001;
 
 console.info('Running development webpack server...');
 
 const compiler = webpack(config);
+
+// Build the server bundle once, then run the emitted artifact so the backend
+// goes through webpack resolution just like the webtask does.
+function buildAndRunServer() {
+  webpack(serverConfig).run((err, stats) => {
+    if (err) {
+      console.error('Server bundle failed to build:', err);
+      process.exit(1);
+      return;
+    }
+    if (stats.hasErrors()) {
+      console.error(stats.toString({ colors: true, all: false, errors: true }));
+      process.exit(1);
+      return;
+    }
+    console.info('Server bundle built. Starting backend...');
+    require(SERVER_BUNDLE);
+  });
+}
 
 const server = new WebpackDevServer(
   {
@@ -39,5 +66,5 @@ server.startCallback((err) => {
     return;
   }
   console.info(`Development server listening on: http://localhost:${DEV_SERVER_PORT}`);
-  require('../../index');
+  buildAndRunServer();
 });

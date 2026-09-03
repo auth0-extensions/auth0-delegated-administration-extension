@@ -1,4 +1,4 @@
-const decode = require('jwt-decode');
+const decode = require('jwt-decode').default;
 const expressJwt = require('express-jwt').expressjwt;
 const tools = require('../../auth0-extension-tools');
 const conditional = require('express-conditional-middleware');

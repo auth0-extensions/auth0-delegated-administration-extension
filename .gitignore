@@ -2,6 +2,9 @@
 .idea
 yarn-error.log
 build/bundle.js
+# Local serve:dev server bundle (built by build/webpack/config.server.dev.js).
+dist/server.dev.js
+dist/server.dev.js.map
 assets/app/*
 server/config.json
 server/config.*.json
