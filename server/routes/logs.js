@@ -1,6 +1,6 @@
 import Promise from 'bluebird';
 import { Router } from 'express';
-import { NotFoundError } from 'auth0-extension-tools';
+import { NotFoundError } from '../../vendor/auth0-extension-tools';
 
 import { requireScope } from '../lib/middlewares';
 import * as constants from '../constants';

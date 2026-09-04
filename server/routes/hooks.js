@@ -1,5 +1,5 @@
 import { Router as router } from 'express';
-import { middlewares } from 'auth0-extension-express-tools';
+import { middlewares } from '../../vendor/auth0-extension-express-tools';
 
 import config from '../lib/config';
 import logger from '../lib/logger';
