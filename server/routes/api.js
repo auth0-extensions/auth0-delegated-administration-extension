@@ -79,7 +79,6 @@ export default (storage) => {
     credentialsRequired: false,
     onLoginSuccess: (req, res, next) => {
       const currentRequest = req;
-      // here
       return addExtraUserInfo(getToken(req), req.user)
       .then((user) => {
         currentRequest.user = user;

@@ -29,7 +29,6 @@ const checkRole = (data) => {
   if (parsedData.indexOf(constants.AUDITOR_ROLE_NAME) >= 0) accessLevel = constants.AUDITOR_ACCESS_LEVEL;
   if (parsedData.indexOf(constants.USER_ROLE_NAME) >= 0) accessLevel = constants.USER_ACCESS_LEVEL;
   if (parsedData.indexOf(constants.OPERATOR_ROLE_NAME) >= 0) accessLevel = constants.OPERATOR_ACCESS_LEVEL;
-  // here
   if (parsedData.indexOf(constants.ADMIN_ROLE_NAME) >= 0) accessLevel = constants.ADMIN_ACCESS_LEVEL;
 
   return accessLevel;
