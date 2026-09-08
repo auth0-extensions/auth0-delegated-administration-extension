@@ -10,7 +10,7 @@ const initialState = {
   user: null
 };
 
-export const verificationEmail = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
+export const verificationEmail = createReducer(fromJS(initialState), {  
   [constants.REQUEST_RESEND_VERIFICATION_EMAIL]: (state, action) =>
     state.merge({
       ...initialState,

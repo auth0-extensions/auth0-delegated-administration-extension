@@ -14,7 +14,7 @@ describe('vendor/auth0-extension-tools/managementApi', () => {
   describe('#getAccessToken', () => {
     it('should handle network errors correctly', (done) => {
       managementApi.getAccessToken('foo.some.domain.tld', 'myclient', 'mysecret')
-        .catch(function(err) {
+        .catch(function (err) {
           expect(err).to.be.ok;
           expect(err.code).to.be.ok;
           expect(err.code).to.equal('ENOTFOUND');
@@ -29,7 +29,7 @@ describe('vendor/auth0-extension-tools/managementApi', () => {
         .reply(401, 'Unauthorized');
 
       managementApi.getAccessToken('tenant.auth0cluster.com', 'myclient', 'mysecret')
-        .catch(function(err) {
+        .catch(function (err) {
           expect(err).to.be.ok;
           expect(err.status).to.be.ok;
           expect(err.status).to.equal(401);
@@ -47,7 +47,7 @@ describe('vendor/auth0-extension-tools/managementApi', () => {
         .reply(200, 'foo');
 
       managementApi.getAccessToken('tenant.auth0cluster.com', 'myclient', 'mysecret')
-        .catch(function(err) {
+        .catch(function (err) {
           expect(err).to.be.ok;
           expect(err.status).to.be.ok;
           expect(err.status).to.equal(400);
@@ -68,7 +68,7 @@ describe('vendor/auth0-extension-tools/managementApi', () => {
         });
 
       managementApi.getAccessToken('tenant.auth0cluster.com', 'myclient', 'mysecret')
-        .catch(function(err) {
+        .catch(function (err) {
           expect(err).to.be.ok;
           expect(err.status).to.be.ok;
           expect(err.status).to.equal(403);
@@ -88,7 +88,7 @@ describe('vendor/auth0-extension-tools/managementApi', () => {
         });
 
       managementApi.getAccessToken('tenant.auth0cluster.com', 'myclient', 'mysecret')
-        .then(function(accessToken) {
+        .then(function (accessToken) {
           expect(accessToken).to.be.ok;
           expect(accessToken).to.equal('abc');
           nock.cleanAll();
@@ -112,17 +112,17 @@ describe('vendor/auth0-extension-tools/managementApi', () => {
         });
 
       managementApi.getAccessTokenCached('tenant.auth0cluster.com', 'myclient', 'mysecret')
-        .then(function(accessToken) {
+        .then(function (accessToken) {
           expect(accessToken).to.be.ok;
           expect(accessToken).to.equal('abc');
 
           managementApi.getAccessTokenCached('tenant.auth0cluster.com', 'myclient', 'mysecret')
-            .then(function(accessToken2) {
+            .then(function (accessToken2) {
               expect(accessToken2).to.be.ok;
               expect(accessToken2).to.equal('abc');
 
               managementApi.getAccessTokenCached('tenant.auth0cluster2.com', 'myclient', 'mysecret')
-                .then(function(accessToken3) {
+                .then(function (accessToken3) {
                   expect(accessToken3).to.be.ok;
                   expect(accessToken3).to.equal('def');
                   nock.cleanAll();
@@ -135,7 +135,7 @@ describe('vendor/auth0-extension-tools/managementApi', () => {
         .catch(done);
     });
 
-    it('should cache the access token based on its expiration', function(done) {
+    it('should cache the access token based on its expiration', function (done) {
       this.timeout(10000);
 
       const token = jwt.sign({ foo: 'bar' }, 'shhhhh', { expiresIn: '14s' });
@@ -147,13 +147,13 @@ describe('vendor/auth0-extension-tools/managementApi', () => {
         });
 
       managementApi.getAccessTokenCached('tenant.auth0cluster3.com', 'myclient', 'mysecret')
-        .then(function(accessToken) {
+        .then(function (accessToken) {
           expect(accessToken).to.be.ok;
           expect(accessToken).to.equal(token);
 
-          setTimeout(function() {
+          setTimeout(function () {
             managementApi.getAccessTokenCached('tenant.auth0cluster3.com', 'myclient', 'mysecret')
-              .then(function(accessToken2) {
+              .then(function (accessToken2) {
                 expect(accessToken2).to.be.ok;
                 expect(accessToken2).to.equal(token);
 
@@ -163,9 +163,9 @@ describe('vendor/auth0-extension-tools/managementApi', () => {
                     access_token: 'def'
                   });
 
-                setTimeout(function() {
+                setTimeout(function () {
                   managementApi.getAccessTokenCached('tenant.auth0cluster3.com', 'myclient', 'mysecret')
-                    .then(function(accessToken3) {
+                    .then(function (accessToken3) {
                       expect(accessToken3).to.be.ok;
                       expect(accessToken3).to.equal('def');
                       nock.cleanAll();
@@ -188,7 +188,7 @@ describe('vendor/auth0-extension-tools/managementApi', () => {
         });
 
       managementApi.getAccessTokenCached('tenant.auth0cluster.com', 'myclient', 'mysecret2')
-        .catch(function(err) {
+        .catch(function (err) {
           expect(err).to.be.ok;
           expect(err.code).to.equal('foo');
 
@@ -199,7 +199,7 @@ describe('vendor/auth0-extension-tools/managementApi', () => {
             });
 
           managementApi.getAccessTokenCached('tenant.auth0cluster.com', 'myclient', 'mysecret2')
-            .then(function(accessToken2) {
+            .then(function (accessToken2) {
               expect(accessToken2).to.be.ok;
               expect(accessToken2).to.equal('abc');
               nock.cleanAll();
@@ -277,7 +277,7 @@ describe('vendor/auth0-extension-tools/managementApi', () => {
       }
 
       managementApi.getClient({ domain: 'foo', accessToken: 'def' })
-        .then(function(auth0) {
+        .then(function (auth0) {
           expect(auth0).to.be.ok;
           done();
         })
@@ -286,7 +286,7 @@ describe('vendor/auth0-extension-tools/managementApi', () => {
 
     it('should create a client for accessToken', (done) => {
       managementApi.getClient({ domain: 'foo', accessToken: 'def' })
-        .then(function(auth0) {
+        .then(function (auth0) {
           expect(auth0).to.be.ok;
           done();
         })
@@ -295,7 +295,7 @@ describe('vendor/auth0-extension-tools/managementApi', () => {
 
     it('should create a client for accessToken with headers', (done) => {
       managementApi.getClient({ domain: 'foo', accessToken: 'def', headers: { customHeader: 'custom' } })
-        .then(function(auth0) {
+        .then(function (auth0) {
           expect(auth0).to.be.ok;
           const keys = Object.keys(auth0);
           keys.forEach(key => {
@@ -316,7 +316,7 @@ describe('vendor/auth0-extension-tools/managementApi', () => {
         });
 
       managementApi.getClient({ domain: 'tenant.auth0cluster.com', clientId: 'abc', clientSecret: 'def' })
-        .then(function(auth0) {
+        .then(function (auth0) {
           expect(auth0).to.be.ok;
           done();
         })

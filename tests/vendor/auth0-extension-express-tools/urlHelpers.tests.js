@@ -47,7 +47,7 @@ describe('vendor/auth0-extension-express-tools/urlHelpers', () => {
         headers: {
           host: 'sandbox.it.auth0.com'
         },
-        get: function() {
+        get: function () {
           return 'sandbox.it.auth0.com';
         }
       };
@@ -61,7 +61,7 @@ describe('vendor/auth0-extension-express-tools/urlHelpers', () => {
         headers: {
           host: 'sandbox.it.auth0.com'
         },
-        get: function() {
+        get: function () {
           return 'sandbox.it.auth0.com';
         }
       };
@@ -76,7 +76,7 @@ describe('vendor/auth0-extension-express-tools/urlHelpers', () => {
         headers: {
           host: 'sandbox.it.auth0.com'
         },
-        get: function() {
+        get: function () {
           return 'sandbox.it.auth0.com';
         }
       };
@@ -91,7 +91,7 @@ describe('vendor/auth0-extension-express-tools/urlHelpers', () => {
         headers: {
           host: 'sandbox.it.auth0.com'
         },
-        get: function() {
+        get: function () {
           return 'sandbox.it.auth0.com';
         }
       };

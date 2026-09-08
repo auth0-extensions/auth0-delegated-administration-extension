@@ -22,14 +22,14 @@ describe('#Client-Components-UserActions', () => {
   const unblockUser = track('unblockUser');
   const removeBlockedIPs = track('removeBlockedIPs');
 
-  const renderComponent = (user, languageDictionary, userFields = [{ edit: true }]) => {
+  const renderComponent = (user, languageDictionary, userFields = [ { edit: true } ]) => {
     return render(
       <UserActions
         blockUser={blockUser}
         changeEmail={changeEmail}
         changePassword={changePassword}
         changeUsername={changeUsername}
-        databaseConnections={fromJS(['connA'])}
+        databaseConnections={fromJS([ 'connA' ])}
         deleteUser={deleteUser}
         changeFields={changeFields}
         removeMfa={removeMfa}
@@ -60,57 +60,57 @@ describe('#Client-Components-UserActions', () => {
       const label = item.textContent.trim();
       calls = [];
       fireEvent.click(item);
-      expect(calls).to.deep.equal([targets[label]]);
+      expect(calls).to.deep.equal([ targets[label] ]);
     });
   };
 
   it('should render', () => {
-    const queries = renderComponent({ username: 'bill', multifactor: ['guardian'] });
+    const queries = renderComponent({ username: 'bill', multifactor: [ 'guardian' ] });
     const targets = {
-      "Block User": blockUser(),
-      "Change Email": changeEmail(),
-      "Change Password": changePassword(),
-      "Delete User": deleteUser(),
-      "Change Profile": changeFields(),
-      "Remove MFA": removeMfa(),
-      "Resend Verification Email": resendVerificationEmail(),
-      "Reset Password": resetPassword(),
-      "Change Username": changeUsername()
+      'Block User': blockUser(),
+      'Change Email': changeEmail(),
+      'Change Password': changePassword(),
+      'Delete User': deleteUser(),
+      'Change Profile': changeFields(),
+      'Remove MFA': removeMfa(),
+      'Resend Verification Email': resendVerificationEmail(),
+      'Reset Password': resetPassword(),
+      'Change Username': changeUsername()
     };
 
     checkMenuItems(queries, targets);
   });
 
   it('should render unblock', () => {
-    const queries = renderComponent({ username: 'bill', multifactor: ['guardian'], blocked: true });
+    const queries = renderComponent({ username: 'bill', multifactor: [ 'guardian' ], blocked: true });
     const targets = {
-      "Unblock User": unblockUser(),
-      "Change Email": changeEmail(),
-      "Change Password": changePassword(),
-      "Delete User": deleteUser(),
-      "Change Profile": changeFields(),
-      "Remove MFA": removeMfa(),
-      "Resend Verification Email": resendVerificationEmail(),
-      "Reset Password": resetPassword(),
-      "Change Username": changeUsername()
+      'Unblock User': unblockUser(),
+      'Change Email': changeEmail(),
+      'Change Password': changePassword(),
+      'Delete User': deleteUser(),
+      'Change Profile': changeFields(),
+      'Remove MFA': removeMfa(),
+      'Resend Verification Email': resendVerificationEmail(),
+      'Reset Password': resetPassword(),
+      'Change Username': changeUsername()
     };
 
     checkMenuItems(queries, targets);
   });
 
   it('should render removeBlocks', () => {
-    const queries = renderComponent({ username: 'bill', multifactor: ['guardian'], blocked_for: [ 'some stuff' ] });
+    const queries = renderComponent({ username: 'bill', multifactor: [ 'guardian' ], blocked_for: [ 'some stuff' ] });
     const targets = {
-      "Block User": blockUser(),
-      "Unblock for all IPs": removeBlockedIPs(),
-      "Change Email": changeEmail(),
-      "Change Password": changePassword(),
-      "Delete User": deleteUser(),
-      "Change Profile": changeFields(),
-      "Remove MFA": removeMfa(),
-      "Resend Verification Email": resendVerificationEmail(),
-      "Reset Password": resetPassword(),
-      "Change Username": changeUsername()
+      'Block User': blockUser(),
+      'Unblock for all IPs': removeBlockedIPs(),
+      'Change Email': changeEmail(),
+      'Change Password': changePassword(),
+      'Delete User': deleteUser(),
+      'Change Profile': changeFields(),
+      'Remove MFA': removeMfa(),
+      'Resend Verification Email': resendVerificationEmail(),
+      'Reset Password': resetPassword(),
+      'Change Username': changeUsername()
     };
 
     checkMenuItems(queries, targets);
@@ -125,8 +125,8 @@ describe('#Client-Components-UserActions', () => {
     ];
     const queries = renderComponent({ username: 'bill' }, {}, userFields);
     const targets = {
-      "Block User": blockUser(),
-      "Resend Verification Email": resendVerificationEmail()
+      'Block User': blockUser(),
+      'Resend Verification Email': resendVerificationEmail()
     };
 
     checkMenuItems(queries, targets);
@@ -139,12 +139,12 @@ describe('#Client-Components-UserActions', () => {
     ];
     const queries = renderComponent({ username: 'bill' }, {}, userFields);
     const targets = {
-      "Block User": blockUser(),
-      "Change Email": changeEmail(),
-      "Change Username": changeUsername(),
-      "Reset Password": resetPassword(),
-      "Delete User": deleteUser(),
-      "Resend Verification Email": resendVerificationEmail()
+      'Block User': blockUser(),
+      'Change Email': changeEmail(),
+      'Change Username': changeUsername(),
+      'Reset Password': resetPassword(),
+      'Delete User': deleteUser(),
+      'Resend Verification Email': resendVerificationEmail()
     };
 
     checkMenuItems(queries, targets);
@@ -163,17 +163,17 @@ describe('#Client-Components-UserActions', () => {
       changeUsernameMenuItemText: 'changeUsername',
       unblockUserMenuItemText: 'unblockUser'
     };
-    const queries = renderComponent({ username: 'bill', multifactor: ['guardian'] }, languageDictionary);
+    const queries = renderComponent({ username: 'bill', multifactor: [ 'guardian' ] }, languageDictionary);
     const targets = {
-      "blockUser": blockUser(),
-      "changeEmail": changeEmail(),
-      "changePassword": changePassword(),
-      "deleteUser": deleteUser(),
-      "changeFields": changeFields(),
-      "removeMfa": removeMfa(),
-      "resendVerificationEmail": resendVerificationEmail(),
-      "resetPassword": resetPassword(),
-      "changeUsername": changeUsername()
+      'blockUser': blockUser(),
+      'changeEmail': changeEmail(),
+      'changePassword': changePassword(),
+      'deleteUser': deleteUser(),
+      'changeFields': changeFields(),
+      'removeMfa': removeMfa(),
+      'resendVerificationEmail': resendVerificationEmail(),
+      'resetPassword': resetPassword(),
+      'changeUsername': changeUsername()
     };
 
     checkMenuItems(queries, targets);
@@ -194,19 +194,19 @@ describe('#Client-Components-UserActions', () => {
     };
     const queries = renderComponent({
       username: 'bill',
-      multifactor: ['guardian'],
+      multifactor: [ 'guardian' ],
       blocked: true
     }, languageDictionary);
     const targets = {
-      "unblockUser": unblockUser(),
-      "changeEmail": changeEmail(),
-      "changePassword": changePassword(),
-      "deleteUser": deleteUser(),
-      "changeFields": changeFields(),
-      "removeMfa": removeMfa(),
-      "resendVerificationEmail": resendVerificationEmail(),
-      "resetPassword": resetPassword(),
-      "changeUsername": changeUsername()
+      'unblockUser': unblockUser(),
+      'changeEmail': changeEmail(),
+      'changePassword': changePassword(),
+      'deleteUser': deleteUser(),
+      'changeFields': changeFields(),
+      'removeMfa': removeMfa(),
+      'resendVerificationEmail': resendVerificationEmail(),
+      'resetPassword': resetPassword(),
+      'changeUsername': changeUsername()
     };
 
     checkMenuItems(queries, targets);
@@ -217,17 +217,17 @@ describe('#Client-Components-UserActions', () => {
       someOtherKey: 'Some other value'
     };
 
-    const queries = renderComponent({ username: 'bill', multifactor: ['guardian'] }, languageDictionary);
+    const queries = renderComponent({ username: 'bill', multifactor: [ 'guardian' ] }, languageDictionary);
     const targets = {
-      "Block User": blockUser(),
-      "Change Email": changeEmail(),
-      "Change Password": changePassword(),
-      "Delete User": deleteUser(),
-      "Change Profile": changeFields(),
-      "Remove MFA": removeMfa(),
-      "Resend Verification Email": resendVerificationEmail(),
-      "Reset Password": resetPassword(),
-      "Change Username": changeUsername()
+      'Block User': blockUser(),
+      'Change Email': changeEmail(),
+      'Change Password': changePassword(),
+      'Delete User': deleteUser(),
+      'Change Profile': changeFields(),
+      'Remove MFA': removeMfa(),
+      'Resend Verification Email': resendVerificationEmail(),
+      'Reset Password': resetPassword(),
+      'Change Username': changeUsername()
     };
 
     checkMenuItems(queries, targets);
@@ -240,19 +240,19 @@ describe('#Client-Components-UserActions', () => {
 
     const queries = renderComponent({
       username: 'bill',
-      multifactor: ['guardian'],
+      multifactor: [ 'guardian' ],
       blocked: true
     }, languageDictionary);
     const targets = {
-      "Unblock User": unblockUser(),
-      "Change Email": changeEmail(),
-      "Change Password": changePassword(),
-      "Delete User": deleteUser(),
-      "Change Profile": changeFields(),
-      "Remove MFA": removeMfa(),
-      "Resend Verification Email": resendVerificationEmail(),
-      "Reset Password": resetPassword(),
-      "Change Username": changeUsername()
+      'Unblock User': unblockUser(),
+      'Change Email': changeEmail(),
+      'Change Password': changePassword(),
+      'Delete User': deleteUser(),
+      'Change Profile': changeFields(),
+      'Remove MFA': removeMfa(),
+      'Resend Verification Email': resendVerificationEmail(),
+      'Reset Password': resetPassword(),
+      'Change Username': changeUsername()
     };
 
     checkMenuItems(queries, targets);

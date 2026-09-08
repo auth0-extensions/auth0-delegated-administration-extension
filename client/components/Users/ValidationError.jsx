@@ -28,7 +28,7 @@ class ValidationError extends Component {
   };
 
   renderLabel = (property, label, index) => {
-    return <li key={index}><label htmlFor={property}>{label}</label></li>
+    return <li key={index}><label htmlFor={property}>{label}</label></li>;
   };
 
   render() {

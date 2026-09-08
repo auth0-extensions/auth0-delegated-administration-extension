@@ -25,7 +25,7 @@ const parseFunction = (property, attribute, functionString) => {
   }
 
   return functionString;
-}
+};
 
 const parseOptions = (options) => {
   // Parse options
@@ -54,7 +54,7 @@ const parseFieldSection = (property, sectionInfo, sectionName, inheritedDisplay)
   }
 };
 
-export const settings = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
+export const settings = createReducer(fromJS(initialState), {  
   [constants.FETCH_SETTINGS_PENDING]: (state) =>
     state.merge({
       loading: true,

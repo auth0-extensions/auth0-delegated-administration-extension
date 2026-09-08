@@ -1,6 +1,6 @@
 import { ValidationError } from '../../vendor/auth0-extension-tools';
 import tools from '../../vendor/auth0-extension-tools';
-import { getClientOptions } from '../lib/managementAPIClient'
+import { getClientOptions } from '../lib/managementAPIClient';
 
 import config from './config';
 import logger from './logger';
@@ -73,7 +73,7 @@ export const getCustomDomainHeaders = async (req, scriptManager, method, payload
     }
     
     logger.error(`Custom domain hook execution failed: ${error.message}`);
-    throw error
+    throw error;
   }
 };
 

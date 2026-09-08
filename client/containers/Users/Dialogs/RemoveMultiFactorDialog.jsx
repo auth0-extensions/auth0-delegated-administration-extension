@@ -32,7 +32,7 @@ export const parseProviders = (value) => {
     return JSON.parse(value);
   }
   catch {
-    return [value];
+    return [ value ];
   }
 };
 
@@ -98,7 +98,7 @@ export default connectContainer(class extends Component {
 
     return (
       <Confirm
-        title={languageDictionary.removeMultiFactorTitle || "Remove Multi Factor Authentication?" }
+        title={languageDictionary.removeMultiFactorTitle || 'Remove Multi Factor Authentication?' }
         show={requesting}
         loading={loading}
         confirmMessage={languageDictionary.dialogConfirmText}

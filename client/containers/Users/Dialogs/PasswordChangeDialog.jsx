@@ -75,7 +75,7 @@ export default connectContainer(class PasswordChangeDialog extends Component {
     useDisabledConnectionField(true, fields, connection, connections.get('records').toJS());
     useDisabledEmailField(true, fields);
 
-    const allowedFields = ['email', 'connection', 'password', 'repeatPassword'];
+    const allowedFields = [ 'email', 'connection', 'password', 'repeatPassword' ];
     const filteredFields = _.filter(fields,
       field => _.includes(allowedFields, field.property));
 

@@ -79,7 +79,7 @@ export function requestCreateUser(memberships) {
 
     const connection = connections.length === 0
       ? null
-      : connections && connections.length && connections[0].name
+      : connections && connections.length && connections[0].name;
 
     dispatch({
       type: constants.REQUEST_CREATE_USER,
@@ -384,7 +384,7 @@ export function cancelDeleteUser() {
  */
 export function deleteUser() {
   return (dispatch, getState) => {
-    const { user: {user_id} } = getState().userDelete.toJS();
+    const { user: { user_id } } = getState().userDelete.toJS();
     dispatch({
       type: constants.DELETE_USER,
       payload: {

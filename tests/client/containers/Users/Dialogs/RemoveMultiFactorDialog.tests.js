@@ -73,7 +73,7 @@ describe('#Client-Containers-Users-Dialogs-RemoveMultiFactorDialog', () => {
     const modalTitle = document.querySelector('.modal-title');
     expect(modalTitle).to.exist;
     expect(modalTitle.textContent).to.equal(title);
-  }
+  };
 
   it('should render', () => {
     renderComponent('bill');
@@ -130,42 +130,42 @@ describe('#Client-Containers-Users-Dialogs-RemoveMultiFactorDialog', () => {
   });
 
   it('should render when user has a single MFA provider', () => {
-    renderComponentWithMfa('bill', ['totp']);
+    renderComponentWithMfa('bill', [ 'totp' ]);
     checkConfirm('Remove Multi Factor Authentication?');
   });
 
   it('should render when user has multiple MFA providers', () => {
-    renderComponentWithMfa('bill', ['totp', 'recovery-code']);
+    renderComponentWithMfa('bill', [ 'totp', 'recovery-code' ]);
     checkConfirm('Remove Multi Factor Authentication?');
   });
 
   it('should render without crashing when multifactor is a raw array due to edit:false in userFields', () => {
-    const userFields = [{ property: 'multifactor', edit: false }];
-    renderComponentWithMfa('bill', ['totp', 'recovery-code'], userFields);
+    const userFields = [ { property: 'multifactor', edit: false } ];
+    renderComponentWithMfa('bill', [ 'totp', 'recovery-code' ], userFields);
     checkConfirm('Remove Multi Factor Authentication?');
   });
 
   it('should render without crashing when user has passkey and non-passkey providers with edit:false in userFields', () => {
-    const userFields = [{ property: 'multifactor', edit: false }];
-    renderComponentWithMfa('bill', ['passkey', 'totp'], userFields);
+    const userFields = [ { property: 'multifactor', edit: false } ];
+    renderComponentWithMfa('bill', [ 'passkey', 'totp' ], userFields);
     checkConfirm('Remove Multi Factor Authentication?');
   });
 });
 
 describe('#parseProviders', () => {
   it('returns an array unchanged', () => {
-    expect(parseProviders(['totp', 'recovery-code'])).to.deep.equal(['totp', 'recovery-code']);
+    expect(parseProviders([ 'totp', 'recovery-code' ])).to.deep.equal([ 'totp', 'recovery-code' ]);
   });
 
   it('parses a JSON array string', () => {
-    expect(parseProviders('["totp","recovery-code"]')).to.deep.equal(['totp', 'recovery-code']);
+    expect(parseProviders('["totp","recovery-code"]')).to.deep.equal([ 'totp', 'recovery-code' ]);
   });
 
   it('wraps a plain string provider in an array', () => {
-    expect(parseProviders('totp')).to.deep.equal(['totp']);
+    expect(parseProviders('totp')).to.deep.equal([ 'totp' ]);
   });
 
   it('wraps a malformed JSON string in an array rather than throwing', () => {
-    expect(parseProviders('[totp,recovery-code]')).to.deep.equal(['[totp,recovery-code]']);
+    expect(parseProviders('[totp,recovery-code]')).to.deep.equal([ '[totp,recovery-code]' ]);
   });
 });

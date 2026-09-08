@@ -6,7 +6,7 @@ import { describe, it, beforeEach } from 'mocha';
 import { fromJS } from 'immutable';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import MockAdapter from 'axios-mock-adapter';
-import axios from 'axios'
+import axios from 'axios';
 
 import fakeStore from '../../../utils/fakeStore';
 
@@ -15,7 +15,7 @@ import Users from '../../../../client/containers/Users/Users';
 class UsersWrapper extends Component {
   render() {
     return <Users
-    />
+    />;
   }
 }
 
@@ -29,13 +29,13 @@ describe('#Client-Containers-Users-Users', () => {
   });
 
   after(() => {
-      stub.restore();
+    stub.restore();
   });
 
 
   const renderComponent = (languageDictionary, settings = {}) => {
     const initialState = {
-      connections: fromJS({ records: [{name: 'connA'}]}),
+      connections: fromJS({ records: [ { name: 'connA' } ] }),
       accessLevel: fromJS({ record: { role: 1 } }),
       users: fromJS({
         loading: false,
@@ -45,12 +45,12 @@ describe('#Client-Containers-Users-Users', () => {
         pages: 3,
         sortProperty: 'name',
         sortOrder: 1,
-        records: [{
-          identities: [{
+        records: [ {
+          identities: [ {
             provider: 'auth0',
             connection: 'connA'
-          }]
-        }]
+          } ]
+        } ]
       }),
       userCreate: fromJS({
         error: null,
@@ -64,7 +64,7 @@ describe('#Client-Containers-Users-Users', () => {
     };
     return render(
       <Provider store={fakeStore(initialState)}>
-        <MemoryRouter initialEntries={['/']} initialIndex={0}>
+        <MemoryRouter initialEntries={[ '/' ]} initialIndex={0}>
           <Routes>
             <Route path="/" element={<UsersWrapper/>}/>
           </Routes>
@@ -77,7 +77,7 @@ describe('#Client-Containers-Users-Users', () => {
     document.body.innerHTML = '';
   });
 
-  const checkForLanguageDictionary = (container, selector, languageDictionary) => {
+  const checkForLanguageDictionary = (container, selector) => {
     const subComponent = container.querySelector(selector);
     expect(subComponent || true).to.be.ok;
   };

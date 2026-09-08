@@ -2,10 +2,10 @@ import _ from 'lodash';
 import moment from 'moment';
 
 export const getProperty = (obj, path) => {
-  var args = path.split('.'), i, l;
+  let args = path.split('.'), i, l;
 
   for (i=0, l=args.length; i<l; i++) {
-    if (!obj.hasOwnProperty(args[i]))
+    if (!Object.prototype.hasOwnProperty.call(obj, args[i]))
       return;
     obj = obj[args[i]];
   }
@@ -15,7 +15,7 @@ export const getProperty = (obj, path) => {
 
 export const getName = (user, fields, languageDictionary) => {
   fields = fields || [];
-  const field = _.find(fields, {property: 'name'});
+  const field = _.find(fields, { property: 'name' });
   if (field) {
     return getValue(user, field, languageDictionary);
   }

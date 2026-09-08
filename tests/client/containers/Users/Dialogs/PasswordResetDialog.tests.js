@@ -42,7 +42,7 @@ describe('#Client-Containers-Users-Dialogs-PasswordResetDialog', () => {
           }, {
             name: 'app2',
             client_id: 2
-          }]
+          } ]
       })
     };
     return render(

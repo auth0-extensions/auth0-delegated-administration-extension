@@ -6,10 +6,10 @@ import createReducer from '../utils/createReducer';
 const initialState = {
   loading: false,
   error: null,
-  records: fromJS([]),
+  records: fromJS([])
 };
 
-export const applications = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
+export const applications = createReducer(fromJS(initialState), {  
   [constants.FETCH_APPLICATIONS_PENDING]: (state) =>
     state.merge({
       loading: true,

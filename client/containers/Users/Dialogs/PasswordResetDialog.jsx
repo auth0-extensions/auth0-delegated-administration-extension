@@ -78,7 +78,7 @@ export default connectContainer(class extends Component {
     useDisabledConnectionField(true, fields, connection, connections.get('records').toJS());
     useDisabledEmailField(true, fields);
 
-    const allowedFields = ['email', 'client', 'connection'];
+    const allowedFields = [ 'email', 'client', 'connection' ];
     const filteredFields = _.filter(fields,
       field => _.includes(allowedFields, field.property));
 

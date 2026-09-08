@@ -24,7 +24,7 @@ describe('#Client-Containers-Users-Dialogs-CreateDialog', () => {
       accessLevel: fromJS({
         record: {}
       }),
-      connections: fromJS({ records: [{ name: 'connA' }] })
+      connections: fromJS({ records: [ { name: 'connA' } ] })
     };
     return render(
       <Provider store={fakeStore(initialState)}>

@@ -70,7 +70,7 @@ function refreshToken() {
   return new Promise((resolve, reject) => {
     // invoke check session to get a new token
     webAuth.checkSession({},
-      function(err, result) {
+      function (err, result) {
         if (err) { // there was an error
           reject(err);
         } else {  // we got a token
@@ -82,7 +82,7 @@ function refreshToken() {
 }
 
 const processTokens = (dispatch, apiToken, returnTo) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     // check token expiration date
     const decodedToken = jwtDecode(apiToken);
     if (isTokenExpired(decodedToken)) {

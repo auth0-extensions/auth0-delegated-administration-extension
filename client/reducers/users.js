@@ -17,7 +17,7 @@ const initialState = {
   sortOrder: -1
 };
 
-export const users = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
+export const users = createReducer(fromJS(initialState), {  
   [constants.FETCH_USERS_PENDING]: (state, action) =>
     state.merge({
       ...initialState,

@@ -29,7 +29,7 @@ describe('#users router', () => {
           const sortParts = options.sort.split(':');
           const order = sortParts[1] < 0 ? 'desc' : 'asc';
           return Promise.resolve({
-            users: _.orderBy(userData, [sortParts[0]], [order])
+            users: _.orderBy(userData, [ sortParts[0] ], [ order ])
           });
         }
         return Promise.resolve({ users: userData });
@@ -96,15 +96,15 @@ describe('#users router', () => {
   };
 
   const storage = {
-    read: () => Promise.resolve(storage.data),
+    read: () => Promise.resolve(storage.data)
   };
 
   const scriptManager = new ScriptManager(storage);
   const oldGetCached = scriptManager.getCached;
   const skipCache = name => scriptManager.get(name);
   const settingsWithUserFields = ((ctx, callback) => {
-    var result = {
-      connections: ['conn-a', 'conn-b'],
+    let result = {
+      connections: [ 'conn-a', 'conn-b' ],
       dict: {
         title: ctx.request.user.email + ' dashboard',
         memberships: 'Groups'
@@ -112,8 +112,8 @@ describe('#users router', () => {
       css: 'http://localhost:3001/app/default.css',
       userFields: [
         {
-          property: "email",
-          label: "Email"
+          property: 'email',
+          label: 'Email'
         }
       ]
     };
@@ -121,8 +121,8 @@ describe('#users router', () => {
   }).toString();
 
   const settingsWithValidationUserFields = ((ctx, callback) => {
-    var result = {
-      connections: ['conn-a', 'conn-b'],
+    let result = {
+      connections: [ 'conn-a', 'conn-b' ],
       dict: {
         title: ctx.request.user.email + ' dashboard',
         memberships: 'Groups'
@@ -130,103 +130,103 @@ describe('#users router', () => {
       css: 'http://localhost:3001/app/default.css',
       userFields: [
         {
-          property: "email",
-          label: "Email",
+          property: 'email',
+          label: 'Email',
           edit: {
             required: true,
-            type: "text",
-            validationFunction: ((value, values) => value !== "good value" ? "bad value" +
-              " for" +
-              " edit email" : false).toString()
+            type: 'text',
+            validationFunction: ((value) => value !== 'good value' ? 'bad value' +
+              ' for' +
+              ' edit email' : false).toString()
           },
           create: {
             required: true,
-            type: "text",
-            validationFunction: ((value, values) => value !== "good value" ? "bad value for create email" : false).toString()
+            type: 'text',
+            validationFunction: ((value) => value !== 'good value' ? 'bad value for create email' : false).toString()
           }
         },
         {
-          property: "username",
-          label: "Username",
+          property: 'username',
+          label: 'Username',
           edit: {
             required: true,
-            type: "text",
-            validationFunction: ((value, values) => value !== "good value" ? "bad value for edit username" : false).toString()
+            type: 'text',
+            validationFunction: ((value) => value !== 'good value' ? 'bad value for edit username' : false).toString()
           },
           create: {
             required: true,
-            type: "text",
-            validationFunction: ((value, values) => value !== "good value" ? "bad value for create username" : false).toString()
+            type: 'text',
+            validationFunction: ((value) => value !== 'good value' ? 'bad value for create username' : false).toString()
           }
         },
         {
-          property: "password",
-          label: "Password",
+          property: 'password',
+          label: 'Password',
           edit: {
             required: true,
-            type: "password",
-            validationFunction: ((value, values) => value !== "good value" ? "bad value for edit password" : false).toString()
+            type: 'password',
+            validationFunction: ((value) => value !== 'good value' ? 'bad value for edit password' : false).toString()
           },
           create: {
             required: true,
-            type: "password",
-            validationFunction: ((value, values) => value !== "good value" ? "bad value for create password" : false).toString()
+            type: 'password',
+            validationFunction: ((value) => value !== 'good value' ? 'bad value for create password' : false).toString()
           }
         },
         {
-          property: "repeatPassword",
-          label: "Repeat Password",
+          property: 'repeatPassword',
+          label: 'Repeat Password',
           edit: {
             required: true,
-            type: "password",
-            validationFunction: ((value, values) => value !== "good value" ? "bad value for edit repeat password" : false).toString()
+            type: 'password',
+            validationFunction: ((value) => value !== 'good value' ? 'bad value for edit repeat password' : false).toString()
           },
           create: {
             required: true,
-            type: "password",
-            validationFunction: ((value, values) => value !== "good value" ? "bad value for create repeat password" : false).toString()
+            type: 'password',
+            validationFunction: ((value) => value !== 'good value' ? 'bad value for create repeat password' : false).toString()
           }
         },
         {
-          property: "user_metadata.custom",
-          label: "Custom Field Simple Options",
+          property: 'user_metadata.custom',
+          label: 'Custom Field Simple Options',
           edit: {
             required: true,
-            type: "select",
-            options: ['good value', 'bad value'],
+            type: 'select',
+            options: [ 'good value', 'bad value' ],
             component: 'InputCombo',
-            validationFunction: ((value, values) => value !== "good value" && value !== "other value" ? "bad value for edit custom" : false).toString()
+            validationFunction: ((value) => value !== 'good value' && value !== 'other value' ? 'bad value for edit custom' : false).toString()
           },
           create: {
             required: true,
-            type: "select",
-            options: ['good value', 'bad value'],
+            type: 'select',
+            options: [ 'good value', 'bad value' ],
             component: 'InputCombo',
-            validationFunction: ((value, values) => value !== "good value" && value !== "other value" ? "bad value for create custom" : false).toString()
+            validationFunction: ((value) => value !== 'good value' && value !== 'other value' ? 'bad value for create custom' : false).toString()
           }
         },
         {
-          property: "user_metadata.custom2",
-          label: "Custom Field Complex Options",
+          property: 'user_metadata.custom2',
+          label: 'Custom Field Complex Options',
           edit: {
             required: true,
-            type: "select",
-            options: [{ value: 'good value', label: 'good' }, { value: 'bad value', label: 'bad' }],
+            type: 'select',
+            options: [ { value: 'good value', label: 'good' }, { value: 'bad value', label: 'bad' } ],
             component: 'InputCombo',
-            validationFunction: ((value, values) =>
-              value && value !== "good value" &&
-              value !== "other value" && value.value !== "good value" &&
-              value.value !== "other value" ? "bad value for edit custom2" : false).toString()
+            validationFunction: ((value) =>
+              value && value !== 'good value' &&
+              value !== 'other value' && value.value !== 'good value' &&
+              value.value !== 'other value' ? 'bad value for edit custom2' : false).toString()
           },
           create: {
             required: true,
-            type: "select",
-            options: [{ value: 'good value', label: 'good' }, { value: 'bad value', label: 'bad' }],
+            type: 'select',
+            options: [ { value: 'good value', label: 'good' }, { value: 'bad value', label: 'bad' } ],
             component: 'InputCombo',
-            validationFunction: ((value, values) =>
-              value && value !== "good value" &&
-              value !== "other value" && value.value !== "good value" &&
-              value.value !== "other value" ? "bad value for create custom2" : false).toString()
+            validationFunction: ((value) =>
+              value && value !== 'good value' &&
+              value !== 'other value' && value.value !== 'good value' &&
+              value.value !== 'other value' ? 'bad value for create custom2' : false).toString()
           }
         }
       ]
@@ -235,8 +235,8 @@ describe('#users router', () => {
   }).toString();
 
   const settingsWithUserCreateDisabled = ((ctx, callback) => {
-    var result = {
-      connections: ['conn-a', 'conn-b'],
+    let result = {
+      connections: [ 'conn-a', 'conn-b' ],
       dict: {
         title: ctx.request.user.email + ' dashboard',
         memberships: 'Groups'
@@ -244,8 +244,8 @@ describe('#users router', () => {
       css: 'http://localhost:3001/app/default.css',
       userFields: [
         {
-          property: "email",
-          label: "Email"
+          property: 'email',
+          label: 'Email'
         }
       ],
       canCreateUser: false
@@ -261,7 +261,7 @@ describe('#users router', () => {
   const domain = new RegExp(config('AUTH0_DOMAIN'));
 
   before(() => {
-    global.connections = [{ id: '1', name: 'conn-a' }];
+    global.connections = [ { id: '1', name: 'conn-a' } ];
     nock(domain)
       .post('/oauth/token')
       .reply(200, { ok: true, access_token: 'access_token' });
@@ -296,7 +296,7 @@ describe('#users router', () => {
         .expect(200)
         .end((err, res) => {
           if (err) return done(err);
-          const targetUsers = _.orderBy(_.cloneDeep(userData), ['user_id'], ['desc']);
+          const targetUsers = _.orderBy(_.cloneDeep(userData), [ 'user_id' ], [ 'desc' ]);
           userData.push(userFour);
           userData.push(userFive);
           expect(res.body).to.deep.equal({ users: targetUsers });
@@ -312,7 +312,7 @@ describe('#users router', () => {
         .expect('Content-Type', /json/)
         .end((err, res) => {
           if (err) return done(err);
-          expect(res.body).to.deep.equal({ users: [userData[0]] });
+          expect(res.body).to.deep.equal({ users: [ userData[0] ] });
           done();
         });
     });
@@ -322,7 +322,7 @@ describe('#users router', () => {
     it('should return user`s record', (done) => {
       nock(domain)
         .get('/api/v2/connections/1/clients')
-        .reply(200, { clients: [{ client_id: 'c1' }, { client_id: 'c2' }] });
+        .reply(200, { clients: [ { client_id: 'c1' }, { client_id: 'c2' } ] });
       nock(domain)
         .get('/api/v2/users/1/authentication-methods')
         .reply(200, []);
@@ -336,7 +336,7 @@ describe('#users router', () => {
         .expect(200)
         .end((err, res) => {
           if (err) return done(err);
-          expect(res.body.memberships).to.deep.equal(['deptA']);
+          expect(res.body.memberships).to.deep.equal([ 'deptA' ]);
           expect(res.body.user.user_id).to.equal(1);
           expect(res.body.user.blocked_for).to.deep.equal([ 'blah' ]);
           done();
@@ -357,7 +357,7 @@ describe('#users router', () => {
         .expect(200)
         .end((err, res) => {
           if (err) return done(err);
-          expect(res.body.memberships).to.deep.equal(['deptA']);
+          expect(res.body.memberships).to.deep.equal([ 'deptA' ]);
           expect(res.body.user.user_id).to.equal(2);
           expect(res.body.user.blocked_for).to.deep.equal([ ]);
           done();
@@ -483,7 +483,7 @@ describe('#users router', () => {
       it('should return enabled_clients for user with identities', (done) => {
         nock(domain)
           .get('/api/v2/connections/1/clients')
-          .reply(200, { clients: [{ client_id: 'c1' }, { client_id: 'c2' }] });
+          .reply(200, { clients: [ { client_id: 'c1' }, { client_id: 'c2' } ] });
         nock(domain)
           .get(/user-blocks\/1/)
           .reply(200, { blocked_for: [] });
@@ -496,7 +496,7 @@ describe('#users router', () => {
           .expect(200)
           .end((err, res) => {
             if (err) return done(err);
-            expect(res.body.connection.enabled_clients).to.deep.equal(['c1', 'c2']);
+            expect(res.body.connection.enabled_clients).to.deep.equal([ 'c1', 'c2' ]);
             done();
           });
       });
@@ -565,7 +565,7 @@ describe('#users router', () => {
     it('should create new user', (done) => {
       const newUser = {
         email: 'user6@example.com',
-        memberships: ['deptA']
+        memberships: [ 'deptA' ]
       };
 
       request(app)
@@ -583,7 +583,7 @@ describe('#users router', () => {
     it('should return "The email address is required" error', (done) => {
       const newUser = {
         email: '',
-        memberships: ['deptA']
+        memberships: [ 'deptA' ]
       };
 
       request(app)
@@ -602,7 +602,7 @@ describe('#users router', () => {
         email: 'user7@example.com',
         password: 'password',
         repeatPassword: 'repeatPassword',
-        memberships: ['deptA']
+        memberships: [ 'deptA' ]
       };
 
       request(app)
@@ -619,7 +619,7 @@ describe('#users router', () => {
     it('should return "access denied" error', (done) => {
       const newUser = {
         email: 'user7@example.com',
-        memberships: ['deptB']
+        memberships: [ 'deptB' ]
       };
 
       request(app)
@@ -635,7 +635,7 @@ describe('#users router', () => {
     it('should return "Unauthorized error"', (done) => {
       const newUser = {
         email: 'user7@example.com',
-        memberships: ['deptC']
+        memberships: [ 'deptC' ]
       };
       scriptManager.getCached = skipCache;
       storage.data.scripts.settings = settingsWithUserCreateDisabled;
@@ -648,7 +648,7 @@ describe('#users router', () => {
           if (err) return done(err);
           done();
         });
-    })
+    });
   });
 
   describe('#Delete', () => {
@@ -816,7 +816,7 @@ describe('#users router', () => {
     it('should remove only matching methods when a specific provider is given', (done) => {
       nock(domain)
         .get('/api/v2/users/1/authentication-methods')
-        .reply(200, [{ id: 'meth1', type: 'email' }, { id: 'meth2', type: 'phone' }]);
+        .reply(200, [ { id: 'meth1', type: 'email' }, { id: 'meth2', type: 'phone' } ]);
       nock(domain)
         .delete('/api/v2/users/1/authentication-methods/meth1')
         .reply(204);
@@ -926,7 +926,7 @@ describe('#users router', () => {
     });
 
     it('should reset password using email as a fallback when connection has no active identifier', (done) => {
-      auth0Client.connections.getAll = () => Promise.resolve([{
+      auth0Client.connections.getAll = () => Promise.resolve([ {
         id: 'conn123',
         name: 'test-connection',
         strategy: 'auth0',
@@ -936,7 +936,7 @@ describe('#users router', () => {
             username: { identifier: { active: false } }
           }
         }
-      }]);
+      } ]);
 
       nock(domain)
         .post('/dbconnections/change_password',
@@ -954,7 +954,7 @@ describe('#users router', () => {
     });
 
     it('should reset password using active identifier when connection is found with active identifier', (done) => {
-      auth0Client.connections.getAll = () => Promise.resolve([{
+      auth0Client.connections.getAll = () => Promise.resolve([ {
         id: 'conn456',
         name: 'username-connection',
         strategy: 'auth0',
@@ -964,7 +964,7 @@ describe('#users router', () => {
             username: { identifier: { active: true } }
           }
         }
-      }]);
+      } ]);
 
       nock(domain)
         .post('/dbconnections/change_password',
@@ -982,7 +982,7 @@ describe('#users router', () => {
     });
 
     it('should reset password using email as a fallback when user has no value for active identifier', (done) => {
-      auth0Client.connections.getAll = () => Promise.resolve([{
+      auth0Client.connections.getAll = () => Promise.resolve([ {
         id: 'conn789',
         name: 'phone-connection',
         strategy: 'auth0',
@@ -992,7 +992,7 @@ describe('#users router', () => {
             phone_number: { identifier: { active: true } } // missing in user profile
           }
         }
-      }]);
+      } ]);
 
       nock(domain)
         .post('/dbconnections/change_password',
@@ -1113,7 +1113,7 @@ describe('#users router', () => {
     it('removes only methods of the specified type for a specific provider', (done) => {
       nock(domain)
         .get('/api/v2/users/2/authentication-methods')
-        .reply(200, [{ id: 'meth1', type: 'phone' }, { id: 'meth2', type: 'email' }]);
+        .reply(200, [ { id: 'meth1', type: 'phone' }, { id: 'meth2', type: 'email' } ]);
       nock(domain)
         .delete('/api/v2/users/2/authentication-methods/meth1')
         .reply(204);
@@ -1168,7 +1168,7 @@ describe('#users router', () => {
     it('should handle error from individual authentication-method delete', (done) => {
       nock(domain)
         .get('/api/v2/users/1/authentication-methods')
-        .reply(200, [{ id: 'meth1', type: 'email' }]);
+        .reply(200, [ { id: 'meth1', type: 'email' } ]);
       nock(domain)
         .delete('/api/v2/users/1/authentication-methods/meth1')
         .reply(500);
@@ -1333,7 +1333,7 @@ describe('#users router', () => {
   describe('#userFields custom validation errors', () => {
     const newGoodUser = {
       email: 'good value',
-      memberships: ['deptA'],
+      memberships: [ 'deptA' ],
       password: 'good value',
       repeatPassword: 'good value',
       username: 'good value',
@@ -1375,7 +1375,7 @@ describe('#users router', () => {
         .post('/users')
         .send(newGoodUser)
         .expect(201)
-        .end((err, res) => {
+        .end((err) => {
           if (err) return done(err);
           const postedUser = userData[5];
           expect(postedUser).to.deep.equal(targetUser);
@@ -1512,7 +1512,7 @@ describe('#users router', () => {
       userData[0] = newGoodUser;
 
       request(app)
-        .patch(`/users/1`)
+        .patch('/users/1')
         .send({})
         .expect(400)
         .end((err, res) => {
@@ -1528,7 +1528,7 @@ describe('#users router', () => {
       userData[0] = newGoodUser;
 
       request(app)
-        .patch(`/users/1?requiredErrorText=requiredtext`)
+        .patch('/users/1?requiredErrorText=requiredtext')
         .send({})
         .expect(400)
         .end((err, res) => {
@@ -1544,7 +1544,7 @@ describe('#users router', () => {
       userData[0] = newGoodUser;
 
       request(app)
-        .patch(`/users/1`)
+        .patch('/users/1')
         .send({ user_metadata: { custom: 'bad value', custom2: 'bad value' } })
         .expect(400)
         .end((err, res) => {
@@ -1560,7 +1560,7 @@ describe('#users router', () => {
       userData[0] = newGoodUser;
 
       request(app)
-        .patch(`/users/1`)
+        .patch('/users/1')
         .send({ user_metadata: { custom: 'other value', custom2: 'other value' } })
         .expect(400)
         .end((err, res) => {
@@ -1577,7 +1577,7 @@ describe('#users router', () => {
       userData[0].user_metadata = {};
 
       request(app)
-        .patch(`/users/1`)
+        .patch('/users/1')
         .send({ user_metadata: { custom: 'good value', custom2: 'good value' } })
         .expect(204)
         .end((err, res) => {
@@ -1657,8 +1657,8 @@ describe('#users router', () => {
         delete badUser['repeatPassword'];
         regexObject = [
           regexObject,
-          new RegExp(`Repeat Password: required`)
-        ]
+          new RegExp('Repeat Password: required')
+        ];
       }
       testCreate(badUser, regexObject, done);
     };
@@ -1671,8 +1671,8 @@ describe('#users router', () => {
         badUser['repeatPassword'] = 'bad value';
         regexObject = [
           regexObject,
-          new RegExp(`Repeat Password: bad value for create repeat password`)
-        ]
+          new RegExp('Repeat Password: bad value for create repeat password')
+        ];
       }
       testCreate(badUser, regexObject, done);
     };
@@ -1683,8 +1683,8 @@ describe('#users router', () => {
       if (property === 'password') {
         regexObject = [
           regexObject,
-          new RegExp(`Repeat Password: required`)
-        ]
+          new RegExp('Repeat Password: required')
+        ];
       }
       testEditFail(property, badUser, regexObject, done);
     };
@@ -1695,8 +1695,8 @@ describe('#users router', () => {
       if (property === 'password') {
         regexObject = [
           regexObject,
-          new RegExp(`Repeat Password: requiredtext`)
-        ]
+          new RegExp('Repeat Password: requiredtext')
+        ];
       }
       testEditFail(property, badUser, regexObject, done, 'requiredtext');
     };
@@ -1708,8 +1708,8 @@ describe('#users router', () => {
         badUser.repeatPassword = 'bad value';
         regexObject = [
           regexObject,
-          new RegExp(`Repeat Password: bad value for edit repeat password`)
-        ]
+          new RegExp('Repeat Password: bad value for edit repeat password')
+        ];
       }
       testEditFail(property, badUser, regexObject, done);
     };
@@ -1819,7 +1819,6 @@ describe('#users router', () => {
       storage.data.scripts = _.cloneDeep(defaultScriptData.scripts);
       storage.data.scripts.settings = ((ctx, callback) => callback(null, { userFields: [] }));
       storage.data.scripts.create = ((ctx, callback) => {
-        const _ = require('lodash');
         const user = ctx.payload;
         user.app_metadata = user.app_metadata || {};
         user.app_metadata.passwordReset = 'just now';
@@ -1832,7 +1831,7 @@ describe('#users router', () => {
         .put('/users/1/change-password')
         .send({ password: 'pwd13', repeatPassword: 'pwd13' })
         .expect(204)
-        .end((err, res) => {
+        .end((err) => {
           if (err) return done(err);
           expect(userData[0].password).to.equal('pwd13');
           expect(userData[0].app_metadata.passwordReset).to.equal('just now');
@@ -1845,7 +1844,7 @@ describe('#users router', () => {
         .put('/users/1/change-password')
         .send({ password: 'pwd13', repeatPassword: 'pwd13', app_metadata: { someKey: 'someValue' } })
         .expect(204)
-        .end((err, res) => {
+        .end((err) => {
           if (err) return done(err);
           const user = userData[0];
           expect(user.password).to.equal('pwd13');
@@ -1869,7 +1868,7 @@ describe('#users router', () => {
         .post('/users')
         .send({ password: 'pwd13', repeatPassword: 'pwd13', email: 'test@email.com', memberships: [] })
         .expect(201)
-        .end((err, res) => {
+        .end((err) => {
           if (err) return done(err);
           expect(userData[id].password).to.equal('pwd13');
           expect(userData[id].email).to.equal('test@email.com');
@@ -1892,7 +1891,7 @@ describe('#users router', () => {
 
         const newUser = {
           email: 'customdomain-user@example.com',
-          memberships: ['deptA']
+          memberships: [ 'deptA' ]
         };
 
         request(app)
@@ -1916,7 +1915,7 @@ describe('#users router', () => {
 
         const newUser = {
           email: 'customdomain-context-user@example.com',
-          memberships: ['deptA']
+          memberships: [ 'deptA' ]
         };
 
         request(app)
@@ -1936,7 +1935,7 @@ describe('#users router', () => {
 
         const newUser = {
           email: 'customdomain-invalid@example.com',
-          memberships: ['deptA']
+          memberships: [ 'deptA' ]
         };
 
         request(app)
@@ -2189,8 +2188,8 @@ describe('#users router', () => {
       // DELETE /:id/blocks - remove user blocks
       it('should NOT invoke customDomain hook for remove user blocks', (done) => {
         nock(domain)
-        .delete(/user-blocks\/1/)
-        .reply(204);
+          .delete(/user-blocks\/1/)
+          .reply(204);
 
         request(app)
           .delete('/users/1/blocks')

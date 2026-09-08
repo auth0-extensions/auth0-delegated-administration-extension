@@ -101,7 +101,7 @@ export default class UserInfo extends Component {
       .keys()
       .concat(Object.keys(standardFieldProperties)) // ignore the standard fields
       .concat(Object.keys(nonDisplayFieldProperties)) // ignore fields that have explicitly been rejected
-      .concat(['identity', 'identities', 'app_metadata', 'picture', 'user_metadata']) // always ignore these
+      .concat([ 'identity', 'identities', 'app_metadata', 'picture', 'user_metadata' ]) // always ignore these
       .value();
 
     /* Prepare the user object */
@@ -143,7 +143,7 @@ export default class UserInfo extends Component {
         <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error, settings.errorTranslator)} />
         <div className="user-info">
           {nonNullFields.map((field, index) => <UserInfoField key={index}
-                                                              title={field.title}>{field.value}</UserInfoField>)}
+            title={field.title}>{field.value}</UserInfoField>)}
         </div>
       </LoadingPanel>
     );

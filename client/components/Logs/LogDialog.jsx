@@ -16,7 +16,7 @@ export default class LogDialog extends Component {
     loading: PropTypes.bool.isRequired,
     logId: PropTypes.string,
     languageDictionary: PropTypes.object
-  }
+  };
 
   render() {
     const { logId, error, loading, onClose, settings } = this.props;

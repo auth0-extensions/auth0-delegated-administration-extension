@@ -1,9 +1,8 @@
 import expect from 'expect';
-import moment from 'moment';
 
 import { logs } from '../../../client/reducers/logs';
 import * as constants from '../../../client/constants';
-import {fromJS} from "immutable";
+import { fromJS } from 'immutable';
 
 const initialState = {
   loading: false,

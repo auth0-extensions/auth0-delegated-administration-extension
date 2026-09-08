@@ -7,16 +7,16 @@ import * as useDefaultFields from '../../../client/utils/useDefaultFields';
 describe('Client-Utils-useDefaultFields', () => {
 
   describe('#useUsernameField', () => {
-    const dummyConnections = [{ name: 'connA', options: { requires_username: true } }, {
+    const dummyConnections = [ { name: 'connA', options: { requires_username: true } }, {
       name: 'connB',
       options: { requires_username: true }
-    }];
-    const dummyConnectionsNoUsername = [{ name: 'connA' }, { name: 'connB' }];
+    } ];
+    const dummyConnectionsNoUsername = [ { name: 'connA' }, { name: 'connB' } ];
     const hasSelectedConnection = 'connA';
 
     it('empty array population', () => {
       const fields = [];
-      const target = [{
+      const target = [ {
         property: 'username',
         label: 'Username',
         disable: false,
@@ -24,7 +24,7 @@ describe('Client-Utils-useDefaultFields', () => {
           required: true,
           type: 'text'
         }
-      }];
+      } ];
 
       useDefaultFields.useUsernameField(true, fields, dummyConnections, hasSelectedConnection, {});
       expect(fields).to.deep.equal(target);
@@ -49,14 +49,14 @@ describe('Client-Utils-useDefaultFields', () => {
     });
 
     it('pre populated array use username', () => {
-      const fields = [{
+      const fields = [ {
         property: 'username',
         create: {
           type: 'select',
           component: 'InputCombo'
         }
-      }];
-      const target = [{
+      } ];
+      const target = [ {
         property: 'username',
         label: 'Username',
         disable: false,
@@ -64,22 +64,22 @@ describe('Client-Utils-useDefaultFields', () => {
           type: 'select',
           component: 'InputCombo'
         }
-      }];
+      } ];
 
       useDefaultFields.useUsernameField(false, fields, dummyConnections, hasSelectedConnection, {});
       expect(fields).to.deep.equal(target);
     });
 
     it('pre populated array use username change label', () => {
-      const fields = [{
+      const fields = [ {
         property: 'username',
         label: 'UsernameField',
         create: {
           type: 'select',
           component: 'InputCombo'
         }
-      }];
-      const target = [{
+      } ];
+      const target = [ {
         property: 'username',
         label: 'UsernameField',
         disable: false,
@@ -87,18 +87,18 @@ describe('Client-Utils-useDefaultFields', () => {
           type: 'select',
           component: 'InputCombo'
         }
-      }];
+      } ];
 
       useDefaultFields.useUsernameField(false, fields, dummyConnections, hasSelectedConnection, {});
       expect(fields).to.deep.equal(target);
     });
 
     it('pre populated array edit false', () => {
-      const fields = [{
+      const fields = [ {
         property: 'username',
         label: 'UsernameField',
         edit: false
-      }];
+      } ];
       const target = [];
 
       useDefaultFields.useUsernameField(true, fields, dummyConnections, hasSelectedConnection, {});
@@ -106,12 +106,12 @@ describe('Client-Utils-useDefaultFields', () => {
     });
 
     it('pre populated array skip username', () => {
-      const fields = [{
+      const fields = [ {
         property: 'username',
         label: 'UsernameField',
         edit: true
-      }];
-      const target = [{ disable: true, edit: true, label: 'UsernameField', property: 'username' }];
+      } ];
+      const target = [ { disable: true, edit: true, label: 'UsernameField', property: 'username' } ];
 
       useDefaultFields.useUsernameField(true, fields, dummyConnectionsNoUsername, hasSelectedConnection, {});
       expect(fields).to.deep.equal(target);
@@ -120,14 +120,14 @@ describe('Client-Utils-useDefaultFields', () => {
   });
 
   describe('#useMembershipsField', () => {
-    const memberships = ['memA', 'memB'];
+    const memberships = [ 'memA', 'memB' ];
     const hasMembership = 'memA';
     const createMemberships = () => 'nothing';
     const getDictValue = (val, defaultVal) => defaultVal;
 
     it('empty array population', () => {
       const fields = [];
-      const target = [{
+      const target = [ {
         property: 'memberships',
         label: 'Memberships',
         edit: {
@@ -135,7 +135,7 @@ describe('Client-Utils-useDefaultFields', () => {
           component: 'InputMultiCombo',
           options: memberships.map(m => ({ value: m, label: m }))
         }
-      }];
+      } ];
 
       useDefaultFields.useMembershipsField(true, fields, hasMembership, memberships, createMemberships, getDictValue);
       expect(fields).to.deep.equal(target);
@@ -150,56 +150,56 @@ describe('Client-Utils-useDefaultFields', () => {
     });
 
     it('pre populated array', () => {
-      const fields = [{
+      const fields = [ {
         property: 'memberships',
         create: {
           type: 'select',
           component: 'InputCombo',
-          options: ['a', 'b']
+          options: [ 'a', 'b' ]
         }
-      }];
-      const target = [{
+      } ];
+      const target = [ {
         property: 'memberships',
         label: 'MembershipsLabel',
         create: {
           type: 'select',
           component: 'InputCombo',
-          options: ['a', 'b']
+          options: [ 'a', 'b' ]
         }
-      }];
+      } ];
 
       useDefaultFields.useMembershipsField(false, fields, undefined, [], createMemberships, () => 'MembershipsLabel');
       expect(fields).to.deep.equal(target);
     });
 
     it('pre populated array change label', () => {
-      const fields = [{
+      const fields = [ {
         property: 'memberships',
         label: 'UsernameField',
         create: {
           type: 'select',
           component: 'InputCombo'
         }
-      }];
-      const target = [{
+      } ];
+      const target = [ {
         property: 'memberships',
         label: 'UsernameField',
         create: {
           type: 'select',
           component: 'InputCombo'
         }
-      }];
+      } ];
 
       useDefaultFields.useMembershipsField(false, fields, hasMembership, memberships, createMemberships, getDictValue);
       expect(fields).to.deep.equal(target);
     });
 
     it('pre populated array edit false', () => {
-      const fields = [{
+      const fields = [ {
         property: 'memberships',
         label: 'MembershipsLabel',
         edit: false
-      }];
+      } ];
       const target = [];
 
       useDefaultFields.useMembershipsField(true, fields, hasMembership, memberships, createMemberships, getDictValue);
@@ -207,11 +207,11 @@ describe('Client-Utils-useDefaultFields', () => {
     });
 
     it('pre populated array', () => {
-      const fields = [{
+      const fields = [ {
         property: 'memberships',
         label: 'MembershipsLabel',
         edit: true
-      }];
+      } ];
       const target = [];
 
       useDefaultFields.useMembershipsField(true, fields, undefined, [], undefined, getDictValue);
@@ -221,15 +221,15 @@ describe('Client-Utils-useDefaultFields', () => {
   });
 
   describe('#useConnectionsField', () => {
-    const connections = [{ name: 'connA', options: { requires_username: true } }, {
+    const connections = [ { name: 'connA', options: { requires_username: true } }, {
       name: 'connB',
       options: { requires_username: true }
-    }];
-    const connection = [{ name: 'connA', options: { requires_username: true } }];
+    } ];
+    const connection = [ { name: 'connA', options: { requires_username: true } } ];
 
     it('empty array population', () => {
       const fields = [];
-      const target = [{
+      const target = [ {
         property: 'connection',
         label: 'Connection',
         edit: {
@@ -239,7 +239,7 @@ describe('Client-Utils-useDefaultFields', () => {
           options: connections.map(conn => ({ value: conn.name, label: conn.name })),
           onChange: undefined
         }
-      }];
+      } ];
 
       useDefaultFields.useConnectionsField(true, fields, connections);
       expect(fields).to.deep.equal(target);
@@ -247,7 +247,7 @@ describe('Client-Utils-useDefaultFields', () => {
 
     it('empty array population skip', () => {
       const fields = [];
-      const target1 = [{
+      const target1 = [ {
         property: 'connection',
         label: 'Connection Name',
         edit: {
@@ -257,7 +257,7 @@ describe('Client-Utils-useDefaultFields', () => {
           options: undefined,
           onChange: undefined
         }
-      }];
+      } ];
       const target2 = [];
 
       useDefaultFields.useConnectionsField(true, fields, []);
@@ -268,56 +268,56 @@ describe('Client-Utils-useDefaultFields', () => {
     });
 
     it('pre populated array', () => {
-      const fields = [{
+      const fields = [ {
         property: 'connection',
         create: {
           type: 'select',
           component: 'InputCombo',
-          options: ['a', 'b']
+          options: [ 'a', 'b' ]
         }
-      }];
-      const target = [{
+      } ];
+      const target = [ {
         property: 'connection',
         label: 'Connection',
         create: {
           type: 'select',
           component: 'InputCombo',
-          options: ['a', 'b']
+          options: [ 'a', 'b' ]
         }
-      }];
+      } ];
 
       useDefaultFields.useConnectionsField(false, fields, connections);
       expect(fields).to.deep.equal(target);
     });
 
     it('pre populated array change label', () => {
-      const fields = [{
+      const fields = [ {
         property: 'connection',
         label: 'ConnectionsLabel',
         create: {
           type: 'select',
           component: 'InputCombo'
         }
-      }];
-      const target = [{
+      } ];
+      const target = [ {
         property: 'connection',
         label: 'ConnectionsLabel',
         create: {
           type: 'select',
           component: 'InputCombo'
         }
-      }];
+      } ];
 
       useDefaultFields.useConnectionsField(false, fields, connections);
       expect(fields).to.deep.equal(target);
     });
 
     it('pre populated array edit false', () => {
-      const fields = [{
+      const fields = [ {
         property: 'connection',
         label: 'ConnectionsLabel',
         edit: false
-      }];
+      } ];
       const target = [];
 
       useDefaultFields.useConnectionsField(true, fields, connections);
@@ -325,11 +325,11 @@ describe('Client-Utils-useDefaultFields', () => {
     });
 
     it('pre populated array', () => {
-      const fields = [{
+      const fields = [ {
         property: 'connection',
         label: 'ConnectionsLabel',
         edit: true
-      }];
+      } ];
       const target = [];
 
       useDefaultFields.useConnectionsField(true, fields, connection);
@@ -352,7 +352,7 @@ describe('Client-Utils-useDefaultFields', () => {
 
     it('empty array population', () => {
       const fields = [];
-      const target = [standardTarget('edit')];
+      const target = [ standardTarget('edit') ];
 
       useDefaultFields.useDisabledConnectionField(true, fields, connection, connections);
       expect(fields).to.deep.equal(target);
@@ -375,41 +375,41 @@ describe('Client-Utils-useDefaultFields', () => {
     });
 
     it('pre populated array', () => {
-      const fields = [{
+      const fields = [ {
         property: 'connection',
         create: {
           type: 'select',
           component: 'InputCombo',
-          options: ['a', 'b']
+          options: [ 'a', 'b' ]
         }
-      }];
-      const target = [standardTarget('create')];
+      } ];
+      const target = [ standardTarget('create') ];
 
       useDefaultFields.useDisabledConnectionField(false, fields, connection, connections);
       expect(fields).to.deep.equal(target);
     });
 
     it('pre populated array change label', () => {
-      const fields = [{
+      const fields = [ {
         property: 'connection',
         label: 'ConnectionsLabel',
         create: {
           type: 'select',
           component: 'InputCombo'
         }
-      }];
-      const target = [_.assign({}, standardTarget('create'), { label: 'ConnectionsLabel' })];
+      } ];
+      const target = [ _.assign({}, standardTarget('create'), { label: 'ConnectionsLabel' }) ];
 
       useDefaultFields.useDisabledConnectionField(false, fields, connection, connections);
       expect(fields).to.deep.equal(target);
     });
 
     it('pre populated array edit false', () => {
-      const fields = [{
+      const fields = [ {
         property: 'connection',
         label: 'ConnectionsLabel',
         edit: false
-      }];
+      } ];
       const target = [];
 
       useDefaultFields.useDisabledConnectionField(true, fields, connection, connections);
@@ -417,11 +417,11 @@ describe('Client-Utils-useDefaultFields', () => {
     });
 
     it('pre populated array', () => {
-      const fields = [{
+      const fields = [ {
         property: 'connection',
         label: 'ConnectionsLabel',
         edit: true
-      }];
+      } ];
       const target = [];
 
       useDefaultFields.useDisabledConnectionField(true, fields);
@@ -434,7 +434,7 @@ describe('Client-Utils-useDefaultFields', () => {
 
     it('empty array population', () => {
       const fields = [];
-      const target = [{
+      const target = [ {
         property: 'password',
         label: 'Password',
         edit: {
@@ -443,15 +443,15 @@ describe('Client-Utils-useDefaultFields', () => {
           component: 'InputText'
         }
       },
-        {
-          property: 'repeatPassword',
-          label: 'Repeat Password',
-          edit: {
-            required: true,
-            type: 'password',
-            component: 'InputText'
-          }
-        }];
+      {
+        property: 'repeatPassword',
+        label: 'Repeat Password',
+        edit: {
+          required: true,
+          type: 'password',
+          component: 'InputText'
+        }
+      } ];
 
       useDefaultFields.usePasswordFields(true, fields);
       expect(fields[0].edit.validationFunction).to.equal(undefined);
@@ -461,29 +461,29 @@ describe('Client-Utils-useDefaultFields', () => {
     });
 
     it('pre populated array', () => {
-      const fields = [{
+      const fields = [ {
         property: 'password',
         create: {
           type: 'select',
           component: 'InputCombo',
-          options: ['a', 'b']
+          options: [ 'a', 'b' ]
         }
       }, {
         property: 'repeatPassword',
         create: {
           type: 'select',
           component: 'InputCombo',
-          options: ['a', 'b']
+          options: [ 'a', 'b' ]
         }
-      }];
+      } ];
 
-      const target = [{
+      const target = [ {
         property: 'password',
         label: 'Password',
         create: {
           type: 'select',
           component: 'InputCombo',
-          options: ['a', 'b']
+          options: [ 'a', 'b' ]
         }
       }, {
         property: 'repeatPassword',
@@ -491,22 +491,22 @@ describe('Client-Utils-useDefaultFields', () => {
         create: {
           type: 'select',
           component: 'InputCombo',
-          options: ['a', 'b']
+          options: [ 'a', 'b' ]
         }
-      }];
+      } ];
 
       useDefaultFields.usePasswordFields(false, fields);
       expect(fields).to.deep.equal(target);
     });
 
     it('pre populated array change label', () => {
-      const fields = [{
+      const fields = [ {
         property: 'password',
         label: 'PasswordLabel',
         create: {
           type: 'select',
           component: 'InputCombo',
-          options: ['a', 'b']
+          options: [ 'a', 'b' ]
         }
       }, {
         property: 'repeatPassword',
@@ -514,17 +514,17 @@ describe('Client-Utils-useDefaultFields', () => {
         create: {
           type: 'select',
           component: 'InputCombo',
-          options: ['a', 'b']
+          options: [ 'a', 'b' ]
         }
-      }];
+      } ];
 
-      const target = [{
+      const target = [ {
         property: 'password',
         label: 'PasswordLabel',
         create: {
           type: 'select',
           component: 'InputCombo',
-          options: ['a', 'b']
+          options: [ 'a', 'b' ]
         }
       }, {
         property: 'repeatPassword',
@@ -532,21 +532,21 @@ describe('Client-Utils-useDefaultFields', () => {
         create: {
           type: 'select',
           component: 'InputCombo',
-          options: ['a', 'b']
+          options: [ 'a', 'b' ]
         }
-      }];
+      } ];
       useDefaultFields.usePasswordFields(false, fields);
       expect(fields).to.deep.equal(target);
     });
 
     it('pre populated array edit false', () => {
-      const fields = [{
+      const fields = [ {
         property: 'password',
         edit: false
       }, {
         property: 'repeatPassword',
         edit: false
-      }];
+      } ];
       const target = [];
 
       useDefaultFields.usePasswordFields(true, fields);
@@ -557,14 +557,14 @@ describe('Client-Utils-useDefaultFields', () => {
   describe('#useMfaField', () => {
     it('does not include all option when there is only one provider', () => {
       const fields = [];
-      useDefaultFields.useMfaField(true, fields, ['email']);
+      useDefaultFields.useMfaField(true, fields, [ 'email' ]);
       const options = fields[0].edit.options;
-      expect(options).to.deep.equal([{ value: 'email', label: 'email' }]);
+      expect(options).to.deep.equal([ { value: 'email', label: 'email' } ]);
     });
 
     it('includes all option when there are multiple providers', () => {
       const fields = [];
-      useDefaultFields.useMfaField(true, fields, ['email', 'phone']);
+      useDefaultFields.useMfaField(true, fields, [ 'email', 'phone' ]);
       const options = fields[0].edit.options;
       expect(options).to.deep.equal([
         { value: 'email', label: 'email' },
@@ -582,7 +582,7 @@ describe('Client-Utils-useDefaultFields', () => {
 
     it('sets required, type, and component correctly', () => {
       const fields = [];
-      useDefaultFields.useMfaField(true, fields, ['email']);
+      useDefaultFields.useMfaField(true, fields, [ 'email' ]);
       expect(fields[0].edit.required).to.equal(true);
       expect(fields[0].edit.type).to.equal('select');
       expect(fields[0].edit.component).to.equal('InputCombo');
@@ -590,7 +590,7 @@ describe('Client-Utils-useDefaultFields', () => {
 
     it('uses create key when isEditField is false', () => {
       const fields = [];
-      useDefaultFields.useMfaField(false, fields, ['email', 'phone']);
+      useDefaultFields.useMfaField(false, fields, [ 'email', 'phone' ]);
       const options = fields[0].create.options;
       expect(options).to.deep.equal([
         { value: 'email', label: 'email' },
@@ -602,7 +602,7 @@ describe('Client-Utils-useDefaultFields', () => {
     it('includes all option when providers is an Immutable.List with multiple items', () => {
       const { fromJS } = require('immutable');
       const fields = [];
-      useDefaultFields.useMfaField(true, fields, fromJS(['email', 'phone']));
+      useDefaultFields.useMfaField(true, fields, fromJS([ 'email', 'phone' ]));
       const options = fields[0].edit.options;
       expect(options).to.deep.equal([
         { value: 'email', label: 'email' },
@@ -611,35 +611,35 @@ describe('Client-Utils-useDefaultFields', () => {
       ]);
     });
 
-    it("does not include all option when passkey is present among many providers", () => {
+    it('does not include all option when passkey is present among many providers', () => {
       const fields = [];
-      useDefaultFields.useMfaField(true, fields, ["email", "passkey", "phone"]);
+      useDefaultFields.useMfaField(true, fields, [ 'email', 'passkey', 'phone' ]);
       const options = fields[0].edit.options;
       expect(options).to.deep.equal([
-        { value: "email", label: "email" },
-        { value: "passkey", label: "passkey" },
-        { value: "phone", label: "phone" },
+        { value: 'email', label: 'email' },
+        { value: 'passkey', label: 'passkey' },
+        { value: 'phone', label: 'phone' }
       ]);
     });
 
-    it("does not include all option when passkey is the only provider", () => {
+    it('does not include all option when passkey is the only provider', () => {
       const fields = [];
-      useDefaultFields.useMfaField(true, fields, ["passkey"]);
+      useDefaultFields.useMfaField(true, fields, [ 'passkey' ]);
       const options = fields[0].edit.options;
-      expect(options).to.deep.equal([{ value: "passkey", label: "passkey" }]);
+      expect(options).to.deep.equal([ { value: 'passkey', label: 'passkey' } ]);
     });
 
     it('overwrites options on a pre-existing multifactor field from settings', () => {
-      const fields = [{
+      const fields = [ {
         property: 'multifactor',
         label: 'MFA',
         edit: {
           type: 'select',
           component: 'InputCombo',
-          options: [{ value: 'email', label: 'email' }]
+          options: [ { value: 'email', label: 'email' } ]
         }
-      }];
-      useDefaultFields.useMfaField(true, fields, ['email', 'phone']);
+      } ];
+      useDefaultFields.useMfaField(true, fields, [ 'email', 'phone' ]);
       const options = fields[0].edit.options;
       expect(options).to.deep.equal([
         { value: 'email', label: 'email' },
@@ -653,7 +653,7 @@ describe('Client-Utils-useDefaultFields', () => {
 
     it('empty array population', () => {
       const fields = [];
-      const target = [{
+      const target = [ {
         property: 'email',
         label: 'Email',
         edit: {
@@ -661,65 +661,65 @@ describe('Client-Utils-useDefaultFields', () => {
           component: 'InputText',
           required: true
         }
-      }];
+      } ];
 
       useDefaultFields.useEmailField(true, fields);
       expect(fields).to.deep.equal(target);
     });
 
     it('pre populated array', () => {
-      const fields = [{
+      const fields = [ {
         property: 'email',
         create: {
           type: 'select',
           component: 'InputCombo',
-          options: ['a', 'b']
+          options: [ 'a', 'b' ]
         }
-      }];
+      } ];
 
-      const target = [{
+      const target = [ {
         property: 'email',
         label: 'Email',
         create: {
           type: 'select',
           component: 'InputCombo',
-          options: ['a', 'b']
+          options: [ 'a', 'b' ]
         }
-      }];
+      } ];
 
       useDefaultFields.useEmailField(false, fields);
       expect(fields).to.deep.equal(target);
     });
 
     it('pre populated array change label', () => {
-      const fields = [{
+      const fields = [ {
         property: 'email',
         label: 'EmailLabel',
         create: {
           type: 'select',
           component: 'InputCombo',
-          options: ['a', 'b']
+          options: [ 'a', 'b' ]
         }
-      }];
+      } ];
 
-      const target = [{
+      const target = [ {
         property: 'email',
         label: 'EmailLabel',
         create: {
           type: 'select',
           component: 'InputCombo',
-          options: ['a', 'b']
+          options: [ 'a', 'b' ]
         }
-      }];
+      } ];
       useDefaultFields.useEmailField(false, fields);
       expect(fields).to.deep.equal(target);
     });
 
     it('pre populated array edit false', () => {
-      const fields = [{
+      const fields = [ {
         property: 'email',
         edit: false
-      }];
+      } ];
       const target = [];
 
       useDefaultFields.useEmailField(true, fields);
@@ -728,7 +728,7 @@ describe('Client-Utils-useDefaultFields', () => {
   });
 
   describe('#useDisabledEmailField', () => {
-    const standardTarget = (type) => ([{
+    const standardTarget = (type) => ([ {
       property: 'email',
       label: 'Email',
       [type]: {
@@ -736,7 +736,7 @@ describe('Client-Utils-useDefaultFields', () => {
         component: 'InputText',
         disabled: true
       }
-    }]);
+    } ]);
 
     it('empty array population', () => {
       const fields = [];
@@ -746,29 +746,29 @@ describe('Client-Utils-useDefaultFields', () => {
     });
 
     it('pre populated array', () => {
-      const fields = [{
+      const fields = [ {
         property: 'email',
         create: {
           type: 'select',
           component: 'InputCombo',
-          options: ['a', 'b']
+          options: [ 'a', 'b' ]
         }
-      }];
+      } ];
 
       useDefaultFields.useDisabledEmailField(false, fields);
       expect(fields).to.deep.equal(standardTarget('create'));
     });
 
     it('pre populated array change label', () => {
-      const fields = [{
+      const fields = [ {
         property: 'email',
         label: 'EmailLabel',
         create: {
           type: 'select',
           component: 'InputCombo',
-          options: ['a', 'b']
+          options: [ 'a', 'b' ]
         }
-      }];
+      } ];
 
       const target = _.cloneDeep(standardTarget('create'));
       target[0].label = 'EmailLabel';
@@ -778,10 +778,10 @@ describe('Client-Utils-useDefaultFields', () => {
     });
 
     it('pre populated array edit false', () => {
-      const fields = [{
+      const fields = [ {
         property: 'email',
         edit: false
-      }];
+      } ];
       const target = [];
 
       useDefaultFields.useDisabledEmailField(true, fields);

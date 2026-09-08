@@ -1,8 +1,7 @@
 import expect from 'expect';
-import _ from 'lodash';
 import { languageDictionary } from '../../../client/reducers/languageDictionary';
 import * as constants from '../../../client/constants';
-import {fromJS} from "immutable";
+import { fromJS } from 'immutable';
 
 const initialState = {
   loading: false,

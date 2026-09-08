@@ -10,7 +10,7 @@ export default class UserHeader extends Component {
     user: PropTypes.object.isRequired,
     userFields: PropTypes.array.isRequired,
     languageDictionary: PropTypes.object
-  }
+  };
 
   shouldComponentUpdate(nextProps) {
     return nextProps.user !== this.props.user || nextProps.loading !== this.props.loading;

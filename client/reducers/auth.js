@@ -13,7 +13,7 @@ const initialState = {
   user: null
 };
 
-export const auth = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
+export const auth = createReducer(fromJS(initialState), {  
   [constants.LOGIN_PENDING]: (state) =>
     state.merge({
       ...initialState,
