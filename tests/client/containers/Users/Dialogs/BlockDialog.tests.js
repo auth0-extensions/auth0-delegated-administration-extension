@@ -52,7 +52,7 @@ describe('#Client-Containers-Users-Dialogs-BlockDialog', () => {
     const modalTitle = document.querySelector('.modal-title');
     expect(modalTitle).to.exist;
     expect(modalTitle.textContent).to.equal(title);
-  }
+  };
 
   it('should render', () => {
     renderComponent('bill');

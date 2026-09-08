@@ -31,7 +31,6 @@ describe('#Client-Components-Header', () => {
     const user = options.user || dummyUser;
     const accessLevel = options.accessLevel || {};
     const issuer = options.issuer || 'issuer';
-    const renderCssToggle = options.cssToggle || false;
     const styleSettings = options.styleSettings || { useAlt: false };
 
     return render(

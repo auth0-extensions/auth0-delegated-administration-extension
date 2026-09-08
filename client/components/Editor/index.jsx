@@ -16,7 +16,7 @@ export default class Editor extends Component {
     value: PropTypes.string.isRequired,
     options: PropTypes.object.isRequired,
     onChange: PropTypes.func
-  }
+  };
 
   static defaultProps = {
     value: '',
@@ -43,7 +43,7 @@ export default class Editor extends Component {
         }
       }
     }
-  }
+  };
 
   componentDidUpdate() {
     if (this.editor) {

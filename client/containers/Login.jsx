@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Navigate } from 'react-router-dom';
 import { LoadingPanel, Confirm } from '@a0/auth0-extension-ui';
 import Error from '../components/Error';
 
@@ -36,9 +35,9 @@ class LoginContainer extends Component {
         <div className="row">
           <Confirm
             dialogClassName="login-error"
-            confirmMessage={languageDictionary.loginErrorButtonText || "Login"}
+            confirmMessage={languageDictionary.loginErrorButtonText || 'Login'}
             loading={false}
-            title={languageDictionary.loginErrorTitle || "Login Error"}
+            title={languageDictionary.loginErrorTitle || 'Login Error'}
             show={this.props.auth.error}
             onConfirm={this.login.bind(this)}
           >

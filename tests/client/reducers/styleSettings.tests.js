@@ -1,5 +1,4 @@
 import expect from 'expect';
-import _ from 'lodash';
 import { styleSettings } from '../../../client/reducers/styleSettings';
 import * as constants from '../../../client/constants';
 

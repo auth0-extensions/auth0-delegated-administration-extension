@@ -2,7 +2,7 @@ import url from 'url';
 import expect from 'expect';
 import { auth } from '../../../client/reducers/auth';
 import * as constants from '../../../client/constants';
-import {fromJS} from "immutable";
+import { fromJS } from 'immutable';
 
 const initialState = {
   error: null,

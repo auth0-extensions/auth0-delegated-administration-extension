@@ -63,7 +63,7 @@ describe('vendor/auth0-extension-tools/webtaskStorageContext', () => {
 
   it('WebtaskStorageContext#write should write files correctly', (done) => {
     let data = null;
-    const storage = webtaskStorage({ application: 'my-app' }, function(updatedData) {
+    const storage = webtaskStorage({ application: 'my-app' }, function (updatedData) {
       data = updatedData;
     });
 

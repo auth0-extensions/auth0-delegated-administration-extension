@@ -8,7 +8,6 @@ import { userActions } from '../../../actions';
 import getDialogMessage from './getDialogMessage';
 import { getName } from '../../../utils/display';
 import getErrorMessage from '../../../utils/getErrorMessage';
-import { removeBlockedIPs } from "../../../reducers/removeBlockedIPs";
 
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({

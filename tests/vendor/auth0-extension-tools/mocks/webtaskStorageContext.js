@@ -1,7 +1,7 @@
 const webtaskStorage = require('../mocks/webtaskStorage');
 const WebtaskStorageContext = require('../../storage/webtaskStorageContext');
 
-module.exports = function(onDataChanged, beforeDataChanged) {
+module.exports = function (onDataChanged, beforeDataChanged) {
   const data = {
     applications: [
       { _id: 'a1', name: 'a1' }

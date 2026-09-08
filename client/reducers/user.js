@@ -84,7 +84,7 @@ const userDevices = createReducer(fromJS(initialState.devices), {
   }
 });
 
-export const user = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
+export const user = createReducer(fromJS(initialState), {  
   [constants.FETCH_USER_PENDING]: (state, action) =>
     state.merge({
       error: null,

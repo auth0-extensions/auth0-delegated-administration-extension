@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { LoadingPanel, TableTotals, SearchBar } from '@a0/auth0-extension-ui';
+import { LoadingPanel, SearchBar } from '@a0/auth0-extension-ui';
 import Error from '../Error';
 
 import { LuceneSearchBar, UsersTable } from './';
@@ -23,7 +23,7 @@ export default class UserOverview extends React.Component {
     sortProperty: PropTypes.string.isRequired,
     settings: PropTypes.object.isRequired,
     languageDictionary: PropTypes.object
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -54,7 +54,7 @@ export default class UserOverview extends React.Component {
 
   onSearch = (query, filter) => {
     this.props.onSearch(query, filter, this.focusSearchResults);
-  }
+  };
 
   onKeyPress = (e) => {
     if (e.key === 'Enter') {
@@ -62,7 +62,7 @@ export default class UserOverview extends React.Component {
       const query = e.target.value;
       this.onSearch(query, this.state.selectedFilter.filterBy);
     }
-  }
+  };
 
 
   onReset() {
@@ -121,25 +121,25 @@ export default class UserOverview extends React.Component {
                 resetButtonText={languageDictionary.searchBarReset}
                 instructionsText={languageDictionary.searchBarInstructions}
               />
-              ) : (
-                <LuceneSearchBar
-                  inputId="search-bar"
-                  onReset={this.props.onReset}
-                  onSearch={this.onSearch}
-                  searchValue={this.state.searchValue}
-                  enabled={!loading}
-                  languageDictionary={languageDictionary}
-                />
-              )}
+            ) : (
+              <LuceneSearchBar
+                inputId="search-bar"
+                onReset={this.props.onReset}
+                onSearch={this.onSearch}
+                searchValue={this.state.searchValue}
+                enabled={!loading}
+                languageDictionary={languageDictionary}
+              />
+            )}
           </div>
         </div>
         <LoadingPanel show={loading}>
           <div className="row">
             <div className="col-xs-12" ref={this.searchResultsRef}>
               <UsersTable loading={loading} users={this.props.users}
-                          userFields={this.props.userFields} onColumnSort={this.props.onColumnSort}
-                          sortOrder={sortOrder} sortProperty={sortProperty}
-                          languageDictionary={languageDictionary}/>
+                userFields={this.props.userFields} onColumnSort={this.props.onColumnSort}
+                sortOrder={sortOrder} sortProperty={sortProperty}
+                languageDictionary={languageDictionary}/>
             </div>
           </div>
         </LoadingPanel>

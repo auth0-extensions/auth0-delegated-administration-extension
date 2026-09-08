@@ -43,7 +43,7 @@ describe('#Client-Components-Users-UserCustomFormFields', () => {
     { property: 'a' },
     { property: 'b' },
     { property: 'c' },
-    { property: 'd' },
+    { property: 'd' }
   ];
 
 

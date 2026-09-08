@@ -26,7 +26,7 @@ describe('#Client-Components-UserOverview', () => {
         onSearch={() => 'onSearch'}
         onPageChange={() => 'onPageChange'}
         onColumnSort={() => 'onColumnSort'}
-        users={[{ username: 'bill' }]}
+        users={[ { username: 'bill' } ]}
         userFields={[]}
         sortOrder={1}
         sortProperty={'username'}

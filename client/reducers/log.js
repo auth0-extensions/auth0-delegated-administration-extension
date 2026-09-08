@@ -11,7 +11,7 @@ const initialState = {
   record: Map()
 };
 
-export const log = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
+export const log = createReducer(fromJS(initialState), {  
   [constants.CLEAR_LOG]: (state) =>
     state.merge({
       ...initialState
@@ -29,7 +29,7 @@ export const log = createReducer(fromJS(initialState), { // eslint-disable-line 
     }),
   [constants.FETCH_LOG_FULFILLED]: (state, action) => {
     const { data } = action.payload;
-    if (data.log._id !== state.get('logId')) { // eslint-disable-line no-underscore-dangle
+    if (data.log._id !== state.get('logId')) {  
       return state;
     }
 

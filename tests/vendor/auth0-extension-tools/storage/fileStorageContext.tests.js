@@ -63,7 +63,7 @@ describe('vendor/auth0-extension-tools/fileStorageContext', () => {
       .catch(done);
   });
 
-  it('FileStorageContext#read should handle errors correctly when read permissions are denied', function(done) {
+  it('FileStorageContext#read should handle errors correctly when read permissions are denied', function (done) {
     // chmod-based permission enforcement is bypassed for root (common in CI/Docker),
     // so the read would succeed and this test could never observe the error.
     if (typeof process.getuid === 'function' && process.getuid() === 0) {
@@ -222,7 +222,7 @@ describe('vendor/auth0-extension-tools/fileStorageContext', () => {
       });
   });
 
-  it('FileStorageContext#write should handle errors correctly when write permissions are denied', function(done) {
+  it('FileStorageContext#write should handle errors correctly when write permissions are denied', function (done) {
     // chmod-based permission enforcement is bypassed for root (common in CI/Docker),
     // so the write would succeed and this test could never observe the error.
     if (typeof process.getuid === 'function' && process.getuid() === 0) {

@@ -15,7 +15,7 @@ function copyProps(src, target) {
     .filter(prop => typeof target[prop] === 'undefined')
     .reduce((result, prop) => ({
       ...result,
-      [prop]: Object.getOwnPropertyDescriptor(src, prop),
+      [prop]: Object.getOwnPropertyDescriptor(src, prop)
     }), {});
   Object.defineProperties(target, props);
 }
@@ -52,7 +52,7 @@ mockSearchBar.displayName = 'SearchBar';
 // Override the module resolution for @a0/auth0-extension-ui to include our mocks
 const Module = require('module');
 const originalRequire = Module.prototype.require;
-Module.prototype.require = function(id) {
+Module.prototype.require = function (id) {
   if (id === '@a0/auth0-extension-ui') {
     const orig = originalRequire.apply(this, arguments);
     return { ...orig, TabPane: mockTabPane, SearchBar: mockSearchBar };

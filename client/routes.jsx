@@ -1,5 +1,5 @@
-import React from 'react';  // eslint-disable-line no-unused-vars
-import { Route, Navigate } from 'react-router-dom';  // eslint-disable-line no-unused-vars
+import React from 'react';
+import { Route, Navigate } from 'react-router-dom';
 
 import * as containers from './containers';
 import withRouter from './utils/withRouter';

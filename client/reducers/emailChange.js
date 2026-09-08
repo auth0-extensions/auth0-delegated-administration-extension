@@ -11,7 +11,7 @@ const initialState = {
   connection: null
 };
 
-export const emailChange = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
+export const emailChange = createReducer(fromJS(initialState), {  
   [constants.REQUEST_EMAIL_CHANGE]: (state, action) =>
     state.merge({
       ...initialState,

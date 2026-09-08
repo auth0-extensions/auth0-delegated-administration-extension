@@ -36,7 +36,7 @@ class UserWrapper extends Component {
       params={{ id: 1 }}
       getDictValue={() => null}
       userDelete={() => null}
-    />
+    />;
   }
 };
 
@@ -44,7 +44,7 @@ describe('#Client-Containers-Users-User', () => {
 
   const renderComponent = (languageDictionary) => {
     const basicUsername = fromJS({
-      user: {name: 'bill'},
+      user: { name: 'bill' },
       loading: false,
       error: null
     });
@@ -59,18 +59,18 @@ describe('#Client-Containers-Users-User', () => {
       unblock: basicUsername,
       removeBlockedIPs: basicUsername,
       mfa: basicUsername,
-      applications: fromJS({ records: []}),
-      connections: fromJS({ records: []}),
+      applications: fromJS({ records: [] }),
+      connections: fromJS({ records: [] }),
       fieldsChange: fromJS({}),
       accessLevel: { role: 1 },
       user: fromJS({
         loading: false,
         error: null,
         record: {
-          identities: [{
+          identities: [ {
             provider: 'auth0',
             connection: 'connA'
-          }]
+          } ]
         },
         devices: {
           loading: false,
@@ -96,7 +96,7 @@ describe('#Client-Containers-Users-User', () => {
     };
     return render(
       <Provider store={fakeStore(initialState)}>
-        <MemoryRouter initialEntries={['/']} initialIndex={0}>
+        <MemoryRouter initialEntries={[ '/' ]} initialIndex={0}>
           <Routes>
             <Route path="/" element={<UserWrapper/>}/>
           </Routes>

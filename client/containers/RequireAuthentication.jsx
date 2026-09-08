@@ -22,7 +22,7 @@ export default function RequireAuthentication(InnerComponent) {
           navigate(`/login?returnUrl=${location.pathname}${location.search ? location.search : ''}`);
         }
       }
-    }, [isAuthenticated, isAuthenticating, location, navigate]);
+    }, [ isAuthenticated, isAuthenticating, location, navigate ]);
 
     if (isAuthenticated) {
       return <InnerComponent {...props} />;

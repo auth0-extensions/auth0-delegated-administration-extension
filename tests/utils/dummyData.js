@@ -13,7 +13,7 @@ export const defaultLogs = [
 ];
 
 export const defaultUsers = [
-  { email: 'user1@example.com', username: 'user1', user_id: 1, app_metadata: { department: 'deptA' }, identities: [{ provider: 'auth0', connection: 'conn-a' }] },
+  { email: 'user1@example.com', username: 'user1', user_id: 1, app_metadata: { department: 'deptA' }, identities: [ { provider: 'auth0', connection: 'conn-a' } ] },
   { email: 'user2@example.com', username: 'user2', user_id: 2, app_metadata: { department: 'deptA' } },
   { email: 'user3@example.com', username: 'user3', user_id: 3, app_metadata: { department: 'deptA' }, multifactor_last_modified: 'just now' },
   { email: 'user4@example.com', username: 'user4', user_id: 4, app_metadata: { department: 'deptB' } },
@@ -36,8 +36,8 @@ export const defaultApplications = [
 
 export const defaultScripts = {
   access: (
-    function(ctx, callback) {
-      var hasAccess = (ctx.request.user.app_metadata &&
+    function (ctx, callback) {
+      let hasAccess = (ctx.request.user.app_metadata &&
         ctx.payload.user.app_metadata &&
         ctx.payload.user.app_metadata.department &&
         ctx.request.user.app_metadata.department === ctx.payload.user.app_metadata.department);
@@ -49,23 +49,23 @@ export const defaultScripts = {
       return callback();
     }).toString(),
   filter: (
-    function(ctx, callback) {
-      var department = (ctx.request.user &&
+    function (ctx, callback) {
+      let department = (ctx.request.user &&
         ctx.request.user.app_metadata.department) ?
         ctx.request.user.app_metadata.department : null;
       if (!department || !department.length) {
         return callback(new Error('The current user is not part of any department.'));
       }
-      return callback(null, 'app_metadata.delegated-admin.department:\"' +
-        department + '\"');
+      return callback(null, 'app_metadata.delegated-admin.department:"' +
+        department + '"');
     }).toString(),
   create: (
-    function(ctx, callback) {
+    function (ctx, callback) {
       if (ctx.method === 'create') {
         if (!ctx.payload.memberships || ctx.payload.memberships.length === 0) {
           return callback(new Error('The user must be created within a department!'));
         }
-        var currentDepartment = ctx.request.user.app_metadata.department;
+        let currentDepartment = ctx.request.user.app_metadata.department;
         if (!currentDepartment || !currentDepartment.length) {
           return callback(new Error('The current user is not part of any department.'));
         }
@@ -90,11 +90,11 @@ export const defaultScripts = {
     }).toString(),
   memberships: (
     function (ctx, callback) {
-      var parsedData = [];
+      let parsedData = [];
       if (ctx.request.user.app_metadata &&
         ctx.request.user.app_metadata &&
         ctx.request.user.app_metadata.department) {
-        var data = ctx.request.user.app_metadata.department;
+        let data = ctx.request.user.app_metadata.department;
         parsedData = (Array.isArray(data)) ?
           data : data.replace(', ', ',', 'g').split(',');
       }
@@ -105,9 +105,9 @@ export const defaultScripts = {
       callback(null, parsedData);
     }).toString(),
   settings: (
-    function(ctx, callback) {
-      var result = {
-        connections: ['conn-a', 'conn-b'],
+    function (ctx, callback) {
+      let result = {
+        connections: [ 'conn-a', 'conn-b' ],
         dict: { title: ctx.request.user.email + ' dashboard', memberships: 'Groups' },
         css: 'http://localhost:3001/app/default.css'
       };
@@ -115,7 +115,7 @@ export const defaultScripts = {
     }).toString(),
   settings_no_connections: (
     function (ctx, callback) {
-      var result = {
+      let result = {
         dict: { title: ctx.request.user.email + ' dashboard', memberships: 'Groups' },
         css: 'http://localhost:3001/app/default.css'
       };
@@ -123,15 +123,15 @@ export const defaultScripts = {
     }).toString(),
   settings_invalid_connection: (
     function (ctx, callback) {
-      var result = {
-        connections: ['conn-x'],
+      let result = {
+        connections: [ 'conn-x' ],
         dict: { title: ctx.request.user.email + ' dashboard', memberships: 'Groups' },
         css: 'http://localhost:3001/app/default.css'
       };
       callback(null, result);
     }).toString(),
   customDomain: (
-    function(ctx, callback) {
+    function (ctx, callback) {
       callback(null, 'https://custom.domain.com');
     }).toString()
 };

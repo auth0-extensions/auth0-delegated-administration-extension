@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import { user } from '../../../client/reducers/user';
 import * as constants from '../../../client/constants';
-import {fromJS} from "immutable";
+import { fromJS } from 'immutable';
 
 const initialState = {
   loading: false,
@@ -227,7 +227,7 @@ describe('user reducer', () => {
               },
               user_name: 'test@mail.com',
               time_ago: moment('2016-09-26T13:03:50.703Z').fromNow(),
-              shortType: "s"
+              shortType: 's'
             },
             {
               _id: '49559553682563810286559514516535449676088458549131214850',
@@ -243,7 +243,7 @@ describe('user reducer', () => {
               },
               user_name: 'test@mail.com',
               time_ago: moment('2016-09-26T13:03:36.005Z').fromNow(),
-              shortType: "custom_type"
+              shortType: 'custom_type'
             }
           ]
         }),
@@ -408,7 +408,7 @@ describe('user reducer', () => {
           records: {
             ipad: 1,
             iphone: 2,
-            nexus: 1,
+            nexus: 1
           }
         })
       }

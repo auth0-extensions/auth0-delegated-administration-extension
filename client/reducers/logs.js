@@ -10,12 +10,12 @@ const initialState = {
   currentRecord: null
 };
 
-export const logs = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
+export const logs = createReducer(fromJS(initialState), {  
   [constants.FETCH_LOGS_PENDING]: (state, action) =>
     state.merge({
       ...initialState,
       loading: true,
-      records: fromJS(action.meta.page === 0 ? [] : state.get('records')),
+      records: fromJS(action.meta.page === 0 ? [] : state.get('records'))
     }),
   [constants.FETCH_LOGS_REJECTED]: (state, action) =>
     state.merge({

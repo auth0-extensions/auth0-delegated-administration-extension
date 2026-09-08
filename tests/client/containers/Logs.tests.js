@@ -7,7 +7,7 @@ import { fromJS } from 'immutable';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import moment from 'moment';
 import MockAdapter from 'axios-mock-adapter';
-import axios from 'axios'
+import axios from 'axios';
 import proxyquire from 'proxyquire';
 
 import fakeStore from '../../utils/fakeStore';
@@ -41,7 +41,7 @@ describe('#Client-Containers-Logs', () => {
   });
 
   after(() => {
-      stub.restore();
+    stub.restore();
   });
 
   const aDayAgo = moment().add(-1, 'days');

@@ -1,5 +1,5 @@
 export default (errorLogger) =>
-  (err, req, res, next) => {
+  (err, req, res, _next) => {
     if (errorLogger) {
       errorLogger(err);
     }

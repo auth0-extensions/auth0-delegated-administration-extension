@@ -1,6 +1,6 @@
-var crypto = require('crypto');
-var nock = require('nock');
-var jwt = require('jsonwebtoken');
+let crypto = require('crypto');
+let nock = require('nock');
+let jwt = require('jsonwebtoken');
 
 // jwks-rsa 3.x imports keys via `jose`, which requires the RSA modulus/exponent
 // (n/e) on the JWK — x5c alone is no longer sufficient. Derive them from the
@@ -9,8 +9,8 @@ function jwkFromCert(cert) {
   return crypto.createPublicKey(cert).export({ format: 'jwk' });
 }
 
-module.exports.wellKnownEndpoint = function(domain, cert, kid) {
-  var jwk = jwkFromCert(cert);
+module.exports.wellKnownEndpoint = function (domain, cert, kid) {
+  let jwk = jwkFromCert(cert);
 
   return nock('https://' + domain)
     .get('/.well-known/jwks.json')
@@ -29,6 +29,6 @@ module.exports.wellKnownEndpoint = function(domain, cert, kid) {
     });
 };
 
-module.exports.sign = function(cert, kid, payload) {
+module.exports.sign = function (cert, kid, payload) {
   return jwt.sign(payload, cert, { header: { kid: kid }, algorithm: 'RS256' });
 };

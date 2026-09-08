@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 process.env.NODE_ENV = 'test';
 
 // Transpile ES6/JSX before tests run, reusing the project .babelrc.

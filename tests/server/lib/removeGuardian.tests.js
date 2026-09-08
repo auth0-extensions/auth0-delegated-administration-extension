@@ -131,7 +131,7 @@ describe('#removeGuardian', () => {
     });
 
     it('should resolve without any deletes if no methods match the type', (done) => {
-      const methods = [{ id: 'method1', type: 'email' }];
+      const methods = [ { id: 'method1', type: 'email' } ];
 
       nock(domain)
         .get(`/api/v2/users/${userId}/authentication-methods`)
@@ -166,7 +166,7 @@ describe('#removeGuardian', () => {
     });
 
     it('should reject if deleting an individual method fails', (done) => {
-      const methods = [{ id: 'method1', type: 'email' }];
+      const methods = [ { id: 'method1', type: 'email' } ];
 
       nock(domain)
         .get(`/api/v2/users/${userId}/authentication-methods`)

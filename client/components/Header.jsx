@@ -128,7 +128,7 @@ export default class Header extends Component {
             </div>
             <div id="navbar-collapse" className="collapse navbar-collapse">
               <ul className="nav navbar-nav navbar-right">
-                  <li className="dropdown">
+                <li className="dropdown">
                   <span role="button" data-toggle="dropdown" data-target="#" className="btn-dro btn-username">
                     <img
                       role="presentation"

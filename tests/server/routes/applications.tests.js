@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import expect from 'expect';
 import Promise from 'bluebird';
 import request from 'supertest';
