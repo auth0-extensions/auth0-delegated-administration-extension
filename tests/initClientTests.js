@@ -34,6 +34,15 @@ global.IS_REACT_ACT_ENVIRONMENT = true;
 
 copyProps(window, global);
 
+// jsdom exposes XMLHttpRequest/fetch on window, and copyProps leaks them onto the
+// global scope. axios then auto-selects its browser (XHR/fetch) adapter whenever those
+// globals are present — even in server-side route tests — and that transport bypasses
+// nock (which only patches Node's http/https). Removing them forces axios back to the
+// Node http adapter so nock can intercept. Client tests mock via axios-mock-adapter
+// (adapter-layer, transport-agnostic), so they don't rely on these globals.
+delete global.XMLHttpRequest;
+delete global.fetch;
+
 // Mock components from @a0/auth0-extension-ui to avoid context requirement in tests
 import React from 'react';
 const mockTabPane = (props) => React.createElement('li', null, props.title);
