@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import auth0 from 'auth0';
-import request from 'request';
+import axios from 'axios';
 import Promise from 'bluebird';
 import { Router } from 'express';
-import { ArgumentError, ValidationError, UnauthorizedError } from 'auth0-extension-tools';
+import { ArgumentError, ValidationError, UnauthorizedError } from '../../vendor/auth0-extension-tools';
 
 import config from '../lib/config';
 import logger from '../lib/logger';
@@ -568,25 +568,23 @@ export default (storage, scriptManager) => {
     getApiToken(req)
       .then((accessToken) => {
         const options = {
-          uri: `https://${config('AUTH0_DOMAIN')}/api/v2/users/${encodeURIComponent(req.params.id)}/logs`,
+          url: `https://${config('AUTH0_DOMAIN')}/api/v2/users/${encodeURIComponent(req.params.id)}/logs`,
+          method: 'get',
           headers: {
             authorization: `Bearer ${accessToken}`
-          },
-          json: true
+          }
         };
 
-        return request.get(options, (err, response, body) => {
-          if (err) {
+        return axios(options)
+          .then(response => res.json(response.data))
+          .catch((err) => {
+            if (err.response) {
+              const body = err.response.data;
+              logger.error('Log response failed: ', err.response.headers);
+              return next(new Error((body && (body.error || body.message || body.code)) || `Request Error: ${err.response.status}`));
+            }
             return next(err);
-          }
-
-          if (response.statusCode < 200 || response.statusCode >= 300) {
-            logger.error('Log response failed: ', response.headers);
-            return next(new Error((body && (body.error || body.message || body.code)) || `Request Error: ${response.statusCode}`));
-          }
-
-          return res.json(body);
-        });
+          });
       })
       .catch(next);
   });
@@ -640,7 +638,7 @@ export default (storage, scriptManager) => {
   api.post('/:id/send-verification-email', verifyUserAccess('send:verification-email', scriptManager), async (req, res, next) => {
     try {
       const data = { user_id: req.params.id };
-      
+
       // Execute verification email operation with custom domain support
       await executeWithCustomDomain(
         req,

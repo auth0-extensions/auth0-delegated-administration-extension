@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { ValidationError } from 'auth0-extension-tools';
+import { ValidationError } from '../../vendor/auth0-extension-tools';
 
 import * as constants from '../constants';
 

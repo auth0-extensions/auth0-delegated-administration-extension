@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { ValidationError } from 'auth0-extension-tools';
+import { ValidationError } from '../../../vendor/auth0-extension-tools';
 
 import parseScriptError from '../../../server/lib/errors/parseScriptError';
 

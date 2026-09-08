@@ -1,5 +1,5 @@
 import Promise from 'bluebird';
-import { ArgumentError } from 'auth0-extension-tools';
+import { ArgumentError } from '../../vendor/auth0-extension-tools';
 
 export default function(client, entity, opts = {}, fetchOptions = {} ) {
   const perPage = fetchOptions.perPage || 50;

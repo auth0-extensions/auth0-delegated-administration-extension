@@ -1,5 +1,5 @@
 import Promise from 'bluebird';
-import { NotFoundError } from 'auth0-extension-tools';
+import { NotFoundError } from '../../../vendor/auth0-extension-tools';
 
 
 export default (action, scriptManager) => (req, res, next) =>

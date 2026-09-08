@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import _ from 'lodash';
 import moment from 'moment';
-import { middlewares } from 'auth0-extension-express-tools';
-import tools from 'auth0-extension-tools';
+import { middlewares } from '../../vendor/auth0-extension-express-tools';
+import tools from '../../vendor/auth0-extension-tools';
 
 import {requireScope} from '../lib/middlewares';
 import config from '../lib/config';
@@ -23,8 +23,8 @@ export default (storage) => {
   const scriptManager = new ScriptManager(storage);
   const managementApiClient = async function (req, res, next) {
     try {
-    
-      
+
+
       // It's important to use getClient for the management API token to be cached.
       // If we instantiate the client directly, a client credentials exchange will be performed on every request.
       req.auth0 = await tools.managementApi.getClient(getClientOptions(req));

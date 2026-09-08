@@ -1,5 +1,5 @@
-import { ValidationError } from 'auth0-extension-tools';
-import tools from 'auth0-extension-tools';
+import { ValidationError } from '../../vendor/auth0-extension-tools';
+import tools from '../../vendor/auth0-extension-tools';
 import { getClientOptions } from '../lib/managementAPIClient'
 
 import config from './config';

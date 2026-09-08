@@ -1,4 +1,4 @@
-import { ForbiddenError } from 'auth0-extension-tools';
+import { ForbiddenError } from '../../../vendor/auth0-extension-tools';
 
 export default (expectedScope) => (req, res, next) => {
   if (!req.user || !req.user.scope || req.user.scope.indexOf(expectedScope) < 0) {

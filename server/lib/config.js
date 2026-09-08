@@ -1,4 +1,4 @@
-const config = require('auth0-extension-tools').config();
+const config = require('../../vendor/auth0-extension-tools').config();
 
 const daeConfig = function (key) {
   if (key === 'AUTH0_CUSTOM_DOMAIN') {
