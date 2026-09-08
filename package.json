@@ -1,6 +1,6 @@
 {
   "name": "auth0-delegated-admin",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "description": "This extension allows non-dashboard administrators to manage (a subset of) users.",
   "engines": {
     "node": ">22.13"
@@ -93,7 +93,6 @@
       "morgan@1.10.0",
       "qs@6.11.2",
       "superagent@8.0.9",
-      "uuid@9.0.0",
       "winston@3.10.0"
     ],
     "excluded": [
@@ -172,7 +171,6 @@
     "snyk": "^1.278.1",
     "string.prototype.endswith": "^0.2.0",
     "superagent": "^8.0.9",
-    "uuid": "9.0.0",
     "winston": "^3.10.0"
   },
   "devDependencies": {
@@ -228,7 +226,7 @@
     "nock": "^11.9.1",
     "node-polyfill-webpack-plugin": "^4.1.0",
     "nodemon": "^3.1.0",
-    "nyc": "^13.1.0",
+    "nyc": "^18.0.0",
     "postcss-focus": "^3.0.0",
     "postcss-loader": "^3.0.0",
     "postcss-reporter": "^5.0.0",
@@ -246,6 +244,7 @@
     "superagent-proxy": "^3.0.0",
     "supertest": "^2.0.1",
     "terser-webpack-plugin": "^5.3.10",
+    "uuid": "14.0.0",
     "webpack": "^5.90.1",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.2.6",
@@ -256,6 +255,7 @@
     "cheerio": "1.0.0-rc.12",
     "axios@0.27.2": "0.32.0",
     "webpack-dev-server@3.11.3": "5.2.6",
-    "vm2": "3.11.6"
+    "vm2": "3.11.6",
+    "uuid": "14.0.0"
   }
 }
