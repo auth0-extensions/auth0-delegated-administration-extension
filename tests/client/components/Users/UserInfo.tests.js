@@ -60,9 +60,9 @@ describe('#Client-Components-UserInfo', () => {
       name: 'name',
       username: 'username',
       email: 'email@nowhere.com',
-      identities: [{
+      identities: [ {
         connection: 'connA'
-      }],
+      } ],
       isBlocked: false,
       last_ip: '127.0.0.1',
       logins_count: 12,
@@ -72,7 +72,7 @@ describe('#Client-Components-UserInfo', () => {
       multifactor: [ 'guardian', 'google' ]
     };
 
-    const queries = renderComponent(user, null, ['a', 'b']);
+    const queries = renderComponent(user, null, [ 'a', 'b' ]);
 
     checkFields(queries, targets);
   });
@@ -107,9 +107,9 @@ describe('#Client-Components-UserInfo', () => {
       name: 'name',
       username: 'username',
       email: 'email@nowhere.com',
-      identities: [{
+      identities: [ {
         connection: 'connA'
-      }],
+      } ],
       isBlocked: false,
       last_ip: '127.0.0.1',
       logins_count: 12,
@@ -120,8 +120,8 @@ describe('#Client-Components-UserInfo', () => {
     };
 
     const queries = renderComponent(user,
-      [{ label: 'Some Boolean', property: 'user_metadata.someBoolean', display: true }],
-      ['a', 'b'],
+      [ { label: 'Some Boolean', property: 'user_metadata.someBoolean', display: true } ],
+      [ 'a', 'b' ],
       languageDictionary);
 
     checkFields(queries, targets);
@@ -145,7 +145,7 @@ describe('#Client-Components-UserInfo', () => {
       { title: 'Some Other Boolean', value: 'some display func' }
     ], 'title');
 
-    const displayFunc = (user) => 'some display func';
+    const displayFunc = () => 'some display func';
 
     const userFields = [
       { label: 'User ID1', property: 'user_id', display: true },
@@ -173,9 +173,9 @@ describe('#Client-Components-UserInfo', () => {
       },
       username: 'username',
       email: 'email@nowhere.com',
-      identities: [{
+      identities: [ {
         connection: 'connA'
-      }],
+      } ],
       isBlocked: false,
       last_ip: '127.0.0.1',
       logins_count: 12,
@@ -184,7 +184,7 @@ describe('#Client-Components-UserInfo', () => {
       last_login: moment().add(-1, 'days')
     };
 
-    const queries = renderComponent(user, userFields, ['a', 'b']);
+    const queries = renderComponent(user, userFields, [ 'a', 'b' ]);
 
     checkFields(queries, targets);
   });

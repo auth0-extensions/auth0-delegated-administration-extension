@@ -27,7 +27,7 @@ class TestForm extends Component {
   render() {
     return <UserFormField
       {...this.props}
-    />
+    />;
   }
 };
 
@@ -40,8 +40,8 @@ const TestFormWrapper = reduxForm({ form: 'test' })(TestForm);
  * actually pass to the underlying library component.
  */
 let capturedWrapperInput = null;
-const StubMultiselect = ({ input, ...rest }) => { capturedWrapperInput = input; return null; };
-const StubSelect = ({ input, ...rest }) => { capturedWrapperInput = input; return null; };
+const StubMultiselect = ({ input }) => { capturedWrapperInput = input; return null; };
+const StubSelect = ({ input }) => { capturedWrapperInput = input; return null; };
 
 const UserFormFieldWithInnerStubs = proxyquire(
   '../../../../client/components/Users/UserFormField',
@@ -51,7 +51,7 @@ const UserFormFieldWithInnerStubs = proxyquire(
       InputCombo: () => null,
       Multiselect: StubMultiselect,
       Select: StubSelect,
-      VirtualizedSelect: () => null,
+      VirtualizedSelect: () => null
     }
   }
 ).default;
@@ -158,7 +158,7 @@ describe('#Client-Components-Users-UserFormField', () => {
       edit: true
     };
 
-    const queries = renderComponent(userField, true);
+    renderComponent(userField, true);
     checkField(userField, 'Property1', 'InputText', true);
   });
 
@@ -171,7 +171,7 @@ describe('#Client-Components-Users-UserFormField', () => {
       }
     };
 
-    const queries = renderComponent(userField, true);
+    renderComponent(userField, true);
     checkField(userField, 'Property1', 'InputText', true);
   });
 
@@ -182,11 +182,11 @@ describe('#Client-Components-Users-UserFormField', () => {
       create: {
         type: 'select',
         component: 'InputCombo',
-        options: [{ value: 'a', label: 'a' }, { value: 'b', label: 'b' }]
+        options: [ { value: 'a', label: 'a' }, { value: 'b', label: 'b' } ]
       }
     };
 
-    const queries = renderComponent(userField, false);
+    renderComponent(userField, false);
     checkField(userField, 'Property1', 'InputCombo', false);
   });
 
@@ -197,11 +197,11 @@ describe('#Client-Components-Users-UserFormField', () => {
       create: {
         type: 'select',
         component: 'InputMultiCombo',
-        options: [{ value: 'a', label: 'a' }, { value: 'b', label: 'b' }]
+        options: [ { value: 'a', label: 'a' }, { value: 'b', label: 'b' } ]
       }
     };
 
-    const queries = renderComponent(userField, false);
+    renderComponent(userField, false);
     checkField(userField, 'Property1', 'InputMultiCombo', false);
   });
 
@@ -212,17 +212,17 @@ describe('#Client-Components-Users-UserFormField', () => {
       edit: {
         type: 'select',
         component: 'InputSelectCombo',
-        options: [{ value: 'a', label: 'a' }, { value: 'b', label: 'b' }]
+        options: [ { value: 'a', label: 'a' }, { value: 'b', label: 'b' } ]
       }
     };
 
-    const queries = renderComponent(userField, true);
+    renderComponent(userField, true);
     checkField(userField, 'Property1', 'InputSelectCombo', true);
   });
 
   const testFieldValidation = (type, required) => {
 
-    const dummyOptions = [{ value: 'a', label: 'a' }, { value: 'b', label: 'b' }];
+    const dummyOptions = [ { value: 'a', label: 'a' }, { value: 'b', label: 'b' } ];
 
     const userField = {
       property: 'object.property1',
@@ -236,7 +236,7 @@ describe('#Client-Components-Users-UserFormField', () => {
       }
     };
 
-    const queries = renderComponent(userField, true);
+    renderComponent(userField, true);
     checkField(userField, 'Property1', type, true);
   };
 
@@ -280,11 +280,11 @@ describe('#Client-Components-Users-UserFormField', () => {
         type: 'select',
         required: true,
         component: 'InputSelectCombo',
-        options: [{ value: 'a', label: 'a' }, { value: 'b', label: 'b' }]
+        options: [ { value: 'a', label: 'a' }, { value: 'b', label: 'b' } ]
       }
     };
 
-    const queries = renderComponent(userField, true);
+    renderComponent(userField, true);
     checkField(userField, 'Property1', 'InputSelectCombo', true);
   });
 
@@ -297,17 +297,17 @@ describe('#Client-Components-Users-UserFormField', () => {
         required: true,
         component: 'InputSelectCombo',
         validationFunction: 'blah',
-        options: [{ value: 'a', label: 'a' }, { value: 'b', label: 'b' }]
+        options: [ { value: 'a', label: 'a' }, { value: 'b', label: 'b' } ]
       }
     };
 
-    const queries = renderComponent(userField, true);
+    renderComponent(userField, true);
     checkField(userField, 'Property1', 'InputSelectCombo', true);
   });
 
   // ─── loadOptions callback contract ───────────────────────────────────────────
 
-  ['InputMultiCombo', 'InputSelectCombo'].forEach(componentName => {
+  [ 'InputMultiCombo', 'InputSelectCombo' ].forEach(componentName => {
     describe(`${componentName} loadOptions`, () => {
       const makeField = (options) => ({
         property: 'allowed',
@@ -316,7 +316,7 @@ describe('#Client-Components-Users-UserFormField', () => {
       });
 
       it('calls callback with a plain array (not null + options object)', () => {
-        renderComponent(makeField([{ value: 'a', label: 'A' }]), true);
+        renderComponent(makeField([ { value: 'a', label: 'A' } ]), true);
         const loadOptions = captured[0].loadOptions;
 
         let firstArg;
@@ -326,7 +326,7 @@ describe('#Client-Components-Users-UserFormField', () => {
       });
 
       it('normalizes plain string options to {value, label} objects', () => {
-        renderComponent(makeField(['AppOne', 'AppTwo']), true);
+        renderComponent(makeField([ 'AppOne', 'AppTwo' ]), true);
         const loadOptions = captured[0].loadOptions;
 
         let receivedOptions;
@@ -339,7 +339,7 @@ describe('#Client-Components-Users-UserFormField', () => {
       });
 
       it('passes through {value, label} options unchanged', () => {
-        const options = [{ value: 'a', label: 'A' }, { value: 'b', label: 'B' }];
+        const options = [ { value: 'a', label: 'A' }, { value: 'b', label: 'B' } ];
         renderComponent(makeField(options), true);
         const loadOptions = captured[0].loadOptions;
 
@@ -357,11 +357,11 @@ describe('#Client-Components-Users-UserFormField', () => {
     const multiField = {
       property: 'allowed',
       label: 'Allowed',
-      edit: { type: 'select', component: 'InputMultiCombo', options: ['AppOne', 'AppTwo', 'AppThree'] }
+      edit: { type: 'select', component: 'InputMultiCombo', options: [ 'AppOne', 'AppTwo', 'AppThree' ] }
     };
 
     it('normalizes stored plain string values to {value, label} for display', () => {
-      renderWithRealStore(multiField, true, { allowed: ['AppOne', 'AppTwo'] });
+      renderWithRealStore(multiField, true, { allowed: [ 'AppOne', 'AppTwo' ] });
 
       expect(capturedWrapperInput.value).to.deep.equal([
         { value: 'AppOne', label: 'AppOne' },
@@ -370,7 +370,7 @@ describe('#Client-Components-Users-UserFormField', () => {
     });
 
     it('passes through already-shaped {value, label} values unchanged', () => {
-      const stored = [{ value: 'AppOne', label: 'AppOne' }];
+      const stored = [ { value: 'AppOne', label: 'AppOne' } ];
       renderWithRealStore(multiField, true, { allowed: stored });
 
       expect(capturedWrapperInput.value).to.deep.equal(stored);
@@ -383,14 +383,14 @@ describe('#Client-Components-Users-UserFormField', () => {
     });
 
     it('onBlur passes current value to redux-form — field is not reset to []', () => {
-      const store = renderWithRealStore(multiField, true, { allowed: ['AppOne', 'AppTwo'] });
+      const store = renderWithRealStore(multiField, true, { allowed: [ 'AppOne', 'AppTwo' ] });
 
       // Simulate the inner component calling onBlur() with no argument — the exact
       // pattern that previously reset the field to [] via parse(undefined) = [].
       act(() => { capturedWrapperInput.onBlur(); });
 
       const values = store.getState().form.test.values;
-      expect(values.allowed).to.deep.equal(['AppOne', 'AppTwo']);
+      expect(values.allowed).to.deep.equal([ 'AppOne', 'AppTwo' ]);
     });
   });
 
@@ -398,7 +398,7 @@ describe('#Client-Components-Users-UserFormField', () => {
     const singleField = {
       property: 'tier',
       label: 'Tier',
-      edit: { type: 'select', component: 'InputSelectCombo', options: ['free', 'pro'] }
+      edit: { type: 'select', component: 'InputSelectCombo', options: [ 'free', 'pro' ] }
     };
 
     it('normalizes a stored plain string value to a {value, label} object for display', () => {
@@ -437,11 +437,11 @@ describe('#Client-Components-Users-UserFormField', () => {
       label: 'Property1',
       edit: {
         type: 'text',
-        required: true,
+        required: true
       }
     };
 
-    const queries = renderComponent(userField, true);
+    renderComponent(userField, true);
     checkField(userField, 'Property1', 'InputText', true);
   });
 
@@ -455,11 +455,11 @@ describe('#Client-Components-Users-UserFormField', () => {
       label: 'Property1',
       edit: {
         type: 'text',
-        required: true,
+        required: true
       }
     };
 
-    const queries = renderComponent(userField, true, languageDictionary);
+    renderComponent(userField, true, languageDictionary);
     checkField(userField, 'Property1', 'InputText', true, 'RequiredLabel');
   });
 

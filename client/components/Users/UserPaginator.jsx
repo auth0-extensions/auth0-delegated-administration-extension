@@ -6,7 +6,7 @@ export default class UserPaginator extends React.Component {
     onPageChange: PropTypes.func.isRequired,
     nextPage: PropTypes.number.isRequired,
     pages: PropTypes.number.isRequired
-  }
+  };
 
   shouldComponentUpdate(nextProps) {
     return this.props.nextPage !== nextProps.nextPage;
@@ -14,15 +14,15 @@ export default class UserPaginator extends React.Component {
 
   onPreviousPage = () => {
     this.props.onPageChange(this.props.nextPage - 1);
-  }
+  };
 
   onNextPage = () => {
     this.props.onPageChange(this.props.nextPage + 1);
-  }
+  };
   
   changePage = (page) => {
-    this.props.onPageChange(page)
-  }
+    this.props.onPageChange(page);
+  };
 
   render() {
     const { nextPage, pages } = this.props;

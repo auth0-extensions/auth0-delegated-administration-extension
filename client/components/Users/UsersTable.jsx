@@ -191,11 +191,11 @@ export default class UsersTable extends Component {
                 return (
                   <TableColumn key={field.property} width={field.listSize}>
                     <div className="table-column-div"
-                         onClick={this.onColumnSort.bind(this, field.sortProperty || field.property, sortOrder)}>
+                      onClick={this.onColumnSort.bind(this, field.sortProperty || field.property, sortOrder)}>
                       {labels[field.property] || field.label}
                       {((field.sortProperty || field.property) === sortProperty) &&
                       <i className={sortOrder === -1 ? 'icon-budicon-462 icon' : 'icon-budicon-460 icon'}
-                         aria-hidden="true"/>}
+                        aria-hidden="true"/>}
                     </div>
                   </TableColumn>
                 );
@@ -213,7 +213,7 @@ export default class UsersTable extends Component {
           {users.map(user =>
             <TableRow key={user.user_id}>
               {
-                listFields.map((field, index) => {
+                listFields.map((field) => {
                   const key = `${user.user_id}_${field.property}`;
                   if (field.property === 'picture') {
                     return (

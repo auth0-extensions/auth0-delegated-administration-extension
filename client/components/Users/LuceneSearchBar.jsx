@@ -9,11 +9,11 @@ export default class SearchBar extends Component {
     languageDictionary: PropTypes.object,
     searchValue: PropTypes.string,
     inputId: PropTypes.string
-  }
+  };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
-    this.state = {searchValue: props.searchValue}
+    this.state = { searchValue: props.searchValue };
     this.searchRef = React.createRef();
     this.handleChange = this.handleChange.bind(this);
   }
@@ -22,19 +22,19 @@ export default class SearchBar extends Component {
     if (e.key === 'Enter') {
       this.props.onSearch(this.searchRef.current.value);
     }
-  }
+  };
 
   handleChange = (event) => {
-    this.setState({searchValue: event.target.value});
-  }
+    this.setState({ searchValue: event.target.value });
+  };
 
   onResetSearch = () => {
-    this.setState({searchValue: ''});
+    this.setState({ searchValue: '' });
     if (this.searchRef.current) {
       this.searchRef.current.value = '';
     }
     this.props.onReset();
-  }
+  };
 
   renderInstructions = (searchBarInstructions) => {
     if (searchBarInstructions) {

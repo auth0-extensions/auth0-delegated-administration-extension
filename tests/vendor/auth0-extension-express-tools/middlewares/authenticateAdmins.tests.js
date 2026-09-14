@@ -6,20 +6,20 @@ const validToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODk
 const invalidToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlzcyI6Imh0dHA6Ly9hcGkifQ.9muVyU5BI4e1qXlCZidHaUiYWUNNVbgxRD4ZEvP3kUQ';
 
 describe('vendor/auth0-extension-express-tools/authenticateAdmins', () => {
-  it('should throw error if options is null', function() {
+  it('should throw error if options is null', function () {
     expect(() => {
       authenticateAdmins();
     }).to.throw();
   });
 
-  it('should throw error if options.secret is null', function() {
+  it('should throw error if options.secret is null', function () {
     expect(() => {
       authenticateAdmins({
       });
     }).to.throw();
   });
 
-  it('should throw error if options.secret is empty', function() {
+  it('should throw error if options.secret is empty', function () {
     expect(() => {
       authenticateAdmins({
         secret: ''
@@ -27,7 +27,7 @@ describe('vendor/auth0-extension-express-tools/authenticateAdmins', () => {
     }).to.throw();
   });
 
-  it('should throw error if options.audience is null', function() {
+  it('should throw error if options.audience is null', function () {
     expect(() => {
       authenticateAdmins({
         secret: 'abc'
@@ -35,7 +35,7 @@ describe('vendor/auth0-extension-express-tools/authenticateAdmins', () => {
     }).to.throw();
   });
 
-  it('should throw error if options.audience is empty', function() {
+  it('should throw error if options.audience is empty', function () {
     expect(() => {
       authenticateAdmins({
         secret: 'abc',
@@ -44,7 +44,7 @@ describe('vendor/auth0-extension-express-tools/authenticateAdmins', () => {
     }).to.throw();
   });
 
-  it('should throw error if options.baseUrl is null', function() {
+  it('should throw error if options.baseUrl is null', function () {
     expect(() => {
       authenticateAdmins({
         secret: 'abc',
@@ -53,7 +53,7 @@ describe('vendor/auth0-extension-express-tools/authenticateAdmins', () => {
     }).to.throw();
   });
 
-  it('should throw error if options.baseUrl is empty', function() {
+  it('should throw error if options.baseUrl is empty', function () {
     expect(() => {
       authenticateAdmins({
         secret: 'abc',
@@ -63,7 +63,7 @@ describe('vendor/auth0-extension-express-tools/authenticateAdmins', () => {
     }).to.throw();
   });
 
-  it('should return error if token is invalid', function(done) {
+  it('should return error if token is invalid', function (done) {
     const mw = authenticateAdmins({
       secret: 'abc',
       audience: 'urn:api',
@@ -76,7 +76,7 @@ describe('vendor/auth0-extension-express-tools/authenticateAdmins', () => {
     });
   });
 
-  it('should return error if credentials are required', function(done) {
+  it('should return error if credentials are required', function (done) {
     const mw = authenticateAdmins({
       secret: 'abc',
       audience: 'urn:api',
@@ -90,7 +90,7 @@ describe('vendor/auth0-extension-express-tools/authenticateAdmins', () => {
     });
   });
 
-  it('should return the user if token is valid', function(done) {
+  it('should return the user if token is valid', function (done) {
     const mw = authenticateAdmins({
       secret: 'abc',
       audience: 'urn:api',
@@ -106,7 +106,7 @@ describe('vendor/auth0-extension-express-tools/authenticateAdmins', () => {
     });
   });
 
-  it('should support the onLoginSuccess hook', function(done) {
+  it('should support the onLoginSuccess hook', function (done) {
     const mw = authenticateAdmins({
       onLoginSuccess: (req, res, next) => { req.user.role = 'Admin'; next(); },
       secret: 'abc',
@@ -124,7 +124,7 @@ describe('vendor/auth0-extension-express-tools/authenticateAdmins', () => {
     });
   });
 
-  it('optional should not run if token is missing', function(done) {
+  it('optional should not run if token is missing', function (done) {
     const mw = authenticateAdmins.optional({
       secret: 'abc',
       audience: 'urn:api',
@@ -137,7 +137,7 @@ describe('vendor/auth0-extension-express-tools/authenticateAdmins', () => {
     });
   });
 
-  it('optional should return error if token matches issuer but audience is invalid', function(done) {
+  it('optional should return error if token matches issuer but audience is invalid', function (done) {
     const mw = authenticateAdmins.optional({
       secret: 'abc',
       audience: 'urn:api',
@@ -151,7 +151,7 @@ describe('vendor/auth0-extension-express-tools/authenticateAdmins', () => {
     });
   });
 
-  it('optional should not run if token is invalid', function(done) {
+  it('optional should not run if token is invalid', function (done) {
     const mw = authenticateAdmins.optional({
       secret: 'abc',
       audience: 'urn:api',
@@ -164,7 +164,7 @@ describe('vendor/auth0-extension-express-tools/authenticateAdmins', () => {
     });
   });
 
-  it('optional should return the user if token is valid', function(done) {
+  it('optional should return the user if token is valid', function (done) {
     const mw = authenticateAdmins.optional({
       onLoginSuccess: (req, res, next) => { next(); },
       secret: 'abc',

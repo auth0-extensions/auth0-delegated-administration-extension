@@ -12,7 +12,7 @@ describe('vendor/auth0-extension-express-tools/managementApiClient', () => {
     expect(mw).to.be.ok;
 
     const req = { };
-    mw(req, { }, function() {
+    mw(req, { }, function () {
       expect(req).to.be.ok;
       expect(req.auth0).to.be.ok;
       expect(req.auth0.users).to.be.ok;
@@ -32,7 +32,7 @@ describe('vendor/auth0-extension-express-tools/managementApiClient', () => {
     expect(mw).to.be.ok;
 
     const req = { };
-    mw(req, { }, function(err) {
+    mw(req, { }, function (err) {
       expect(err).to.be.ok;
       expect(req.auth0).to.not.be.ok;
       done();
@@ -50,7 +50,7 @@ describe('vendor/auth0-extension-express-tools/managementApiClient', () => {
     expect(mw).to.be.ok;
 
     const req = { };
-    mw(req, { }, function() {
+    mw(req, { }, function () {
       expect(req).to.be.ok;
       expect(req.auth0).to.be.ok;
       const keys = Object.keys(req.auth0);

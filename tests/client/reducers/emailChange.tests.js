@@ -27,7 +27,7 @@ describe('email change reducer', () => {
           user_id: 'user_id_1',
           email: 'test@mail.ru'
         },
-        connection: 'connections',
+        connection: 'connections'
       }).toJSON()
     ).toEqual(
       {
@@ -38,7 +38,7 @@ describe('email change reducer', () => {
           user_id: 'user_id_1',
           email: 'test@mail.ru'
         },
-        connection: 'connections',
+        connection: 'connections'
       }
     );
   });

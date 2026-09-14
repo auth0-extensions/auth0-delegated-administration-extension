@@ -1,5 +1,4 @@
 import React from 'react';
-import moment from 'moment';
 import { render } from '@testing-library/react';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
@@ -10,56 +9,38 @@ import LogDialog from '../../../../client/components/Logs/LogDialog';
 describe('#Client-Components-Logs-LogDialog', () => {
 
   const success = {
-    "_id": "5a393f798d579955398af165",
-    "audience": "https://acces.dev.auth0.com/api/v2/",
-    "client_id": "UYpkSYY5Zawt13cDHwwHRfDnNThZh2c3",
-    "client_name": "auth0-delegated-admin",
-    "connection": null,
-    "connection_id": "",
-    "date": "2017-12-19T16:34:01.319Z",
-    "description": "",
-    "ip": "68.47.31.102",
-    "scope": null,
-    "shortType": "seccft",
-    "type": "Success Exchange (Client Credentials)",
-    "user_agent": "node-superagent/2.3.0",
-    "user_id": "",
-    "user_name": ""
-  };
-
-  const fail = {
-    "_id": "5a393f798d579955398af165",
-    "audience": "https://acces.dev.auth0.com/api/v2/",
-    "client_id": "UYpkSYY5Zawt13cDHwwHRfDnNThZh2c3",
-    "client_name": "auth0-delegated-admin",
-    "connection": null,
-    "connection_id": "",
-    "date": "2017-12-19T16:34:01.319Z",
-    "description": "",
-    "ip": "68.47.31.102",
-    "scope": null,
-    "shortType": "fapi",
-    "type": "Failed API",
-    "user_agent": "node-superagent/2.3.0",
-    "user_id": "",
-    "user_name": ""
+    '_id': '5a393f798d579955398af165',
+    'audience': 'https://acces.dev.auth0.com/api/v2/',
+    'client_id': 'UYpkSYY5Zawt13cDHwwHRfDnNThZh2c3',
+    'client_name': 'auth0-delegated-admin',
+    'connection': null,
+    'connection_id': '',
+    'date': '2017-12-19T16:34:01.319Z',
+    'description': '',
+    'ip': '68.47.31.102',
+    'scope': null,
+    'shortType': 'seccft',
+    'type': 'Success Exchange (Client Credentials)',
+    'user_agent': 'node-superagent/2.3.0',
+    'user_id': '',
+    'user_name': ''
   };
 
   const custom = {
-    "_id": "5a393f798d579955398af165",
-    "audience": "https://acces.dev.auth0.com/api/v2/",
-    "client_id": "UYpkSYY5Zawt13cDHwwHRfDnNThZh2c3",
-    "client_name": "auth0-delegated-admin",
-    "connection": null,
-    "connection_id": "",
-    "date": "2017-12-19T16:34:01.319Z",
-    "description": "",
-    "ip": "68.47.31.102",
-    "scope": null,
-    "shortType": "custom",
-    "user_agent": "node-superagent/2.3.0",
-    "user_id": "",
-    "user_name": ""
+    '_id': '5a393f798d579955398af165',
+    'audience': 'https://acces.dev.auth0.com/api/v2/',
+    'client_id': 'UYpkSYY5Zawt13cDHwwHRfDnNThZh2c3',
+    'client_name': 'auth0-delegated-admin',
+    'connection': null,
+    'connection_id': '',
+    'date': '2017-12-19T16:34:01.319Z',
+    'description': '',
+    'ip': '68.47.31.102',
+    'scope': null,
+    'shortType': 'custom',
+    'user_agent': 'node-superagent/2.3.0',
+    'user_id': '',
+    'user_name': ''
   };
 
   const renderComponent = (log, languageDictionary) => {

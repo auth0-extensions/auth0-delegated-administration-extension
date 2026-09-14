@@ -20,7 +20,7 @@ export default connectContainer(class extends Component {
   static actionsToProps = {
     ...userActions,
     ...scriptActions
-  }
+  };
 
   static propTypes = {
     accessLevel: PropTypes.object.isRequired,
