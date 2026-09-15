@@ -460,11 +460,10 @@ export default (storage, scriptManager) => {
 
               // Allow app_metadata in case someone needs to set a field in app_metadata to store a flag associated
               // with the change
-              payload = _.pick(payload, [ 'password', 'connection', 'verify_password', 'app_metadata' ]);
+              payload = _.pick(payload, [ 'password', 'connection', 'app_metadata' ]);
 
               const payloadFinal = _.defaults(payload, {
-                connection: req.body.connection,
-                verify_password: false
+                connection: req.body.connection
               });
 
               return req.auth0.users.update({ id: req.params.id }, payloadFinal)
@@ -476,7 +475,6 @@ export default (storage, scriptManager) => {
         return req.auth0.users.update({ id: req.params.id }, {
           password: req.body.password,
           connection: req.body.connection,
-          verify_password: false
         })
           .then(() => res.sendStatus(204))
           .catch(next);
