@@ -382,7 +382,7 @@ describe('#Client-Components-Users-UserFormField', () => {
       });
 
       it('filtering is case-insensitive', () => {
-        renderComponent(makeField(['AppOne', 'AppTwo', 'Other']), true);
+        renderComponent(makeField([ 'AppOne', 'AppTwo', 'Other' ]), true);
         const loadOptions = captured[0].loadOptions;
 
         let receivedOptions;
@@ -395,7 +395,7 @@ describe('#Client-Components-Users-UserFormField', () => {
       });
 
       it('returns all options when input is empty', () => {
-        const options = [{ value: 'a', label: 'A' }, { value: 'b', label: 'B' }];
+        const options = [ { value: 'a', label: 'A' }, { value: 'b', label: 'B' } ];
         renderComponent(makeField(options), true);
         const loadOptions = captured[0].loadOptions;
 
