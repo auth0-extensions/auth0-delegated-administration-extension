@@ -2,7 +2,7 @@ import expect from 'expect';
 import _ from 'lodash';
 import { settings } from '../../../client/reducers/settings';
 import * as constants from '../../../client/constants';
-import {fromJS} from "immutable";
+import { fromJS } from 'immutable';
 
 const initialState = {
   loading: false,
@@ -57,7 +57,7 @@ describe('settings reducer', () => {
   });
 
   describe('should handle FETCH_SETTINGS_FULFILLED', () => {
-    var basicField = {
+    let basicField = {
       label: 'Name',
       property: 'name',
       sortProperty: 'user_metadata.family_name',
@@ -72,7 +72,7 @@ describe('settings reducer', () => {
       }
     };
 
-    var basicField2 = {
+    let basicField2 = {
       label: 'Email',
       property: 'email',
       display: true,
@@ -119,7 +119,7 @@ describe('settings reducer', () => {
             data: {
               settings: {
                 dict: { title: 'test', memberships: 'test1, test2' },
-                userFields: [basicField, basicField2],
+                userFields: [ basicField, basicField2 ],
                 css: 'style.css'
               }
             }
@@ -132,7 +132,7 @@ describe('settings reducer', () => {
           record: fromJS({
             settings: {
               dict: { title: 'test', memberships: 'test1, test2' },
-              userFields: [basicField, basicField2],
+              userFields: [ basicField, basicField2 ],
               css: 'style.css'
             }
           })
@@ -141,7 +141,7 @@ describe('settings reducer', () => {
     });
 
     it('userFields top level display', () => {
-      var displayFunctionField = {
+      let displayFunctionField = {
         label: 'Username',
         property: 'username',
         display: 'function(user) { return (user.username && user.username.length > 0) ? user.username : ""; }',
@@ -157,8 +157,8 @@ describe('settings reducer', () => {
         }
       };
 
-      var displayFunctionFieldTarget = _.cloneDeep(displayFunctionField);
-      var displayFunc = eval(`(${displayFunctionField.display})`);
+      let displayFunctionFieldTarget = _.cloneDeep(displayFunctionField);
+      let displayFunc = eval(`(${displayFunctionField.display})`);
       displayFunctionFieldTarget.display = displayFunc;
       displayFunctionFieldTarget.create.display = displayFunc;
       displayFunctionFieldTarget.search.display = displayFunc;
@@ -170,7 +170,7 @@ describe('settings reducer', () => {
             data: {
               settings: {
                 dict: { title: 'test', memberships: 'test1, test2' },
-                userFields: [basicField, displayFunctionField],
+                userFields: [ basicField, displayFunctionField ],
                 css: 'style.css'
               }
             }
@@ -183,7 +183,7 @@ describe('settings reducer', () => {
           record: fromJS({
             settings: {
               dict: { title: 'test', memberships: 'test1, test2' },
-              userFields: [basicField, displayFunctionFieldTarget],
+              userFields: [ basicField, displayFunctionFieldTarget ],
               css: 'style.css'
             }
           })
@@ -192,7 +192,7 @@ describe('settings reducer', () => {
     });
 
     it('userFields specific display', () => {
-      var complexDisplayFunctionField = {
+      let complexDisplayFunctionField = {
         label: 'Username',
         property: 'username',
         display: true,
@@ -212,8 +212,8 @@ describe('settings reducer', () => {
         }
       };
 
-      var complexDisplayFunctionFieldTarget = _.cloneDeep(complexDisplayFunctionField);
-      var displayFunc2 = eval(`(${complexDisplayFunctionField.create.display})`);
+      let complexDisplayFunctionFieldTarget = _.cloneDeep(complexDisplayFunctionField);
+      let displayFunc2 = eval(`(${complexDisplayFunctionField.create.display})`);
       complexDisplayFunctionFieldTarget.create.display = displayFunc2;
       complexDisplayFunctionFieldTarget.search.display = true;
       complexDisplayFunctionFieldTarget.edit.display = true;
@@ -225,7 +225,7 @@ describe('settings reducer', () => {
             data: {
               settings: {
                 dict: { title: 'test', memberships: 'test1, test2' },
-                userFields: [complexDisplayFunctionField, basicField],
+                userFields: [ complexDisplayFunctionField, basicField ],
                 css: 'style.css'
               }
             }
@@ -238,7 +238,7 @@ describe('settings reducer', () => {
           record: fromJS({
             settings: {
               dict: { title: 'test', memberships: 'test1, test2' },
-              userFields: [complexDisplayFunctionFieldTarget, basicField],
+              userFields: [ complexDisplayFunctionFieldTarget, basicField ],
               css: 'style.css'
             }
           })
@@ -247,7 +247,7 @@ describe('settings reducer', () => {
     });
 
     it('userFields options', () => {
-      var optionsField = {
+      let optionsField = {
         label: 'SomeOptionField',
         property: 'someOption',
         display: true,
@@ -263,8 +263,8 @@ describe('settings reducer', () => {
         }
       };
 
-      var optionsFieldTarget = _.cloneDeep(optionsField);
-      var optionTarget = [
+      let optionsFieldTarget = _.cloneDeep(optionsField);
+      let optionTarget = [
         { label: 'someValue', value: 'someValue' }, {
           label: 'someLabel',
           value: 'someOtherValue'
@@ -282,7 +282,7 @@ describe('settings reducer', () => {
             data: {
               settings: {
                 dict: { title: 'test', memberships: 'test1, test2' },
-                userFields: [optionsField, basicField2],
+                userFields: [ optionsField, basicField2 ],
                 css: 'style.css'
               }
             }
@@ -295,7 +295,7 @@ describe('settings reducer', () => {
           record: fromJS({
             settings: {
               dict: { title: 'test', memberships: 'test1, test2' },
-              userFields: [optionsFieldTarget, basicField2],
+              userFields: [ optionsFieldTarget, basicField2 ],
               css: 'style.css'
             }
           })
@@ -304,19 +304,19 @@ describe('settings reducer', () => {
     });
 
     it('userFields bad display function', () => {
-      var field = {
+      let field = {
         label: 'SomeField',
         property: 'someField',
-        display: 'function some bad function',
+        display: 'function some bad function'
       };
 
-      var field2 = {
+      let field2 = {
         label: 'SomeOtherField',
-        property: 'someOtherField',
+        property: 'someOtherField'
       };
 
 
-      var fieldTarget = _.cloneDeep(field);
+      let fieldTarget = _.cloneDeep(field);
       fieldTarget.display = eval('(function() { return "error"; })');
 
       const state = settings(initialState, {
@@ -325,7 +325,7 @@ describe('settings reducer', () => {
           data: {
             settings: {
               dict: { title: 'test', memberships: 'test1, test2' },
-              userFields: [field, field2],
+              userFields: [ field, field2 ],
               css: 'style.css'
             }
           }
@@ -338,7 +338,7 @@ describe('settings reducer', () => {
         record: fromJS({
           settings: {
             dict: { title: 'test', memberships: 'test1, test2' },
-            userFields: [fieldTarget, field2],
+            userFields: [ fieldTarget, field2 ],
             css: 'style.css'
           }
         })
@@ -358,13 +358,13 @@ describe('settings reducer', () => {
     });
 
     it('userFields bad option', () => {
-      var optionsField = {
+      let optionsField = {
         label: 'SomeOptionField',
         property: 'someOption',
         display: true,
         create: {
           options: [
-            false, function() {}, 'value'
+            false, function () {}, 'value'
           ]
         },
         edit: {
@@ -373,8 +373,8 @@ describe('settings reducer', () => {
         }
       };
 
-      var optionsFieldTarget = _.cloneDeep(optionsField);
-      var optionTarget = [
+      let optionsFieldTarget = _.cloneDeep(optionsField);
+      let optionTarget = [
         { label: 'Error', value: '' },  { label: 'Error', value: '' }, { label: 'value', value: 'value' }
       ];
       optionsFieldTarget.create.options = optionTarget;
@@ -387,7 +387,7 @@ describe('settings reducer', () => {
             data: {
               settings: {
                 dict: { title: 'test', memberships: 'test1, test2' },
-                userFields: [optionsField, basicField2],
+                userFields: [ optionsField, basicField2 ],
                 css: 'style.css'
               }
             }
@@ -400,7 +400,7 @@ describe('settings reducer', () => {
           record: fromJS({
             settings: {
               dict: { title: 'test', memberships: 'test1, test2' },
-              userFields: [optionsFieldTarget, basicField2],
+              userFields: [ optionsFieldTarget, basicField2 ],
               css: 'style.css'
             }
           })
@@ -410,7 +410,7 @@ describe('settings reducer', () => {
     });
 
     it('userFields good validate function', () => {
-      var field = {
+      let field = {
         label: 'SomeField',
         property: 'someField',
         edit: {
@@ -421,7 +421,7 @@ describe('settings reducer', () => {
         }
       };
 
-      var fieldTarget = _.cloneDeep(field);
+      let fieldTarget = _.cloneDeep(field);
       fieldTarget.edit.validationFunction = eval(`(${field.edit.validationFunction})`);
       fieldTarget.create.validationFunction = eval(`(${field.create.validationFunction})`);
 
@@ -431,7 +431,7 @@ describe('settings reducer', () => {
           data: {
             settings: {
               dict: { title: 'test', memberships: 'test1, test2' },
-              userFields: [field],
+              userFields: [ field ],
               css: 'style.css'
             }
           }
@@ -444,7 +444,7 @@ describe('settings reducer', () => {
         record: fromJS({
           settings: {
             dict: { title: 'test', memberships: 'test1, test2' },
-            userFields: [fieldTarget],
+            userFields: [ fieldTarget ],
             css: 'style.css'
           }
         })
@@ -470,13 +470,13 @@ describe('settings reducer', () => {
     });
 
     it('errorTranslator function', () => {
-      var errorTranslator = (
+      let errorTranslator = (
         function (err) {
           return err.message || err;
         }
       ).toString();
 
-      var targetTranslator = eval(`(${errorTranslator})`);
+      let targetTranslator = eval(`(${errorTranslator})`);
 
       const state = settings(initialState, {
         type: constants.FETCH_SETTINGS_FULFILLED,

@@ -65,7 +65,7 @@ export default connectContainer(class extends Component {
     const message = getDialogMessage(messageFormat, 'username',
       getName(user, userFields, languageDictionary));
 
-    const allowedFields = ['username', 'connection'];
+    const allowedFields = [ 'username', 'connection' ];
     const initialValues = mapValues(user, allowedFields, userFields, 'edit', languageDictionary);
     const fields = _.cloneDeep(userFields) || [];
     useUsernameField(true, fields, connections.get('records').toJS(), connection, initialValues);

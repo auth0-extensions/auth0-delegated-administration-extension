@@ -30,7 +30,7 @@ export default function configureStore(middlewares, initialState = { }) {
   // Enable Webpack hot module replacement for reducers.
   if (process.env.NODE_ENV !== 'production' && module.hot) {
     module.hot.accept('../reducers', () => {
-      const nextRootReducer = require('../reducers'); // eslint-disable-line global-require
+      const nextRootReducer = require('../reducers');  
 
       store.replaceReducer(nextRootReducer);
     });

@@ -17,9 +17,9 @@ export default class TabsHeader extends Component {
     return (
       <div className="widget-title title-with-nav-bars">
         <ul className="nav nav-tabs">
-          <TabPane title={languageDictionary.userUsersTabTitle || "Users"} route="users" />
+          <TabPane title={languageDictionary.userUsersTabTitle || 'Users'} route="users" />
           {hasLogsAccess ?
-            <TabPane title={languageDictionary.userLogsTabTitle || "Logs"} route="logs" /> : null}
+            <TabPane title={languageDictionary.userLogsTabTitle || 'Logs'} route="logs" /> : null}
         </ul>
       </div>
     );

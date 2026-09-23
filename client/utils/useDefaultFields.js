@@ -136,8 +136,8 @@ export const useDisabledConnectionField = (isEditField, fields, connection, conn
   const field = _.find(fields, { property: 'connection' });
   // If connection is an editable field, we need to display it on other pages, but only as disabled
   if (field && (
-      (_.isObject(field[type]) && field[type].disabled !== true) || _.isBoolean(field[type])
-    )) field[type] = defaults[type];
+    (_.isObject(field[type]) && field[type].disabled !== true) || _.isBoolean(field[type])
+  )) field[type] = defaults[type];
 };
 
 export const usePasswordFields = (isEditField, fields) => {
@@ -193,7 +193,7 @@ export const useClientField = (isEditField, fields, clients) => {
       type: 'select',
       component: 'InputCombo',
       required: false,
-      options: clients.map(option => ({ value: option.client_id, label: option.name}))
+      options: clients.map(option => ({ value: option.client_id, label: option.name }))
     }
   };
 
@@ -217,6 +217,6 @@ export const useDisabledEmailField = (isEditField, fields) => {
   const field = _.find(fields, { property: 'email' });
   // If connection is an editable field, we need to display it on other pages, but only as disabled
   if (field && (
-      (_.isObject(field[type]) && field[type].disabled !== true) || _.isBoolean(field[type])
-    )) field[type] = defaults[type];
+    (_.isObject(field[type]) && field[type].disabled !== true) || _.isBoolean(field[type])
+  )) field[type] = defaults[type];
 };

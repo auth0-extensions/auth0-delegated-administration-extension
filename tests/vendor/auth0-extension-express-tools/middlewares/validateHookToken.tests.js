@@ -4,7 +4,7 @@ import tools from '../../../../vendor/auth0-extension-tools';
 import { validateHookToken } from '../../../../vendor/auth0-extension-express-tools/middlewares';
 
 describe('vendor/auth0-extension-express-tools/validateHookToken', () => {
-  it('should validate the domain', function() {
+  it('should validate the domain', function () {
     expect(() => {
       validateHookToken();
     }).to.throw();
@@ -14,7 +14,7 @@ describe('vendor/auth0-extension-express-tools/validateHookToken', () => {
     }).to.throw();
   });
 
-  it('should validate the webtaskUrl', function() {
+  it('should validate the webtaskUrl', function () {
     expect(() => {
       validateHookToken('me.auth0.com');
     }).to.throw();
@@ -24,7 +24,7 @@ describe('vendor/auth0-extension-express-tools/validateHookToken', () => {
     }).to.throw();
   });
 
-  it('should validate the extensionSecret', function() {
+  it('should validate the extensionSecret', function () {
     expect(() => {
       validateHookToken('me.auth0.com', 'http://foo.com');
     }).to.throw();
@@ -34,7 +34,7 @@ describe('vendor/auth0-extension-express-tools/validateHookToken', () => {
     }).to.throw();
   });
 
-  it('should validate the hookPath', function() {
+  it('should validate the hookPath', function () {
     expect(() => {
       const mw1 = validateHookToken('me.auth0.com', 'http://foo.com', 'abc');
       mw1();
@@ -46,20 +46,20 @@ describe('vendor/auth0-extension-express-tools/validateHookToken', () => {
     }).to.throw();
   });
 
-  it('should throw error is authorization header is missing', function(done) {
+  it('should throw error is authorization header is missing', function (done) {
     const validator = validateHookToken('me.auth0.com', 'http://foo.com', 'abc');
     const req = {
       headers: {}
     };
 
-    validator('/extension')(req, {}, function(err) {
+    validator('/extension')(req, {}, function (err) {
       expect(err).to.be.ok;
       expect(err).to.be.an.instanceof(tools.HookTokenError);
       done();
     });
   });
 
-  it('should throw error is token is missing', function(done) {
+  it('should throw error is token is missing', function (done) {
     const validator = validateHookToken('me.auth0.com', 'http://foo.com', 'abc');
     const req = {
       headers: {
@@ -67,14 +67,14 @@ describe('vendor/auth0-extension-express-tools/validateHookToken', () => {
       }
     };
 
-    validator('/extension')(req, {}, function(err) {
+    validator('/extension')(req, {}, function (err) {
       expect(err).to.be.ok;
       expect(err).to.be.an.instanceof(tools.HookTokenError);
       done();
     });
   });
 
-  it('validate the token', function(done) {
+  it('validate the token', function (done) {
     const validator = validateHookToken('me.auth0.com', 'https://webtask.io/run/abc', 'mysecret');
     const req = {
       headers: {
@@ -82,7 +82,7 @@ describe('vendor/auth0-extension-express-tools/validateHookToken', () => {
       }
     };
 
-    validator('/extension/uninstall')(req, {}, function(err) {
+    validator('/extension/uninstall')(req, {}, function (err) {
       expect(err).to.not.be.ok;
       done();
     });

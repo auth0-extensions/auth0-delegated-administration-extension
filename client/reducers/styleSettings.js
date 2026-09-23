@@ -7,7 +7,7 @@ const initialState = {
   path: ''
 };
 
-export const styleSettings = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
+export const styleSettings = createReducer(fromJS(initialState), {  
   [constants.TOGGLE_STYLE_SETTINGS]: (state, action) =>
     state.merge({
       useAlt: action.payload.useAlt,

@@ -20,7 +20,7 @@ export default connectContainer(class extends Component {
 
   static actionsToProps = {
     ...scriptActions
-  }
+  };
 
   static propTypes = {
     scripts: PropTypes.object.isRequired,
@@ -28,11 +28,11 @@ export default connectContainer(class extends Component {
     fetchScript: PropTypes.func.isRequired,
     updateScript: PropTypes.func.isRequired,
     languageDictionary: PropTypes.object
-  }
+  };
 
   static defaultProps = {
     languageDictionary: {}
-  }
+  };
 
   constructor(props) {
     super(props);

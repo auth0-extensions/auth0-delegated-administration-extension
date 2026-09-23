@@ -15,12 +15,12 @@ export const requestAuthenticationMethods = (token, userId) =>
       .end((err, res) => {
         if (err) {
           logger.info(
-            `[requestAuthenticationMethods] error response ` +
+            '[requestAuthenticationMethods] error response ' +
               JSON.stringify({
                 status: err.status,
                 message: err.message,
-                response: res && res.body,
-              }),
+                response: res && res.body
+              })
           );
           return reject(err);
         }
@@ -40,12 +40,12 @@ export const removeAllAuthenticationMethods = (token, userId) =>
       .end((err, res) => {
         if (err) {
           logger.info(
-            "[removeAllAuthenticationMethods] error response " +
+            '[removeAllAuthenticationMethods] error response ' +
               JSON.stringify({
                 status: err.status,
                 message: err.message,
-                response: res && res.body,
-              }),
+                response: res && res.body
+              })
           );
           return reject(err);
         }
@@ -64,12 +64,12 @@ const removeAuthenticationMethodById = (token, userId, methodId) =>
       .end((err, res) => {
         if (err) {
           logger.info(
-            "[removeAuthenticationMethodById] error response " +
+            '[removeAuthenticationMethodById] error response ' +
               JSON.stringify({
                 status: err.status,
                 message: err.message,
-                response: res && res.body,
-              }),
+                response: res && res.body
+              })
           );
           return reject(err);
         }

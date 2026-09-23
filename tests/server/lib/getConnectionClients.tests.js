@@ -19,12 +19,12 @@ describe('#getConnectionClients', () => {
     nock(domain)
       .get(`/api/v2/connections/${connectionId}/clients`)
       .reply(200, {
-        clients: [{ client_id: 'client1' }, { client_id: 'client2' }]
+        clients: [ { client_id: 'client1' }, { client_id: 'client2' } ]
       });
 
     getConnectionClients(token, connectionId)
       .then((result) => {
-        expect(result).to.deep.equal({ enabled_clients: ['client1', 'client2'] });
+        expect(result).to.deep.equal({ enabled_clients: [ 'client1', 'client2' ] });
         done();
       })
       .catch(done);
@@ -60,7 +60,7 @@ describe('#getConnectionClients', () => {
     nock(domain)
       .get(`/api/v2/connections/${connectionId}/clients`)
       .reply(200, {
-        clients: [{ client_id: 'client1' }, { client_id: 'client2' }],
+        clients: [ { client_id: 'client1' }, { client_id: 'client2' } ],
         next: 'cursor1'
       });
 
@@ -68,7 +68,7 @@ describe('#getConnectionClients', () => {
       .get(`/api/v2/connections/${connectionId}/clients`)
       .query({ from: 'cursor1' })
       .reply(200, {
-        clients: [{ client_id: 'client3' }],
+        clients: [ { client_id: 'client3' } ],
         next: 'cursor2'
       });
 
@@ -76,13 +76,13 @@ describe('#getConnectionClients', () => {
       .get(`/api/v2/connections/${connectionId}/clients`)
       .query({ from: 'cursor2' })
       .reply(200, {
-        clients: [{ client_id: 'client4' }]
+        clients: [ { client_id: 'client4' } ]
       });
 
     getConnectionClients(token, connectionId)
       .then((result) => {
         expect(result).to.deep.equal({
-          enabled_clients: ['client1', 'client2', 'client3', 'client4']
+          enabled_clients: [ 'client1', 'client2', 'client3', 'client4' ]
         });
         done();
       })
@@ -106,7 +106,7 @@ describe('#getConnectionClients', () => {
     nock(domain)
       .get(`/api/v2/connections/${connectionId}/clients`)
       .reply(200, {
-        clients: [{ client_id: 'client1' }],
+        clients: [ { client_id: 'client1' } ],
         next: 'cursor1'
       });
 

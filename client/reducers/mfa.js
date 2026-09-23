@@ -11,7 +11,7 @@ const initialState = {
   provider: null
 };
 
-export const mfa = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
+export const mfa = createReducer(fromJS(initialState), {  
   [constants.REQUEST_REMOVE_MULTIFACTOR]: (state, action) => {
     return state.merge({
       ...initialState,

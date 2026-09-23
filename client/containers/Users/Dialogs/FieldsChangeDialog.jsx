@@ -46,7 +46,7 @@ export default connectContainer(class extends Component {
       .value();
 
     this.props.changeFields(this.props.userId, _.pick(user, submitFields), this.props.languageDictionary.get('record').toJS());
-  }
+  };
 
   render() {
     const { error, loading, record } = this.props.fieldsChange.toJS();

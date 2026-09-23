@@ -75,12 +75,12 @@ describe('#Client-Components-Logs-LogsTable', () => {
     /* Test the rows */
     checkRow(queries, 0, {
       icon: { color: 'green', name: 'success' },
-      text: ['sapi', 'bill', 'a day ago', 'connA', 'client'],
+      text: [ 'sapi', 'bill', 'a day ago', 'connA', 'client' ],
       control: (suppressRawData) ? 'null' : 'function'
     });
     checkRow(queries, 1, {
       icon: { color: 'red', name: 'failure' },
-      text: ['fapi', 'some description', 'a day ago', 'N/A', 'N/A'],
+      text: [ 'fapi', 'some description', 'a day ago', 'N/A', 'N/A' ],
       control: (suppressRawData) ? 'null' : 'function'
     });
   };
@@ -122,12 +122,12 @@ describe('#Client-Components-Logs-LogsTable', () => {
     /* Test the rows */
     checkRow(queries, 0, {
       icon: { color: 'green', name: 'success' },
-      text: ['Sapi Event', 'Sapi Description', 'a day ago', 'connA', 'client'],
+      text: [ 'Sapi Event', 'Sapi Description', 'a day ago', 'connA', 'client' ],
       control: 'function'
     });
     checkRow(queries, 1, {
       icon: { color: 'red', name: 'failure' },
-      text: ['Fapi Event', 'Fapi Description', 'a day ago', 'N/A', 'N/A'],
+      text: [ 'Fapi Event', 'Fapi Description', 'a day ago', 'N/A', 'N/A' ],
       control: 'function'
     });
   });
@@ -171,12 +171,12 @@ describe('#Client-Components-Logs-LogsTable', () => {
     /* Test the rows */
     checkRow(queries, 0, {
       icon: { color: 'green', name: 'success' },
-      text: ['Sapi Event', 'bill', 'il y a un jour', 'connA', 'client'],
+      text: [ 'Sapi Event', 'bill', 'il y a un jour', 'connA', 'client' ],
       control: 'function'
     });
     checkRow(queries, 1, {
       icon: { color: 'red', name: 'failure' },
-      text: ['Fapi Event', 'Fapi Description', 'il y a un jour', 'Not Applicable', 'Not Applicable'],
+      text: [ 'Fapi Event', 'Fapi Description', 'il y a un jour', 'Not Applicable', 'Not Applicable' ],
       control: 'function'
     });
   });
