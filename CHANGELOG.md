@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replaced babel-eslint with @babel/eslint-parser
 - Omitted `verify_password` flag to rely on default safe behavior
 - Updated package versions for ejs and form-data to fix vulnerabilities
+- Updated package version for axios to fix vulnerabilities
 
 ## [5.0.3] - 2026-09-14
 
