@@ -1,7 +1,7 @@
 import expect from 'expect';
 import { block } from '../../../client/reducers/block';
 import * as constants from '../../../client/constants';
-import {fromJS} from "immutable";
+import { fromJS } from 'immutable';
 
 const initialState = {
   error: null,

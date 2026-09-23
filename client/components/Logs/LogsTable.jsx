@@ -15,7 +15,7 @@ export default class LogsTable extends Component {
     settings: PropTypes.object.isRequired,
     isUserLogs: PropTypes.bool,
     languageDictionary: PropTypes.object
-  }
+  };
 
   shouldComponentUpdate(nextProps) {
     return nextProps.logs !== this.props.logs || nextProps.loading !== this.props.loading;

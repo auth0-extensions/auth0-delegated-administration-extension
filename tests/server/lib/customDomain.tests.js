@@ -330,7 +330,7 @@ describe('#customDomain', () => {
         auth0: mockAuth0Client
       };
 
-      const operation = (client, payload) => {
+      const operation = (client) => {
         usedClient = client;
         return Promise.resolve({ success: true });
       };

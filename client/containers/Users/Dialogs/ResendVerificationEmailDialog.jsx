@@ -18,13 +18,13 @@ export default connectContainer(class extends Component {
 
   static actionsToProps = {
     ...userActions
-  }
+  };
 
   static propTypes = {
     cancelResendVerificationEmail: PropTypes.func.isRequired,
     resendVerificationEmail: PropTypes.func.isRequired,
     verificationEmail: PropTypes.object.isRequired
-  }
+  };
 
   shouldComponentUpdate(nextProps) {
     return nextProps.verificationEmail !== this.props.verificationEmail ||
@@ -33,7 +33,7 @@ export default connectContainer(class extends Component {
 
   onConfirm = () => {
     this.props.resendVerificationEmail(this.props.verificationEmail.toJS().user.user_id);
-  }
+  };
 
   render() {
     const { cancelResendVerificationEmail, settings } = this.props;
@@ -50,7 +50,7 @@ export default connectContainer(class extends Component {
 
     return (
       <Confirm
-        title={languageDictionary.resendVerificationEmailTitle || "Resend Verification Email?" }
+        title={languageDictionary.resendVerificationEmailTitle || 'Resend Verification Email?' }
         show={requesting}
         loading={loading}
         confirmMessage={languageDictionary.dialogConfirmText}

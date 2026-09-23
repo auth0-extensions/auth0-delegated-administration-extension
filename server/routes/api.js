@@ -4,9 +4,9 @@ import moment from 'moment';
 import { middlewares } from '../../vendor/auth0-extension-express-tools';
 import tools from '../../vendor/auth0-extension-tools';
 
-import {requireScope} from '../lib/middlewares';
+import { requireScope } from '../lib/middlewares';
 import config from '../lib/config';
-import { getClientOptions } from '../lib/managementAPIClient'
+import { getClientOptions } from '../lib/managementAPIClient';
 
 import ScriptManager from '../lib/scriptmanager';
 import getScopes from '../lib/getScopes';
@@ -40,7 +40,7 @@ export default (storage) => {
 
   const addExtraUserInfo = (token, user) => {
     global.daeUser = global.daeUser || {};
-    global.daeUser[user.sub] = global.daeUser[user.sub] || {exp: 0, token: ''};
+    global.daeUser[user.sub] = global.daeUser[user.sub] || { exp: 0, token: '' };
 
     if (_.isFunction(global.daeUser[user.sub].then)) {
       return global.daeUser[user.sub];
@@ -59,15 +59,15 @@ export default (storage) => {
       clientId: config('AUTH0_CLIENT_ID'),
       clientSecret: config('AUTH0_CLIENT_SECRET')
     })
-    .then(auth0 =>
-      auth0.users.get({id: user.sub})
-      .then((userData) => {
-        _.assign(user, userData);
-        user.token = token;
-        global.daeUser[user.sub] = user;
-        return user;
-      })
-    );
+      .then(auth0 =>
+        auth0.users.get({ id: user.sub })
+          .then((userData) => {
+            _.assign(user, userData);
+            user.token = token;
+            global.daeUser[user.sub] = user;
+            return user;
+          })
+      );
     global.daeUser[user.sub] = promise;
     return global.daeUser[user.sub];
   };
@@ -80,12 +80,12 @@ export default (storage) => {
     onLoginSuccess: (req, res, next) => {
       const currentRequest = req;
       return addExtraUserInfo(getToken(req), req.user)
-      .then((user) => {
-        currentRequest.user = user;
-        currentRequest.user.scope = getScopes(req.user);
-        return next();
-      })
-      .catch(next);
+        .then((user) => {
+          currentRequest.user = user;
+          currentRequest.user.scope = getScopes(req.user);
+          return next();
+        })
+        .catch(next);
     }
   }));
   // Allow dashboard admins to authenticate.
@@ -97,12 +97,12 @@ export default (storage) => {
     onLoginSuccess: (req, res, next) => {
       const currentRequest = req;
       return addExtraUserInfo(getToken(req), req.user)
-      .then((user) => {
-        currentRequest.user = user;
-        currentRequest.user.scope = [constants.AUDITOR_PERMISSION, constants.USER_PERMISSION, constants.OPERATOR_PERMISSION, constants.ADMIN_PERMISSION];
-        return next();
-      })
-      .catch(next);
+        .then((user) => {
+          currentRequest.user = user;
+          currentRequest.user.scope = [ constants.AUDITOR_PERMISSION, constants.USER_PERMISSION, constants.OPERATOR_PERMISSION, constants.ADMIN_PERMISSION ];
+          return next();
+        })
+        .catch(next);
     }
   }));
 
@@ -132,8 +132,8 @@ export default (storage) => {
       locale: req.headers['dae-locale']
     };
     scriptManager.execute('settings', settingsContext)
-    .then(settings => res.json({settings: settings || {}}))
-    .catch(next);
+      .then(settings => res.json({ settings: settings || {} }))
+      .catch(next);
   });
   return api;
 };

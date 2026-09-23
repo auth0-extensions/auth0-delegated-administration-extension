@@ -9,7 +9,7 @@ const initialState = {
   user: null
 };
 
-export const removeBlockedIPs = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
+export const removeBlockedIPs = createReducer(fromJS(initialState), {  
   [constants.REQUEST_REMOVE_BLOCKED_IPS]: (state, action) =>
     state.merge({
       user: fromJS(action.user),

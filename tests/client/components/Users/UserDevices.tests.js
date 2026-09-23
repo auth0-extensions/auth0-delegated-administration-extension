@@ -26,7 +26,7 @@ describe('#Client-Components-UserDevices', () => {
 
   it('should render', () => {
     const queries = renderComponent(
-      { username: 'bill', multifactor: ['guardian'] },
+      { username: 'bill', multifactor: [ 'guardian' ] },
       { phone: 5, desktop: 2 }
     );
 
@@ -51,7 +51,7 @@ describe('#Client-Components-UserDevices', () => {
 
   it('should render no devices', () => {
     const queries = renderComponent(
-      { username: 'bill', multifactor: ['guardian'] },
+      { username: 'bill', multifactor: [ 'guardian' ] },
       {}
     );
 
@@ -61,7 +61,7 @@ describe('#Client-Components-UserDevices', () => {
 
   it('should render partial languageDictionary', () => {
     const queries = renderComponent(
-      { username: 'bill', multifactor: ['guardian'] },
+      { username: 'bill', multifactor: [ 'guardian' ] },
       { phone: 5, desktop: 2 },
       { someKey: 'someField' }
     );
@@ -87,7 +87,7 @@ describe('#Client-Components-UserDevices', () => {
 
   it('should render no devices partial languageDictionary', () => {
     const queries = renderComponent(
-      { username: 'bill', multifactor: ['guardian'] },
+      { username: 'bill', multifactor: [ 'guardian' ] },
       {},
       { someKey: 'someField' }
     );
@@ -98,7 +98,7 @@ describe('#Client-Components-UserDevices', () => {
 
   it('should render real languageDictionary', () => {
     const queries = renderComponent(
-      { username: 'bill', multifactor: ['guardian'] },
+      { username: 'bill', multifactor: [ 'guardian' ] },
       { phone: 5, desktop: 2 },
       {
         deviceNameColumnHeader: 'DeviceColumnHeader',
@@ -117,7 +117,7 @@ describe('#Client-Components-UserDevices', () => {
 
   it('should render no devices real languageDictionary', () => {
     const queries = renderComponent(
-      { username: 'bill', multifactor: ['guardian'] },
+      { username: 'bill', multifactor: [ 'guardian' ] },
       {},
       {
         deviceNameColumnHeader: 'DeviceColumnHeader',
@@ -129,7 +129,6 @@ describe('#Client-Components-UserDevices', () => {
     expect(queries.queryAllByRole('columnheader')).to.have.length(0);
     expect(queries.getByText('Some No Device Message')).to.exist;
   });
-
 
 
 });

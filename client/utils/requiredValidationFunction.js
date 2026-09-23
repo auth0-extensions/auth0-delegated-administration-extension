@@ -14,4 +14,4 @@ class ValidationFunctionInstance {
 export default (languageDictionary) => {
   const instance = new ValidationFunctionInstance(languageDictionary);
   return instance.requiredValidationFunction.bind(instance);
-}
+};

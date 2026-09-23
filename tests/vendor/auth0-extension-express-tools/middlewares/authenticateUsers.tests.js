@@ -5,37 +5,37 @@ const tokens = require('../mocks/tokens');
 import { authenticateUsers } from '../../../../vendor/auth0-extension-express-tools/middlewares';
 
 describe('vendor/auth0-extension-express-tools/authenticateUsers', () => {
-  it('should throw error if options is null', function() {
+  it('should throw error if options is null', function () {
     expect(() => {
       authenticateUsers();
     }).to.throw();
   });
 
-  it('should throw error if domain is null', function() {
+  it('should throw error if domain is null', function () {
     expect(() => {
       authenticateUsers({});
     }).to.throw();
   });
 
-  it('should throw error if domain is empty', function() {
+  it('should throw error if domain is empty', function () {
     expect(() => {
       authenticateUsers({ domain: '' });
     }).to.throw();
   });
 
-  it('should throw error if audience is null', function() {
+  it('should throw error if audience is null', function () {
     expect(() => {
       authenticateUsers({ domain: 'me.auth0.com' });
     }).to.throw();
   });
 
-  it('should throw error if audience is empty', function() {
+  it('should throw error if audience is empty', function () {
     expect(() => {
       authenticateUsers({ domain: 'me.auth0.com', audience: '' });
     }).to.throw();
   });
 
-  it('should return error if token is invalid', function(done) {
+  it('should return error if token is invalid', function (done) {
     const mw = authenticateUsers({
       domain: 'me.auth0.com',
       audience: 'urn:myapp'
@@ -47,7 +47,7 @@ describe('vendor/auth0-extension-express-tools/authenticateUsers', () => {
     });
   });
 
-  it('should return error if credentials are required', function(done) {
+  it('should return error if credentials are required', function (done) {
     const mw = authenticateUsers({
       domain: 'me.auth0.com',
       audience: 'urn:myapp',
@@ -60,7 +60,7 @@ describe('vendor/auth0-extension-express-tools/authenticateUsers', () => {
     });
   });
 
-  it('should return the user if token is valid', function(done) {
+  it('should return the user if token is valid', function (done) {
     const mw = authenticateUsers({
       domain: 'me.auth0.com',
       audience: 'urn:myapp'
@@ -82,7 +82,7 @@ describe('vendor/auth0-extension-express-tools/authenticateUsers', () => {
     });
   });
 
-  it('should support the onLoginSuccess hook', function(done) {
+  it('should support the onLoginSuccess hook', function (done) {
     const mw = authenticateUsers({
       domain: 'me.auth0.com',
       audience: 'urn:myapp',
@@ -106,7 +106,7 @@ describe('vendor/auth0-extension-express-tools/authenticateUsers', () => {
     });
   });
 
-  it('optional should not run if token is missing', function(done) {
+  it('optional should not run if token is missing', function (done) {
     const mw = authenticateUsers.optional({
       domain: 'me.auth0.com',
       audience: 'urn:myapp'
@@ -118,7 +118,7 @@ describe('vendor/auth0-extension-express-tools/authenticateUsers', () => {
     });
   });
 
-  it('optional should return error if token matches issuer but audience is invalid', function(done) {
+  it('optional should return error if token matches issuer but audience is invalid', function (done) {
     const mw = authenticateUsers.optional({
       domain: 'me.auth0.com',
       audience: 'urn:myapp'
@@ -138,7 +138,7 @@ describe('vendor/auth0-extension-express-tools/authenticateUsers', () => {
     });
   });
 
-  it('optional should not run if token is invalid', function(done) {
+  it('optional should not run if token is invalid', function (done) {
     const mw = authenticateUsers.optional({
       domain: 'me.auth0.com',
       audience: 'urn:myapp'
@@ -150,7 +150,7 @@ describe('vendor/auth0-extension-express-tools/authenticateUsers', () => {
     });
   });
 
-  it('optional should return the user if token is valid', function(done) {
+  it('optional should return the user if token is valid', function (done) {
     const mw = authenticateUsers.optional({
       domain: 'me.auth0.com',
       audience: 'urn:myapp'

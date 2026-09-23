@@ -1,7 +1,7 @@
 import expect from 'expect';
 import { accessLevel } from '../../../client/reducers/accessLevel';
 import * as constants from '../../../client/constants';
-import { fromJS } from "immutable";
+import { fromJS } from 'immutable';
 
 const initialState = {
   loading: false,

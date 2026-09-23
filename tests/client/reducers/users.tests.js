@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import { users } from '../../../client/reducers/users';
 import * as constants from '../../../client/constants';
-import {fromJS} from "immutable";
+import { fromJS } from 'immutable';
 
 const initialState = {
   loading: false,

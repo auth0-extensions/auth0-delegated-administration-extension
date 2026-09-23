@@ -1,7 +1,7 @@
 import axios from 'axios';
 import * as constants from '../constants';
 
-export function fetchConnections() { // eslint-disable-line import/prefer-default-export
+export function fetchConnections() {  
   return {
     type: constants.FETCH_CONNECTIONS,
     payload: {

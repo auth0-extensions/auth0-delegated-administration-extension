@@ -5,7 +5,7 @@ import './UserInfoField.styles.css';
 export default class UserInfoField extends Component {
   static propTypes = {
     title: PropTypes.string.isRequired
-  }
+  };
 
   shouldComponentUpdate(nextProps) {
     return nextProps.title !== this.props.title || nextProps.children !== this.props.children;

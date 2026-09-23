@@ -116,8 +116,8 @@ const resolveUserIdentifier = async (auth0Client, user, connectionName) => {
 
     // find active identifier that is present on the user profile
     const activeIdentifier = Object.entries(connection.options.attributes)
-      .filter(([key, attribute]) => attribute.identifier?.active === true)
-      .map(([key]) => key)
+      .filter(([ , attribute ]) => attribute.identifier?.active === true)
+      .map(([ key ]) => key)
       .find(identifierType => user[identifierType] != null);
 
     if (activeIdentifier && user[activeIdentifier]) {
@@ -342,7 +342,7 @@ export default (storage, scriptManager) => {
             return requestAuthenticationMethods(accessToken, req.params.id)
               .then((methods) => {
                 data.user.multifactor = Array.isArray(methods) && methods.length > 0
-                  ? [...new Set(methods.map(m => m.type).filter(Boolean))]
+                  ? [ ...new Set(methods.map(m => m.type).filter(Boolean)) ]
                   : null;
 
                 return res.json(data);
@@ -398,38 +398,38 @@ export default (storage, scriptManager) => {
    * Trigger a password reset for the user.
    */
   api.post('/:id/password-reset', verifyUserAccess('reset:password', scriptManager), async (req, res, next) => {
-      const user = req.targetUser;
-      const connectionName = req.body.connection;
+    const user = req.targetUser;
+    const connectionName = req.body.connection;
 
-      // Execute custom domain hook to get headers but not create an auth0 management client
-      const customHeaders = await getCustomDomainHeaders(
-        req,
-        scriptManager,
-        'password-reset',
-        { user_id: req.params.id, connection: connectionName }
-      );
+    // Execute custom domain hook to get headers but not create an auth0 management client
+    const customHeaders = await getCustomDomainHeaders(
+      req,
+      scriptManager,
+      'password-reset',
+      { user_id: req.params.id, connection: connectionName }
+    );
 
-      // Determine which domain to use
-      const domain = customHeaders['auth0-custom-domain'] || config('AUTH0_DOMAIN');
+    // Determine which domain to use
+    const domain = customHeaders['auth0-custom-domain'] || config('AUTH0_DOMAIN');
 
-      const client = new auth0.AuthenticationClient({
-        domain,
-        clientId: config('AUTH0_CLIENT_ID')
-      });
+    const client = new auth0.AuthenticationClient({
+      domain,
+      clientId: config('AUTH0_CLIENT_ID')
+    });
 
-      const identifierValue = await resolveUserIdentifier(req.auth0, user, connectionName);
+    const identifierValue = await resolveUserIdentifier(req.auth0, user, connectionName);
 
-      const data = {
-        // Note, 'email' property can be used for any user identifier value (email, username, phone).
-        email: identifierValue,
-        connection: connectionName,
-        client_id: req.body.clientId
-      };
+    const data = {
+      // Note, 'email' property can be used for any user identifier value (email, username, phone).
+      email: identifierValue,
+      connection: connectionName,
+      client_id: req.body.clientId
+    };
 
-      return client.requestChangePasswordEmail(data)
+    return client.requestChangePasswordEmail(data)
       .then(() => res.sendStatus(204))
       .catch((err) => {
-        next(err)
+        next(err);
       });
   });
 
@@ -460,11 +460,10 @@ export default (storage, scriptManager) => {
 
               // Allow app_metadata in case someone needs to set a field in app_metadata to store a flag associated
               // with the change
-              payload = _.pick(payload, [ 'password', 'connection', 'verify_password', 'app_metadata' ]);
+              payload = _.pick(payload, [ 'password', 'connection', 'app_metadata' ]);
 
               const payloadFinal = _.defaults(payload, {
-                connection: req.body.connection,
-                verify_password: false
+                connection: req.body.connection
               });
 
               return req.auth0.users.update({ id: req.params.id }, payloadFinal)
@@ -475,8 +474,7 @@ export default (storage, scriptManager) => {
 
         return req.auth0.users.update({ id: req.params.id }, {
           password: req.body.password,
-          connection: req.body.connection,
-          verify_password: false
+          connection: req.body.connection
         })
           .then(() => res.sendStatus(204))
           .catch(next);

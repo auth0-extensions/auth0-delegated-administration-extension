@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.0.4] - 2026-09-21
+
+### Fixed
+
+- Restored text filtering/search in `InputMultiCombo` and `InputSelectCombo` dropdowns, which stopped narrowing results after the react-select v5 migration in 5.0.0. (See https://github.com/auth0-extensions/auth0-delegated-administration-extension/issues/442)
+- Replaced babel-eslint with @babel/eslint-parser
+- Omitted `verify_password` flag to rely on default safe behavior
+- Updated package versions for ejs and form-data to fix vulnerabilities
+- Updated package version for axios to fix vulnerabilities
+
+## [5.0.3] - 2026-09-14
+
+- replaced and updated various vulnerable dependencies
+
+## [5.0.2] - 2026-09-10
+
+- replaced and updated various vulnerable dependencies
+
 ## [5.0.1] - 2026-09-03
 
 ### Fixed

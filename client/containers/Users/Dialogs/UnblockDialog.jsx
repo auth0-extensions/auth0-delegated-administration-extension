@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import connectContainer from 'redux-static';
@@ -52,7 +51,7 @@ export default connectContainer(class extends Component {
 
     return (
       <Confirm
-        title={languageDictionary.unblockDialogTitle || "Unblock User?"}
+        title={languageDictionary.unblockDialogTitle || 'Unblock User?'}
         show={requesting}
         loading={loading}
         confirmMessage={languageDictionary.dialogConfirmText}
