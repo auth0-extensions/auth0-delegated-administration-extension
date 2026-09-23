@@ -9,7 +9,7 @@ const initialState = {
   records: fromJS([])
 };
 
-export const connections = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
+export const connections = createReducer(fromJS(initialState), {  
   [constants.FETCH_CONNECTIONS_PENDING]: (state) =>
     state.merge({
       loading: true,

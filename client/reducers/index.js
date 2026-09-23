@@ -26,7 +26,7 @@ import { usernameChange } from './usernameChange';
 import { users } from './users';
 import { verificationEmail } from './verificationEmail';
 
-function lastAction(state = null, action) {
+function lastAction(_state = null, action) {
   return action;
 }
 

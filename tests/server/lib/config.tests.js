@@ -59,7 +59,7 @@ describe('config', () => {
     it('test getValue and setValue', () => {
       config.setProvider(key => defaultConfig[key], null);
 
-      expect(config.setValue('SOME_KEY', 'something else')).to.not.throw; // eslint-disable-line no-unused-expressions
+      expect(config.setValue('SOME_KEY', 'something else')).to.not.throw;  
       expect(config.getValue('SOME_KEY')).to.equal('something else');
     });
 

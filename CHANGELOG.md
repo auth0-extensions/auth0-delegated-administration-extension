@@ -10,6 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Restored text filtering/search in `InputMultiCombo` and `InputSelectCombo` dropdowns, which stopped narrowing results after the react-select v5 migration in 5.0.0. (See https://github.com/auth0-extensions/auth0-delegated-administration-extension/issues/442)
+- Replaced babel-eslint with @babel/eslint-parser
+
+## [5.0.3] - 2026-09-14
+
+- replaced and updated various vulnerable dependencies
+
+## [5.0.2] - 2026-09-10
+
+- replaced and updated various vulnerable dependencies
 
 ## [5.0.1] - 2026-09-03
 

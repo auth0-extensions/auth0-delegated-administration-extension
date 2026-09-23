@@ -83,7 +83,7 @@ export default class ScriptManager {
   dynamicRequire(module) {
     try {
       return __non_webpack_require__(module);
-    } catch(e) {
+    } catch {
       // silently ignore and then try require
     }
 

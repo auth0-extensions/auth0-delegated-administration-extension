@@ -2,11 +2,11 @@ import React  from 'react';
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 import { expect } from 'chai';
-import { describe, it} from 'mocha';
+import { describe, it } from 'mocha';
 import { fromJS } from 'immutable';
 import { MemoryRouter } from 'react-router-dom';
 import MockAdapter from 'axios-mock-adapter';
-import axios from 'axios'
+import axios from 'axios';
 
 import fakeStore from '../../utils/fakeStore';
 
@@ -25,7 +25,7 @@ describe('#Client-Containers-App', () => {
   });
 
   after(() => {
-      stub.restore();
+    stub.restore();
   });
 
   const renderComponent = (languageDictionary) => {

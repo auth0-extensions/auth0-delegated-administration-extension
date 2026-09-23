@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
-import ValidationError from "../../../../client/components/Users/ValidationError";
+import ValidationError from '../../../../client/components/Users/ValidationError';
 
 describe('#Client-Components-ValidationError', () => {
 
@@ -12,7 +12,7 @@ describe('#Client-Components-ValidationError', () => {
       <ValidationError
         userForm={userForm}
         customFields={customFields}
-        errorMessage='Validation Error'
+        errorMessage="Validation Error"
       />
     );
   };
@@ -46,20 +46,20 @@ describe('#Client-Components-ValidationError', () => {
       }
     };
 
-    const customFields = [{
+    const customFields = [ {
       property: 'app_metadata.address.city',
       label: 'City'
-    }];
+    } ];
 
     const queries = renderComponent(userForm, customFields);
-    const targets = [{
-        label: 'email',
-        property: 'email'
-      },
-      {
-        label: 'City',
-        property: 'app_metadata.address.city'
-      }];
+    const targets = [ {
+      label: 'email',
+      property: 'email'
+    },
+    {
+      label: 'City',
+      property: 'app_metadata.address.city'
+    } ];
 
     checkErrors(queries, targets);
   });

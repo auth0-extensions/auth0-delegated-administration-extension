@@ -12,9 +12,9 @@ const SOME_BAD_TYPE = 'SOME_BAD_TYPE';
 const SOME_GOOD_TYPE = 'SOME_GOOD_TYPE';
 
 describe('createReducer', () => {
-  const reducer = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
-    [SOME_BAD_TYPE]: () => { 'someNonStatic' },
-    [SOME_GOOD_TYPE]: (state) => state.merge({...initialState, newKey: 'newValue' }),
+  const reducer = createReducer(fromJS(initialState), {  
+    [SOME_BAD_TYPE]: () => { 'someNonStatic'; },
+    [SOME_GOOD_TYPE]: (state) => state.merge({ ...initialState, newKey: 'newValue' })
   });
 
   it('bad type', () => {

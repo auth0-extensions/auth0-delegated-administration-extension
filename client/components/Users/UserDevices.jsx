@@ -13,7 +13,7 @@ export default class UserDevices extends Component {
     loading: PropTypes.bool.isRequired,
     settings: PropTypes.object.isRequired,
     languageDictionary: PropTypes.object
-  }
+  };
 
   shouldComponentUpdate(nextProps) {
     return nextProps.devices !== this.props.devices || nextProps.user !== this.props.user || nextProps.loading !== this.props.loading;

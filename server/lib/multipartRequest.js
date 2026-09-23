@@ -1,7 +1,7 @@
 import Promise from 'bluebird';
 import { ArgumentError } from '../../vendor/auth0-extension-tools';
 
-export default function(client, entity, opts = {}, fetchOptions = {} ) {
+export default function (client, entity, opts = {}, fetchOptions = {} ) {
   const perPage = fetchOptions.perPage || 50;
   const concurrency = fetchOptions.concurrency || 5;
   const limit = fetchOptions.limit || null;

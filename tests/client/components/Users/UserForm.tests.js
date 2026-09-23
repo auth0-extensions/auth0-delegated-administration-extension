@@ -16,10 +16,10 @@ describe('#Client-Components-UserForm', () => {
       },
       {
         name: 'connB', options: { requires_username: false }
-      }],
-    memberships: ['a', 'b', 'c'],
+      } ],
+    memberships: [ 'a', 'b', 'c' ],
     hasConnection: 'connA',
-    hasMembership: ['a', 'b']
+    hasMembership: [ 'a', 'b' ]
   };
 
   const renderComponent = (options, languageDictionary) => {
@@ -139,7 +139,7 @@ describe('#Client-Components-UserForm', () => {
         },
         {
           name: 'connB', options: { requires_username: false }
-        }],
+        } ],
       memberships: [],
       customFields: [
         {
@@ -179,7 +179,7 @@ describe('#Client-Components-UserForm', () => {
     const languageDictionary = {
       createButtonText: 'CreateButton',
       cancelButtonText: 'CancelButton'
-    }
+    };
 
     const targets = {
       username: 'UsernameLabel',

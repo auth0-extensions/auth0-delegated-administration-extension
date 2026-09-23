@@ -8,7 +8,7 @@ const initialState = {
   record: fromJS({})
 };
 
-export const languageDictionary = createReducer(fromJS(initialState), { // eslint-disable-line
+export const languageDictionary = createReducer(fromJS(initialState), {  
 // import/prefer-default-export
   [constants.FETCH_LANGUAGE_DICTIONARY_PENDING]: (state) =>
     state.merge({

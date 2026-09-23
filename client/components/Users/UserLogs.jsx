@@ -13,7 +13,7 @@ export default class UserLogs extends Component {
     logs: PropTypes.object.isRequired,
     settings: PropTypes.object.isRequired,
     languageDictionary: PropTypes.object
-  }
+  };
 
   shouldComponentUpdate(nextProps) {
     return nextProps.logs !== this.props.logs || nextProps.loading !== this.props.loading;
@@ -56,7 +56,7 @@ export default class UserLogs extends Component {
                 </TableRow>
               );
             })
-          }
+            }
           </TableBody>
         </Table>
       </LoadingPanel>

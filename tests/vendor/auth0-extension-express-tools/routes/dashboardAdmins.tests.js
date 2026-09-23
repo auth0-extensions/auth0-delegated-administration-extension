@@ -131,7 +131,7 @@ describe('vendor/auth0-extension-express-tools/dashboardAdmins', () => {
     };
 
     const res = {
-      cookie: function(key, value, options) {
+      cookie: function (key, value, options) {
         cookies[key] = value;
         expect(options.httpOnly).to.equal(true);
         expect(options.path).to.equal('/login/');
@@ -144,7 +144,7 @@ describe('vendor/auth0-extension-express-tools/dashboardAdmins', () => {
           expect(options.secure).to.be.undefined;
         }
       },
-      redirect: function(url) {
+      redirect: function (url) {
         const expectedUrl =
           'https://auth0.auth0.com/authorize' +
           '?client_id=http%3A%2F%2Fapi' +
@@ -160,7 +160,7 @@ describe('vendor/auth0-extension-express-tools/dashboardAdmins', () => {
         done();
       }
     };
-    const next = function(err) {
+    const next = function (err) {
       if (err) {
         done(err);
       }
@@ -202,7 +202,7 @@ describe('vendor/auth0-extension-express-tools/dashboardAdmins', () => {
       method: 'post'
     };
 
-    const next = function(err) {
+    const next = function (err) {
       expect(err).to.be.ok;
       expect(err.name).to.equal('ValidationError');
       done();
@@ -245,7 +245,7 @@ describe('vendor/auth0-extension-express-tools/dashboardAdmins', () => {
       method: 'post'
     };
 
-    const next = function(err) {
+    const next = function (err) {
       expect(err).to.be.ok;
       expect(err.name).to.equal('ValidationError');
       done();
@@ -288,7 +288,7 @@ describe('vendor/auth0-extension-express-tools/dashboardAdmins', () => {
       method: 'post'
     };
 
-    const next = function(err) {
+    const next = function (err) {
       expect(err).to.be.ok;
       expect(err.name).to.equal('ValidationError');
       done();
@@ -332,7 +332,7 @@ describe('vendor/auth0-extension-express-tools/dashboardAdmins', () => {
       method: 'post'
     };
 
-    const next = function(err) {
+    const next = function (err) {
       expect(err).to.be.ok;
       expect(err.name).to.equal('ValidationError');
       done();
@@ -379,16 +379,16 @@ describe('vendor/auth0-extension-express-tools/dashboardAdmins', () => {
     };
 
     const res = {
-      header: function() {},
-      clearCookie: function(name) {
+      header: function () {},
+      clearCookie: function (name) {
         if (name === 'nonce') expect(name).to.equal('nonce');
         else if (name === 'nonce_compat') expect(name).to.equal('nonce_compat');
         else if (name === 'state') expect(name).to.equal('state');
         else expect(name).to.equal('state_compat');
       },
-      status: function(status) {
+      status: function (status) {
         return {
-          send: function(html) {
+          send: function (html) {
             expect(html).to.be.ok;
             expect(status).to.equal(200);
             done();
@@ -438,16 +438,16 @@ describe('vendor/auth0-extension-express-tools/dashboardAdmins', () => {
     };
 
     const res = {
-      header: function() {},
-      clearCookie: function(name) {
+      header: function () {},
+      clearCookie: function (name) {
         if (name === 'nonce') expect(name).to.equal('nonce');
         else if (name === 'nonce_compat') expect(name).to.equal('nonce_compat');
         else if (name === 'state') expect(name).to.equal('state');
         else expect(name).to.equal('state_compat');
       },
-      status: function(status) {
+      status: function (status) {
         return {
-          send: function(html) {
+          send: function (html) {
             expect(html).to.be.ok;
             expect(status).to.equal(200);
             done();
@@ -498,16 +498,16 @@ describe('vendor/auth0-extension-express-tools/dashboardAdmins', () => {
     };
 
     const res = {
-      header: function() {},
-      clearCookie: function(name) {
+      header: function () {},
+      clearCookie: function (name) {
         if (name === 'nonce') expect(name).to.equal('nonce');
         else if (name === 'nonce_compat') expect(name).to.equal('nonce_compat');
         else if (name === 'state') expect(name).to.equal('state');
         else expect(name).to.equal('state_compat');
       },
-      status: function(status) {
+      status: function (status) {
         return {
-          send: function(html) {
+          send: function (html) {
             expect(html && html.indexOf('localStorage') > 0).to.be.ok;
             expect(status).to.equal(200);
             done();

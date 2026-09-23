@@ -9,7 +9,7 @@ function jwkFromCert(cert) {
   return crypto.createPublicKey(cert).export({ format: 'jwk' });
 }
 
-module.exports.wellKnownEndpoint = function(domain, cert, kid) {
+module.exports.wellKnownEndpoint = function (domain, cert, kid) {
   const jwk = jwkFromCert(cert);
 
   return nock('https://' + domain)
@@ -29,6 +29,6 @@ module.exports.wellKnownEndpoint = function(domain, cert, kid) {
     });
 };
 
-module.exports.sign = function(cert, kid, payload) {
+module.exports.sign = function (cert, kid, payload) {
   return jwt.sign(payload, cert, { header: { kid: kid }, algorithm: 'RS256' });
 };

@@ -23,14 +23,13 @@ class AddUserForm extends Component {
     customFields: PropTypes.array,
     customFieldGetter: PropTypes.func.isRequired,
     languageDictionary: PropTypes.object,
-    loading: PropTypes.bool,
+    loading: PropTypes.bool
   };
 
 
   render() {
 
     const {
-      submitting,
       customFields,
       connections,
       hasSelectedConnection,
@@ -39,7 +38,7 @@ class AddUserForm extends Component {
       memberships,
       createMemberships,
       getDictValue,
-      loading,
+      loading
     } = this.props;
      
     const languageDictionary = this.props.languageDictionary || {};
@@ -67,7 +66,7 @@ class AddUserForm extends Component {
             {languageDictionary.cancelButtonText || 'Cancel'}
           </Button>
           <Button bsSize="large" bsStyle="primary" disabled={loading} onClick={this.props.handleSubmit}>
-           {loading ? languageDictionary.savingText || 'Saving....' : languageDictionary.createButtonText || 'Create'}
+            {loading ? languageDictionary.savingText || 'Saving....' : languageDictionary.createButtonText || 'Create'}
           </Button>
         </Modal.Footer>
       </div>
