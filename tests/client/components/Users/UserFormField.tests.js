@@ -348,6 +348,62 @@ describe('#Client-Components-Users-UserFormField', () => {
 
         expect(receivedOptions).to.deep.equal(options);
       });
+
+      it('filters options by the typed input (matches label)', () => {
+        renderComponent(makeField([
+          { value: '1', label: 'Apple' },
+          { value: '2', label: 'Banana' },
+          { value: '3', label: 'Grape' }
+        ]), true);
+        const loadOptions = captured[0].loadOptions;
+
+        let receivedOptions;
+        loadOptions('ap', (opts) => { receivedOptions = opts; });
+
+        expect(receivedOptions).to.deep.equal([
+          { value: '1', label: 'Apple' },
+          { value: '3', label: 'Grape' }
+        ]);
+      });
+
+      it('filters options by the typed input (matches value)', () => {
+        renderComponent(makeField([
+          { value: '9429042406761', label: 'GLN A' },
+          { value: '1234567890123', label: 'GLN B' }
+        ]), true);
+        const loadOptions = captured[0].loadOptions;
+
+        let receivedOptions;
+        loadOptions('9429', (opts) => { receivedOptions = opts; });
+
+        expect(receivedOptions).to.deep.equal([
+          { value: '9429042406761', label: 'GLN A' }
+        ]);
+      });
+
+      it('filtering is case-insensitive', () => {
+        renderComponent(makeField(['AppOne', 'AppTwo', 'Other']), true);
+        const loadOptions = captured[0].loadOptions;
+
+        let receivedOptions;
+        loadOptions('APP', (opts) => { receivedOptions = opts; });
+
+        expect(receivedOptions).to.deep.equal([
+          { value: 'AppOne', label: 'AppOne' },
+          { value: 'AppTwo', label: 'AppTwo' }
+        ]);
+      });
+
+      it('returns all options when input is empty', () => {
+        const options = [{ value: 'a', label: 'A' }, { value: 'b', label: 'B' }];
+        renderComponent(makeField(options), true);
+        const loadOptions = captured[0].loadOptions;
+
+        let receivedOptions;
+        loadOptions('', (opts) => { receivedOptions = opts; });
+
+        expect(receivedOptions).to.deep.equal(options);
+      });
     });
   });
 
