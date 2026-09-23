@@ -474,7 +474,7 @@ export default (storage, scriptManager) => {
 
         return req.auth0.users.update({ id: req.params.id }, {
           password: req.body.password,
-          connection: req.body.connection,
+          connection: req.body.connection
         })
           .then(() => res.sendStatus(204))
           .catch(next);
