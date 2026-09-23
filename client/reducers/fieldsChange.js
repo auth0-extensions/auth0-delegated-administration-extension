@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { fromJS } from 'immutable';
 
 import * as constants from '../constants';
@@ -12,7 +11,7 @@ const initialState = {
   validationErrors: fromJS({})
 };
 
-export const fieldsChange = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export
+export const fieldsChange = createReducer(fromJS(initialState), {  
   [constants.REQUEST_FIELDS_CHANGE]: (state, action) =>
     state.merge({
       ...initialState,

@@ -9,7 +9,7 @@ import UserFieldsChangeForm from '../../../../client/components/Users/UserFields
 
 describe('#Client-Components-UserFieldsChangeForm', () => {
   const renderComponent = (languageDictionary, customFields) => {
-    const fields = customFields || [{property: 'someField', edit: true}];
+    const fields = customFields || [ { property: 'someField', edit: true } ];
     return render(
       <Provider store={fakeStore({})}>
         <UserFieldsChangeForm

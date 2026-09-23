@@ -115,11 +115,11 @@ describe('vendor/auth0-extension-tools/sessionManager', () => {
   it('SessionManager#create validate options', (done) => {
     const sessionManager = new SessionManager('auth0.auth0.com', 'me.auth0.local', 'http://foo.bar.com');
     sessionManager.create('a', 'b', null)
-      .then(function(data) {
+      .then(function () {
         expect.fail('Should have thrown error');
         done();
       })
-      .catch(function(err) {
+      .catch(function (err) {
         expect(err).to.be.ok;
         expect(err).to.be.an.instanceof(ArgumentError);
         done();
@@ -129,11 +129,11 @@ describe('vendor/auth0-extension-tools/sessionManager', () => {
   it('SessionManager#create validate options.audience', (done) => {
     const sessionManager = new SessionManager('auth0.auth0.com', 'me.auth0.local', 'http://foo.bar.com');
     sessionManager.create('a', 'b', { audience: null, secret: 'foo', issuer: 'foo' })
-      .then(function(data) {
+      .then(function () {
         expect.fail('Should have thrown error');
         done();
       })
-      .catch(function(err) {
+      .catch(function (err) {
         expect(err).to.be.ok;
         expect(err).to.be.an.instanceof(ArgumentError);
         done();
@@ -143,11 +143,11 @@ describe('vendor/auth0-extension-tools/sessionManager', () => {
   it('SessionManager#create validate options.audience length', (done) => {
     const sessionManager = new SessionManager('auth0.auth0.com', 'me.auth0.local', 'http://foo.bar.com');
     sessionManager.create('a', 'b', { audience: '', secret: 'foo', issuer: 'foo' })
-      .then(function(data) {
+      .then(function () {
         expect.fail('Should have thrown error');
         done();
       })
-      .catch(function(err) {
+      .catch(function (err) {
         expect(err).to.be.ok;
         expect(err).to.be.an.instanceof(ArgumentError);
         done();
@@ -157,11 +157,11 @@ describe('vendor/auth0-extension-tools/sessionManager', () => {
   it('SessionManager#create validate options.issuer', (done) => {
     const sessionManager = new SessionManager('auth0.auth0.com', 'me.auth0.local', 'http://foo.bar.com');
     sessionManager.create('a', 'b', { audience: 'aa', secret: 'foo', issuer: null })
-      .then(function(data) {
+      .then(function () {
         expect.fail('Should have thrown error');
         done();
       })
-      .catch(function(err) {
+      .catch(function (err) {
         expect(err).to.be.ok;
         expect(err).to.be.an.instanceof(ArgumentError);
         done();
@@ -171,11 +171,11 @@ describe('vendor/auth0-extension-tools/sessionManager', () => {
   it('SessionManager#create validate options.issuer length', (done) => {
     const sessionManager = new SessionManager('auth0.auth0.com', 'me.auth0.local', 'http://foo.bar.com');
     sessionManager.create('a', 'b', { audience: 'aa', secret: 'foo', issuer: '' })
-      .then(function(data) {
+      .then(function () {
         expect.fail('Should have thrown error');
         done();
       })
-      .catch(function(err) {
+      .catch(function (err) {
         expect(err).to.be.ok;
         expect(err).to.be.an.instanceof(ArgumentError);
         done();
@@ -185,11 +185,11 @@ describe('vendor/auth0-extension-tools/sessionManager', () => {
   it('SessionManager#create validate options.secret', (done) => {
     const sessionManager = new SessionManager('auth0.auth0.com', 'me.auth0.local', 'http://foo.bar.com');
     sessionManager.create('a', 'b', { audience: 'aa', issuer: 'bb', secret: null })
-      .then(function(data) {
+      .then(function () {
         expect.fail('Should have thrown error');
         done();
       })
-      .catch(function(err) {
+      .catch(function (err) {
         expect(err).to.be.ok;
         expect(err).to.be.an.instanceof(ArgumentError);
         done();
@@ -199,11 +199,11 @@ describe('vendor/auth0-extension-tools/sessionManager', () => {
   it('SessionManager#create validate options.secret length', (done) => {
     const sessionManager = new SessionManager('auth0.auth0.com', 'me.auth0.local', 'http://foo.bar.com');
     sessionManager.create('a', 'b', { audience: 'aa', issuer: 'bb', secret: '' })
-      .then(function(data) {
+      .then(function () {
         expect.fail('Should have thrown error');
         done();
       })
-      .catch(function(err) {
+      .catch(function (err) {
         expect(err).to.be.ok;
         expect(err).to.be.an.instanceof(ArgumentError);
         done();
@@ -213,20 +213,20 @@ describe('vendor/auth0-extension-tools/sessionManager', () => {
   it('SessionManager#create should return error if id_token is null', (done) => {
     const sessionManager = new SessionManager('auth0.auth0.com', 'me.auth0.local', 'http://foo.bar.com');
     sessionManager.create()
-      .then(function(data) {
+      .then(function () {
         expect.fail('Should have thrown error');
         done();
       })
-      .catch(function(err) {
+      .catch(function (err) {
         expect(err).to.be.ok;
         expect(err).to.be.an.instanceof(ArgumentError);
 
         sessionManager.create('')
-          .then(function(data) {
+          .then(function () {
             expect.fail('Should have thrown error');
             done();
           })
-          .catch(function(err2) {
+          .catch(function (err2) {
             expect(err2).to.be.ok;
             expect(err2).to.be.an.instanceof(ArgumentError);
             done();
@@ -237,11 +237,11 @@ describe('vendor/auth0-extension-tools/sessionManager', () => {
   it('SessionManager#create should return error if id_token is invalid', (done) => {
     const sessionManager = new SessionManager('auth0.auth0.com', 'me.auth0.local', 'http://foo.bar.com');
     sessionManager.create('xyz', 'xyz', tokenOptions)
-      .then(function(data) {
+      .then(function () {
         expect.fail('Should have thrown error');
         done();
       })
-      .catch(function(err) {
+      .catch(function (err) {
         expect(err).to.be.ok;
         expect(err).to.be.an.instanceof(ValidationError);
         done();
@@ -251,20 +251,20 @@ describe('vendor/auth0-extension-tools/sessionManager', () => {
   it('SessionManager#create should return error if access_token is null', (done) => {
     const sessionManager = new SessionManager('auth0.auth0.com', 'me.auth0.local', 'http://foo.bar.com');
     sessionManager.create('x')
-      .then(function(data) {
+      .then(function () {
         expect.fail('Should have thrown error');
         done();
       })
-      .catch(function(err) {
+      .catch(function (err) {
         expect(err).to.be.ok;
         expect(err).to.be.an.instanceof(ArgumentError);
 
         sessionManager.create('x', '')
-          .then(function(data) {
+          .then(function () {
             expect.fail('Should have thrown error');
             done();
           })
-          .catch(function(err2) {
+          .catch(function (err2) {
             expect(err2).to.be.ok;
             expect(err2).to.be.an.instanceof(ArgumentError);
             done();
@@ -275,11 +275,11 @@ describe('vendor/auth0-extension-tools/sessionManager', () => {
   it('SessionManager#create should return error if access_token is invalid', (done) => {
     const sessionManager = new SessionManager('auth0.auth0.com', 'me.auth0.local', 'http://foo.bar.com');
     sessionManager.create(tokens.sign(certs.bar.private, 'key1', { sub: 'foo' }), 'xyz', tokenOptions)
-      .then(function(data) {
+      .then(function () {
         expect.fail('Should have thrown error');
         done();
       })
-      .catch(function(err) {
+      .catch(function (err) {
         expect(err).to.be.ok;
         expect(err).to.be.an.instanceof(ValidationError);
         done();
@@ -291,11 +291,11 @@ describe('vendor/auth0-extension-tools/sessionManager', () => {
 
     const sessionManager = new SessionManager('auth0.auth0.com', 'me.auth0.local', 'http://foo.bar.com');
     sessionManager.create(tokens.sign(certs.bar.private, 'key1', { sub: 'foo' }), tokens.sign(certs.bar.private, 'key1', { sub: 'bar' }), tokenOptions)
-      .then(function(data) {
+      .then(function () {
         expect.fail('Should have thrown error');
         done();
       })
-      .catch(function(err) {
+      .catch(function (err) {
         expect(err).to.be.ok;
         expect(err.name).to.equal('SigningKeyNotFoundError');
         done();
@@ -307,11 +307,11 @@ describe('vendor/auth0-extension-tools/sessionManager', () => {
     tokens.wellKnownEndpoint('auth0.auth0.com', certs.bar.cert, 'key2');
     const sessionManager = new SessionManager('auth0.auth0.com', 'me.auth0.local', 'http://foo.bar.com');
     sessionManager.create(tokens.sign(certs.bar.private, 'key2', { sub: 'foo' }), tokens.sign(certs.bar.private, 'key1', { sub: 'bar' }), tokenOptions)
-      .then(function(data) {
+      .then(function () {
         expect.fail('Should have thrown error');
         done();
       })
-      .catch(function(err) {
+      .catch(function (err) {
         expect(err).to.be.ok;
         expect(err.name).to.equal('UnauthorizedError');
         done();
@@ -339,7 +339,7 @@ describe('vendor/auth0-extension-tools/sessionManager', () => {
 
     const sessionManager = new SessionManager('auth0.auth0.com', 'bar.auth0.local', 'http://app.bar.com');
     sessionManager.create(idToken, accessToken, tokenOptions)
-      .catch(function(err) {
+      .catch(function (err) {
         expect(err).to.be.ok;
         expect(err.message).to.equal('Invalid issuer: https://othertenant.auth0.local/');
         expect(err).to.be.an.instanceof(UnauthorizedError);
@@ -368,7 +368,7 @@ describe('vendor/auth0-extension-tools/sessionManager', () => {
 
     const sessionManager = new SessionManager('auth0.auth0.com', 'bar.auth0.local', 'http://app.bar.com');
     sessionManager.create(idToken, accessToken, tokenOptions)
-      .catch(function(err) {
+      .catch(function (err) {
         expect(err).to.be.ok;
         expect(err.message).to.equal('Invalid issuer: https://foo2.auth0.local/');
         expect(err).to.be.an.instanceof(UnauthorizedError);
@@ -393,7 +393,7 @@ describe('vendor/auth0-extension-tools/sessionManager', () => {
 
     const sessionManager = new SessionManager('auth0.auth0.com', 'bar.auth0.local', 'http://app.bar.com');
     sessionManager.create(idToken, accessToken, tokenOptions)
-      .catch(function(err) {
+      .catch(function (err) {
         expect(err).to.be.ok;
         expect(err.message).to.equal('Audience mismatch for: http://app.bar.com');
         expect(err).to.be.an.instanceof(UnauthorizedError);
@@ -422,7 +422,7 @@ describe('vendor/auth0-extension-tools/sessionManager', () => {
 
     const sessionManager = new SessionManager('auth0.auth0.com', 'bar.auth0.local', 'http://app.bar.com');
     sessionManager.create(idToken, accessToken, tokenOptions)
-      .catch(function(err) {
+      .catch(function (err) {
         expect(err).to.be.ok;
         expect(err.message).to.equal('Audience mismatch for: https://bar.auth0.local/api/v2/');
         expect(err).to.be.an.instanceof(UnauthorizedError);
@@ -451,7 +451,7 @@ describe('vendor/auth0-extension-tools/sessionManager', () => {
 
     const sessionManager = new SessionManager('auth0.auth0.com', 'bar.auth0.local', 'http://app.bar.com');
     sessionManager.create(idToken, accessToken, tokenOptions)
-      .catch(function(err) {
+      .catch(function (err) {
         expect(err).to.be.ok;
         expect(err.message).to.equal('The access_token\'s azp does not match the id_token');
         expect(err).to.be.an.instanceof(UnauthorizedError);
@@ -480,7 +480,7 @@ describe('vendor/auth0-extension-tools/sessionManager', () => {
 
     const sessionManager = new SessionManager('auth0.auth0.com', 'bar.auth0.local', 'http://app.bar.com');
     sessionManager.create(idToken, accessToken, tokenOptions)
-      .catch(function(err) {
+      .catch(function (err) {
         expect(err).to.be.ok;
         expect(err.message).to.equal('Subjects don\'t match');
         expect(err).to.be.an.instanceof(UnauthorizedError);
@@ -509,7 +509,7 @@ describe('vendor/auth0-extension-tools/sessionManager', () => {
 
     const sessionManager = new SessionManager('auth0.auth0.com', 'bar.auth0.local', 'http://app.bar.com');
     sessionManager.create(idToken, accessToken, tokenOptions)
-      .catch(function(err) {
+      .catch(function (err) {
         expect(err).to.be.ok;
         expect(err.message).to.equal('invalid signature');
         done();
@@ -537,7 +537,7 @@ describe('vendor/auth0-extension-tools/sessionManager', () => {
 
     const sessionManager = new SessionManager('auth0.auth0.com', 'bar.auth0.local', 'http://app.bar.com');
     sessionManager.create(idToken, accessToken, tokenOptions)
-      .catch(function(err) {
+      .catch(function (err) {
         expect(err).to.be.ok;
         expect(err.message).to.equal('invalid signature');
         done();
@@ -568,10 +568,10 @@ describe('vendor/auth0-extension-tools/sessionManager', () => {
 
     const sessionManager = new SessionManager('auth0.auth0.com', 'bar.auth0.local', 'http://app.bar.com');
     sessionManager.create(idToken, accessToken, tokenOptions)
-      .then(function(token) {
+      .then(function (token) {
         expect(token).to.be.ok;
 
-        jwt.verify(token, tokenOptions.secret, { issuer: tokenOptions.issuer, audience: 'urn:authz' }, function(err, decoded) {
+        jwt.verify(token, tokenOptions.secret, { issuer: tokenOptions.issuer, audience: 'urn:authz' }, function (err, decoded) {
           expect(err).to.not.be.ok;
           expect(decoded).to.be.ok;
           expect(decoded.sub).to.equal('google|me@example.com');

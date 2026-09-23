@@ -49,7 +49,7 @@ describe('#scripts', () => {
         expect(result).toEqual('PassedTest');
         done();
       }).catch(e => {
-        done(e)
+        done(e);
       });
     });
 

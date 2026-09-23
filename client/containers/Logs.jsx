@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, ButtonToolbar } from 'react-bootstrap';
-import { LoadingPanel, TableTotals } from '@a0/auth0-extension-ui';
+import { LoadingPanel } from '@a0/auth0-extension-ui';
 import Error from '../components/Error';
 
 import * as actions from '../actions/log';

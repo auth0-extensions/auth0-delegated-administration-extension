@@ -9,6 +9,16 @@ import requiredValidationFunction from '../../utils/requiredValidationFunction';
 const toOptionObject = v =>
   (v !== null && typeof v === 'object') ? v : { value: v, label: v };
 
+// react-select v5's async mode does not filter loaded options client-side, so
+// loadOptions must return the matches itself, otherwise typing never narrows the list.
+const filterOptions = (options, input) => {
+  if (!input) return options;
+  const lower = input.toLowerCase();
+  return options.filter(o =>
+    String(o.label == null ? '' : o.label).toLowerCase().includes(lower) ||
+    String(o.value == null ? '' : o.value).toLowerCase().includes(lower));
+};
+
 // Wrappers that patch input.value (normalize stored strings to {value,label}) and
 // fix input.onBlur (pass current value so redux-form doesn't reset the field on blur).
 const MultiComboField = ({ input, ...rest }) => {
@@ -80,7 +90,7 @@ export default class UserFormField extends Component {
       case 'InputMultiCombo': {
         const normalizedOptions = (field.options || []).map(toOptionObject);
         const additionalOptions = {
-          loadOptions: (input, callback) => callback(normalizedOptions),
+          loadOptions: (input, callback) => callback(filterOptions(normalizedOptions, input)),
           multi: true,
           displayLabelOnly: field.displayLabelOnly
         };
@@ -90,7 +100,7 @@ export default class UserFormField extends Component {
       case 'InputSelectCombo': {
         const normalizedOptions = (field.options || []).map(toOptionObject);
         const additionalOptions = {
-          loadOptions: (input, callback) => callback(normalizedOptions),
+          loadOptions: (input, callback) => callback(filterOptions(normalizedOptions, input)),
           multi: false
         };
         if (validate) additionalOptions.validate = validate;

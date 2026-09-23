@@ -15,7 +15,7 @@ function copyProps(src, target) {
     .filter(prop => typeof target[prop] === 'undefined')
     .reduce((result, prop) => ({
       ...result,
-      [prop]: Object.getOwnPropertyDescriptor(src, prop),
+      [prop]: Object.getOwnPropertyDescriptor(src, prop)
     }), {});
   Object.defineProperties(target, props);
 }
@@ -33,6 +33,15 @@ global.self = window;
 global.IS_REACT_ACT_ENVIRONMENT = true;
 
 copyProps(window, global);
+
+// jsdom exposes XMLHttpRequest/fetch on window, and copyProps leaks them onto the
+// global scope. axios then auto-selects its browser (XHR/fetch) adapter whenever those
+// globals are present — even in server-side route tests — and that transport bypasses
+// nock (which only patches Node's http/https). Removing them forces axios back to the
+// Node http adapter so nock can intercept. Client tests mock via axios-mock-adapter
+// (adapter-layer, transport-agnostic), so they don't rely on these globals.
+delete global.XMLHttpRequest;
+delete global.fetch;
 
 // Mock components from @a0/auth0-extension-ui to avoid context requirement in tests
 import React from 'react';
@@ -52,7 +61,7 @@ mockSearchBar.displayName = 'SearchBar';
 // Override the module resolution for @a0/auth0-extension-ui to include our mocks
 const Module = require('module');
 const originalRequire = Module.prototype.require;
-Module.prototype.require = function(id) {
+Module.prototype.require = function (id) {
   if (id === '@a0/auth0-extension-ui') {
     const orig = originalRequire.apply(this, arguments);
     return { ...orig, TabPane: mockTabPane, SearchBar: mockSearchBar };

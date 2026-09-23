@@ -14,7 +14,6 @@ import LogsTable from '../../components/Logs/LogsTable';
 import { UserActions, UserDevices, UserHeader, UserProfile, UserInfo } from '../../components/Users';
 
 import getUserDatabaseConnections from '../../selectors/getUserDatabaseConnections';
-import { removeBlockedIPs } from "../../reducers/removeBlockedIPs";
 
 export default connectContainer(class extends Component {
   static stateToProps = state => ({
@@ -30,7 +29,7 @@ export default connectContainer(class extends Component {
   static actionsToProps = {
     ...logActions,
     ...userActions
-  }
+  };
 
   static propTypes = {
     languageDictionary: PropTypes.object.isRequired,
@@ -45,7 +44,7 @@ export default connectContainer(class extends Component {
     fetchLog: PropTypes.func.isRequired,
     fetchUser: PropTypes.func.isRequired,
     getDictValue: PropTypes.func.isRequired
-  }
+  };
 
   componentDidMount() {
     this.props.fetchUser(this.props.params.id);

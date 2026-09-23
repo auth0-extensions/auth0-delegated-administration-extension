@@ -23,7 +23,7 @@ export default class UserActions extends Component {
     role: PropTypes.number.isRequired,
     userFields: PropTypes.array.isRequired,
     languageDictionary: PropTypes.object
-  }
+  };
 
   get user() {
     return this.props.user ? this.props.user.toJS() : null;
@@ -46,7 +46,7 @@ export default class UserActions extends Component {
         {this.languageDictionary.deleteUserMenuItemText || 'Delete User'}
       </MenuItem>
     );
-  }
+  };
 
   getChangeFieldsAction = (user, loading) => {
     if (!this.props.userFields || !this.props.userFields.length) {
@@ -62,7 +62,7 @@ export default class UserActions extends Component {
         {this.languageDictionary.changeFieldsMenuItemText || 'Change Profile'}
       </MenuItem>
     );
-  }
+  };
 
   getResetPasswordAction = (user, loading) => {
     if (!this.databaseConnections || !this.databaseConnections.length) {
@@ -79,7 +79,7 @@ export default class UserActions extends Component {
         {this.languageDictionary.resetPasswordMenuItemText || 'Reset Password'}
       </MenuItem>
     );
-  }
+  };
 
   getChangePasswordAction = (user, loading) => {
     if (!this.databaseConnections || !this.databaseConnections.length) {
@@ -95,7 +95,7 @@ export default class UserActions extends Component {
         {this.languageDictionary.changePasswordMenuItemText || 'Change Password'}
       </MenuItem>
     );
-  }
+  };
 
   getChangeUsernameAction = (user, loading) => {
     if (!this.databaseConnections || !this.databaseConnections.length || !user.username) {
@@ -111,7 +111,7 @@ export default class UserActions extends Component {
         {this.languageDictionary.changeUsernameMenuItemText || 'Change Username'}
       </MenuItem>
     );
-  }
+  };
 
   getChangeEmailAction = (user, loading) => {
     if (!this.databaseConnections || !this.databaseConnections.length) {
@@ -127,7 +127,7 @@ export default class UserActions extends Component {
         {this.languageDictionary.changeEmailMenuItemText || 'Change Email'}
       </MenuItem>
     );
-  }
+  };
 
   getResendEmailVerificationAction = (user, loading) => {
     if (!this.databaseConnections || !this.databaseConnections.length || user.email_verified) {
@@ -140,10 +140,10 @@ export default class UserActions extends Component {
 
     return (
       <MenuItem disabled={loading || false} onClick={this.resendVerificationEmail}>
-        {this.languageDictionary.resendVerificationEmailMenuItemText || "Resend Verification Email"}
+        {this.languageDictionary.resendVerificationEmailMenuItemText || 'Resend Verification Email'}
       </MenuItem>
     );
-  }
+  };
 
   getMultifactorAction = (user, loading) => {
     if (!user.multifactor || !user.multifactor.length) {
@@ -152,42 +152,42 @@ export default class UserActions extends Component {
 
     return (
       <MenuItem disabled={loading || false} onClick={this.removeMfa}>
-        {this.languageDictionary.removeMfaMenuItemText || "Remove MFA"}
+        {this.languageDictionary.removeMfaMenuItemText || 'Remove MFA'}
       </MenuItem>
     );
-  }
+  };
 
   getBlockedAction = (user, loading) => {
     if (user.blocked) {
       return (
         <MenuItem disabled={loading || false} onClick={this.unblockUser}>
-          {this.languageDictionary.unblockUserMenuItemText || "Unblock User"}
+          {this.languageDictionary.unblockUserMenuItemText || 'Unblock User'}
         </MenuItem>
       );
     }
 
     return (
       <MenuItem disabled={loading || false} onClick={this.blockUser}>
-        {this.languageDictionary.blockUserMenuItemText || "Block User"}
+        {this.languageDictionary.blockUserMenuItemText || 'Block User'}
       </MenuItem>
     );
-  }
+  };
 
   getUserBlocksAction = (user, loading) => {
     if (user.blocked_for && user.blocked_for.length) {
       return (
         <MenuItem disabled={loading || false} onClick={this.removeBlockedIPs}>
-          {this.languageDictionary.removeBlockedIPsMenuItemText || "Unblock for all IPs"}
+          {this.languageDictionary.removeBlockedIPsMenuItemText || 'Unblock for all IPs'}
         </MenuItem>
       );
     }
 
     return null;
-  }
+  };
 
   deleteUser = () => {
     this.props.deleteUser(this.user);
-  }
+  };
 
   changeFields = () => {
     const languageDictionary = this.props.languageDictionary;
@@ -208,15 +208,15 @@ export default class UserActions extends Component {
     });
 
     this.props.changeFields(user);
-  }
+  };
 
   resetPassword = () => {
     this.props.resetPassword(this.user, this.databaseConnections[0]);
-  }
+  };
 
   changePassword = () => {
     this.props.changePassword(this.user, this.databaseConnections[0]);
-  }
+  };
 
   static getDisplayObject(user, fields) {
     if (fields.length > 0) {
@@ -236,33 +236,33 @@ export default class UserActions extends Component {
     const currentUser = this.user;
     const usernameEditFields = _.filter(this.props.userFields, field => field.property === 'username' && field.edit !== false && field.edit);
     this.props.changeUsername(currentUser, this.databaseConnections[0], UserActions.getDisplayObject(currentUser, usernameEditFields));
-  }
+  };
 
   changeEmail = () => {
     const currentUser = this.user;
     const emailEditFields = _.filter(this.props.userFields, field => field.property === 'email' && field.edit !== false && field.edit);
     this.props.changeEmail(currentUser, this.databaseConnections[0], UserActions.getDisplayObject(currentUser, emailEditFields));
-  }
+  };
 
   resendVerificationEmail = () => {
     this.props.resendVerificationEmail(this.user, this.databaseConnections[0]);
-  }
+  };
 
   blockUser = () => {
     this.props.blockUser(this.user);
-  }
+  };
 
   unblockUser = () => {
     this.props.unblockUser(this.user);
-  }
+  };
 
   removeBlockedIPs = () => {
     this.props.removeBlockedIPs(this.user);
-  }
+  };
 
   removeMfa = () => {
     this.props.removeMfa(this.user);
-  }
+  };
 
   render() {
     const user = this.user;
