@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.0.5] - 2026-09-29
+
+### Security
+
+- Removed the unused `superagent-proxy` dev dependency, eliminating the vulnerable `ip` SSRF chain (#218).
+- Added dependency overrides to force patched versions of vulnerable build/test-only transitive dependencies (none ship in the deployed extension):
+  - `serialize-javascript` → `^7.1.2` (RCE via serialization and `RegExp.flags`; #18, #317)
+  - `ws` → `^8.22.0` (DoS via many HTTP headers and memory exhaustion; #220, #448)
+  - `braces` → `^3.0.3` (uncontrolled resource consumption; #219)
+
 ## [5.0.4] - 2026-09-21
 
 ### Fixed
