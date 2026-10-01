@@ -1,10 +1,37 @@
+import vm from 'vm';
 import Promise from 'bluebird';
-import safeEval from 'safe-eval';
 import memoizer from 'lru-memoizer';
 import { ArgumentError } from '../../vendor/auth0-extension-tools';
 
 import logger from './logger';
 import parseScriptError from './errors/parseScriptError';
+
+
+function evalScript(code, context) {
+  const sandbox = {};
+  const resultKey = 'SAFE_EVAL_RESULT';
+
+  const clearContext = `
+    (function(){
+      Function = undefined;
+      const keys = Object.getOwnPropertyNames(this).concat(['constructor']);
+      keys.forEach((key) => {
+        const item = this[key];
+        if (!item || typeof item.constructor !== 'function') return;
+        this[key].constructor = undefined;
+      });
+    })();
+  `;
+
+  if (context) {
+    Object.keys(context).forEach((key) => {
+      sandbox[key] = context[key];
+    });
+  }
+
+  vm.runInNewContext(`${clearContext}${resultKey} = (${code})`, sandbox);
+  return sandbox[resultKey];
+}
 
 export default class ScriptManager {
   constructor(storage, cacheAge = 1000 * 10) {
@@ -100,7 +127,7 @@ export default class ScriptManager {
         logger.debug(`Executing Delegated Admin hook: ${name}`);
         return new Promise((resolve, reject) => {
           try {
-            const func = safeEval(script, { require: this.dynamicRequire });
+            const func = evalScript(script, { require: this.dynamicRequire });
             func(this.createContext(ctx), (err, res) => {
               if (err) {
                 logger.error(`Failed to execute Delegated Admin hook (${name}): "${err}"`);
