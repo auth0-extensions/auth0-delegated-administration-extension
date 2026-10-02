@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
-const glob = require('glob');
+const { glob } = require('glob');
 const async = require('async');
 const semver = require('semver');
 const request = require('superagent');
@@ -18,7 +18,7 @@ module.exports = searchPath =>
         const data = res.body;
         const webtaskModules = _.orderBy(data.modules, ['name', 'version'], ['asc', 'desc']);
 
-        glob('**/package.json', { cwd: searchPath }, (err, matches) => {
+        glob('**/package.json', { cwd: searchPath }).then((matches) => {
           async.map(
             matches,
             (file, cb) => fs.readFile(path.join(searchPath, file), 'utf8', cb),
@@ -75,7 +75,7 @@ module.exports = searchPath =>
               return resolve(externals);
             }
           );
-        });
+        }).catch(reject);
       })
       .catch(reject);
   });

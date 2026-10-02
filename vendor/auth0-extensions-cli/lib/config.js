@@ -106,10 +106,16 @@ module.exports = (pkg, rootPath, args, ext) => {
     });
   }
 
+  // Define each process.env key individually rather than replacing the whole
+  // `process.env` object. Replacing the object collapses every other
+  // `process.env.X` read in the bundle (e.g. debug's `process.env.DEBUG`) to
+  // `undefined`, which produces strict-mode-illegal code like `delete undefined`.
+  const envDefines = Object.keys(settings).reduce((acc, key) => {
+    acc[`process.env.${key}`] = settings[key];
+    return acc;
+  }, {});
   activePlugins.push(
-    new Webpack.DefinePlugin({
-      'process.env': settings
-    })
+    new Webpack.DefinePlugin(envDefines)
   );
 
   // add "use strict" to the very beginning of the bundle to avoid some of node4 issues

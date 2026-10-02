@@ -8,7 +8,7 @@ const TESTING_DIR = path.join(process.cwd(), 'testing');
 const prepareDirectory = (dir) => {
   try {
     fs.statSync(dir);
-  } catch (e) {
+  } catch {
     fs.mkdirSync(dir);
   }
 };

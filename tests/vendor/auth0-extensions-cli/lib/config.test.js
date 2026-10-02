@@ -24,7 +24,7 @@ const defaultWebpackConfig = {
   mode: 'production',
   externals: {},
   module: {
-    rules: [{
+    rules: [ {
       test: /\.jsx?$/,
       // exclude: () => { },
       use: {
@@ -57,7 +57,7 @@ const defaultWebpackConfig = {
           ]
         }
       }
-    }]
+    } ]
   },
   output: {
     filename: `${pkg.name}.extension.${pkg.version}.js`,
@@ -156,7 +156,7 @@ describe('config', () => {
       });
     });
 
-    [true, undefined].map(bundleModules =>
+    [ true, undefined ].map(bundleModules =>
       describe(`bundleModules === ${bundleModules}`, () => {
         const bundlePackage = Object.assign({}, pkg, {
           'auth0-extension': {
