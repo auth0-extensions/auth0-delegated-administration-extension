@@ -12,7 +12,6 @@ const AdmZip = require('adm-zip');
 
 const getConfig = require('../lib/config');
 const getExternals = require('../lib/externals');
-const getClientConfig = require('../lib/client-config');
 
 prog
   .version('1.0.0')
@@ -72,40 +71,6 @@ prog
             }
           });
         });
-    });
-  })
-  .command(
-    'build:client',
-    'Compile your React Frontend into an Auth0 Extension Client'
-  )
-  .argument('entryPoint', 'Entry point for your extension')
-  .argument('destinationFolder', 'Entry point for your extension')
-  .option('--pkg <pkg>', 'Path of package.json')
-  .action((args, opts) => {
-    const rootPath = process.cwd();
-    const entry = args.entryPoint || 'client/app.jsx';
-    const destination = args.destinationFolder || 'dist';
-    const mode = 'production';
-    const packagePath = path.join(rootPath, opts.pkg || 'package.json');
-
-    json(packagePath).then((pkg) => {
-      console.log('Building:', chalk.bold(`${pkg.name}@${pkg.version} client`));
-
-      Webpack(getClientConfig(pkg, rootPath, mode, entry, destination)).run(
-        (err, stats) => {
-          if (err) {
-            console.log('Error:', chalk.bold(JSON.stringify(err, null, 2)));
-          } else {
-            console.log(
-              stats.toString({
-                colors: true,
-                cached: false,
-                cachedModules: false
-              })
-            );
-          }
-        }
-      );
     });
   })
   .command(

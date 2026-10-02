@@ -1,9 +1,0 @@
-{
-  "extends": [
-    "auth0-base"
-  ],
-  "env": {
-    "node": true,
-    "mocha": true
-  }
-}
