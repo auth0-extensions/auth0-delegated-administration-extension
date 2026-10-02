@@ -1,0 +1,13 @@
+{
+  "version": "1.0.0",
+  "description": "Auth0 Dummy Extension",
+  "author": "Auth0",
+  "license": "MIT",
+  "auth0-extension": {
+    "title": "Auth0 Dummy Extension",
+    "type": "generic"
+  },
+  "altDependencies": {
+    "auth0-extensions-cli": "*"
+  }
+}
