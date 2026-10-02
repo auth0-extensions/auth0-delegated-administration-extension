@@ -4,7 +4,6 @@ const _ = require('lodash');
 const chalk = require('chalk');
 const json = require('load-json-file');
 const path = require('path');
-const prog = require('caporal');
 const request = require('superagent');
 const Webpack = require('webpack');
 const validator = require('webtask-json-validator');
@@ -13,179 +12,212 @@ const AdmZip = require('adm-zip');
 const getConfig = require('../lib/config');
 const getExternals = require('../lib/externals');
 
-prog
-  .version('1.0.0')
-  .command(
-    'build:server',
-    'Compile your Node.js Backend into an Auth0 Extension'
-  )
-  .argument('entryPoint', 'Entry point for your extension')
-  .argument(
-    'destinationFolder',
-    'Folder where to store the output of the build'
-  )
-  .option('--pkg <pkg>', 'Path of package.json')
-  .action((args, opts) => {
-    const rootPath = process.cwd();
-    const packagePath = path.join(rootPath, opts.pkg || 'package.json');
+// Minimal argv parser (replaces caporal). Splits process.argv into positional
+// arguments and `--flag value` options. Flags are camelCased to mirror the
+// previous caporal behaviour (e.g. `--apiKey x` -> opts.apiKey, `--pkg x` ->
+// opts.pkg). The declared positional names per command map the leftover
+// positionals into a named `args` object.
+function camelCase(flag) {
+  return flag.replace(/-([a-z])/g, (_m, c) => c.toUpperCase());
+}
 
-    json(packagePath).then((pkg) => {
-      console.log(
-        'Building:',
-        chalk.bold(`${pkg.name}@${pkg.version} extension`)
-      );
+function parseArgv(argv, positionalNames) {
+  const opts = {};
+  const positionals = [];
 
-      getExternals(rootPath)
-        .then(externals => getConfig(pkg, rootPath, args, externals))
-        .then((config) => {
-          Webpack(config).run((err, stats) => {
-            if (err) {
-              console.log('Error:', chalk.bold(JSON.stringify(err, null, 2)));
-            } else {
-              const chunks = stats.toJson({ chunks: true }).chunks;
-              console.log(
-                'Output:',
-                chalk.bold(
-                  `${path.join(args.destinationFolder, chunks[0].files[0])}`
-                )
-              );
-
-              const largeModules = _.chain(chunks[0].modules)
-                .orderBy(['size'], ['desc'])
-                .filter(m => m.size > 5000)
-                .value();
-              if (largeModules && largeModules.length) {
-                largeModules.forEach(m =>
-                  console.log(` - ${m.name} (${Math.round(m.size / 1024)} KB)`)
-                );
-              }
-
-              console.log('\n');
-              console.log(
-                stats.toString({
-                  colors: true,
-                  cached: false,
-                  cachedModules: false
-                })
-              );
-            }
-          });
-        });
-    });
-  })
-  .command(
-    'validate',
-    'Check extension`s package.json to contain all necessary information'
-  )
-  .argument('entryPoint', 'Entry point for your extension')
-  .action((args) => {
-    const rootPath = process.cwd();
-    const entry = args.entryPoint || 'package.json';
-    const packagePath = path.join(rootPath, entry);
-
-    json(packagePath).then((pkg) => {
-      console.log(`Validating ${packagePath}`);
-
-      const result = validator.validate(pkg, true);
-
-      if (result.isValid) {
-        console.log(`${packagePath} is valid.`);
-        return process.exit(0);
+  for (let i = 0; i < argv.length; i += 1) {
+    const token = argv[i];
+    if (token.startsWith('--')) {
+      const name = camelCase(token.slice(2));
+      const next = argv[i + 1];
+      if (next !== undefined && !next.startsWith('--')) {
+        opts[name] = next;
+        i += 1;
+      } else {
+        opts[name] = true;
       }
-
-      console.log(`${packagePath} is invalid.`, result.errors);
-      return process.exit((result.errors && result.errors.length) || 1);
-    });
-  })
-  .command('package', 'Package assets for extension deployment')
-  .option('--pkg <pkg>', 'Path of package.json')
-  .option('--client <client>', 'Path of client side assets')
-  .option('--bundle <bundle>', 'Path to extensions bundle')
-  .option('--out <out>', 'Directory to copy build package')
-  .action((args, opts) => {
-    const rootPath = process.cwd();
-    const packagePath = path.join(rootPath, opts.pkg || 'package.json');
-
-    json(packagePath).then((pkg) => {
-      console.log(`Validating ${packagePath}`);
-
-      const result = validator.validate(pkg, true);
-
-      if (!result.isValid) {
-        console.log(`${packagePath} is invalid.`, result.errors);
-        return process.exit((result.errors && result.errors.length) || 1);
-      }
-
-      const clientPath = opts.client ? path.join(rootPath, opts.client) : null;
-      const bundlePath = path.join(
-        rootPath,
-        opts.bundle || `./dist/${pkg.name}.extension.${pkg.version}.js`
-      );
-      const outPath = path.join(
-        rootPath,
-        opts.out || pkg['auth0-extension'].main
-      );
-
-      console.log(
-        'Packaging:',
-        chalk.bold(`${pkg.name}@${pkg.version} extension assets`)
-      );
-
-      const zip = new AdmZip();
-
-      zip.addLocalFile(packagePath);
-      zip.addLocalFile(bundlePath, '', 'extension.js');
-      if (clientPath) {
-        zip.addLocalFolder(clientPath,
-          'client',
-          filename => filename.endsWith('.js') || filename.endsWith('.css'));
-      }
-
-      const zipName = path.join(outPath, 'package.zip');
-
-      return zip.writeZip(zipName, (err) => {
-        if (err) {
-          console.log('Error:', `Unable to package ${zipName}`);
-          return process.exit(1);
-        }
-
-        console.log(`${zipName} packaged successfully`);
-        return process.exit(0);
-      });
-    });
-  })
-  .command('deploy', 'Deploys the extension to Auth0.')
-  .option('--apiKey <apiKey>', 'API Key')
-  .option('--package <package>', 'Path to extension bundle')
-  .option('--url <url>', 'URL to extension deploy endpoint')
-  .action((args, opts) => {
-    const rootPath = process.cwd();
-    const filePath = path.join(rootPath, opts.package || 'dist/package.zip');
-    const url = opts.url || 'http://0.0.0.0:3000/api/extensions';
-    const apiKey = opts.apiKey || process.env.AUTH0_EXTENSIONS_API_KEY;
-
-    if (!apiKey) {
-      console.error(
-        'An API key is required. Please set --apiKey flag or set the environment variable AUTH0_EXTENSIONS_API_KEY'
-      );
-      return process.exit(1);
+    } else {
+      positionals.push(token);
     }
+  }
 
-    return request
-      .post(url)
-      .set({ 'x-api-key': apiKey })
-      .attach('package', filePath)
-      .then(
-        () => {
-          console.log('Extension has been deployed successfully');
-          return process.exit(0);
-        },
-        (err) => {
-          console.log('Deploy process failed');
-          console.log((err.response && err.response.error) || err);
-          return process.exit(1);
-        }
-      );
+  const args = {};
+  positionalNames.forEach((name, idx) => {
+    args[name] = positionals[idx];
   });
 
-prog.parse(process.argv);
+  return { args, opts };
+}
+
+function buildServer(args) {
+  const rootPath = process.cwd();
+  const packagePath = path.join(rootPath, args.pkg || 'package.json');
+
+  json(packagePath).then((pkg) => {
+    console.log(
+      'Building:',
+      chalk.bold(`${pkg.name}@${pkg.version} extension`)
+    );
+
+    getExternals(rootPath)
+      .then(externals => getConfig(pkg, rootPath, args, externals))
+      .then((config) => {
+        Webpack(config).run((err, stats) => {
+          if (err) {
+            console.log('Error:', chalk.bold(JSON.stringify(err, null, 2)));
+          } else {
+            const chunks = stats.toJson({ chunks: true }).chunks;
+            console.log(
+              'Output:',
+              chalk.bold(
+                `${path.join(args.destinationFolder, chunks[0].files[0])}`
+              )
+            );
+
+            const largeModules = _.chain(chunks[0].modules)
+              .orderBy(['size'], ['desc'])
+              .filter(m => m.size > 5000)
+              .value();
+            if (largeModules && largeModules.length) {
+              largeModules.forEach(m =>
+                console.log(` - ${m.name} (${Math.round(m.size / 1024)} KB)`)
+              );
+            }
+
+            console.log('\n');
+            console.log(
+              stats.toString({
+                colors: true,
+                cached: false,
+                cachedModules: false
+              })
+            );
+          }
+        });
+      });
+  });
+}
+
+function validate(args) {
+  const rootPath = process.cwd();
+  const entry = args.entryPoint || 'package.json';
+  const packagePath = path.join(rootPath, entry);
+
+  json(packagePath).then((pkg) => {
+    console.log(`Validating ${packagePath}`);
+
+    const result = validator.validate(pkg, true);
+
+    if (result.isValid) {
+      console.log(`${packagePath} is valid.`);
+      return process.exit(0);
+    }
+
+    console.log(`${packagePath} is invalid.`, result.errors);
+    return process.exit((result.errors && result.errors.length) || 1);
+  });
+}
+
+function packageExtension(args) {
+  const rootPath = process.cwd();
+  const packagePath = path.join(rootPath, args.pkg || 'package.json');
+
+  json(packagePath).then((pkg) => {
+    console.log(`Validating ${packagePath}`);
+
+    const result = validator.validate(pkg, true);
+
+    if (!result.isValid) {
+      console.log(`${packagePath} is invalid.`, result.errors);
+      return process.exit((result.errors && result.errors.length) || 1);
+    }
+
+    const clientPath = args.client ? path.join(rootPath, args.client) : null;
+    const bundlePath = path.join(
+      rootPath,
+      args.bundle || `./dist/${pkg.name}.extension.${pkg.version}.js`
+    );
+    const outPath = path.join(
+      rootPath,
+      args.out || pkg['auth0-extension'].main
+    );
+
+    console.log(
+      'Packaging:',
+      chalk.bold(`${pkg.name}@${pkg.version} extension assets`)
+    );
+
+    const zip = new AdmZip();
+
+    zip.addLocalFile(packagePath);
+    zip.addLocalFile(bundlePath, '', 'extension.js');
+    if (clientPath) {
+      zip.addLocalFolder(clientPath,
+        'client',
+        filename => filename.endsWith('.js') || filename.endsWith('.css'));
+    }
+
+    const zipName = path.join(outPath, 'package.zip');
+
+    return zip.writeZip(zipName, (err) => {
+      if (err) {
+        console.log('Error:', `Unable to package ${zipName}`);
+        return process.exit(1);
+      }
+
+      console.log(`${zipName} packaged successfully`);
+      return process.exit(0);
+    });
+  });
+}
+
+function deploy(args) {
+  const rootPath = process.cwd();
+  const filePath = path.join(rootPath, args.package || 'dist/package.zip');
+  const url = args.url || 'http://0.0.0.0:3000/api/extensions';
+  const apiKey = args.apiKey || process.env.AUTH0_EXTENSIONS_API_KEY;
+
+  if (!apiKey) {
+    console.error(
+      'An API key is required. Please set --apiKey flag or set the environment variable AUTH0_EXTENSIONS_API_KEY'
+    );
+    return process.exit(1);
+  }
+
+  return request
+    .post(url)
+    .set({ 'x-api-key': apiKey })
+    .attach('package', filePath)
+    .then(
+      () => {
+        console.log('Extension has been deployed successfully');
+        return process.exit(0);
+      },
+      (err) => {
+        console.log('Deploy process failed');
+        console.log((err.response && err.response.error) || err);
+        return process.exit(1);
+      }
+    );
+}
+
+const COMMANDS = {
+  'build:server': { positionals: ['entryPoint', 'destinationFolder'], run: buildServer },
+  validate: { positionals: ['entryPoint'], run: validate },
+  package: { positionals: [], run: packageExtension },
+  deploy: { positionals: [], run: deploy }
+};
+
+const [command, ...rest] = process.argv.slice(2);
+const spec = COMMANDS[command];
+
+if (!spec) {
+  console.error(`Unknown command: ${command || '(none)'}`);
+  console.error(`Available commands: ${Object.keys(COMMANDS).join(', ')}`);
+  process.exit(1);
+}
+
+const { args, opts } = parseArgv(rest, spec.positionals);
+// Merge positionals and options into a single argument object. Handlers read
+// positionals by name (args.entryPoint) and flags by camelCased name (args.pkg).
+spec.run(Object.assign({}, args, opts));

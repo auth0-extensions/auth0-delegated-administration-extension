@@ -205,7 +205,6 @@
     "adm-zip": "^0.6.1",
     "auth0-styleguide": "auth0/styleguide#4.8.33",
     "axios-mock-adapter": "^2.1.0",
-    "caporal": "^1.4.0",
     "chalk": "^1.1.3",
     "babel-loader": "^8.0.4",
     "chai": "^4.2.0",
