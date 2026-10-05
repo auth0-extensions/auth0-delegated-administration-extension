@@ -4,7 +4,7 @@ import { NotFoundError } from '../../../vendor/auth0-extension-tools';
 
 export default (action, scriptManager) => (req, res, next) =>
   req.auth0.users.get({ id: req.params.id })
-    .then(user => {
+    .then(({ data: user }) => {
       if (!user) {
         return Promise.reject(new NotFoundError(`User not found: ${req.params.id}`));
       }

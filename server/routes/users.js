@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import auth0 from 'auth0';
+import { AuthenticationClient } from 'auth0';
 import axios from 'axios';
 import Promise from 'bluebird';
 import { Router } from 'express';
@@ -251,7 +251,7 @@ export default (storage, scriptManager) => {
 
         return req.auth0.users.getAll(options);
       })
-      .then(data =>
+      .then(({ data }) =>
         Promise.map(data.users, (user, index) =>
           scriptManager.execute('access', { request: { user: req.user }, payload: { user, action: 'read:user' } })
             .then((parsedUser) => {
@@ -412,7 +412,7 @@ export default (storage, scriptManager) => {
     // Determine which domain to use
     const domain = customHeaders['auth0-custom-domain'] || config('AUTH0_DOMAIN');
 
-    const client = new auth0.AuthenticationClient({
+    const client = new AuthenticationClient({
       domain,
       clientId: config('AUTH0_CLIENT_ID')
     });
@@ -426,7 +426,7 @@ export default (storage, scriptManager) => {
       client_id: req.body.clientId
     };
 
-    return client.requestChangePasswordEmail(data)
+    return client.database.changePassword(data)
       .then(() => res.sendStatus(204))
       .catch((err) => {
         next(err);
@@ -555,7 +555,7 @@ export default (storage, scriptManager) => {
    */
   api.get('/:id/devices', verifyUserAccess('read:devices', scriptManager), (req, res, next) => {
     req.auth0.deviceCredentials.getAll({ user_id: req.params.id })
-      .then(devices => res.json({ devices }))
+      .then(({ data: devices }) => res.json({ devices }))
       .catch(next);
   });
 

@@ -16,13 +16,13 @@ export default (scriptManager) => {
         page: req.query.page || 0,
         fields: 'type,date,client_name,user_name,description,connection'
       })
-      .then(logs => res.json(logs))
+      .then(({ data: logs }) => res.json(logs))
       .catch(next);
   });
 
   api.get('/:id', (req, res, next) => {
     req.auth0.logs.get({ id: req.params.id })
-      .then(log => {
+      .then(({ data: log }) => {
         if (log && (log.type === 'fapi' || log.type === 'sapi')) {
           return Promise.reject(new Error('Invalid log record.'));
         }
@@ -32,7 +32,7 @@ export default (scriptManager) => {
         }
 
         return req.auth0.users.get({ id: log.user_id })
-          .then(user => {
+          .then(({ data: user }) => {
             if (!user) {
               throw new NotFoundError(`User not found: ${req.params.id}`);
             }
