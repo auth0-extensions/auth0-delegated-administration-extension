@@ -6,15 +6,16 @@ import bodyParser from 'body-parser';
 
 import applications from '../../../server/routes/applications';
 import { defaultApplications } from '../../utils/dummyData';
+import wrapV4Client from '../../utils/wrapV4Client';
 
 
 describe('#connections router', () => {
   const fakeApiClient = (req, res, next) => {
-    req.auth0 = {
+    req.auth0 = wrapV4Client({
       clients: {
         getAll: () => Promise.resolve(defaultApplications)
       }
-    };
+    });
 
     next();
   };

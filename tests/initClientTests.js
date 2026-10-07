@@ -34,14 +34,19 @@ global.IS_REACT_ACT_ENVIRONMENT = true;
 
 copyProps(window, global);
 
-// jsdom exposes XMLHttpRequest/fetch on window, and copyProps leaks them onto the
-// global scope. axios then auto-selects its browser (XHR/fetch) adapter whenever those
-// globals are present — even in server-side route tests — and that transport bypasses
-// nock (which only patches Node's http/https). Removing them forces axios back to the
-// Node http adapter so nock can intercept. Client tests mock via axios-mock-adapter
-// (adapter-layer, transport-agnostic), so they don't rely on these globals.
+// jsdom exposes XMLHttpRequest on window, and copyProps leaks it onto the global
+// scope. axios's default adapter order is ['xhr', 'http', 'fetch'], so a present
+// XMLHttpRequest makes it pick the browser XHR transport — even in server-side route
+// tests — which bypasses nock (nock only patches Node's http/https). Removing it drops
+// axios to the Node http adapter so nock can intercept. Client tests mock via
+// axios-mock-adapter (adapter-layer, transport-agnostic), so they don't rely on it.
+//
+// Note: we deliberately keep global.fetch. The auth0 v4 SDK's ManagementClient falls
+// back to `globalThis.fetch.bind(globalThis)` when no fetch is configured, so deleting
+// it throws "Cannot read properties of undefined (reading 'bind')" on construction.
+// axios never reaches its fetch adapter here anyway — the http adapter precedes it and
+// is always available in Node — so keeping fetch doesn't reintroduce the nock bypass.
 delete global.XMLHttpRequest;
-delete global.fetch;
 
 // Mock components from @a0/auth0-extension-ui to avoid context requirement in tests
 import React from 'react';

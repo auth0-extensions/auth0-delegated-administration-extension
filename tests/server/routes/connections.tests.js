@@ -7,15 +7,16 @@ import bodyParser from 'body-parser';
 import connections from '../../../server/routes/connections';
 import ScriptManager from '../../../server/lib/scriptmanager';
 import { user, defaultConnections, defaultScripts } from '../../utils/dummyData';
+import wrapV4Client from '../../utils/wrapV4Client';
 
 
 describe('#connections router', () => {
   const fakeApiClient = (req, res, next) => {
-    req.auth0 = {
+    req.auth0 = wrapV4Client({
       connections: {
         getAll: () => Promise.resolve(defaultConnections)
       }
-    };
+    });
 
     next();
   };

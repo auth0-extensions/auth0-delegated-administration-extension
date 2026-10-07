@@ -11,6 +11,7 @@ import config from '../../../server/lib/config';
 import users from '../../../server/routes/users';
 import ScriptManager from '../../../server/lib/scriptmanager';
 import { user, defaultUsers, defaultScripts, defaultConfig } from '../../utils/dummyData';
+import wrapV4Client from '../../utils/wrapV4Client';
 
 let userData = {};
 
@@ -76,7 +77,7 @@ describe('#users router', () => {
   };
 
   let fakeApiClient = (req, res, next) => {
-    req.auth0 = auth0Client;
+    req.auth0 = wrapV4Client(auth0Client);
     next();
   };
 

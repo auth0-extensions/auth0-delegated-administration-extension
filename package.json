@@ -223,7 +223,7 @@
     "load-json-file": "^2.0.0",
     "mini-css-extract-plugin": "^2.8.0",
     "mocha": "^12.0.2",
-    "nock": "^11.9.1",
+    "nock": "^14.0.10",
     "node-polyfill-webpack-plugin": "^4.1.0",
     "nodemon": "^3.1.0",
     "nyc": "^18.0.0",

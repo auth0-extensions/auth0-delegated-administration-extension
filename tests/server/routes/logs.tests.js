@@ -8,11 +8,12 @@ import logs from '../../../server/routes/logs';
 import ScriptManager from '../../../server/lib/scriptmanager';
 import { user, defaultLogs, defaultUsers, defaultScripts } from '../../utils/dummyData';
 import * as constants from '../../../server/constants';
+import wrapV4Client from '../../utils/wrapV4Client';
 
 
 describe('#logs router', () => {
   const fakeApiClient = (req, res, next) => {
-    req.auth0 = {
+    req.auth0 = wrapV4Client({
       users: {
         get: (options) => {
           const id = parseInt(options.id, 10) - 1;
@@ -26,7 +27,7 @@ describe('#logs router', () => {
           return Promise.resolve(defaultLogs[id]);
         }
       }
-    };
+    });
 
     next();
   };
