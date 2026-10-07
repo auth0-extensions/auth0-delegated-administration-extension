@@ -239,15 +239,22 @@ export default (storage, scriptManager) => {
     scriptManager.execute('filter', filterContext)
       .then((filter) => {
         const filterQuery = (filter && typeof filter.query !== 'undefined') ? filter.query : filter;
+        const query = (searchQuery && filterQuery) ? `(${searchQuery}) AND ${filterQuery}` : searchQuery || filterQuery;
         const options = {
           sort,
-          q: (searchQuery && filterQuery) ? `(${searchQuery}) AND ${filterQuery}` : searchQuery || filterQuery,
           per_page: req.query.per_page || 10,
           page: req.query.page || 0,
           include_totals: true,
           fields: 'user_id,username,name,email,identities,picture,last_login,logins_count,multifactor,blocked,app_metadata,user_metadata',
           search_engine: searchEngine
         };
+
+        // Only send `q` when there is an actual search/filter. auth0 SDK v4
+        // serializes an explicit `q: null`/`undefined` into the api2 query
+        // (matching zero users), whereas v3 silently dropped it.
+        if (query) {
+          options.q = query;
+        }
 
         return req.auth0.users.getAll(options);
       })
