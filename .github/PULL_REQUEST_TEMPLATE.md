@@ -6,6 +6,11 @@
 > - What did you change in the code itself?
 > - If you are updating a dependency, explain why this is needed.
   
+## Change Log, Tags & Releases
+
+> We should ensure that the change log details the changes we make so that customers are confident when they upgrade
+> we should thoughtfully add tags and releases to github which match the extension version and change log
+
 ## 📷 Screenshots
  
 If there were visual changes to the application with this change, please include before and after screenshots here. If it has animation, please use screen capture software like  to make a gif.
