@@ -13,7 +13,9 @@ module.exports = [
       '.nyc_output/**',
       'node_modules/**',
       'vendor/**',
-      'assets/**'
+      'assets/**',
+      'tests/e2e/playwright-report/**',
+      'tests/e2e/test-results/**'
     ]
   },
   js.configs.recommended,
