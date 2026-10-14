@@ -7,13 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [5.0.5] - 2026-09-29
 
-### Security
-
-- Removed the unused `superagent-proxy` dev dependency, eliminating the vulnerable `ip` SSRF chain (#218).
-- Added dependency overrides to force patched versions of vulnerable build/test-only transitive dependencies (none ship in the deployed extension):
-  - `serialize-javascript` → `^7.1.2` (RCE via serialization and `RegExp.flags`; #18, #317)
-  - `ws` → `^8.22.0` (DoS via many HTTP headers and memory exhaustion; #220, #448)
-  - `braces` → `^3.0.3` (uncontrolled resource consumption; #219)
+- refactoring to update or remove various vulnerable dev dependencies
+- updated Auth0 SDK dependency from 3.7.2 to ˆ4.37.1
 
 ## [5.0.4] - 2026-09-21
 
