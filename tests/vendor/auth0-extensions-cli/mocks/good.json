@@ -1,0 +1,42 @@
+{
+  "name": "auth0-dummy-extension",
+  "version": "1.0.0",
+  "description": "Auth0 Dummy Extension",
+  "main": "server.js",
+  "scripts": {
+    "build": "npm run build-extension-please"
+  },
+  "keywords": [
+    "auth0",
+    "extension"
+  ],
+  "author": "Auth0",
+  "license": "MIT",
+  "auth0-extension": {
+    "title": "Auth0 Dummy Extension",
+    "type": "application",
+    "category": "source_control",
+    "secrets": {
+      "DUMMY_SECRET": {
+        "example": "anything",
+        "description": "Whatever",
+        "required": true
+      }
+    },
+    "externals": [
+      "auth0",
+      "some-module",
+      "webtask-tools"
+    ],
+    "excluded": [
+      "express-conditional-middleware",
+      "pino"
+    ]
+  },
+  "dependencies": {
+    "auth0": "*"
+  },
+  "devDependencies": {
+    "auth0-extensions-cli": "*"
+  }
+}

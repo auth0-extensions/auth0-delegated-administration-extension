@@ -61,7 +61,7 @@ export default (storage) => {
     })
       .then(auth0 =>
         auth0.users.get({ id: user.sub })
-          .then((userData) => {
+          .then(({ data: userData }) => {
             _.assign(user, userData);
             user.token = token;
             global.daeUser[user.sub] = user;
