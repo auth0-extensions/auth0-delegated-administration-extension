@@ -9,6 +9,7 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from 'axios';
 
 import fakeStore from '../../../utils/fakeStore';
+import * as constants from '../../../../client/constants';
 
 import Users from '../../../../client/containers/Users/Users';
 
@@ -33,7 +34,7 @@ describe('#Client-Containers-Users-Users', () => {
   });
 
 
-  const renderComponent = (languageDictionary, settings = {}) => {
+  const renderComponent = (languageDictionary, settings = {}, dispatch) => {
     const initialState = {
       connections: fromJS({ records: [ { name: 'connA' } ] }),
       accessLevel: fromJS({ record: { role: 1 } }),
@@ -62,8 +63,10 @@ describe('#Client-Containers-Users-Users', () => {
       }),
       settings: fromJS({ record: { settings: settings || {} } })
     };
+    const store = fakeStore(initialState);
+    if (dispatch) store.dispatch = dispatch;
     return render(
-      <Provider store={fakeStore(initialState)}>
+      <Provider store={store}>
         <MemoryRouter initialEntries={[ '/' ]} initialIndex={0}>
           <Routes>
             <Route path="/" element={<UsersWrapper/>}/>
@@ -141,5 +144,13 @@ describe('#Client-Containers-Users-Users', () => {
     });
 
     checkCreateUserButtonMissing(component.container);
+  });
+
+  it('should fetch users but not connections on mount (connections are loaded by App)', () => {
+    const dispatched = [];
+    renderComponent({}, {}, (action) => dispatched.push(action));
+
+    expect(dispatched.filter(action => typeof action === 'function')).to.have.length(1);
+    expect(dispatched.filter(action => action && action.type === constants.FETCH_CONNECTIONS)).to.have.length(0);
   });
 });

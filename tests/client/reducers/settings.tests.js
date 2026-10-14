@@ -6,6 +6,7 @@ import { fromJS } from 'immutable';
 
 const initialState = {
   loading: false,
+  initialized: false,
   error: null,
   record: fromJS({ settings: { dict: { title: '', memberships: '' }, userFields: [], css: '' } })
 };
@@ -27,6 +28,7 @@ describe('settings reducer', () => {
     ).toEqual(
       {
         loading: true,
+        initialized: false,
         error: null,
         record: fromJS({ settings: { dict: { title: '', memberships: '' }, userFields: [], css: '' } })
       }
@@ -46,6 +48,7 @@ describe('settings reducer', () => {
     ).toEqual(
       {
         loading: false,
+        initialized: true,
         error: {
           type: 'TEST',
           message: 'ERROR',
@@ -100,6 +103,7 @@ describe('settings reducer', () => {
       ).toEqual(
         {
           loading: false,
+          initialized: true,
           error: null,
           record: fromJS({
             settings: {
@@ -128,6 +132,7 @@ describe('settings reducer', () => {
       ).toEqual(
         {
           loading: false,
+          initialized: true,
           error: null,
           record: fromJS({
             settings: {
@@ -179,6 +184,7 @@ describe('settings reducer', () => {
       ).toEqual(
         {
           loading: false,
+          initialized: true,
           error: null,
           record: fromJS({
             settings: {
@@ -234,6 +240,7 @@ describe('settings reducer', () => {
       ).toEqual(
         {
           loading: false,
+          initialized: true,
           error: null,
           record: fromJS({
             settings: {
@@ -291,6 +298,7 @@ describe('settings reducer', () => {
       ).toEqual(
         {
           loading: false,
+          initialized: true,
           error: null,
           record: fromJS({
             settings: {
@@ -334,6 +342,7 @@ describe('settings reducer', () => {
 
       const target = {
         loading: false,
+        initialized: true,
         error: null,
         record: fromJS({
           settings: {
@@ -396,6 +405,7 @@ describe('settings reducer', () => {
       ).toEqual(
         {
           loading: false,
+          initialized: true,
           error: null,
           record: fromJS({
             settings: {
@@ -440,6 +450,7 @@ describe('settings reducer', () => {
 
       const target = {
         loading: false,
+        initialized: true,
         error: null,
         record: fromJS({
           settings: {
@@ -493,6 +504,7 @@ describe('settings reducer', () => {
 
       const target = {
         loading: false,
+        initialized: true,
         error: null,
         record: fromJS({
           settings: {
@@ -515,5 +527,18 @@ describe('settings reducer', () => {
         target
       );
     });
+  });
+
+  it('should keep initialized when settings are refreshed after the first load', () => {
+    const loadedState = settings(undefined, {
+      type: constants.FETCH_SETTINGS_FULFILLED,
+      payload: { data: { settings: { dict: { title: 'test' } } } }
+    });
+
+    const refreshingState = settings(loadedState, { type: constants.FETCH_SETTINGS_PENDING });
+
+    expect(refreshingState.get('loading')).toEqual(true);
+    expect(refreshingState.get('initialized')).toEqual(true);
+    expect(refreshingState.get('record').toJS()).toEqual({ settings: { dict: { title: 'test' } } });
   });
 });
