@@ -9,10 +9,3 @@ setup('delete users left over from previous runs', async ({ managementApi }) => 
   }
 });
 
-// Hooks apply to every test, so an interrupted run must not leave one behind.
-// Relies on auth.setup.js running first (setup files run alphabetically on a single worker).
-setup('clear hooks left over from previous runs', async ({ daeApi }) => {
-  for (const name of [ 'filter', 'settings', 'create' ]) {
-    await daeApi.saveScript(name, '');
-  }
-});

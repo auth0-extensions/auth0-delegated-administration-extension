@@ -1,9 +1,10 @@
 const { test, expect } = require('../fixtures');
-const { usersUrl, configurationUrl } = require('../helpers/urls');
-const { SEEDED_USERS } = require('../helpers/testData');
+const { configurationUrl } = require('../helpers/urls');
+const { ADMIN_EMAIL, SEEDED_USERS } = require('../helpers/testData');
 const { SAME_EMAIL_DOMAIN_FILTER_HOOK, HOOK_CACHE_TTL_MS } = require('../helpers/hooks');
+const { testConnectionQuery, usersList } = require('../helpers/usersList');
 
-const allEmails = [ process.env.DAE_ADMIN_EMAIL, ...SEEDED_USERS.map(({ email }) => email) ];
+const allEmails = [ ADMIN_EMAIL, ...SEEDED_USERS.map(({ email }) => email) ];
 const sameDomainEmails = allEmails.filter(email => email.endsWith('@test.com'));
 
 // CodeMirror auto-indents typed text and only renders visible lines, so read its value directly
@@ -53,8 +54,7 @@ test.describe('filter hook', () => {
   });
 
   test('filter hook restricts the users list to the admin\'s email domain', async ({ page, daeApi }) => {
-    const userRows = page.getByRole('table').getByRole('row').filter({ has: page.getByRole('cell') });
-    const rowFor = email => userRows.filter({ has: page.getByRole('link', { name: email, exact: true }) });
+    const { open, reload, userRows, search, expectOnlyUsersListed } = usersList(page);
 
     // Waiting out the hook cache, rather than polling until one instance updates, also stops a stale
     // filter leaking into later tests from another server instance
@@ -63,20 +63,16 @@ test.describe('filter hook', () => {
       await page.waitForTimeout(HOOK_CACHE_TTL_MS);
     };
 
-    const expectOnlyUsersListed = async (emails) => {
-      await expect(userRows).toHaveCount(emails.length);
-      for (const email of emails) {
-        await expect(rowFor(email)).toBeVisible();
-      }
-    };
-
     await saveFilterHookAndWaitForCache(SAME_EMAIL_DOMAIN_FILTER_HOOK);
-    await page.goto(usersUrl);
+    await open();
+    // DAE ANDs the filter hook's query onto the search
+    await search(testConnectionQuery());
     await expectOnlyUsersListed(sameDomainEmails);
     await expect(userRows.filter({ hasText: '@example.com' })).toHaveCount(0);
 
     await saveFilterHookAndWaitForCache('');
-    await page.reload();
+    await reload();
+    await search(testConnectionQuery());
     await expectOnlyUsersListed(allEmails);
   });
 });

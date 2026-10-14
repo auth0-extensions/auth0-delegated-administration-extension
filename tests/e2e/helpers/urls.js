@@ -1,6 +1,7 @@
 const { DAE_URL, AUTH0_DOMAIN } = process.env;
 
-const daePage = path => new URL(path, DAE_URL).href;
+// Playwright loads specs to list them before global setup sets DAE_URL; workers load them again afterwards
+const daePage = path => DAE_URL && new URL(path, DAE_URL).href;
 
 module.exports = {
   daeUrl: DAE_URL,

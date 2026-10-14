@@ -20,6 +20,7 @@
     "test:watch": "cross-env NODE_ENV=test mocha --require ignore-styles tests/mocha.js './tests/**/*.tests.js' --watch",
     "test:e2e": "playwright test -c tests/e2e",
     "test:e2e:headed": "playwright test -c tests/e2e --headed",
+    "test:e2e:reuse": "cross-env DAE_E2E_REUSE_INSTALL=1 playwright test -c tests/e2e",
     "lint:js": "eslint client server tests tools",
     "test:pre": "npm run test:clean && npm run lint:js",
     "test:clean": "rimraf ./coverage && rimraf ./.nyc_output",

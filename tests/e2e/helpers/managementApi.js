@@ -63,6 +63,16 @@ async function createManagementApiClient() {
     getUser: id => send('GET', `users/${encodeURIComponent(id)}`),
     createUser: user => send('POST', 'users', { data: user }),
     deleteUser: id => send('DELETE', `users/${encodeURIComponent(id)}`),
+    getConnectionByName: async name => (await send('GET', 'connections', { params: { name } }))[0],
+    getClientByName: async (name) => {
+      for (let page = 0; ; page++) {
+        const clients = await send('GET', 'clients', { params: { fields: 'client_id,name', per_page: 100, page } });
+        const client = clients.find(c => c.name === name);
+        if (client || clients.length < 100) return client;
+      }
+    },
+    enableConnectionForClient: (connectionId, clientId) =>
+      send('PATCH', `connections/${connectionId}/clients`, { data: [ { client_id: clientId, status: true } ] }),
     dispose: () => context.dispose()
   };
 }

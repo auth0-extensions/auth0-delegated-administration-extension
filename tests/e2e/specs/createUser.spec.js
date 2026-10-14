@@ -22,11 +22,15 @@ test.describe('create user', () => {
     await dialog.getByRole('textbox', { name: 'Email (required)' }).fill(email);
     await dialog.getByRole('textbox', { name: 'Password (required)', exact: true }).fill(password);
     await dialog.getByRole('textbox', { name: 'Repeat Password (required)' }).fill(password);
+    // DAE only asks for a connection when the tenant has more than one
+    const connectionField = dialog.getByRole('combobox', { name: 'Connection (required)' });
+    if (await connectionField.count()) await connectionField.selectOption(process.env.DAE_CONNECTION);
     await dialog.getByRole('button', { name: 'Create', exact: true }).click();
     await expect(heading).toBeHidden();
 
     const users = await managementApi.getUsersByEmail(email);
     expect(users).toHaveLength(1);
     expect(users[0].email).toBe(email);
+    expect(users[0].identities[0].connection).toBe(process.env.DAE_CONNECTION);
   });
 });
