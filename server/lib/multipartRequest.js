@@ -22,7 +22,7 @@ export default function (client, entity, opts = {}, fetchOptions = {} ) {
 
   const getTotals = () =>
     client[entity].getAll({ ...options, include_totals: true, page: 0 })
-      .then((response) => {
+      .then(({ data: response }) => {
         total = response.total || 0;
         pageCount = Math.ceil(total / perPage);
 
@@ -40,7 +40,7 @@ export default function (client, entity, opts = {}, fetchOptions = {} ) {
 
   const getPage = (page) =>
     client[entity].getAll({ ...options, page })
-      .then((data) => {
+      .then(({ data }) => {
         data.forEach(item => result.push(item));
         return null;
       });

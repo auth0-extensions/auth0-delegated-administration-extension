@@ -7,5 +7,5 @@ export default function (client, name) {
   }
 
   return client.connections.getAll({ name, fields: 'id' })
-    .then(connections => connections && connections[0] && connections[0].id);
+    .then(({ data: connections }) => connections && connections[0] && connections[0].id);
 }
