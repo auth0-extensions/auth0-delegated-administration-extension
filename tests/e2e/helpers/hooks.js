@@ -71,6 +71,47 @@ const CUSTOM_FIELDS_WRITE_HOOK = `function create(ctx, callback) {
   });
 }`;
 
+// A sample of the GLN dropdown settings hook from the DAE manual testing flows doc, which uses { value, label } options
+const GLN_OPTIONS = [
+  '9429040000008',
+  '9429040000015',
+  '9429040039107',
+  '9429040039114',
+  '9429040039121',
+  '9429040040004',
+  '9429040040011',
+  '9429040040103',
+  '9429040040110',
+  '9429040040752'
+];
+
+const GLN_DROPDOWN_SETTINGS_HOOK = `function (ctx, callback) {
+  const glns = ${JSON.stringify(GLN_OPTIONS)};
+
+  return callback(null, {
+    userFields: [
+      {
+        property: 'app_metadata.gln',
+        label: 'GLN',
+        edit: {
+          type: 'select',
+          component: 'InputSelectCombo',
+          options: glns.map(g => ({ value: g, label: g }))
+        }
+      },
+      {
+        property: 'app_metadata.glns',
+        label: 'GLNs',
+        edit: {
+          type: 'select',
+          component: 'InputMultiCombo',
+          options: glns.map(g => ({ value: g, label: g }))
+        }
+      }
+    ]
+  });
+}`;
+
 // Matches the ScriptManager cache maxAge in server/lib/scriptmanager.js; each server instance caches hooks separately
 const HOOK_CACHE_TTL_MS = 10000;
 
@@ -78,5 +119,7 @@ module.exports = {
   SAME_EMAIL_DOMAIN_FILTER_HOOK,
   CUSTOM_FIELDS_SETTINGS_HOOK,
   CUSTOM_FIELDS_WRITE_HOOK,
+  GLN_OPTIONS,
+  GLN_DROPDOWN_SETTINGS_HOOK,
   HOOK_CACHE_TTL_MS
 };
