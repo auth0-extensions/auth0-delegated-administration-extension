@@ -1,6 +1,6 @@
 const fs = require('fs');
 const base = require('@playwright/test');
-const { ADMIN_TOKEN_FILE } = require('./playwright.config');
+const { tokenFile } = require('./playwright.config');
 const { createManagementApiClient } = require('./helpers/managementApi');
 const { createDaeApiClient } = require('./helpers/daeApi');
 const { daeApiUrl } = require('./helpers/urls');
@@ -38,10 +38,13 @@ const unauthenticatedTest = base.test.extend({
 });
 
 const test = unauthenticatedTest.extend({
+  // Which of the installer's users (helpers/roles.js) the page and daeApi act as; set with test.use({ role })
+  role: [ 'administrator', { option: true } ],
+
   // DAE keeps its token in memory and reads `delegated-admin:apiToken` from sessionStorage on page load,
   // so seeding it before every navigation logs the page in without a Universal Login round trip.
-  page: async ({ page }, use) => {
-    const { idToken } = JSON.parse(fs.readFileSync(ADMIN_TOKEN_FILE, 'utf8'));
+  page: async ({ page, role }, use) => {
+    const { idToken } = JSON.parse(fs.readFileSync(tokenFile(role), 'utf8'));
     await page.addInitScript((token) => {
       sessionStorage.setItem('delegated-admin:apiToken', token);
     }, idToken);
@@ -54,8 +57,8 @@ const test = unauthenticatedTest.extend({
     await client.dispose();
   }, { scope: 'worker' } ],
 
-  daeApi: async ({}, use) => { // eslint-disable-line no-empty-pattern
-    const client = await createDaeApiClient();
+  daeApi: async ({ role }, use) => {
+    const client = await createDaeApiClient(role);
     await use(client);
     await client.dispose();
   }

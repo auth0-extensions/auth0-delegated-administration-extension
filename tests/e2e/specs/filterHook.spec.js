@@ -1,10 +1,11 @@
 const { test, expect } = require('../fixtures');
 const { configurationUrl } = require('../helpers/urls');
-const { ADMIN_EMAIL, SEEDED_USERS } = require('../helpers/testData');
+const { SEEDED_USERS } = require('../helpers/testData');
+const { installerUserEmails } = require('../helpers/roles');
 const { SAME_EMAIL_DOMAIN_FILTER_HOOK, HOOK_CACHE_TTL_MS } = require('../helpers/hooks');
 const { testConnectionQuery, usersList } = require('../helpers/usersList');
 
-const allEmails = [ ADMIN_EMAIL, ...SEEDED_USERS.map(({ email }) => email) ];
+const allEmails = [ ...installerUserEmails(), ...SEEDED_USERS.map(({ email }) => email) ];
 const sameDomainEmails = allEmails.filter(email => email.endsWith('@test.com'));
 
 // CodeMirror auto-indents typed text and only renders visible lines, so read its value directly

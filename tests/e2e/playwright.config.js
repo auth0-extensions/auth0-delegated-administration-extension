@@ -5,7 +5,7 @@ const { defineConfig, devices } = require('@playwright/test');
 const envFile = path.join(__dirname, '.env');
 if (fs.existsSync(envFile)) process.loadEnvFile(envFile);
 
-const ADMIN_TOKEN_FILE = path.join(__dirname, '.auth/admin-token.json');
+const tokenFile = role => path.join(__dirname, `.auth/${role}-token.json`);
 const DAE_INSTALL_FILE = path.join(__dirname, '.auth/dae-install.json');
 
 module.exports = defineConfig({
@@ -32,5 +32,5 @@ module.exports = defineConfig({
   ]
 });
 
-module.exports.ADMIN_TOKEN_FILE = ADMIN_TOKEN_FILE;
+module.exports.tokenFile = tokenFile;
 module.exports.DAE_INSTALL_FILE = DAE_INSTALL_FILE;

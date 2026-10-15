@@ -1,8 +1,9 @@
 const { test, expect } = require('../fixtures');
-const { ADMIN_EMAIL, SEEDED_USERS } = require('../helpers/testData');
+const { SEEDED_USERS } = require('../helpers/testData');
+const { installerUserEmails } = require('../helpers/roles');
 const { testConnectionQuery, usersList } = require('../helpers/usersList');
 
-const allEmails = [ ADMIN_EMAIL, ...SEEDED_USERS.map(({ email }) => email) ];
+const allEmails = [ ...installerUserEmails(), ...SEEDED_USERS.map(({ email }) => email) ];
 
 test('admin can search users with lucene queries and reset the search', async ({ page }) => {
   const { open, searchBar, userRows, search, expectOnlyUsersListed } = usersList(page);
@@ -22,5 +23,5 @@ test('admin can search users with lucene queries and reset the search', async ({
   await expectOnlyUsersListed(allEmails);
   await searchAndReset(`email:user-a@example.com AND ${testConnectionQuery()}`, [ 'user-a@example.com' ]);
   await searchAndReset(`name:user-e AND ${testConnectionQuery()}`, [ 'user-e@test.com' ]);
-  await searchAndReset(`email:*@test.com AND ${testConnectionQuery()}`, [ ADMIN_EMAIL, 'user-d@test.com', 'user-e@test.com' ]);
+  await searchAndReset(`email:*@test.com AND ${testConnectionQuery()}`, allEmails.filter(email => email.endsWith('@test.com')));
 });
