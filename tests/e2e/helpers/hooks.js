@@ -112,6 +112,34 @@ const GLN_DROPDOWN_SETTINGS_HOOK = `function (ctx, callback) {
   });
 }`;
 
+// Based on the access hook docs example: no one can delete users, and admins can only access users in their own email domain
+const ACCESS_DENIED_DELETE_MESSAGE = 'You are not allowed to delete users.';
+const ACCESS_DENIED_DOMAIN_MESSAGE = 'You can only access users in your own email domain.';
+
+const SAME_EMAIL_DOMAIN_ACCESS_HOOK = `function (ctx, callback) {
+  if (ctx.payload.action === 'delete:user') {
+    return callback(new Error('${ACCESS_DENIED_DELETE_MESSAGE}'));
+  }
+
+  var domain = ctx.request.user.email.split('@')[1];
+  if (ctx.payload.user.email.split('@')[1] !== domain) {
+    return callback(new Error('${ACCESS_DENIED_DOMAIN_MESSAGE}'));
+  }
+
+  return callback();
+}`;
+
+const MEMBERSHIPS = [ 'Finance', 'HR', 'IT' ];
+
+const MEMBERSHIPS_HOOK = `function (ctx, callback) {
+  return callback(null, { createMemberships: true, memberships: ${JSON.stringify(MEMBERSHIPS)} });
+}`;
+
+// DAE hides the memberships field when there's only one, and gives every new user that membership
+const SINGLE_MEMBERSHIP_HOOK = `function (ctx, callback) {
+  return callback(null, ['IT']);
+}`;
+
 // Matches the ScriptManager cache maxAge in server/lib/scriptmanager.js; each server instance caches hooks separately
 const HOOK_CACHE_TTL_MS = 10000;
 
@@ -121,5 +149,11 @@ module.exports = {
   CUSTOM_FIELDS_WRITE_HOOK,
   GLN_OPTIONS,
   GLN_DROPDOWN_SETTINGS_HOOK,
+  ACCESS_DENIED_DELETE_MESSAGE,
+  ACCESS_DENIED_DOMAIN_MESSAGE,
+  SAME_EMAIL_DOMAIN_ACCESS_HOOK,
+  MEMBERSHIPS,
+  MEMBERSHIPS_HOOK,
+  SINGLE_MEMBERSHIP_HOOK,
   HOOK_CACHE_TTL_MS
 };

@@ -6,7 +6,7 @@ const DAE_CLIENT_NAME = 'auth0-delegated-admin';
 
 const TEST_USER_EMAIL_PREFIX = 'dae-e2e-';
 
-const uniqueTestUserEmail = () => `${TEST_USER_EMAIL_PREFIX}${Date.now()}@example.com`;
+const uniqueTestUserEmail = (domain = 'example.com') => `${TEST_USER_EMAIL_PREFIX}${Date.now()}@${domain}`;
 
 const SEEDED_USERS = [
   'user-a@example.com',
