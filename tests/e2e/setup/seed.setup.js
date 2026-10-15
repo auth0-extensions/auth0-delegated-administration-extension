@@ -2,9 +2,11 @@ const crypto = require('crypto');
 const { test: setup, expect } = require('../fixtures');
 const { SEEDED_USERS } = require('../helpers/testData');
 
-const seededUsersQuery = SEEDED_USERS.map(({ email }) => `email:"${email}"`).join(' OR ');
-
 setup('seed users', async ({ managementApi }) => {
+  // Emails are only unique per connection, and the users list only shows this one
+  const emails = SEEDED_USERS.map(({ email }) => `email:"${email}"`).join(' OR ');
+  const seededUsersQuery = `identities.connection:"${process.env.DAE_CONNECTION}" AND (${emails})`;
+
   const existingEmails = (await managementApi.searchUsers(seededUsersQuery)).map(({ email }) => email);
 
   for (const { email, name } of SEEDED_USERS.filter(({ email }) => !existingEmails.includes(email))) {

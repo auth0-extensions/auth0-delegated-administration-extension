@@ -20,7 +20,7 @@ test('admin can search users with lucene queries and reset the search', async ({
   await searchBar.click();
   await search(testConnectionQuery());
   await expectOnlyUsersListed(allEmails);
-  await searchAndReset('email:user-a@example.com', [ 'user-a@example.com' ]);
-  await searchAndReset('name:user-e', [ 'user-e@test.com' ]);
+  await searchAndReset(`email:user-a@example.com AND ${testConnectionQuery()}`, [ 'user-a@example.com' ]);
+  await searchAndReset(`name:user-e AND ${testConnectionQuery()}`, [ 'user-e@test.com' ]);
   await searchAndReset(`email:*@test.com AND ${testConnectionQuery()}`, [ ADMIN_EMAIL, 'user-d@test.com', 'user-e@test.com' ]);
 });
