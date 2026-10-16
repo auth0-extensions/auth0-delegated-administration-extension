@@ -16,13 +16,13 @@ export default class UserDevices extends Component {
   };
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.devices !== this.props.devices || nextProps.user !== this.props.user || nextProps.loading !== this.props.loading;
+    return nextProps.devices !== this.props.devices || nextProps.user !== this.props.user || nextProps.loading !== this.props.loading || nextProps.error !== this.props.error;
   }
 
   render() {
     const { error, loading, settings } = this.props;
     if (loading) {
-      return <div></div>;
+      return <LoadingPanel show={true} />;
     }
 
     const languageDictionary = this.props.languageDictionary || {};

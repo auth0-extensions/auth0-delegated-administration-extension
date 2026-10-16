@@ -14,6 +14,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - removed safe-eval package
 
+<<<<<<< HEAD
+## [5.0.7] - 2026-10-15
+
+- updated various build and dev dependencies
+- updated auth0-js library version
+
+## [5.0.6] - 2026-10-15
+
+- removed safe-eval package
+=======
+## [Unreleased]
+
+### Changed
+
+- The user details page now only fetches the user on load. Devices and logs are fetched the first time their tab is opened (once per user, failed loads are retried when the tab is reopened) instead of on every page load.
+
+### Fixed
+
+- Devices and logs tabs show a loading indicator instead of "no devices"/"No logs found" while loading.
+- Data of a previously viewed user (details, logs, devices) is no longer shown while another user is loading, and late responses for a previous user are ignored.
+>>>>>>> 3476667 (fix: load only needed stuff for user-details tabs)
+
 ## [5.0.5] - 2026-09-29
 
 - refactoring to update or remove various vulnerable dev dependencies

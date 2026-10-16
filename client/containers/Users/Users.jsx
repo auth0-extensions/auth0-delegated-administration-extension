@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Pagination, TableTotals } from '@a0/auth0-extension-ui';
 
-import { connectionActions, userActions } from '../../actions';
+import { userActions } from '../../actions';
 
 import * as dialogs from './Dialogs';
 import TabsHeader from '../../components/TabsHeader';
@@ -27,7 +27,6 @@ class Users extends Component {
     fetchUsers: PropTypes.func.isRequired,
     getDictValue: PropTypes.func.isRequired,
     createUser: PropTypes.func.isRequired,
-    fetchConnections: PropTypes.func.isRequired,
     requestCreateUser: PropTypes.func.isRequired,
     settings: PropTypes.object.isRequired,
     sortOrder: PropTypes.number.isRequired,
@@ -44,10 +43,8 @@ class Users extends Component {
   }
 
   componentDidMount() {
+    // Connections are app-wide data (also used by the user page dialogs) and are loaded once by App.
     this.props.fetchUsers();
-    if (!this.props.connectionsLoading) {
-      this.props.fetchConnections();
-    }
   }
 
   onPageChange = (page) => {
@@ -173,6 +170,6 @@ function mapStateToProps(state) {
   };
 }
 
-const UsersContainer = connect(mapStateToProps, { ...connectionActions, ...userActions })(Users);
+const UsersContainer = connect(mapStateToProps, { ...userActions })(Users);
 
 export default UsersContainer;

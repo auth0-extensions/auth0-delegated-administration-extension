@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, within } from '@testing-library/react';
+import { render, waitFor, within } from '@testing-library/react';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import { fromJS } from 'immutable';
@@ -8,11 +8,11 @@ import UserDevices from '../../../../client/components/Users/UserDevices';
 
 describe('#Client-Components-UserDevices', () => {
 
-  const renderComponent = (user, devices, languageDictionary) => {
+  const renderComponent = (user, devices, languageDictionary, loading = false, error = null) => {
     return render(
       <UserDevices
-        loading={false}
-        error={null}
+        loading={loading}
+        error={error}
         devices={fromJS(devices)}
         user={fromJS(user)}
         settings={{}}
@@ -128,6 +128,21 @@ describe('#Client-Components-UserDevices', () => {
 
     expect(queries.queryAllByRole('columnheader')).to.have.length(0);
     expect(queries.getByText('Some No Device Message')).to.exist;
+  });
+
+  it('should render a spinner while loading', async () => {
+    const queries = renderComponent({ username: 'bill' }, {}, {}, true);
+
+    expect(queries.queryByText('This user does not have any registered devices.')).to.equal(null);
+    expect(queries.queryAllByRole('columnheader')).to.have.length(0);
+    await waitFor(() => expect(queries.container.querySelector('.spinner')).to.not.equal(null));
+  });
+
+  it('should render the error when loading failed', () => {
+    const queries = renderComponent({ username: 'bill' }, {}, {}, false, fromJS({ type: 'FETCH_USER_DEVICES', message: 'Forbidden', status: 403 }));
+
+    expect(queries.queryByText('This user does not have any registered devices.')).to.equal(null);
+    expect(queries.getByText(/An error occurred while loading the user devices: Forbidden/)).to.exist;
   });
 
 

@@ -111,7 +111,7 @@ export function changeFields(userId, user, languageDictionary) {
         userId,
         user,
         onSuccess: () => {
-          dispatch(fetchUser(userId));
+          dispatch(refreshUser(userId));
         }
       },
       payload: {
@@ -150,12 +150,13 @@ export function cancelChangeFields() {
 /*
  * Fetch the user details.
  */
-export function fetchUserDetail(userId, onSuccess) {
+export function fetchUserDetail(userId, onSuccess, reset = false) {
   return {
     type: constants.FETCH_USER,
     meta: {
       userId,
-      onSuccess
+      onSuccess,
+      reset
     },
     payload: {
       promise: axios.get(`/api/users/${userId}`, {
@@ -167,13 +168,27 @@ export function fetchUserDetail(userId, onSuccess) {
 }
 
 /*
- * Fetch the complete user object.
+ * Load a user for the user page: fetches only the user details and discards any previously loaded
+ * user data. Logs and devices are fetched lazily when their tab is opened.
  */
 export function fetchUser(userId) {
-  return (dispatch) => {
+  return fetchUserDetail(userId, undefined, true);
+}
+
+/*
+ * Refetch the user details and refresh the logs/devices that are already loaded for this user.
+ */
+export function refreshUser(userId) {
+  return (dispatch, getState) => {
     dispatch(fetchUserDetail(userId));
-    dispatch(fetchUserLogs(userId));
-    dispatch(fetchUserDevices(userId));
+
+    const { user } = getState();
+    if (user.getIn([ 'logs', 'userId' ]) === userId) {
+      dispatch(fetchUserLogs(userId));
+    }
+    if (user.getIn([ 'devices', 'userId' ]) === userId) {
+      dispatch(fetchUserDevices(userId));
+    }
   };
 }
 

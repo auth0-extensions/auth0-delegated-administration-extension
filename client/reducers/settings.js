@@ -5,6 +5,10 @@ import createReducer from '../utils/createReducer';
 
 const initialState = {
   loading: false,
+  // Becomes true once the first settings fetch has settled (fulfilled or rejected) and stays true afterwards.
+  // App only blocks rendering its routes until then; later refreshes (e.g. after saving the settings script)
+  // must not unmount the active route.
+  initialized: false,
   error: null,
   record: fromJS({ settings: { dict: { title: '', memberships: '' }, userFields: [], css: '' } })
 };
@@ -63,6 +67,7 @@ export const settings = createReducer(fromJS(initialState), {
   [constants.FETCH_SETTINGS_REJECTED]: (state, action) =>
     state.merge({
       loading: false,
+      initialized: true,
       error: action.errorData
     }),
   [constants.FETCH_SETTINGS_FULFILLED]: (state, action) => {
@@ -80,9 +85,9 @@ export const settings = createReducer(fromJS(initialState), {
     }
     return state.merge({
       loading: false,
+      initialized: true,
       error: null,
       record: fromJS(data)
     });
   }
-
 });

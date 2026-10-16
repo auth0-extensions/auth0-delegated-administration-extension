@@ -15,7 +15,7 @@ class App extends Component {
     settings: PropTypes.object,
     issuer: PropTypes.string,
     logout: PropTypes.func,
-    settingsLoading: PropTypes.bool,
+    settingsInitialized: PropTypes.bool,
     styleSettings: PropTypes.bool,
     fetchApplications: PropTypes.func.isRequired,
     fetchConnections: PropTypes.func.isRequired,
@@ -54,13 +54,15 @@ class App extends Component {
   };
 
   render() {
-    const { settingsLoading } = this.props;
+    const { settingsInitialized } = this.props;
     const languageDictionary = this.props.languageDictionary ? this.props.languageDictionary.toJS() : {};
     const settings = this.props.settings.get('settings') && this.props.settings.get('settings').toJS();
     const renderCssToggle = !!(settings && settings.css && settings.altcss);
 
-    if (settingsLoading) {
-      return <LoadingPanel show={settingsLoading} />;
+    // Only block on the very first settings load. Child routes fetch their data on mount, so swapping the
+    // <Outlet> for a spinner on later refreshes would unmount and remount them (and fetch everything twice).
+    if (!settingsInitialized) {
+      return <LoadingPanel show />;
     }
     return (
       <div>
@@ -102,7 +104,7 @@ function select(state) {
     accessLevel: state.accessLevel.get('record'),
     settings: state.settings.get('record'),
     styleSettings: state.styleSettings,
-    settingsLoading: state.settings.get('loading'),
+    settingsInitialized: state.settings.get('initialized'),
     languageDictionary: state.languageDictionary.get('record')
   };
 }
