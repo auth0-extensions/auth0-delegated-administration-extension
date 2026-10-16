@@ -17,3 +17,6 @@ npm-debug.log
 coverage.lcov
 .nyc_output
 coverage/
+
+# docs for AI development
+plans/
