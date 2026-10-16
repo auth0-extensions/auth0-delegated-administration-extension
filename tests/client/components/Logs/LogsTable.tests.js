@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { render, within } from '@testing-library/react';
+import { render, waitFor, within } from '@testing-library/react';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import { fromJS } from 'immutable';
@@ -26,11 +26,11 @@ describe('#Client-Components-Logs-LogsTable', () => {
     { type: fail, shortType: 'fapi', description: 'some description', date: aDayAgo }
   ];
 
-  const renderComponent = (logs, languageDictionary, suppressRawData, isUserLogs) => {
+  const renderComponent = (logs, languageDictionary, suppressRawData, isUserLogs, loading = false, error = null) => {
     return render(
       <LogsTable
-        loading={false}
-        error={null}
+        loading={loading}
+        error={error}
         onOpen={() => 'onOpen'}
         logs={fromJS(logs)}
         settings={{ suppressRawData }}
@@ -191,6 +191,21 @@ describe('#Client-Components-Logs-LogsTable', () => {
     const { getByText } = renderComponent([], { noLogsMessage: 'some no logs message' });
 
     expect(getByText('some no logs message')).to.exist;
+  });
+
+  it('should render a spinner instead of "No logs found" while loading', async () => {
+    const { container, queryByText, queryAllByRole } = renderComponent([], {}, false, true, true);
+
+    expect(queryByText(/No logs found/)).to.equal(null);
+    expect(queryAllByRole('columnheader')).to.have.length(0);
+    await waitFor(() => expect(container.querySelector('.spinner')).to.not.equal(null));
+  });
+
+  it('should render the error instead of "No logs found" when loading failed', () => {
+    const { queryByText, getByText } = renderComponent([], {}, false, true, false, fromJS({ type: 'FETCH_USER_LOGS', message: 'Forbidden', status: 403 }));
+
+    expect(queryByText(/No logs found/)).to.equal(null);
+    expect(getByText(/An error occurred while loading the user logs: Forbidden/)).to.exist;
   });
 
 });

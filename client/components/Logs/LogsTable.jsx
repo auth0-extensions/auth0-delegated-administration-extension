@@ -18,13 +18,17 @@ export default class LogsTable extends Component {
   };
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.logs !== this.props.logs || nextProps.loading !== this.props.loading;
+    return nextProps.logs !== this.props.logs || nextProps.loading !== this.props.loading || nextProps.error !== this.props.error;
   }
 
   render() {
     const { error, loading, settings } = this.props;
     const languageDictionary = this.props.languageDictionary || {};
     const suppressRawData = settings && settings.suppressRawData === true;
+
+    if (loading && this.props.logs.size === 0) {
+      return <LoadingPanel show={true} />;
+    }
 
     if (!error && this.props.logs.size === 0) {
       return <div>{languageDictionary.noLogsMessage || 'No logs found'}</div>;

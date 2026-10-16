@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import connectContainer from 'redux-static';
 import { Tabs, Tab } from 'react-bootstrap';
 
-import { logActions, userActions } from '../../actions';
+import { logActions, userActions, userDeviceActions, userLogActions } from '../../actions';
 
 import './User.styles.css';
 
@@ -14,6 +14,13 @@ import LogsTable from '../../components/Logs/LogsTable';
 import { UserActions, UserDevices, UserHeader, UserProfile, UserInfo } from '../../components/Users';
 
 import getUserDatabaseConnections from '../../selectors/getUserDatabaseConnections';
+
+const TABS = {
+  INFO: 1,
+  DEVICES: 2,
+  LOGS: 3,
+  PROFILE: 4
+};
 
 export default connectContainer(class extends Component {
   static stateToProps = state => ({
@@ -28,7 +35,9 @@ export default connectContainer(class extends Component {
 
   static actionsToProps = {
     ...logActions,
-    ...userActions
+    ...userActions,
+    ...userDeviceActions,
+    ...userLogActions
   };
 
   static propTypes = {
@@ -43,18 +52,44 @@ export default connectContainer(class extends Component {
     clearLog: PropTypes.func.isRequired,
     fetchLog: PropTypes.func.isRequired,
     fetchUser: PropTypes.func.isRequired,
+    fetchUserDevicesIfNeeded: PropTypes.func.isRequired,
+    fetchUserLogsIfNeeded: PropTypes.func.isRequired,
     getDictValue: PropTypes.func.isRequired
+  };
+
+  state = {
+    activeTab: TABS.INFO
   };
 
   componentDidMount() {
     this.props.fetchUser(this.props.params.id);
   }
 
+  componentDidUpdate(prevProps) {
+    // The route element is reused when only :id changes, so load the new user here.
+    if (prevProps.params.id !== this.props.params.id) {
+      this.setState({ activeTab: TABS.INFO });
+      this.props.fetchUser(this.props.params.id);
+    }
+  }
+
+  // Devices and logs are only fetched the first time their tab is opened (per user).
+  onTabSelect = (activeTab) => {
+    this.setState({ activeTab });
+
+    const userId = this.props.params.id;
+    if (activeTab === TABS.DEVICES) {
+      this.props.fetchUserDevicesIfNeeded(userId);
+    } else if (activeTab === TABS.LOGS) {
+      this.props.fetchUserLogsIfNeeded(userId);
+    }
+  };
+
   renderProfile(suppressRawData, user, languageDictionary, settings) {
     if (suppressRawData) return null;
 
     return (
-      <Tab eventKey={4} title={languageDictionary.userProfileTabTitle || 'Profile'}>
+      <Tab eventKey={TABS.PROFILE} title={languageDictionary.userProfileTabTitle || 'Profile'}>
         <UserProfile loading={user.get('loading')} user={user.get('record')} error={user.get('error')} languageDictionary={languageDictionary} settings={settings} />
       </Tab>
     );
@@ -67,6 +102,10 @@ export default connectContainer(class extends Component {
     const allowedUserFields = userFields.filter(field => field.property !== 'picture' && field.property !== 'client');
     const suppressRawData = settings && settings.suppressRawData === true;
     const role = this.props.accessLevel.role;
+    const userId = this.props.params.id;
+    // Until a lazy tab has been requested for this user, treat it as loading rather than empty.
+    const devicesLoading = devices.get('loading') || devices.get('userId') !== userId;
+    const logsLoading = logs.get('loading') || logs.get('userId') !== userId;
     const originalTitle = (settings.dict && settings.dict.title) || window.config.TITLE || 'User Management';
     document.title = `${languageDictionary.userTitle || 'User Details'} - ${originalTitle}`;
 
@@ -106,8 +145,8 @@ export default connectContainer(class extends Component {
         </div>
         <div className="row user-tabs">
           <div className="col-xs-12">
-            <Tabs defaultActiveKey={1} animation={false} id="user-info-tabs">
-              <Tab eventKey={1} title={languageDictionary.userUserInfoTabTitle || 'User Information'}>
+            <Tabs activeKey={this.state.activeTab} onSelect={this.onTabSelect} animation={false} id="user-info-tabs">
+              <Tab eventKey={TABS.INFO} title={languageDictionary.userUserInfoTabTitle || 'User Information'}>
                 <UserInfo
                   loading={user.get('loading')} user={user.get('record')}
                   memberships={user.get('memberships') && user.get('memberships').toJSON()}
@@ -117,15 +156,15 @@ export default connectContainer(class extends Component {
                   languageDictionary={languageDictionary}
                 />
               </Tab>
-              <Tab eventKey={2} title={languageDictionary.userDevicesTabTitle || 'Devices'}>
+              <Tab eventKey={TABS.DEVICES} title={languageDictionary.userDevicesTabTitle || 'Devices'}>
                 <UserDevices
-                  loading={devices.get('loading')} devices={devices.get('records')}
+                  loading={devicesLoading} devices={devices.get('records')}
                   languageDictionary={languageDictionary}
                   settings={settings}
                   error={devices.get('error')}
                 />
               </Tab>
-              <Tab eventKey={3} title={languageDictionary.userLogsTabTitle || 'Logs'}>
+              <Tab eventKey={TABS.LOGS} title={languageDictionary.userLogsTabTitle || 'Logs'}>
                 <LogDialog
                   onClose={this.props.clearLog} error={log.get('error')}
                   loading={log.get('loading')} log={log.get('record')}
@@ -134,7 +173,7 @@ export default connectContainer(class extends Component {
                   logId={log.get('logId')}
                 />
                 <LogsTable
-                  onOpen={this.props.fetchLog} loading={logs.get('loading')}
+                  onOpen={this.props.fetchLog} loading={logsLoading}
                   logs={logs.get('records')}
                   languageDictionary={languageDictionary}
                   error={logs.get('error')}
