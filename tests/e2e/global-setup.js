@@ -3,6 +3,7 @@ const path = require('path');
 const { DAE_INSTALL_FILE } = require('./playwright.config');
 const { ADMIN_EMAIL } = require('./helpers/testData');
 const { markManagementApiActivity, waitForBurstRefill } = require('./helpers/rateLimit');
+const { windowBounds } = require('./helpers/window');
 const { isRequested, resolveCdnPath } = require('./helpers/cdnPath');
 
 // Workers start after global setup and inherit these
@@ -43,7 +44,8 @@ module.exports = async () => {
     domain: process.env.AUTH0_DOMAIN,
     user: { email: ADMIN_EMAIL },
     managementScopes: MANAGEMENT_SCOPES,
-    cdnPath
+    cdnPath,
+    ...(windowBounds && { windowBounds })
   }) };
 
   fs.mkdirSync(path.dirname(DAE_INSTALL_FILE), { recursive: true });

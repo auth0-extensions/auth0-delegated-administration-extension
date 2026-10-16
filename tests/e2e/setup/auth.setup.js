@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { test: setup } = require('@playwright/test');
+const { unauthenticatedTest: setup } = require('../fixtures');
 const { loginViaUniversalLogin } = require('../helpers/login');
 const { ROLES, roleUser } = require('../helpers/roles');
 const { tokenFile } = require('../playwright.config');

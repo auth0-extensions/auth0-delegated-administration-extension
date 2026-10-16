@@ -4,6 +4,7 @@ const { tokenFile } = require('./playwright.config');
 const { createManagementApiClient } = require('./helpers/managementApi');
 const { createDaeApiClient } = require('./helpers/daeApi');
 const { daeApiUrl } = require('./helpers/urls');
+const { placeWindow } = require('./helpers/window');
 const { markManagementApiActivity, waitForBurstRefill } = require('./helpers/rateLimit');
 
 const unauthenticatedTest = base.test.extend({
@@ -15,6 +16,7 @@ const unauthenticatedTest = base.test.extend({
   // DAE retries some rate limited requests, so a 429 only matters when the test fails. The attached timeline of
   // DAE API calls shows how close each page load came to the Management API burst limit
   page: async ({ page }, use, testInfo) => {
+    await placeWindow(page);
     const testStart = Date.now();
     const daeApiRequests = [];
     page.on('response', async (response) => {

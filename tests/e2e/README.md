@@ -8,6 +8,7 @@ Playwright tests that run against DAE installed on a real Auth0 tenant.
 2. Copy `.env.example` to `.env` and fill in:
 - `AUTH0_DOMAIN`: the test tenant's domain, e.g. `my-tenant.us.auth0.com`. Use a dedicated test tenant: every run reinstalls DAE and changes tenant settings.
 - `AUTH0_TENANT_TIER` (optional): `enterprise` if the tenant has the enterprise Management API rate limits (a burst of 50, refilled at 16 requests/second), or `free` (the default) for free and dev tenants (a burst of 10, refilled at 2 requests/second). Tests wait 1s or 5s respectively after Management API activity before loading pages, so a tenant set to `enterprise` without those limits will hit 429s.
+- `DAE_E2E_WINDOW` (optional): `left,top,width,height` in screen points for every browser window, including the installer's Dashboard window, e.g. to keep them in one place for screen recordings with `--headed`. The page fills the window rather than using the 1280x720 viewport. The top left of the main display is `0,0`; displays above it have negative tops.
 - `DAE_INSTALLER_PATH`: the absolute path to the installer's `install.js`.
 - `DAE_CDN_PATH` (optional): the full URL of a DAE build to install, overriding the version flags below.
 
