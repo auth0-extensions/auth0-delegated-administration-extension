@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const config = require('../../lib/config');
+const config = require('../../../../vendor/auth0-extensions-cli/lib/config');
 
 
 const webtaskJson = { };
@@ -32,7 +32,7 @@ const defaultWebpackConfig = {
         options: {
           presets: [
             [
-              '@babel/preset-env',
+              require.resolve('@babel/preset-env'),
               {
                 shippedProposals: true,
                 targets: {
@@ -43,17 +43,18 @@ const defaultWebpackConfig = {
           ],
           babelrc: false,
           plugins: [
-            '@babel/plugin-proposal-class-properties',
-            '@babel/plugin-proposal-export-default-from',
-            '@babel/plugin-proposal-export-namespace-from',
+            require.resolve('@babel/plugin-proposal-class-properties'),
+            require.resolve('@babel/plugin-transform-private-methods'),
+            require.resolve('@babel/plugin-proposal-export-default-from'),
+            require.resolve('@babel/plugin-proposal-export-namespace-from'),
             [
-              '@babel/plugin-transform-runtime',
+              require.resolve('@babel/plugin-transform-runtime'),
               {
                 helpers: false,
                 regenerator: true
               }
             ],
-            '@babel/plugin-syntax-dynamic-import'
+            require.resolve('@babel/plugin-syntax-dynamic-import')
           ]
         }
       }
@@ -90,10 +91,8 @@ const defaultWebpackConfig = {
   plugins: [
     {
       definitions: {
-        'process.env': {
-          CLIENT_VERSION: `"${pkg.version}"`,
-          NODE_ENV: '"production"'
-        }
+        'process.env.CLIENT_VERSION': `"${pkg.version}"`,
+        'process.env.NODE_ENV': '"production"'
       }
     },
     {
