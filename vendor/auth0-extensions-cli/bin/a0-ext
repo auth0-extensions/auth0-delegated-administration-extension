@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const fs = require('fs');
 const _ = require('lodash');
 const chalk = require('chalk');
 const json = require('load-json-file');
@@ -50,6 +51,11 @@ function parseArgv(argv, positionalNames) {
 
   return { args, opts };
 }
+
+// Webtask rejects backend bundles larger than this.
+const MAX_BUNDLE_BYTES = 1024 * 1024;
+
+const formatMiB = bytes => `${(bytes / (1024 * 1024)).toFixed(2)} MiB`;
 
 // Fails the build if an explicit external (`name@version`) isn't provided by the webtask runtime,
 // since the bundle would then fail to load once deployed.
@@ -103,12 +109,9 @@ function buildServer(args) {
             console.log('Error:', chalk.bold(JSON.stringify(err, null, 2)));
           } else {
             const chunks = stats.toJson({ chunks: true }).chunks;
-            console.log(
-              'Output:',
-              chalk.bold(
-                `${path.join(args.destinationFolder, chunks[0].files[0])}`
-              )
-            );
+            const outputFile = path.join(args.destinationFolder, chunks[0].files[0]);
+            console.log('Output:', chalk.bold(`${outputFile}`));
+            const bundleBytes = fs.statSync(path.join(rootPath, outputFile)).size;
 
             const largeModules = _.chain(chunks[0].modules)
               .orderBy(['size'], ['desc'])
@@ -128,6 +131,16 @@ function buildServer(args) {
                 cachedModules: false
               })
             );
+
+            if (bundleBytes > MAX_BUNDLE_BYTES) {
+              console.error(
+                chalk.red(
+                  `Error: the backend bundle is ${formatMiB(bundleBytes)} (${bundleBytes} bytes), ` +
+                    `which exceeds the webtask limit of 1 MiB. The largest modules are listed above.`,
+                ),
+              );
+              process.exit(1);
+            }
           }
         });
       });

@@ -70,4 +70,35 @@ describe('build:server', () => {
       });
     });
   });
+
+  describe('bundle size limit', () => {
+    const buildWithPadding = (bytes, callback) => {
+      const entry = path.join(outputDir, 'large-extension.js');
+      fs.writeFileSync(entry, `module.exports = '${'a'.repeat(bytes)}';`);
+
+      const destination = path.relative(process.cwd(), path.join(outputDir, 'out'));
+      exec(`node ${CLI} build:server ${path.relative(process.cwd(), entry)} ${destination} --pkg ${MOCKS}/good.json`, callback);
+    };
+
+    it('should fail the build when the bundle is larger than 1 MiB', function (done) {
+      this.timeout(30000);
+
+      buildWithPadding(1.5 * 1024 * 1024, (err, stdout, stderr) => {
+        expect(err.code).to.equal(1);
+        expect(stderr).to.contain('the backend bundle is 1.50 MiB');
+        expect(stderr).to.contain('exceeds the webtask limit of 1 MiB');
+        done();
+      });
+    });
+
+    it('should pass when the bundle is under 1 MiB', function (done) {
+      this.timeout(30000);
+
+      buildWithPadding(512 * 1024, (err, stdout, stderr) => {
+        expect(err).to.equal(null);
+        expect(stderr).to.not.contain('exceeds the webtask limit');
+        done();
+      });
+    });
+  });
 });
