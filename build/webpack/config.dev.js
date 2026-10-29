@@ -40,10 +40,6 @@ config.module = {
         'css-loader'
       ]
     },
-    {
-      test: /\.styl$/,
-      use: [ 'style-loader', 'css-loader', 'stylus-loader' ]
-    },
     { test: /\.m?js/, resolve: { fullySpecified: false } }
   ]
 };

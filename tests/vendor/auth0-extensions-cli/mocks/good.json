@@ -25,7 +25,7 @@
     },
     "externals": [
       "auth0",
-      "some-module",
+      "lodash",
       "webtask-tools"
     ],
     "excluded": [

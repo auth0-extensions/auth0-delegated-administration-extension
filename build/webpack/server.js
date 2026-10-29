@@ -4,8 +4,7 @@ const WebpackDevServer = require('webpack-dev-server');
 
 // Use the project's own dev webpack config rather than auth0-extensions-cli's
 // startDevServer: the CLI builds its config internally and can't load the
-// stylus loader, the @a0/auth0-extension-ui CSS fix, or the react-dropzone stub
-// this extension needs.
+// @a0/auth0-extension-ui CSS fix or the react-dropzone stub this extension needs.
 const config = require('./config.dev.js');
 
 // The server is also webpacked locally (config.server.dev.js), using the same
