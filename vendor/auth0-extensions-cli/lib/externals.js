@@ -8,11 +8,13 @@ const request = require('superagent');
 const Promise = require('bluebird');
 
 const LIST_MODULES_URL = 'https://auth0-internal.us8.webtask.io/canirequire';
+const DEFAULT_RUNTIME = 'node22';
 
-module.exports = searchPath =>
+module.exports = (searchPath, runtime = DEFAULT_RUNTIME) =>
   new Promise((resolve, reject) => {
     request
       .get(LIST_MODULES_URL)
+      .set('X-Wt-Runtime', runtime)
       .query({ json: true })
       .then((res) => {
         const data = res.body;
