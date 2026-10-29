@@ -93,7 +93,7 @@
       "moment@2.29.4",
       "morgan@1.10.0",
       "qs@6.11.2",
-      "superagent@8.0.9",
+      "superagent@10.3.0",
       "winston@3.10.0"
     ],
     "excluded": [
@@ -168,7 +168,7 @@
     "semver": "^7.5.4",
     "snyk": "^1.278.1",
     "string.prototype.endswith": "^0.2.0",
-    "superagent": "^8.0.9",
+    "superagent": "^10.3.0",
     "winston": "^3.10.0"
   },
   "devDependencies": {
