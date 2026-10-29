@@ -89,7 +89,7 @@
       "jsonwebtoken@9.0.1",
       "jwks-rsa@3.0.1",
       "lodash@4.17.21",
-      "lru-memoizer@1.10.0",
+      "lru-memoizer@2.2.0",
       "moment@2.29.4",
       "morgan@1.10.0",
       "qs@6.11.2",
