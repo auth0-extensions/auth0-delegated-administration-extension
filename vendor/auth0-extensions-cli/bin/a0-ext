@@ -12,6 +12,8 @@ const AdmZip = require('adm-zip');
 const getConfig = require('../lib/config');
 const getExternals = require('../lib/externals');
 
+const { findMissingExternals, CanirequireNetworkError } = getExternals;
+
 // Minimal argv parser (replaces caporal). Splits process.argv into positional
 // arguments and `--flag value` options. Flags are camelCased to mirror the
 // previous caporal behaviour (e.g. `--apiKey x` -> opts.apiKey, `--pkg x` ->
@@ -49,6 +51,39 @@ function parseArgv(argv, positionalNames) {
   return { args, opts };
 }
 
+// Fails the build if an explicit external (`name@version`) isn't provided by the webtask runtime,
+// since the bundle would then fail to load once deployed.
+function verifyExternals(pkg, args) {
+  const extension = pkg['auth0-extension'] || {};
+  const specs = extension.externals || [];
+  const runtime = typeof args.runtime === 'string' ? args.runtime : undefined;
+
+  if (extension.bundleModules === false || specs.length === 0) {
+    return Promise.resolve();
+  }
+
+  return findMissingExternals(specs, runtime)
+    .then(({ nodeVersion, missing }) => {
+      if (missing.length === 0) {
+        console.log(`Externals: all ${specs.length} available in the webtask runtime (${nodeVersion})`);
+        return;
+      }
+
+      console.error(chalk.red(`Externals: ${missing.length} not available in the webtask runtime (${nodeVersion}):`));
+      missing.forEach(({ spec, available }) =>
+        console.error(`  - ${spec} (runtime has: ${available.length ? available.join(', ') : 'module not provided'})`)
+      );
+      process.exit(1);
+    })
+    .catch((err) => {
+      if (err instanceof CanirequireNetworkError) {
+        console.error(chalk.red(err.message));
+        process.exit(1);
+      }
+      throw err;
+    });
+}
+
 function buildServer(args) {
   const rootPath = process.cwd();
   const packagePath = path.join(rootPath, args.pkg || 'package.json');
@@ -59,7 +94,8 @@ function buildServer(args) {
       chalk.bold(`${pkg.name}@${pkg.version} extension`)
     );
 
-    getExternals(rootPath)
+    verifyExternals(pkg, args)
+      .then(() => getExternals(rootPath))
       .then(externals => getConfig(pkg, rootPath, args, externals))
       .then((config) => {
         Webpack(config).run((err, stats) => {
