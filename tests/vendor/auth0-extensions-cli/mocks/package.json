@@ -2,7 +2,8 @@
   "dependencies": {
     "async": "2.1.2",
     "auth0": "~2.9.0",
-    "boom": "1.0.0",
-    "else": "5.0.0"
+    "not-a-webtask-module": "1.0.0",
+    "else": "5.0.0",
+    "superagent": "10.3.0"
   }
 }

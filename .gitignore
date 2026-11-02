@@ -17,3 +17,9 @@ npm-debug.log
 coverage.lcov
 .nyc_output
 coverage/
+
+plans/
+tests/e2e/.auth/
+*.env
+tests/e2e/playwright-report/index.html
+tests/e2e/test-results/.last-run.json
